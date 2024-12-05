@@ -1,0 +1,20 @@
+.service-card-gardener {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100%;
+    padding: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover animation */
+}
+
+.service-card-gardener:hover {
+    transform: translateY(-10px) scale(1.02); /* Slight lift and scale */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow on hover */
+}
+
+.service-cards-wrapper-gardener {
+    display: flex;
+    justify-content: flex-start;
+    gap: 30px; /* Space between cards */
+}

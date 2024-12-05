@@ -1,0 +1,161 @@
+/* General Styles */
+.mission-section {
+    background-color: white;
+    padding: 30px 0px !important;
+  }
+  
+  .mission-heading {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 30px;
+  }
+  
+  .mission-text {
+    margin: 0 70px;
+    font-size: 20px;
+    line-height: 1.5;
+  }
+  
+  /* Quote Section */
+  .mission-quote {
+    position: relative;
+    font-size: 1rem;
+    color: #6c757d;
+    margin-bottom: 30px;
+    padding: 0 50px;
+    line-height: 1.5;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .quote-images {
+    width: 50px;
+    height: 50px;
+  }
+  
+  .left-quote {
+    position: absolute;
+    top: 0;
+    left: 10px;
+  }
+  
+  .right-quote {
+    position: absolute;
+    top: 0;
+    right: 10px;
+  }
+  
+  /* Stats Section */
+  .mission-stats {
+    display: flex;
+    height: 150px;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #6979F8;
+    color: white;
+    padding: 20px 100px;
+  }
+  
+  .stat {
+    text-align: center;
+  }
+  
+  .stat h3 {
+    font-size: 40px;
+    font-weight: bold;
+    margin: 0;
+  }
+  
+  .stat p {
+    font-size: 18px;
+    margin: 5px 0 0;
+    color: white;
+  }
+  
+  /* Responsive Adjustments */
+  /* Tablet Screens (max-width: 1024px) */
+  @media (max-width: 1024px) {
+    .mission-text {
+      margin: 0 40px; /* Reduce horizontal padding */
+      font-size: 18px;
+    }
+  
+    .mission-quote {
+      padding: 0 30px; /* Adjust padding for tablets */
+      text-align: center;
+    }
+  
+    .quote-images {
+      width: 40px; /* Scale down quote images */
+      height: 40px;
+    }
+  
+    .mission-stats {
+      padding: 20px 60px; /* Adjust stats section padding */
+    }
+  
+    .stat h3 {
+      font-size: 36px; /* Slightly reduce stat heading size */
+    }
+  
+    .stat p {
+      font-size: 16px; /* Slightly reduce stat text size */
+    }
+  }
+  
+  /* Mobile Screens (max-width: 767px) */
+  @media (max-width: 767px) {
+    .mission-text {
+      margin: 0 20px;
+      font-size: 16px;
+      text-align: center; /* Center text on mobile */
+    }
+  
+    .mission-quote {
+      flex-direction: row;
+      padding: 0 20px; /* Adjust padding for mobile */
+      text-align: center;
+      position: static; /* Remove absolute positioning */
+    }
+  
+    .quote-images {
+      width: 30px; /* Scale down quote images further */
+      height: 30px;
+      margin-bottom: 10px;
+    }
+  
+    .mission-stats {
+      flex-direction: row; /* Stack stats vertically */
+      gap: 20px;
+      padding: 20px; /* Reduce padding */
+    }
+  
+    .stat h3 {
+      font-size: 32px; /* Reduce stat heading size for mobile */
+    }
+  
+    .stat p {
+      font-size: 14px; /* Reduce stat text size */
+    }
+  }
+  
+  /* Small Mobile Screens (max-width: 576px) */
+  @media (max-width: 576px) {
+    .mission-text {
+      margin: 0 10px;
+      font-size: 14px;
+    }
+  
+    .mission-stats {
+      gap: 15px; /* Reduce spacing between stats */
+    }
+  
+    .stat h3 {
+      font-size: 28px;
+    }
+  
+    .stat p {
+      font-size: 12px;
+    }
+  }
+  

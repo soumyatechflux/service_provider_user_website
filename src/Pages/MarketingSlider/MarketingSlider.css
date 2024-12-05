@@ -1,0 +1,42 @@
+.marketing-slider-container {
+    width: 100vw; /* Full viewport width */
+    margin-top: 45px !important;
+    overflow: hidden; /* Prevent overflow from slides */
+  }
+  
+  .marketing-slide {
+    position: relative;
+    text-align: center;
+  }
+  
+  .marketing-slide-image {
+    width: 100%;
+    object-fit: cover; /* Ensure image scales proportionally without distortion */
+  }
+  
+  .marketing-slide-text {
+    position: absolute;
+    width: 100%;
+    left: 50%;
+    top: 40%; /* Center text vertically */
+    transform: translateX(-50%);
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    z-index: 10; /* Ensure text appears above image */
+  }
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .marketing-slide-text {
+      font-size: 24px; /* Adjust text size for smaller screens */
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .marketing-slide-text {
+      font-size: 18px; /* Further reduce text size for very small screens */
+    }
+  }
+  

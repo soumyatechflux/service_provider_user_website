@@ -1,0 +1,343 @@
+/* Booking Details Grid for Columns */
+.booking-details {
+    display: flex;
+    flex-direction: row;
+    /* flex-wrap: wrap; */
+    gap: 20px; /* Space between columns */
+    padding: 20px 0px !important;
+  }
+  .details-head{
+    margin-bottom: 20px !important;
+    font-size: 18px;
+  }
+  .booking-details > div {
+    flex: 1 1 33%; /* 33% of total width for each column */
+    box-sizing: border-box; /* Include padding in width calculation */
+  }
+  
+  @media (max-width: 1024px) {
+    .booking-details > div {
+      flex: 1 1 50%; /* Adjust columns to 50% width on medium screens */
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .booking-details > div {
+      flex: 1 1 100%; /* Stack columns vertically on smaller screens */
+    }
+  }
+  
+  
+  /* Summary View Styles */
+  .booking-summary {
+    background-color: #E6EAFF;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .summary-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .service-info {
+    display: flex;
+    /* align-items: center; */
+    gap: 10px;
+  }
+  .profile-heading{
+    margin-bottom: 0 !important;
+  }
+  
+  .user-icon {
+    width: 24px;
+    height: 24px;
+  }
+  
+  .status-message {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #22c55e;
+    font-size: 14px;
+  }
+  
+  .status-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
+  }
+  
+  .summary-content {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    font-size: 14px !important;
+  }
+  
+  .time-provider {
+    color: #666;
+    font-size: 14px !important;
+  }
+  
+  .amount {
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .summary-actions {
+    display: flex;
+    gap: 10px;
+  }
+  
+  /* Detailed View Styles */
+  .booking-details {
+    display: flex;
+    justify-content: space-between;
+    /* flex-wrap: wrap; */
+    flex-grow: unset;
+    gap: 20px;
+    background: white;
+    border-radius: 8px;
+    /* padding: 20px; */
+    position: relative; /* For positioning the button */
+  }
+
+  
+  .details-header {
+    flex: 1 1 100%;
+    margin-bottom: 20px;
+  }
+  
+  .image-flex{
+    display: flex;
+    flex-direction: column;
+    height: auto !important;
+    padding: 15px;
+  }
+  
+  .service-image img {
+    width: 100%;
+    /* height: 200px; */
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .provider-section,
+  .booking-info,
+  .billing-info {
+    
+    background: #E6EAFF;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .heading-text{
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    margin-bottom: 10px;
+    /* margin-top: 20px; */
+  }
+  .provider-role{
+    margin-bottom: 0!;
+  }
+  .provider-name{
+    font-size: 16px !important;
+    font-weight: 600;
+    margin-bottom: 0 !important   ;
+  }
+  .provider-info {
+    display: flex;
+    gap: 20px;
+    /* align-items: center; */
+    align-content: center !important;
+  }
+  
+  .provider-avatar {
+    width: 50px;
+    height: 50px;
+    background: #e0e7ff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #4f46e5;
+  }
+  
+  .rating-profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #666;
+    font-size: 14px;
+    justify-content: space-between;
+  }
+  
+  .star-icon {
+    color: #fbbf24;
+    font-size: 0px !important;
+  }  
+
+  .booking-subtitle{
+    font-size: 14px !important;
+    font-weight: 500;
+    color: black !important;
+  }
+  .booking-info-text{
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 5px !important;
+  }
+  .billing-subtitle{
+    font-size: 14px;
+    /* color: black !important; */
+  }
+  .final-amount{
+    font-size: 22px;
+  }
+  .details-actions {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    justify-content: space-evenly;
+    margin-top: 20px;
+  }
+  
+  .details-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .info-group {
+    margin-bottom: 20px;
+  }
+  
+  .info-group h4 {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .billing-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .billing-row.discount {
+    color: #22c55e;
+  }
+  
+  .billing-row.total {
+    font-weight: 600;
+    font-size: 18px;
+    border-top: 1px solid #e5e7eb;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .payment-mode {
+    display: flex;
+    justify-content: space-between;
+    background: #f8f9ff;
+    padding: 10px;
+    border-radius: 4px;
+    margin-top: 20px;
+  }
+  
+  /* Button Styles */
+  button {
+    padding: 10px 20px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .btn-modify {
+    background: #6366f1;
+    color: white;
+  }
+  .btn-modify-upcoming {
+    background: #6366f1;
+    color: white;
+    width: 100%;
+  }
+  
+  .btn-view-details {
+    background: none;
+    color: #6366f1;
+  }
+  
+  .btn-cancel {
+    background: #ff4444;
+    color: white;
+    width: 100%;
+  }
+  
+  .btn-view-less {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    background: none;
+    color: #6366f1;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  
+  .btn-view-less:hover {
+    color: #4f46e5;
+  }
+  
+  /* Responsive Styles */
+  @media (max-width: 768px) {
+    .booking-details {
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+  
+    .details-header {
+      margin-bottom: 10px;
+    }
+  
+    .details-grid {
+      flex-direction: column;
+    }
+  
+    .provider-section,
+    .booking-info,
+    .billing-info {
+      flex: 1 1 100%;
+    }
+  
+    .summary-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .provider-info {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .booking-container {
+      padding: 10px;
+    }
+  
+    .details-actions {
+      flex-direction: row;
+    }
+  
+    button {
+      /* width: 100%; */
+    }
+  }
+  
