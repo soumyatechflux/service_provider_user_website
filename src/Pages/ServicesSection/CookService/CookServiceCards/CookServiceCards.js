@@ -58,11 +58,12 @@ const CookServiceCards = () => {
           <h2 className="section-title">Cook Services</h2>
           <div className="service-cards-wrapper">
             {slides.map((service, index) => (
-              <div key={index} className="service-card">
+              <div key={index} className="service-card" >
                 <img
                   src={service?.image}
                   alt={service?.sub_category_name}
                   className="card-image"
+                  style={{height:"200px", width:"300px"}}
                 />
                 <div className="card-content">
                   <h3>{service?.sub_category_name}</h3>
@@ -77,9 +78,11 @@ const CookServiceCards = () => {
                   </div>
 
 
-                  <span className="reviews"> Description : {service?.description}</span>
+               {service?.description && (   <span className="reviews"> Description : {service?.description}</span>
 
+               )}
 
+               
                   {/* <ul className="features">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex}>

@@ -120,11 +120,11 @@ const BookingSection = () => {
 
     // Check if all the required fields are filled
     if (
-      BookingForGuestName === "" || // Ensure guest name is filled
-      selectedDate === "" || // Ensure date is selected
-      selectedTime === "" || // Ensure time is selected
-      people <= 0 || // Ensure at least 1 person is selected
-      menu.length === 0 // Ensure at least one menu/service is selected
+      BookingForGuestName === "" || 
+      selectedDate === "" ||
+      selectedTime === "" || 
+      people <= 0 
+      // || menu.length === 0
     ) {
       alert("Please fill all required fields.");
       return;
@@ -145,7 +145,9 @@ const BookingSection = () => {
   };
 
   // Assuming you have values for people, service price, discount, and GST
-  const total = people * (service?.price || 0); // Base total
+  // const total = people * (service?.price || 0);
+  const total = service?.price || 0;
+
   const discount = 0; // Discount value
   const gst = 0; // GST value
 
@@ -186,6 +188,7 @@ const BookingSection = () => {
           address_from: "", // Empty for now, can be updated based on your form inputs
           address_to: "", // Empty for now, can be updated based on your form inputs
           number_of_people: people, // Assuming `people` variable holds the number of people
+          guest_name:BookingForGuestName,
           instructions: specialRequests || "", // Special requests if provided, otherwise empty string
           payment_mode: mod, // Payment method passed as parameter (either "cod" or "online")
           menu_and_service_ids: menu || [], // Assuming `menu` holds the selected menu and services as an array
