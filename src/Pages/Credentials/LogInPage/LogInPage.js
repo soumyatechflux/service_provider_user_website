@@ -1,18 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./LogInPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { LoginAPI, OTPAPI } from "../../../utils/APIs/credentialsApis";
 import MessageModal from "../../MessageModal/MessageModal";
 import Loader from "../../Loader/Loader";
 
-const countryCodes = [
-  { code: "+91" },
-  // { code: "+1", label: "USA" },
-  // { code: "+44", label: "UK" },
-  // { code: "+61", label: "Aus" },
-  // { code: "+81", label: "Jap" },
-  // Add more country codes as needed
-];
+const countryCode = "+91";
 
 const LogInPage = () => {
   const [phone, setPhone] = useState("");
@@ -21,8 +14,10 @@ const LogInPage = () => {
   const [step, setStep] = useState("login"); // 'login' or 'otp'
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const [error, setError] = useState("");
   const [show, setShow] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true); // Initially disabled
+  const [countdown, setCountdown] = useState(30); // Countdown starts at 10 seconds
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -142,37 +137,64 @@ const LogInPage = () => {
     };
 
     try {
-      setLoading(true);
+      setLoading(true); // Start loader
+
       const response = await OTPAPI(data);
       console.log("API Response:", response);
+
       if (response?.status === 200 && response?.data?.success === true) {
+        // Store token and login status
         sessionStorage.setItem(
           "ServiceProviderUserToken",
           response?.data?.token
         );
         sessionStorage.setItem("IsLogedIn", true);
 
-        alert("Login successful!");
+        // Navigate to home on success
         navigate("/");
-
-        setStep("otp");
       } else {
-        console.log("Failed---",response?.data?.message )
+        console.error("Failed:", response?.data?.message);
+
+        // Show failure message
         setMessage(
-          response?.data?.message || "Failed to send OTP. Please try again."
+          response?.data?.message || "Failed to verify OTP. Please try again."
         );
         handleShow();
-        return;
       }
     } catch (err) {
-      setLoading(true);
-      console.error("Error sending OTP:", err);
-      setMessage("An error occurred while sending OTP. Please try again.");
+      console.error("Error verifying OTP:", err);
+
+      // Show error message
+      setMessage("An error occurred while verifying OTP. Please try again.");
       handleShow();
     } finally {
-      setLoading(true);
+      // Stop the loader in all cases
+      setLoading(false);
     }
-    // console.log("OTP Verified:", otp.join(""));
+  };
+
+  useEffect(() => {
+    let timer;
+
+    // Start countdown on mount and whenever the button is disabled
+    if (isDisabled) {
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev > 0) return prev - 1; // Decrement countdown
+          clearInterval(timer); // Clear timer when countdown reaches 0
+          setIsDisabled(false); // Enable the button
+          return 0;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(timer); // Cleanup timer on unmount
+  }, [isDisabled]);
+
+  const handleResendClick = () => {
+    handleSendOtp(); // Call the resend OTP function
+    setIsDisabled(true); // Disable the button
+    setCountdown(10); // Reset the countdown
   };
 
   if (loading) {
@@ -186,25 +208,18 @@ const LogInPage = () => {
           {step === "login" ? (
             <div className="login-card">
               <h2 className="login-title">Login</h2>
-              <label className="login-label">Phone Number</label>
+              <label className="login-label text-left">Phone Number</label>
               <div className="phone-input">
-                <select
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  className="country-code-dropdown"
-                >
-                  {countryCodes.map((item, index) => (
-                    <option key={index} value={item.code}>
-                      {item.code}
-                    </option>
-                  ))}
-                </select>
+                {/* Display the fixed country code */}
+                <span className="country-code-display">{countryCode}</span>
                 <input
                   type="tel"
                   value={phone}
                   onChange={handlePhoneChange}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendOtp()} // Trigger Send OTP on Enter
-                  className={`phone-number-input`}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendOtp()} // Send OTP on Enter
+                  className={`phone-number-input ${
+                    error ? "input-error-unique" : ""
+                  }`}
                   placeholder="Enter phone number"
                 />
               </div>
@@ -247,7 +262,13 @@ const LogInPage = () => {
               </div>
               <p className="resend-text">
                 Didn't receive OTP Code?{" "}
-                <span className="resend-link">Resend</span>
+                <button
+                  className="resend-button-unique"
+                  onClick={handleResendClick}
+                  disabled={isDisabled}
+                >
+                  {isDisabled ? `Resend in ${countdown}s` : "Resend"}
+                </button>
               </p>
               <button className="verify-otp-button" onClick={handleVerifyOtp}>
                 Verify OTP
@@ -273,83 +294,6 @@ const LogInPage = () => {
       />
     </>
   );
-
-  // return (
-  //   <>
-
-  //     <div className="main-login-container">
-  //       <div className="container nav-container login-container-unique">
-  //         {step === "login" ? (
-  //           <div className="login-card-unique">
-  //             <h2 className="login-title-unique">Login</h2>
-  //             <label className="login-label-unique">Phone Number</label>
-  //             <div className="phone-input-unique">
-  //               <select
-  //                 value={countryCode}
-  //                 onChange={(e) => setCountryCode(e.target.value)}
-  //                 className="country-code-dropdown-unique"
-  //               >
-  //                 {countryCodes.map((item, index) => (
-  //                   <option key={index} value={item.code}>
-  //                     {item.code} ({item.label})
-  //                   </option>
-  //                 ))}
-  //               </select>
-  //               <input
-  //                 type="tel"
-  //                 value={phone}
-  //                 onChange={handlePhoneChange}
-  //                 className={`phone-number-input-unique ${
-  //                   error ? "input-error-unique" : ""
-  //                 }`}
-  //                 placeholder="Enter phone number"
-  //               />
-  //             </div>
-  //             {error && <p className="error-message-unique">{error}</p>}
-  //             <button className="send-otp-button-unique" onClick={handleSendOtp}>
-  //               Send OTP
-  //             </button>
-  //           </div>
-  //         ) : (
-  //           <div className="otp-card-unique">
-  //             <button onClick={handleBack} className="back-button-unique">
-  //               ← Back
-  //             </button>
-  //             <h2 className="otp-title-unique">One Time Password</h2>
-  //             <p className="otp-instructions-unique">
-  //               Enter the OTP sent to your phone.
-  //             </p>
-  //             <div className="otp-input-container-unique">
-  //               {otp.map((digit, index) => (
-  //                 <input
-  //                   key={index}
-  //                   id={`otp-${index}`}
-  //                   type="text"
-  //                   maxLength={1}
-  //                   value={digit}
-  //                   onChange={(e) => handleOtpChange(index, e.target.value)}
-  //                   className="otp-input-unique"
-  //                 />
-  //               ))}
-  //             </div>
-  //             <button className="verify-otp-button-unique" onClick={handleVerifyOtp}>
-  //               Verify OTP
-  //             </button>
-  //           </div>
-  //         )}
-  //         <div>
-  //           <p>
-  //             Don’t have an account?{" "}
-  //             <Link to="/sign-up" className="signup-link-unique">
-  //               Sign Up
-  //             </Link>
-  //           </p>
-  //         </div>
-  //       </div>
-  //     </div>
-
-  // </>
-  // );
 };
 
 export default LogInPage;

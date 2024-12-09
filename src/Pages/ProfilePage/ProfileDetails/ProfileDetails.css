@@ -10,7 +10,19 @@ h1 {
   margin-bottom: 30px;
   color: #333;
 }
-
+.custom-toggle::after {
+  display: none !important; /* Completely removes Bootstrap's caret */
+}
+.dropdown-menu {
+  right: auto !important;
+  left: 0 !important;
+}
+.address-p{
+  /* box-shadow: #4b5563;
+  border-bottom: 1px solid; */
+  margin-right: 5px;
+  /* margin-bottom: 10px !important; */
+}
 .profile-content {
   display: flex;
   gap: 40px;
@@ -245,7 +257,7 @@ h1 {
 }
 .new-address-form {
   padding: 15px;
-  margin-top: 20px;
+  /* margin-top: 20px; */
   border: 1px solid #e0e0e0;
   border-radius: 8px;
   background-color: #f9f9f9;

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./SignUpPage.css";
 import { Link, useNavigate } from "react-router-dom";
 import { OTPAPI, SignUpAPI } from "../../../utils/APIs/credentialsApis";
@@ -7,14 +7,7 @@ import Loader from "../../Loader/Loader";
 
 // import { SignUpAPI } from "./path-to-your-api-file"; // Update the path as needed
 
-const countryCodes = [
-  { code: "+91" },
-  // { code: "+1", label: "USA" },
-  // { code: "+44", label: "UK" },
-  // { code: "+61", label: "Aus" },
-  // { code: "+81", label: "Jap" },
-];
-
+const countryCode = "+91";
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,6 +22,8 @@ const SignUpPage = () => {
   const handleShow = () => setShow(true);
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isDisabled, setIsDisabled] = useState(true); // Initially disabled
+  const [countdown, setCountdown] = useState(30); // Countdown starts at 10 seconds
 
   const navigate = useNavigate();
 
@@ -183,6 +178,30 @@ const SignUpPage = () => {
     // console.log("OTP Verified:", otp.join(""));
   };
 
+  useEffect(() => {
+    let timer;
+
+    // Start countdown on mount and whenever the button is disabled
+    if (isDisabled) {
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev > 0) return prev - 1; // Decrement countdown
+          clearInterval(timer); // Clear timer when countdown reaches 0
+          setIsDisabled(false); // Enable the button
+          return 0;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(timer); // Cleanup timer on unmount
+  }, [isDisabled]);
+
+  const handleResendClick = () => {
+    handleSendOtp(); // Call the resend OTP function
+    setIsDisabled(true); // Disable the button
+    setCountdown(10); // Reset the countdown
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -204,17 +223,8 @@ const SignUpPage = () => {
               />
               <label className="login-label text-left">Phone Number</label>
               <div className="phone-input">
-                <select
-                  value={countryCode}
-                  onChange={(e) => setCountryCode(e.target.value)}
-                  className="country-code-dropdown"
-                >
-                  {countryCodes.map((item, index) => (
-                    <option key={index} value={item.code}>
-                      {item.code}
-                    </option>
-                  ))}
-                </select>
+                {/* Display the fixed country code */}
+                <span className="country-code-display">{countryCode}</span>
                 <input
                   type="tel"
                   value={phone}
@@ -236,7 +246,11 @@ const SignUpPage = () => {
                 />
                 <label htmlFor="terms-checkbox" className="terms-and-condition">
                   I agree to the{" "}
-                  <a href="/terms" className="terms-link-unique">
+                  <a href="#" className="terms-link-unique"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default anchor behavior
+                  }}
+                  >
                     Terms & Conditions
                   </a>{" "}
                   & Privacy Policy.
@@ -293,7 +307,13 @@ const SignUpPage = () => {
               </button>
               <p className="resend-otp-unique">
                 Didn’t receive OTP?{" "}
-                <button className="resend-button-unique">Resend</button>
+                <button
+                  className="resend-button-unique"
+                  onClick={handleResendClick}
+                  disabled={isDisabled}
+                >
+                  {isDisabled ? `Resend in ${countdown}s` : "Resend"}
+                </button>
               </p>
             </div>
           )}

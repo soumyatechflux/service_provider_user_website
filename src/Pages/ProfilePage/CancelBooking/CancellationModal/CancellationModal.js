@@ -91,8 +91,9 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CancellationModal.css';
+import UpcomingTab from '../../BookingTabs/UpcomingTab/UpcomingTab';
 
-const CancellationModal = ({ isOpen, onClose, onNext, booking }) => {
+const CancellationModal = ({ isOpen, onClose, onNext, booking,onConfirm}) => {
   const [selectedReason, setSelectedReason] = useState('');
 
   const reasons = [
@@ -105,15 +106,20 @@ const CancellationModal = ({ isOpen, onClose, onNext, booking }) => {
   const handleReasonSelect = (reason) => {
     setSelectedReason(reason);
   };
+ 
 
   const handleConfirmCancellation = () => {
     if (selectedReason) {
       onNext(selectedReason);
+      onConfirm(selectedReason);
     }
   };
 
+  console.log("",selectedReason)
+
   return (
-    <div
+    <>
+     <div
       className={`modal fade ${isOpen ? 'show' : ''}`}
       style={{ display: isOpen ? 'block' : 'none' }}
       tabIndex="-1"
@@ -135,10 +141,10 @@ const CancellationModal = ({ isOpen, onClose, onNext, booking }) => {
             <div className="booking-image mb-3 text-center">
               <img
                 src="./../../ServicesSection/test2.jpg"
-                alt={booking.serviceType}
+                alt="cancel"
                 className="cancel-image img-fluid"
               />
-              <p className="mt-2">{booking.serviceType}</p>
+              {/* <p className="mt-2">{booking.serviceType}</p> */}
             </div>
             <div className="mb-3">
               <h6 className="form-label">Reason for Cancellation</h6>
@@ -175,6 +181,8 @@ const CancellationModal = ({ isOpen, onClose, onNext, booking }) => {
         </div>
       </div>
     </div>
+    </>
+   
   );
 };
 

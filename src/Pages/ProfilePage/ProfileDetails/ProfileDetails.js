@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Pencil, MapPin, Plus, Pen, Check, X } from "lucide-react";
 import "./ProfileDetails.css";
-import {
-  getProfileAPI,
-  editProfileAPI,
-} from "../../../utils/APIs/ProfileApis/ProfileApi";
+import { getProfileAPI, editProfileAPI } from "../../../utils/APIs/ProfileApis/ProfileApi";
 import Loader from "../../Loader/Loader";
 import axios from "axios";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import { Dropdown } from 'react-bootstrap';
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { Dropdown } from "react-bootstrap";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { Modal, Button } from "react-bootstrap";
+import AddAddressForm from "./../ProfileDetails/AddAddressForm/AddAddressForm"; // Import the new form component
+import EditAddressForm from "./EditAddressForm/EditAddressForm";
+import MessageModal from "../../MessageModal/MessageModal";
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState(null);
@@ -23,7 +24,17 @@ const ProfileDetails = () => {
   const [editingField, setEditingField] = useState(null); // Track which field is being edited
   const [addresses, setAddresses] = useState([]);
   const [isAddingAddress, setIsAddingAddress] = useState(false); // New state for address form
-  const token=sessionStorage.getItem("ServiceProviderUserToken")
+  const [isEditingAddress, setIsEditingAddress] = useState(false); // State for editing address modal
+  const [isDeletingAddress, setIsDeletingAddress] = useState(false); // State for deleting address modal
+  const [addressToEdit, setAddressToEdit] = useState(null); // Track the address being edited
+  const [addressToDelete, setAddressToDelete] = useState(null); // Track the address being deleted
+  const token = sessionStorage.getItem("ServiceProviderUserToken");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const [message, setMessage] = useState("");
+  const handleShow = () => setShow(true);
+
+ 
   const [newAddress, setNewAddress] = useState({
     houseNumber: "",
     streetAddress: "",
@@ -35,8 +46,12 @@ const ProfileDetails = () => {
     country: "",
   });
 
+  const handleAddressChange = (field, value) => {
+    setNewAddress({ ...newAddress, [field]: value });
+  };
+
   const addNewAddress = () => {
-    setAddresses((prev) => [...prev, { ...newAddress, id: Date.now() }]);
+    setAddresses([...addresses, newAddress]);
     setNewAddress({
       houseNumber: "",
       streetAddress: "",
@@ -51,7 +66,6 @@ const ProfileDetails = () => {
   };
 
   const cancelAddAddress = () => {
-    setIsAddingAddress(false);
     setNewAddress({
       houseNumber: "",
       streetAddress: "",
@@ -62,31 +76,42 @@ const ProfileDetails = () => {
       pincode: "",
       country: "",
     });
+    setIsAddingAddress(false);
   };
 
-  const handleAddressChange = (field, value) => {
-    setNewAddress((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true); // Show a loading spinner or disable UI during API call
+      const response = await axios.delete(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (response?.status && response?.data?.success) {
+        setIsDeletingAddress(false); // Close the modal
+        // Optionally refresh the address list or notify the user
+        console.log("Address deleted successfully");
+      }
+    } catch (err) {
+      console.error("Error deleting address:", err);
+    } finally {
+      setLoading(false); // Stop loading spinner
+    }
   };
 
-  const handleEdit=()=>{
 
-  }
+   
 
-  const handleDelete=()=>{
-    
-  }
 
   // Fetch profile data
   const fetchProfile = async () => {
     try {
-      // const response = await getProfileAPI();
-      
-      const response = await axios.get(`${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
+      
 
       if (response?.status && response?.data?.success) {
         setProfileDataResponse(response?.data?.data);
@@ -95,13 +120,7 @@ const ProfileDetails = () => {
         setName(data.name);
         setPhone(data.mobile);
         setEmail(data.email);
-        setAddresses([
-          {
-            id: 1,
-            address: "Plot no.209, Kavuri Hills, Madhapur, Telangana 500033",
-            phone: "+91 1234567890",
-          },
-        ]);
+        setAddresses(data?.address);
         setEditedProfile(data); // Pre-fill the editedProfile state
       }
     } catch (err) {
@@ -116,6 +135,8 @@ const ProfileDetails = () => {
   }, []);
 
   const saveChanges = async () => {
+
+    
     try {
       setLoading(true);
       const data = new FormData();
@@ -130,8 +151,8 @@ const ProfileDetails = () => {
         data.append("mobile", editedProfile.mobile);
       }
 
-      // const response = await editProfileAPI(data);
-      const response = await axios.patch(`${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -141,6 +162,10 @@ const ProfileDetails = () => {
         setEditedProfile(response.data.data);
         setIsEditing(false);
         setEditingField(null);
+      }
+      else{
+        setMessage(response?.data?.message||"");
+        handleShow();
       }
     } catch (err) {
       console.error("Error saving profile changes:", err);
@@ -176,7 +201,7 @@ const ProfileDetails = () => {
   };
 
   if (loading) {
-    return <Loader />;
+    return <Loader />
   }
 
   if (!profileDataResponse) {
@@ -184,7 +209,8 @@ const ProfileDetails = () => {
   }
 
   return (
-    <div className="container nav-container profile-container">
+    <>
+     <div className="container nav-container profile-container">
       <h1>Profile</h1>
 
       <div className="profile-content">
@@ -262,11 +288,12 @@ const ProfileDetails = () => {
                   type="text"
                   value={editedProfile.mobile || phone} // Autofill with state
                   onChange={(e) => handleInputChange("mobile", e.target.value)}
+                  disabled
                 />
               ) : (
                 <span>{profileDataResponse.mobile}</span>
               )}
-              <button
+              {/* <button
                 className="edit-button"
                 onClick={() => {
                   setIsEditing(true);
@@ -274,7 +301,7 @@ const ProfileDetails = () => {
                 }}
               >
                 <Pencil size={16} />
-              </button>
+              </button> */}
             </div>
           </div>
 
@@ -329,123 +356,111 @@ const ProfileDetails = () => {
           </div>
 
           {addresses.map((address) => (
-        <div key={address.id} className="mb-3">
-          <div className="d-flex align-items-center">
-            <p className="flex-fill mb-0">
-              {address.houseNumber}, {address.streetAddress}, {address.streetAddressLine},{" "}
-              {address.landmark}, {address.city} - {address.state} {address.pincode} {address.country}
-            </p>
-            <Dropdown>
-              <Dropdown.Toggle as="span" id="dropdown-custom-components" className="cursor-pointer">
-                <BsThreeDotsVertical />
-              </Dropdown.Toggle>
-              <Dropdown.Menu>
-                <Dropdown.Item href="#" 
-                onClick={() => handleEdit(address.id)}
-                >
-                  <FaEdit className="me-2" /> Edit
-                </Dropdown.Item>
-                <Dropdown.Item href="#" 
-                onClick={() => handleDelete(address.id)}
-                >
-                  <FaTrashAlt className="me-2" /> Delete
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
-          </div>
-        </div>
-      ))}
-
-          {!isAddingAddress && (
-            <a
-              className="add-address"
-              onClick={() => setIsAddingAddress(true)}
-            >
-              <Plus size={16} />
-              Add New Address
-            </a>
-          )}
-
-
-
-          
-          {isAddingAddress && (
-            <div className="new-address-form">
-              <h3>Add New Address</h3>
-              <input
-                type="text"
-                placeholder="House Number"
-                value={newAddress.houseNumber}
-                onChange={(e) =>
-                  handleAddressChange("houseNumber", e.target.value)
-                }
-              />
-              <input
-                type="text"
-                placeholder="Street Address 1"
-                value={newAddress.streetAddress}
-                onChange={(e) =>
-                  handleAddressChange("streetAddress", e.target.value)
-                }
-              />
-              <input
-                type="text"
-                placeholder="Street Address 2"
-                value={newAddress.streetAddressLine}
-                onChange={(e) => handleAddressChange("streetAddressLine", e.target.value)}
-              />
-               <input
-                type="text"
-                placeholder="Landmark"
-                value={newAddress.landmark}
-                onChange={(e) => handleAddressChange("landmark", e.target.value)}
-              />
-
-
-              <div className="d-flex gap-2">
-                <input
-                  type="text"
-                  placeholder="City"
-                  value={newAddress.city}
-                  onChange={(e) => handleAddressChange("city", e.target.value)}
-                />
-                <input
-                  type="text"
-                  placeholder="State"
-                  value={newAddress.state}
-                  onChange={(e) => handleAddressChange("state", e.target.value)}
-                />
-              </div>
-              <div className="d-flex gap-2">
-                <input
-                  type="text"
-                  placeholder="Pincode"
-                  value={newAddress.pincode}
-                  onChange={(e) =>
-                    handleAddressChange("pincode", e.target.value)
-                  }
-                />
-                <input
-                  type="text"
-                  placeholder="Country"
-                  value={newAddress.country}
-                  onChange={(e) => handleAddressChange("country", e.target.value)}
-                />
-              </div>
-
-              <div className="new-address-actions">
-                <button className="save-button" onClick={() => addNewAddress()}>
-                  <Check size={16} /> Save
-                </button>
-                <button className="cancel-button" onClick={cancelAddAddress}>
-                  <X size={16} /> Cancel
-                </button>
+            <div key={address.id} className="mb-3">
+              <div className="d-flex align-items-center">
+                <p className="flex-fill mb-0 address-p">
+                  {address.house}, {address.street_address} {" "}
+                  {address.street_address_line2}, {address.landmark},{" "}
+                  {address.city} - {address.state} {address.postal_code}{" "}
+                  {address.country}
+                </p>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as="span"
+                    id="dropdown-custom-components"
+                    className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+                    bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
+                  >
+                    <BsThreeDotsVertical size={18} />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="dropdown-menu-end">
+                    <Dropdown.Item
+                     
+                      onClick={() => {
+                        setAddressToEdit(address?.address_id);
+                        setIsEditingAddress(true);
+                      }}
+                    >
+                      Edit
+                    </Dropdown.Item>
+                    <Dropdown.Item
+                      onClick={() => {
+                        setAddressToDelete(address?.address_id); // Set the address ID to delete
+                        setIsDeletingAddress(true); // Show the confirmation modal
+                      }}
+                    >
+                      Delete
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
               </div>
             </div>
-          )}
+          ))}
+
+          <a className="add-address" onClick={() => setIsAddingAddress(true)}>
+            + Add New Address
+          </a>
+
+          {/* Modal for Adding New Address */}
+          <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <AddAddressForm
+                fetchProfile={fetchProfile}
+                cancelAddAddress={cancelAddAddress}
+              />
+            </Modal.Body>
+          </Modal>
+
+          {/* Modal for Editing Address */}
+          <Modal show={isEditingAddress} onHide={() => setIsEditingAddress(false)} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <EditAddressForm
+                addressId={addressToEdit}
+                closeModal={() => setIsEditingAddress(false)}
+                refreshAddresses={fetchProfile} // A function to refresh the address list
+              />
+            </Modal.Body>
+          </Modal>
+
+          {/* Modal for Deleting Address */}
+          <Modal show={isDeletingAddress} onHide={() => setIsDeletingAddress(false)} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Delete Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <p>Are you sure you want to delete this address?</p>
+            </Modal.Body>
+            <Modal.Footer>
+              <Button variant="secondary" onClick={() => setIsDeletingAddress(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="danger"
+                onClick={() => {
+                  handleDelete(addressToDelete); // Delete the selected address
+                }}
+              >
+                Delete
+              </Button>
+            </Modal.Footer>
+          </Modal>
         </div>
       </div>
     </div>
+    
+    <MessageModal
+        show={show}
+        handleClose={handleClose}
+        message={message}
+      />
+    </>
+   
   );
 };
 
