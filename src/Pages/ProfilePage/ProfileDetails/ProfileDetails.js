@@ -93,8 +93,7 @@ const ProfileDetails = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      
-
+    
       if (response?.status && response?.data?.success) {
         setProfileDataResponse(response?.data?.data);
         const data = response?.data?.data;
@@ -355,6 +354,57 @@ const ProfileDetails = () => {
           )}
         </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         {/* Address Section */}
         <div className="address-section">
           <div className="address-header">
@@ -362,47 +412,51 @@ const ProfileDetails = () => {
             <h2>Manage Address</h2>
           </div>
 
-          {addresses.map((address) => (
-            <div key={address.id} className="mb-3">
-              <div className="d-flex align-items-center">
-                <p className="flex-fill mb-0 address-p">
-                  {address.house}, {address.street_address} {" "}
-                  {address.street_address_line2}, {address.landmark},{" "}
-                  {address.city} - {address.state} {address.postal_code}{" "}
-                  {address.country}
-                </p>
-                <Dropdown>
-                  <Dropdown.Toggle
-                    as="span"
-                    id="dropdown-custom-components"
-                    className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
-                    bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
-                  >
-                    <BsThreeDotsVertical size={18} style={{cursor:"pointer"}} />
-                  </Dropdown.Toggle>
-                  <Dropdown.Menu className="dropdown-menu-end">
-                    <Dropdown.Item
-                     
-                      onClick={() => {
-                        setAddressToEdit(address?.address_id);
-                        setIsEditingAddress(true);
-                      }}
-                    >
-                      Edit
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => {
-                        setAddressToDelete(address?.address_id); // Set the address ID to delete
-                        setIsDeletingAddress(true); // Show the confirmation modal
-                      }}
-                    >
-                      Delete
-                    </Dropdown.Item>
-                  </Dropdown.Menu>
-                </Dropdown>
-              </div>
-            </div>
-          ))}
+
+
+          {addresses.map((address, index) => (
+  <div key={address.id} className="mb-3">
+    <div className="d-flex align-items-center">
+      <p className="flex-fill mb-0 address-p">
+        <span className="serial-number me-2">{index + 1}.</span>
+        {address.house}, {address.street_address}{" "}
+        {address.street_address_line2}, {address.landmark},{" "}
+        {address.city} - {address.state} {address.postal_code}{" "}
+        {address.country}
+      </p>
+      <Dropdown>
+        <Dropdown.Toggle
+          as="span"
+          id="dropdown-custom-components"
+          className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+          bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
+        >
+          <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+        </Dropdown.Toggle>
+        <Dropdown.Menu className="dropdown-menu-end">
+          <Dropdown.Item
+            onClick={() => {
+              setAddressToEdit(address?.address_id);
+              setIsEditingAddress(true);
+            }}
+          >
+            Edit
+          </Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => {
+              setAddressToDelete(address?.address_id); // Set the address ID to delete
+              setIsDeletingAddress(true); // Show the confirmation modal
+            }}
+          >
+            Delete
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
+  </div>
+))}
+
+
 
           <a className="add-address" onClick={() => setIsAddingAddress(true)}>
             + Add New Address
@@ -458,6 +512,26 @@ const ProfileDetails = () => {
             </Modal.Footer>
           </Modal>
         </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       </div>
     </div>
     

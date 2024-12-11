@@ -272,7 +272,9 @@ function PreviousTab() {
 
                 <div className="summary-content">
                   <div className="time-provider">
-                    <p>{booking?.visit_time}</p>
+
+                    <p>{booking?.booking_date_time}</p>
+
                     <p>Service Provider - {booking?.partner_id ? booking?.partner_name : "No Partner Accepted"}</p>
 
 

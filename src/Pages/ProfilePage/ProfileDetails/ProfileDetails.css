@@ -10,6 +10,12 @@ h1 {
   margin-bottom: 30px;
   color: #333;
 }
+
+.serial-number {
+  font-weight: bold;
+  color: #007bff; /* Or any color you prefer */
+}
+
 .custom-toggle::after {
   display: none !important; /* Completely removes Bootstrap's caret */
 }

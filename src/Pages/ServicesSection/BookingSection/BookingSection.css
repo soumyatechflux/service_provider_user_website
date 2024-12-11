@@ -9,6 +9,12 @@
 .menu-checkbox {
   width: auto !important;
 }
+
+.serial-number {
+  font-weight: bold;
+  color: #007bff; /* Or any color you prefer */
+}
+
 /* Booking Form */
 .booking-booking-form {
   flex: 1;

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BookingSection.css";
-import { ChevronLeft, ChevronRight, Loader } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader, MapPin } from "lucide-react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
@@ -13,6 +13,10 @@ import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import { ArrowBarDown } from "react-bootstrap-icons";
+import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
+import { Dropdown, Modal } from "react-bootstrap";
+import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
+import { BsThreeDotsVertical } from "react-icons/bs";
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -24,6 +28,82 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [selectedTime, setSelectedTime] = useState("");
   const [showGrid, setShowGrid] = useState(false);
+
+
+
+
+  const [isAddingAddress, setIsAddingAddress] = useState(false); // New state for address form
+  const [addressToEdit, setAddressToEdit] = useState(null); // Track the address being edited
+  const [isEditingAddress, setIsEditingAddress] = useState(false); // State for editing address modal
+
+  const [addresses, setAddresses] = useState([]);
+
+  const cancelAddAddress = () => {
+    setNewAddress({
+      houseNumber: "",
+      streetAddress: "",
+      streetAddressLine: "",
+      landmark: "",
+      city: "",
+      state: "",
+      pincode: "",
+      country: "",
+    });
+    setIsAddingAddress(false);
+  };
+
+  const [newAddress, setNewAddress] = useState({
+    houseNumber: "",
+    streetAddress: "",
+    streetAddressLine: "",
+    landmark: "",
+    city: "",
+    state: "",
+    pincode: "",
+    country: "",
+  });
+
+
+
+  // Fetch profile data
+  const fetchProfile = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+    
+      if (response?.status && response?.data?.success) {
+        const data = response?.data?.data;
+   
+        setAddresses(data?.address);
+        if (data?.address?.length > 0) {
+          setSelectedLocation(data?.address[0]);
+        }
+
+
+      }
+    } catch (err) {
+      console.error("Error fetching profile data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchProfile();
+  }, []);
+
+
+
+
+
+
+
+
+
+
   const dummyTimeSlots = Array(24)
     .fill()
     .map((_, index) => {
@@ -95,9 +175,6 @@ const BookingSection = () => {
   // step 3 constants
 
   const [selectedLocation, setSelectedLocation] = useState({
-    address: "Connaught Place, Rajiv Chowk, New Delhi, Delhi, 110001",
-    lat: 28.6289,
-    lng: 77.2065,
   });
 
 
@@ -105,14 +182,7 @@ const BookingSection = () => {
   const mapRef = useRef(null);
   const searchBoxRef = useRef(null);
 
-  // step 4
-  const [addressForm, setAddressForm] = useState({
-    city: "Delhi", // Default city
-    area: "Connaught Place", // Hardcoded area
-    society: "Connaught Plaza", // Hardcoded society or locality
-    houseNo: "12B", // Hardcoded house number
-    landmark: "Near Metro Station", // Hardcoded landmark
-  });
+
 
   const handleSubmitForm = (e) => {
     e.preventDefault();
@@ -148,6 +218,7 @@ const BookingSection = () => {
       people <= 0
       // || menu.length === 0
     ) {
+
       alert("Please fill all required fields.");
       return;
     }
@@ -160,10 +231,10 @@ const BookingSection = () => {
 
   const handleChangeAddressValues = (e) => {
     const { name, value } = e.target;
-    setAddressForm((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    // setAddressForm((prevState) => ({
+    //   ...prevState,
+    //   [name]: value,
+    // }));
   };
 
   // Assuming you have values for people, service price, discount, and GST
@@ -204,16 +275,16 @@ const BookingSection = () => {
                 return formattedTime;
               }
             }
-            return "00:00:00"; // Default fallback time if no time is provided
+            return "00:00:00"; 
           })(),
-          visit_address_id: 1, // Assuming a constant value here
-          address_from: "", // Empty for now, can be updated based on your form inputs
-          address_to: "", // Empty for now, can be updated based on your form inputs
-          number_of_people: people, // Assuming `people` variable holds the number of people
+          visit_address_id: selectedLocation?.address_id,
+          address_from: "",
+          address_to: "",
+          number_of_people: people, 
           guest_name: BookingForGuestName,
-          instructions: specialRequests || "", // Special requests if provided, otherwise empty string
-          payment_mode: mod, // Payment method passed as parameter (either "cod" or "online")
-          menu_and_service_ids: menu || [], // Assuming `menu` holds the selected menu and services as an array
+          instructions: specialRequests || "",
+          payment_mode: mod, 
+          menu_and_service_ids: menu || [],
         },
       };
 
@@ -538,19 +609,261 @@ const BookingSection = () => {
                 <button className="back-button" onClick={prevStep}>
                   ←
                 </button>
+            <MapPin size={20} />
+
                 <h2 className="header-title">Select Booking Location</h2>
               </div>
 
-              <div className="address-card">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {/* <div className="address-card">
                 <div className="address-icon">📍</div>
                 <div className="address-text">
-                  123 Connaught Place, Rajiv Chowk, New Delhi, Delhi, 110001
+                  123 Conni, 110001
                 </div>
               </div>
 
               <button className="add-address-link" onClick={nextStep}>
                 Add New Address
-              </button>
+              </button> */}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="address-section">
+          <div className="address-header">
+            {/* <MapPin size={20} /> */}
+            {/* <h2>Select Address</h2> */}
+          </div>
+
+
+
+       {addresses.map((address, index) => (
+  <div key={address.address_id} className="mb-3">
+    <div className="d-flex align-items-center">
+      {/* Radio button for selecting address */}
+      <input
+        type="radio"
+        name="address"
+        id={`address-${address.address_id}`}
+        checked={selectedLocation?.address_id === address?.address_id} // Check if this is the selected address
+        onChange={() => setSelectedLocation(address)} // Set the selected address when clicked
+        className="me-2"
+        style={{cursor:"pointer"}}
+      />
+      <p className="flex-fill mb-0 address-p">
+        <span className="serial-number me-2">{index + 1}.</span>
+        {address.house}, {address.street_address}{" "}
+        {address.street_address_line2}, {address.landmark},{" "}
+        {address.city} - {address.state} {address.postal_code}{" "}
+        {address.country}
+      </p>
+      <Dropdown>
+        <Dropdown.Toggle
+          as="span"
+          id="dropdown-custom-components"
+          className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+          bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
+        >
+          <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+        </Dropdown.Toggle>
+        <Dropdown.Menu className="dropdown-menu-end">
+          <Dropdown.Item
+            onClick={() => {
+              setAddressToEdit(address?.address_id);
+              setIsEditingAddress(true);
+            }}
+          >
+            Edit
+          </Dropdown.Item>
+        </Dropdown.Menu>
+      </Dropdown>
+    </div>
+  </div>
+))}
+
+
+
+          <a className="add-address" onClick={() => setIsAddingAddress(true)}>
+            + Add New Address
+          </a>
+
+          {/* Modal for Adding New Address */}
+          <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <AddAddressForm
+                fetchProfile={fetchProfile}
+                cancelAddAddress={cancelAddAddress}
+              />
+            </Modal.Body>
+          </Modal>
+
+          {/* Modal for Editing Address */}
+          <Modal show={isEditingAddress} onHide={() => setIsEditingAddress(false)} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <EditAddressForm
+                addressId={addressToEdit}
+                closeModal={() => setIsEditingAddress(false)}
+                refreshAddresses={fetchProfile} // A function to refresh the address list
+              />
+            </Modal.Body>
+          </Modal>
+
+         
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               {/* This button now sets the step to 5 */}
               <button
@@ -633,61 +946,7 @@ const BookingSection = () => {
                 </div>
               </div>
 
-              <div className="address-step-form-section">
-                <h3 className="form-section-title">Select Booking Location</h3>
-                <form className="address-step-form">
-                  <input
-                    type="text"
-                    name="city"
-                    value={addressForm.city}
-                    onChange={handleChangeAddressValues} // Calls the handleChangeAddressValues function
-                    className="address-step-input"
-                    placeholder="Delhi"
-                  />
-                  <input
-                    type="text"
-                    name="area"
-                    value={addressForm.area}
-                    onChange={handleChangeAddressValues} // Calls the handleChangeAddressValues function
-                    className="address-step-input"
-                    placeholder="Area"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="society"
-                    value={addressForm.society}
-                    onChange={handleChangeAddressValues} // Calls the handleChangeAddressValues function
-                    className="address-step-input"
-                    placeholder="Society / Locality / Colony"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="houseNo"
-                    value={addressForm.houseNo}
-                    onChange={handleChangeAddressValues} // Calls the handleChangeAddressValues function
-                    className="address-step-input"
-                    placeholder="House no. / Flat no. / Building"
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="landmark"
-                    value={addressForm.landmark}
-                    onChange={handleChangeAddressValues} // Calls the handleChangeAddressValues function
-                    className="address-step-input"
-                    placeholder="Landmark"
-                  />
-                  <button
-                    type="button" // Ensure it's a button and doesn't submit the form automatically
-                    onClick={nextStep}
-                    className="address-step-confirm-button"
-                  >
-                    Confirm Address
-                  </button>
-                </form>
-              </div>
+       
             </div>
           </div>
         )}
@@ -716,7 +975,15 @@ const BookingSection = () => {
                 <div>
                   <strong>Address : </strong>
                 </div>
-                <div>{`${addressForm.houseNo}, ${addressForm.society}, ${addressForm.area}, ${addressForm.city}, ${addressForm.landmark}`}</div>
+                <div>
+                <p className="flex-fill mb-0 address-p">
+ 
+        {selectedLocation.house}, {selectedLocation.street_selectedLocation}{" "}
+        {selectedLocation.street_selectedLocation_line2}, {selectedLocation.landmark},{" "}
+        {selectedLocation.city} - {selectedLocation.state} {selectedLocation.postal_code}{" "}
+        {selectedLocation.country}
+      </p>
+                  </div>
               </div>
 
               <div className="booking-detail-card">
