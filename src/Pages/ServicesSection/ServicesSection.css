@@ -48,6 +48,13 @@
     }
     .row{
         margin: 0px 15px;
+      
+    }
+    .services-div{
+      padding-bottom: 30px !important;
+    }
+    .services-title{
+      padding-top: 20px;
     }
   }
   

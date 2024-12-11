@@ -7,6 +7,8 @@
   --bs-gutter-x: 0; /* Remove horizontal gutter */
 }
 
+
+
 /* Navbar Container */
 .navbar {
     background-color: white !important;
@@ -75,9 +77,13 @@
     font-size: 14px;
     padding: 0.5rem 1rem;
   }
-  
+  .home-margin{
+    margin-left: 1.5rem !important;
+  }
   .navbar .dropdown-item:hover {
-    background-color: #f8f9fa;
+    background-color: #6c63ff !important;
+    color: #fff !important;
+
   }
 
   .location-dropdown{
@@ -203,18 +209,35 @@
 .nav-item{
   margin-right: 8px;
 }
+
+.right-margin{
+  margin-right: 0.5rem !important;
+}
+.profile-div{
+  margin-left: 0 !important;
+}
   
   /* Responsive Adjustments */
   @media (max-width: 991.98px) {
     .navbar-nav {
       padding-top: 1rem;
+      margin-left: 0 !important;
     }
     
     .navbar .btn {
-      margin-top: 0.5rem;
+      /* margin-top: 0.5rem; */
       width: 100%;
     }
-  
+    .profile-div{
+      margin-left: 1.5 !important;
+    }
+      
+    .home-margin{
+      margin-left: 0rem !important;
+    }
+    .right-margin{
+      margin-right: 0 !important;
+    }
     .navbar .user-icon {
       margin-right: 0;
       margin-bottom: 0.5rem;

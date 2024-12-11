@@ -4,12 +4,10 @@ import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [locationDropdownOpen, setLocationDropdownOpen] = useState(false);
-  const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
-  const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // Separate refs for each dropdown
+  const navbarRef = useRef(null); // Reference for the entire navbar
   const locationDropdownRef = useRef(null);
   const servicesDropdownRef = useRef(null);
   const profileDropdownRef = useRef(null);
@@ -26,43 +24,29 @@ const Navbar = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     sessionStorage.setItem("IsLogedIn", "false");
-    setProfileDropdownOpen(false);
+    closeAllDropdowns();
   };
 
   const handleJoinAsPartner = () => {
-    setLocationDropdownOpen(false);
-    setServicesDropdownOpen(false);
-    setProfileDropdownOpen(false);
+    closeAllDropdowns();
     navigate("/join-as-partner");
   };
 
-  // Function to close all dropdowns
   const closeAllDropdowns = () => {
-    setLocationDropdownOpen(false);
-    setServicesDropdownOpen(false);
-    setProfileDropdownOpen(false);
+    setActiveDropdown(null);
+    setIsOpen(false); // Also close the hamburger menu
   };
 
-  const sliderRef = useRef(null);
-
-const handleClickOutside = (event) => {
-  if (
-    locationDropdownRef.current &&
-    !locationDropdownRef.current.contains(event.target) &&
-    servicesDropdownRef.current &&
-    !servicesDropdownRef.current.contains(event.target) &&
-    profileDropdownRef.current &&
-    !profileDropdownRef.current.contains(event.target) &&
-    sliderRef.current &&
-    !sliderRef.current.contains(event.target) // Check slider clicks
-  ) {
-    closeAllDropdowns();
-  }
-};
-const handleSliderClick = (event) => {
-  event.stopPropagation(); // Only if needed
-};
-
+  const handleClickOutside = (event) => {
+    if (
+      !navbarRef.current?.contains(event.target) &&
+      !locationDropdownRef.current?.contains(event.target) &&
+      !servicesDropdownRef.current?.contains(event.target) &&
+      !profileDropdownRef.current?.contains(event.target)
+    ) {
+      closeAllDropdowns();
+    }
+  };
 
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
@@ -72,11 +56,14 @@ const handleSliderClick = (event) => {
   }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-light sticky-top">
+    <nav
+      className="navbar navbar-expand-lg navbar-light sticky-top"
+      ref={navbarRef} // Attach the ref to the entire navbar
+    >
       <div className="container nav-container nav-container-flex">
-        <a href="/" className="navbar-brand font-serif">
+        <Link to="/" className="navbar-brand font-serif" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           Servyo
-        </a>
+        </Link>
         <button
           className="navbar-toggler"
           type="button"
@@ -93,36 +80,41 @@ const handleSliderClick = (event) => {
         >
           <ul className="navbar-nav me-auto mb-lg-0 ml-3">
             {/* Location Dropdown */}
-            <li className="nav-item" ref={locationDropdownRef}>
+            <li className="" ref={locationDropdownRef}>
               <div
                 className="nav-link dropdown-toggle location-dropdown"
-                onClick={() => setLocationDropdownOpen((prev) => !prev)}
+                onClick={() =>
+                  setActiveDropdown(
+                    activeDropdown === "location" ? null : "location"
+                  )
+                }
                 role="button"
                 style={{
                   cursor: "pointer",
                   display: "flex",
                   alignItems: "center",
+                  padding: "10px 10px"
                 }}
               >
                 <div>
                   <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-                  <span style={{ color: "#999999", fontSize: "16px" }}>
-                    Delhi
-                  </span>
+                  <span style={{ color: "#999999", fontSize: "16px" }}>Delhi</span>
                 </div>
                 <i
                   className={`ms-1 bi ${
-                    locationDropdownOpen ? "bi-chevron-up" : "bi-chevron-down"
+                    activeDropdown === "location"
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
                   }`}
                 ></i>
               </div>
-              {locationDropdownOpen && (
+              {activeDropdown === "location" && (
                 <ul className="custom-dropdown" style={{ width: "283px" }}>
                   <li>
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Delhi
                     </a>
@@ -131,7 +123,7 @@ const handleSliderClick = (event) => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Mumbai
                     </a>
@@ -140,7 +132,7 @@ const handleSliderClick = (event) => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Bangalore
                     </a>
@@ -149,7 +141,7 @@ const handleSliderClick = (event) => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Chennai
                     </a>
@@ -158,7 +150,7 @@ const handleSliderClick = (event) => {
                     <a
                       href="#"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Kolkata
                     </a>
@@ -167,17 +159,21 @@ const handleSliderClick = (event) => {
               )}
             </li>
 
-            <li className="nav-item mr-2 ml-4">
+            <li className="  right-margin home-margin">
               <a href="/" className="nav-link">
                 Home
               </a>
             </li>
 
             {/* Services Dropdown */}
-            <li className="nav-item mr-2" ref={servicesDropdownRef}>
+            <li className=" right-margin" ref={servicesDropdownRef}>
               <div
                 className="nav-link dropdown-toggle"
-                onClick={() => setServicesDropdownOpen((prev) => !prev)}
+                onClick={() =>
+                  setActiveDropdown(
+                    activeDropdown === "services" ? null : "services"
+                  )
+                }
                 role="button"
                 style={{
                   cursor: "pointer",
@@ -188,17 +184,19 @@ const handleSliderClick = (event) => {
                 Services
                 <i
                   className={`ms-1 bi mt-1 ml-1 ${
-                    servicesDropdownOpen ? "bi-chevron-up" : "bi-chevron-down"
+                    activeDropdown === "services"
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
                   }`}
                 ></i>
               </div>
-              {servicesDropdownOpen && (
+              {activeDropdown === "services" && (
                 <ul className="custom-dropdown">
                   <li>
                     <Link
                       to="/services/cook-service"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Chef
                     </Link>
@@ -207,7 +205,7 @@ const handleSliderClick = (event) => {
                     <Link
                       to="/services/driver-service"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Driver
                     </Link>
@@ -216,82 +214,87 @@ const handleSliderClick = (event) => {
                     <Link
                       to="/services/gardener-service"
                       className="dropdown-item"
-                      onClick={closeAllDropdowns} // Close dropdown on click
+                      onClick={closeAllDropdowns}
                     >
                       Gardener
-                    </Link>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-            <li className="nav-item">
-              <Link to="/about-us" className="nav-link">
-                About Us
-              </Link>
-            </li>
-          </ul>
-
-          {/* Profile and Buttons */}
-          <div className="d-flex align-items-center justify-content-center">
-            {/* Profile Dropdown */}
-            <div className="nav-item" ref={profileDropdownRef}>
-              <div
-                className="btn btn-link nav-link"
-                onClick={() => setProfileDropdownOpen((prev) => !prev)}
-                role="button"
-                style={{ cursor: "pointer" }}
-              >
-                <i className="bi bi-person-fill"></i>
-              </div>
-              {profileDropdownOpen && (
-                <ul className="custom-dropdown dropdown-menu-end">
-                  {isLoggedIn ? (
-                    <>
+                    </Link>   
+                    </li>
+                  </ul>
+                )}
+              </li>
+  
+              <li className="">
+                <Link to="/about-us" className="nav-link">
+                  About Us
+                </Link>
+              </li>
+            </ul>
+  
+            {/* Profile and Buttons */}
+            <div className="d-flex align-items-center justify-content-center ">
+              {/* Profile Dropdown */}
+              <div className="right-margin " ref={profileDropdownRef}>
+                <div
+                  className="btn btn-link nav-link "
+                  onClick={() =>
+                    setActiveDropdown(
+                      activeDropdown === "profile" ? null : "profile"
+                    )
+                  }
+                  role="button"
+                  style={{ cursor: "pointer" }}
+                >
+                  <i className="bi bi-person-fill"></i>
+                </div>
+                {activeDropdown === "profile" && (
+                  <ul className="custom-dropdown dropdown-menu-end">
+                    {isLoggedIn ? (
+                      <>
+                        <li>
+                          <Link
+                            to="/my-profile"
+                            className="dropdown-item"
+                            onClick={closeAllDropdowns}
+                          >
+                            My Profile
+                          </Link>
+                        </li>
+                        <li>
+                          <a
+                            href="/login"
+                            className="dropdown-item"
+                            onClick={handleLogout}
+                          >
+                            Logout
+                          </a>
+                        </li>
+                      </>
+                    ) : (
                       <li>
-                        <Link
-                          to="/my-profile"
-                          className="dropdown-item"
-                          onClick={closeAllDropdowns} // Close dropdown on click
-                        >
-                          My Profile
+                        <Link to="/login" className="dropdown-item">
+                          Login
                         </Link>
                       </li>
-                      <li>
-                        <a
-                          href="/login"
-                          className="dropdown-item"
-                          onClick={handleLogout}
-                        >
-                          Logout
-                        </a>
-                      </li>
-                    </>
-                  ) : (
-                    <li>
-                      <Link to="/login" className="dropdown-item">
-                        Login
-                      </Link>
-                    </li>
-                  )}
-                </ul>
-              )}
+                    )}
+                  </ul>
+                )}
+              </div>
+  
+              <button
+                className="btn btn-outline-primary mr-4 d-none d-lg-inline-block nav-buttons"
+                onClick={handleJoinAsPartner}
+              >
+                Join As Partner
+              </button>
+              <button className="btn btn-primary d-none d-lg-inline-block nav-buttons">
+                Download App
+              </button>
             </div>
-
-            <button
-              className="btn btn-outline-primary mr-4 d-none d-lg-inline-block nav-buttons"
-              onClick={handleJoinAsPartner}
-            >
-              Join As Partner
-            </button>
-            <button className="btn btn-primary d-none d-lg-inline-block nav-buttons">
-              Download App
-            </button>
           </div>
         </div>
-      </div>
-    </nav>
-  );
-};
-
-export default Navbar;
+      </nav>
+    );
+  };
+  
+  export default Navbar;
+  

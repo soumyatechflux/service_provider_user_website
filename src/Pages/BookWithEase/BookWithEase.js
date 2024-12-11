@@ -30,15 +30,15 @@ const BookWithEase = () => {
   return (
     <div className="container-bg-color">
       <div className=" container nav-container book-ease-container pages-margin mb-2">
-        <h2 className="book-ease-title text-center mb-5">Book With Ease</h2>
+        <h2 className="book-ease-title text-center mb-5 services-title">Book With Ease</h2>
         <div className="container">
-          <div className="row justify-content-center">
+          <div className="row justify-content-center services-div">
             {steps.map((step, index) => (
               <div
                 key={index}
                 className="col-12 col-sm-6 col-md-3 book-ease-step "
               >
-                <div className="book-ease-card text-left">
+                <div className="book-ease-card text-left mb-2">
                   <div className="book-ease-icon mb-3">
                     <img src={step.icon}/>
                   </div>

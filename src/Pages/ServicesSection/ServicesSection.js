@@ -31,8 +31,8 @@ const getAllServices = async () => {
   return (
     <div className="container-bg-color">
       <div className="container nav-container pages-margin">
-        <h2 className="text-center mb-4">Services</h2>
-        <div className="row">
+        <h2 className="text-center mb-4 services-title">Services</h2>
+        <div className="row services-div">
           {allServices.map((service, index) => (
             <div key={index} className="col-md-4 mb-2">
               <div className="card h-100 text-center">

@@ -14,6 +14,15 @@
     flex: 1 1 33%; /* 33% of total width for each column */
     box-sizing: border-box; /* Include padding in width calculation */
   }
+  .no-bookings-message {
+    text-align: center;
+    color: #666;
+    margin: 20px 0px;
+    font-size: 18px;
+    background-color: #E6EAFF;
+    border-radius: 8px;
+    padding: 20px;
+  }
   
   @media (max-width: 1024px) {
     .booking-details > div {

@@ -12,6 +12,10 @@
   text-align: left;
   color: #6c63ff;
 }
+.testimonial-btn:hover{
+  background-color: #6c63ff !important;
+  color: white !important;
+}
 /* Rating Stars */
 .rating {
   display: flex;

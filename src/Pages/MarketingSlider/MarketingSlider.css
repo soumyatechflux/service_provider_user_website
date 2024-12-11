@@ -36,7 +36,7 @@
   
   @media (max-width: 480px) {
     .marketing-slide-text {
-      font-size: 18px; /* Further reduce text size for very small screens */
+      font-size: 15px; /* Further reduce text size for very small screens */
     }
   }
   

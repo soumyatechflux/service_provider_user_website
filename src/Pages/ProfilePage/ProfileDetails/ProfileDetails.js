@@ -79,25 +79,7 @@ const ProfileDetails = () => {
     setIsAddingAddress(false);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      setLoading(true); // Show a loading spinner or disable UI during API call
-      const response = await axios.delete(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-  
-      if (response?.status && response?.data?.success) {
-        setIsDeletingAddress(false); // Close the modal
-        // Optionally refresh the address list or notify the user
-        console.log("Address deleted successfully");
-      }
-    } catch (err) {
-      console.error("Error deleting address:", err);
-    } finally {
-      setLoading(false); // Stop loading spinner
-    }
-  };
+
 
 
    
@@ -133,6 +115,29 @@ const ProfileDetails = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+
+  const handleDelete = async (id) => {
+    try {
+      setLoading(true); // Show a loading spinner or disable UI during API call
+      const response = await axios.delete(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (response?.status && response?.data?.success) {
+        setIsDeletingAddress(false); // Close the modal
+        // Optionally refresh the address list or notify the user
+        console.log("Address deleted successfully");
+        fetchProfile();
+
+      }
+    } catch (err) {
+      console.error("Error deleting address:", err);
+    } finally {
+      setLoading(false); // Stop loading spinner
+    }
+  };
 
   const saveChanges = async () => {
 
@@ -215,6 +220,7 @@ const ProfileDetails = () => {
 
       <div className="profile-content">
         {/* Avatar Section */}
+        <div className="avatar-div">
         <div className="avatar">
           {editedProfile.image ? (
             <img
@@ -250,6 +256,7 @@ const ProfileDetails = () => {
             style={{ display: "none" }}
             onChange={handleImageChange}
           />
+        </div>
         </div>
 
         {/* Details Section */}
@@ -371,7 +378,7 @@ const ProfileDetails = () => {
                     className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
                     bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
                   >
-                    <BsThreeDotsVertical size={18} />
+                    <BsThreeDotsVertical size={18} style={{cursor:"pointer"}} />
                   </Dropdown.Toggle>
                   <Dropdown.Menu className="dropdown-menu-end">
                     <Dropdown.Item

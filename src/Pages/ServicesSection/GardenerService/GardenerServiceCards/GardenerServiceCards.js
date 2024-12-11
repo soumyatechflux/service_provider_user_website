@@ -1,8 +1,6 @@
 
 import React, { useEffect, useState } from "react";
-
 import "./GardenerServiceCards.css";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Loader } from "lucide-react";
@@ -19,6 +17,7 @@ const GardenerServiceCards = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const [slides, setSlides] = useState([]);
+  const [viewMore, setViewMore] = useState(false); // State to toggle description
 
 
   useEffect(() => {
@@ -56,6 +55,18 @@ const GardenerServiceCards = () => {
     }
   };
 
+  // Helper function to truncate text
+  const truncateText = (text, wordLimit) => {
+    const words = text.split(" ");
+    if (words.length <= wordLimit) {
+      return { truncated: text, isTruncated: false };
+    }
+    return {
+      truncated: words.slice(0, wordLimit).join(" ") + "...",
+      isTruncated: true,
+    };
+  };
+
   return (
     <>
     {loading && <Loader />}
@@ -84,7 +95,24 @@ const GardenerServiceCards = () => {
                   </div>
 
 
-                  <span className="reviews"> Description : {service?.description}</span>
+                  {service?.description && (
+                        <div className="reviews">
+                          <span>
+                            Description:{" "}
+                            {viewMore
+                              ? service.description
+                              : truncateText(service.description, 30).truncated}
+                          </span>
+                          {truncateText(service.description, 30).isTruncated && (
+                            <a
+                              className="view-more-button"
+                              onClick={() => setViewMore(!viewMore)}
+                            >
+                              {viewMore ? "View Less" : "View More"}
+                            </a>
+                          )}
+                        </div>
+                      )}
 
 
                   {/* <ul className="features">
@@ -101,7 +129,7 @@ const GardenerServiceCards = () => {
                   </a> */}
 
 
-                  <div className="price-section">
+                  <div className="price-section mt-2">
                     <div className="price">
                       Starting from
                       <div className="amount">

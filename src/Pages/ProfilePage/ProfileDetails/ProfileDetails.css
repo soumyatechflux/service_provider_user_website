@@ -290,9 +290,12 @@ h1 {
 @media (max-width: 992px) {
   .profile-content {
     flex-direction: column;
-    gap: 40px;
+    gap: 20px;
   }
-
+  .avatar-div{
+    display: flex;
+    justify-content: center;
+  }
   .avatar-section {
     display: flex;
     justify-content: center;

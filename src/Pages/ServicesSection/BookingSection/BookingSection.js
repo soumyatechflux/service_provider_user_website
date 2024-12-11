@@ -8,18 +8,38 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import RazorpayPayment from "./RazorpayPayment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import { ArrowBarDown } from "react-bootstrap-icons";
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Access the service object from the location state
   const { service } = location.state || {}; // Handle case where no state is passed
-
   const [menuOrServicesOptions, setmenuOrServicesOptions] = useState([]);
   const [menu, setMenu] = useState([]);
+  const [selectedTime, setSelectedTime] = useState("");
+  const [showGrid, setShowGrid] = useState(false);
+  const dummyTimeSlots = Array(24)
+    .fill()
+    .map((_, index) => {
+      const hours = Math.floor(index / 2);
+      const minutes = index % 2 === 0 ? "00" : "30";
+      return `${hours.toString().padStart(2, "0")}:${minutes}`;
+    });
+
+  const handleDropdownClick = () => {
+    setShowGrid(!showGrid);
+  };
+
+  const handleTimeSelection = (time) => {
+    setSelectedTime(time);
+    setShowGrid(false); // Close the grid after selection
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -34,7 +54,6 @@ const BookingSection = () => {
         } else {
           setmenuOrServicesOptions([]);
         }
-
         setLoading(false);
       } catch (error) {
         console.error("Error fetching restaurant locations:", error);
@@ -50,7 +69,7 @@ const BookingSection = () => {
   const [step, setStep] = useState(1); // Manage the current step
 
   const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
+  // const [selectedTime, setSelectedTime] = useState("");
 
   useEffect(() => {
     // Get today's date and format it as MM-DD-YYYY
@@ -80,6 +99,9 @@ const BookingSection = () => {
     lat: 28.6289,
     lng: 77.2065,
   });
+
+
+  
   const mapRef = useRef(null);
   const searchBoxRef = useRef(null);
 
@@ -120,10 +142,10 @@ const BookingSection = () => {
 
     // Check if all the required fields are filled
     if (
-      BookingForGuestName === "" || 
+      BookingForGuestName === "" ||
       selectedDate === "" ||
-      selectedTime === "" || 
-      people <= 0 
+      selectedTime === "" ||
+      people <= 0
       // || menu.length === 0
     ) {
       alert("Please fill all required fields.");
@@ -145,8 +167,8 @@ const BookingSection = () => {
   };
 
   // Assuming you have values for people, service price, discount, and GST
-  // const total = people * (service?.price || 0);
-  const total = service?.price || 0;
+  const total = people * (service?.price || 0);
+  // const total = service?.price || 0;
 
   const discount = 0; // Discount value
   const gst = 0; // GST value
@@ -188,7 +210,7 @@ const BookingSection = () => {
           address_from: "", // Empty for now, can be updated based on your form inputs
           address_to: "", // Empty for now, can be updated based on your form inputs
           number_of_people: people, // Assuming `people` variable holds the number of people
-          guest_name:BookingForGuestName,
+          guest_name: BookingForGuestName,
           instructions: specialRequests || "", // Special requests if provided, otherwise empty string
           payment_mode: mod, // Payment method passed as parameter (either "cod" or "online")
           menu_and_service_ids: menu || [], // Assuming `menu` holds the selected menu and services as an array
@@ -251,7 +273,12 @@ const BookingSection = () => {
             //  onSubmit={handleSubmitForm}
           >
             <div className="booking-form-header">
-              <button className="booking-back-button">←</button>
+              <button
+                className="booking-back-button"
+                onClick={() => navigate("/")}
+              >
+                ←
+              </button>
               <h2 className="booking-form-title">Booking</h2>
             </div>
 
@@ -270,167 +297,173 @@ const BookingSection = () => {
                 />
               </div>
 
-              <div className="booking-form-group">
-                <label className="booking-form-label" htmlFor="visit-date">
-                  Select Visit Date
-                </label>
-                <input
-                  type="date"
-                  id="visit-date"
-                  name="visit-date"
-                  value={selectedDate} // Controlled component value
-                  onChange={(e) => setSelectedDate(e.target.value)} // Updates the selected date
-                  min={new Date().toISOString().split("T")[0]} // Disable past dates
-                  style={{
-                    padding: "8px",
-                    fontSize: "16px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                  }}
-                />
-              </div>
+              <div >
+                {/* <div className="d-flex"> */}
+                  <div className="booking-form-group flex-fill">
+                  <label className="booking-form-label" htmlFor="time-input">
+                    Select Visit Date
+                  </label>
+                    <LocalizationProvider dateAdapter={AdapterDateFns}  style={{ width: '100%' }}>
+                      <DatePicker
+                        // label="Select Visit Date"
+                        value={selectedDate}
+                        onChange={(newValue) => setSelectedDate(newValue)}
+                        minDate={new Date()}
+                        renderInput={(params) => <TextField {...params}  />}
+                      />
+                    </LocalizationProvider>
+                  </div>
+                  {/* </div> */}
 
-              <div className="booking-form-group">
-                <label className="booking-form-label" htmlFor="time-input">
-                  Select Time of Visit
-                </label>
-                <input
-                  type="time"
-                  id="time-input"
-                  name="visit-time"
-                  value={selectedTime}
-                  onChange={(e) => setSelectedTime(e.target.value)} // Updates the selected time
-                  min={
-                    selectedDate === new Date().toISOString().split("T")[0]
-                      ? currentTime.slice(11)
-                      : "00:00"
-                  } // Disable past times if today's date is selected
-                  style={{
-                    padding: "8px",
-                    fontSize: "16px",
-                    border: "1px solid #ccc",
-                    borderRadius: "4px",
-                  }}
-                />
-              </div>
-
-              <div className="booking-form-group">
-                <label className="booking-form-label">Number of People</label>
-                <div className="booking-counter-container">
-                  <button
-                    type="button"
-                    className="booking-counter-button"
-                    onClick={() => setPeople(Math.max(1, people - 1))} // Ensure people never go below 1
-                  >
-                    -
-                  </button>
-                  <span className="booking-counter-value">{people}</span>
-                  <button
-                    type="button"
-                    className="booking-counter-button"
-                    onClick={() => setPeople(people + 1)} // Increment people
-                  >
-                    +
-                  </button>
-                </div>
-                <div className="booking-cooking-time">
-                  Total cooking time: 3.5 hours
-                </div>
-              </div>
-
-              <div
-                className="booking-form-group"
-                style={{ position: "relative" }}
-              >
-                <label className="booking-form-label">
-                  Select Menu / Service (Optional)
-                </label>
-
-                {/* Dropdown container */}
-                <div
-                  className="dropdown-container"
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "4px", // Reduce gap between elements
-                  }}
-                >
-                  {/* Toggle to open dropdown */}
+                <div className="booking-form-group">
+                  <label className="booking-form-label" htmlFor="time-input">
+                    Select Time of Visit
+                  </label>
                   <div
-                    className="dropdown-input"
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    className="dropdown-wrapper"
+                    onClick={handleDropdownClick}
+                  >
+                    {selectedTime || "Select a time" }
+                  </div>
+                </div>
+
+                {showGrid && (
+                  <div className="time-grid">
+                    {dummyTimeSlots.map((time, index) => (
+                      <div
+                        key={index}
+                        className={`time-slot ${
+                          selectedTime === time ? "selected" : ""
+                        }`}
+                        onClick={() => handleTimeSelection(time)}
+                      >
+                        {time}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              <div>
+                <div className="booking-form-group">
+                  <label className="booking-form-label">Number of People</label>
+                  <div className="booking-counter-container">
+                    <button
+                      type="button"
+                      className="booking-counter-button"
+                      onClick={() => setPeople(Math.max(1, people - 1))} // Ensure people never go below 1
+                    >
+                      -
+                    </button>
+                    <span className="booking-counter-value">{people}</span>
+                    <button
+                      type="button"
+                      className="booking-counter-button"
+                      onClick={() => setPeople(people + 1)} // Increment people
+                    >
+                      +
+                    </button>
+                  </div>
+                  <div className="booking-cooking-time">
+                    Total cooking time: 3.5 hours
+                  </div>
+                </div>
+
+                <div
+                  className="booking-form-group"
+                  style={{ position: "relative" }}
+                >
+                  <label className="booking-form-label">
+                    Select Menu / Service (Optional)
+                  </label>
+
+                  {/* Dropdown container */}
+                  <div
+                    className="dropdown-container"
                     style={{
-                      cursor: "pointer",
-                      padding: "8px",
-                      fontSize: "16px",
-                      border: "1px solid #ccc",
-                      borderRadius: "4px",
                       display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      width: "100%", // Full width for better alignment
+                      flexDirection: "column",
+                      gap: "4px", // Reduce gap between elements
                     }}
                   >
-                    {menu.length > 0
-                      ? `Selected: ${menuOrServicesOptions
-                          .filter((option) => menu.includes(option.id))
-                          .map((option) => option.name)
-                          .join(", ")}`
-                      : "Select a service"}
-                    <span>{isDropdownOpen ? "▲" : "▼"}</span>
-                  </div>
-
-                  {/* Dropdown options list */}
-                  {isDropdownOpen && (
+                    {/* Toggle to open dropdown */}
                     <div
-                      className="dropdown-options"
+                      className="dropdown-input"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                       style={{
-                        position: "absolute",
-                        top: "100%", // Place the dropdown directly below the input
-                        left: 0,
-                        right: 0,
+                        cursor: "pointer",
+                        padding: "8px",
+                        fontSize: "16px",
                         border: "1px solid #ccc",
                         borderRadius: "4px",
-                        backgroundColor: "white",
-                        width: "100%", // Match the width of the input
-                        maxHeight: "200px",
-                        overflowY: "auto",
-                        zIndex: 10,
-                        padding: "0", // Remove padding to reduce space
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        width: "100%", // Full width for better alignment
                       }}
                     >
-                      {menuOrServicesOptions.map((option) => (
-                        <div
-                          key={option.id}
-                          className="dropdown-option"
-                          style={{
-                            padding: "8px",
-                            display: "flex", // Align checkbox and label on the same line
-                            alignItems: "center", // Center the checkbox and text vertically
-                            gap: "8px", // Add space between checkbox and text
-                          }}
-                        >
-                          <input
-                            type="checkbox"
-                            id={`service-${option.id}`}
-                            value={option.id}
-                            checked={menu.includes(option.id)}
-                            onChange={() => handleCheckboxChange(option.id)}
-                            style={{
-                              margin: 0, // Remove any margin around the checkbox
-                            }}
-                          />
-                          <label
-                            htmlFor={`service-${option.id}`}
-                            style={{ margin: 0 }}
-                          >
-                            {option.name}{" "}
-                            {/* Using the 'name' property from the API */}
-                          </label>
-                        </div>
-                      ))}
+                      {menu.length > 0
+                        ? `Selected: ${menuOrServicesOptions
+                            .filter((option) => menu.includes(option.id))
+                            .map((option) => option.name)
+                            .join(", ")}`
+                        : "Select a service"}
+                      <span>{isDropdownOpen ? "▲" : "▼"}</span>
                     </div>
-                  )}
+
+                    {/* Dropdown options list */}
+                    {isDropdownOpen && (
+                      <div
+                        className="dropdown-options"
+                        style={{
+                          position: "absolute",
+                          top: "100%", // Place the dropdown directly below the input
+                          left: 0,
+                          right: 0,
+                          border: "1px solid #ccc",
+                          borderRadius: "4px",
+                          backgroundColor: "white",
+                          width: "100%", // Match the width of the input
+                          maxHeight: "200px",
+                          overflowY: "auto",
+                          zIndex: 10,
+                          padding: "0", // Remove padding to reduce space
+                        }}
+                      >
+                        {menuOrServicesOptions.map((option) => (
+                          <div
+                            key={option.id}
+                            className="dropdown-option"
+                            style={{
+                              padding: "8px",
+                              display: "flex", // Align checkbox and label on the same line
+                              alignItems: "center", // Center the checkbox and text vertically
+                              gap: "8px", // Add space between checkbox and text
+                            }}
+                          >
+                            <input
+                              type="checkbox"
+                              className="menu-checkbox"
+                              id={`service-${option.id}`}
+                              value={option.id}
+                              checked={menu.includes(option.id)}
+                              onChange={() => handleCheckboxChange(option.id)}
+                              style={{
+                                margin: 0, // Remove any margin around the checkbox
+                              }}
+                            />
+                            <label
+                              htmlFor={`service-${option.id}`}
+                              style={{ margin: 0 }}
+                            >
+                              {option.name}{" "}
+                              {/* Using the 'name' property from the API */}
+                            </label>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 
@@ -446,34 +479,36 @@ const BookingSection = () => {
                 />
               </div>
 
-              <div className="additional-details">
-                <h3>Additional Details</h3>
-                <div className="details-item">
-                  <span className="mb-1">🌙 Night Surcharge Policy</span>
-                  <span className="mb-1">
-                    ⏰ Timing: {additionalDetails.surchargeTiming}
-                  </span>
-                  <span className="mb-1">
-                    💵 Surcharge: {additionalDetails.surchargeRate}
-                  </span>
+              <div>
+                <div className="additional-details">
+                  <h3>Additional Details</h3>
+                  <div className="details-item">
+                    <span className="mb-1">🌙 Night Surcharge Policy</span>
+                    <span className="mb-1">
+                      ⏰ Timing: {additionalDetails.surchargeTiming}
+                    </span>
+                    <span className="mb-1">
+                      💵 Surcharge: {additionalDetails.surchargeRate}
+                    </span>
+                  </div>
                 </div>
-              </div>
 
-              <div className="cancellation-policy">
-                <h3>Cancellation Policy</h3>
-                <div className="cancellation-policy-div">
-                  <p>{cancellationPolicy.text}</p>
-                  <a
-                    href="#"
-                    className="read-policy-button"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default anchor behavior
-                      // Add any additional logic here if needed
-                      console.log("Cancellation policy clicked");
-                    }}
-                  >
-                    READ CANCELLATION POLICY
-                  </a>
+                <div className="cancellation-policy">
+                  <h3>Cancellation Policy</h3>
+                  <div className="cancellation-policy-div">
+                    <p>{cancellationPolicy.text}</p>
+                    <a
+                      href="#"
+                      className="read-policy-button"
+                      onClick={(e) => {
+                        e.preventDefault(); // Prevent default anchor behavior
+                        // Add any additional logic here if needed
+                        console.log("Cancellation policy clicked");
+                      }}
+                    >
+                      READ CANCELLATION POLICY
+                    </a>
+                  </div>
                 </div>
               </div>
 
@@ -499,7 +534,12 @@ const BookingSection = () => {
         {step === 2 && (
           <div className="location-container">
             <div className="location-content">
-              <h2 className="location-title">Select Booking Location</h2>
+              <div className="add-location-header">
+                <button className="back-button" onClick={prevStep}>
+                  ←
+                </button>
+                <h2 className="header-title">Select Booking Location</h2>
+              </div>
 
               <div className="address-card">
                 <div className="address-icon">📍</div>
@@ -668,20 +708,20 @@ const BookingSection = () => {
             <div className="booking-summary-details">
               <div className="booking-detail-card">
                 <div>
-                  <strong>Booking For:</strong>
+                  <strong>Booking For :</strong>
                 </div>
                 <div>{BookingForGuestName}</div>
               </div>
               <div className="booking-detail-card">
                 <div>
-                  <strong>Address:</strong>
+                  <strong>Address : </strong>
                 </div>
                 <div>{`${addressForm.houseNo}, ${addressForm.society}, ${addressForm.area}, ${addressForm.city}, ${addressForm.landmark}`}</div>
               </div>
 
               <div className="booking-detail-card">
                 <div>
-                  <strong>Number of People:</strong>
+                  <strong>Number of People : </strong>
                 </div>
                 <div>{people}</div>
               </div>
