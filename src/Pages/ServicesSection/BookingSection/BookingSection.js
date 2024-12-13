@@ -30,6 +30,16 @@ const BookingSection = () => {
   const [showGrid, setShowGrid] = useState(false);
 
 
+  const [selectedLocation, setSelectedLocation] = useState({
+  });
+
+
+
+  const [selectedFrom, setSelectedFrom] = useState({
+  });  
+  const [selectedTo, setSelectedTo] = useState({
+  });
+
 
 
   const [isAddingAddress, setIsAddingAddress] = useState(false); // New state for address form
@@ -78,8 +88,14 @@ const BookingSection = () => {
         const data = response?.data?.data;
    
         setAddresses(data?.address);
+
+
         if (data?.address?.length > 0) {
           setSelectedLocation(data?.address[0]);
+
+          setSelectedFrom(data?.address[0]);
+          setSelectedTo(data?.address[0]);
+
         }
 
 
@@ -174,8 +190,6 @@ const BookingSection = () => {
 
   // step 3 constants
 
-  const [selectedLocation, setSelectedLocation] = useState({
-  });
 
 
   
@@ -277,9 +291,16 @@ const BookingSection = () => {
             }
             return "00:00:00"; 
           })(),
-          visit_address_id: selectedLocation?.address_id,
-          address_from: "",
-          address_to: "",
+
+
+          visit_address_id: (service?.category_id === 1 || service?.category_id === 3) 
+          ? selectedLocation?.address_id 
+          : selectedFrom?.address_id,
+        
+          address_from: service?.category_id === 2 ? selectedFrom?.address_id : "",
+          address_to: service?.category_id === 2 ? selectedTo?.address_id : "",
+          
+
           number_of_people: people, 
           guest_name: BookingForGuestName,
           instructions: specialRequests || "",
@@ -685,18 +706,23 @@ const BookingSection = () => {
 
 
 
+
+
+
+
+
+
+
+
+{(service?.category_id === 1 || service?.category_id === 3 ) && (
+
+<>
 <div className="address-section">
-          <div className="address-header">
-            {/* <MapPin size={20} /> */}
-            {/* <h2>Select Address</h2> */}
-          </div>
-
-
+      
 
        {addresses.map((address, index) => (
   <div key={address.address_id} className="mb-3">
     <div className="d-flex align-items-center">
-      {/* Radio button for selecting address */}
       <input
         type="radio"
         name="address"
@@ -738,6 +764,168 @@ const BookingSection = () => {
 ))}
 
 
+          <a className="add-address" onClick={() => setIsAddingAddress(true)}>
+            + Add New Address
+          </a>
+
+          {/* Modal for Adding New Address */}
+          <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Add New Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <AddAddressForm
+                fetchProfile={fetchProfile}
+                cancelAddAddress={cancelAddAddress}
+              />
+            </Modal.Body>
+          </Modal>
+
+          {/* Modal for Editing Address */}
+          <Modal show={isEditingAddress} onHide={() => setIsEditingAddress(false)} centered>
+            <Modal.Header closeButton>
+              <Modal.Title>Edit Address</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <EditAddressForm
+                addressId={addressToEdit}
+                closeModal={() => setIsEditingAddress(false)}
+                refreshAddresses={fetchProfile} // A function to refresh the address list
+              />
+            </Modal.Body>
+          </Modal>
+        </div>
+
+</>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{(service?.category_id === 2) && (
+
+<>
+<div className="address-section">
+        
+
+<div className="address-container" style={{ maxHeight: "400px", overflowY: "auto" }}>
+  {/* From Section */}
+  <div className="from-addresses mb-4">
+    <h4 className="mb-3">From</h4>
+    {addresses.map((address, index) => (
+      <div key={`from-${address.address_id}`} className="mb-3">
+        <div className="d-flex align-items-center">
+          {/* Radio button for setSelectedFrom */}
+          <input
+            type="radio"
+            name="address-from"
+            id={`address-from-${address.address_id}`}
+            checked={selectedFrom?.address_id === address?.address_id} // Check if this is the selected "From" address
+            onChange={() => setSelectedFrom(address)} // Set the selected "From" address when clicked
+            className="me-2"
+            style={{ cursor: "pointer" }}
+          />
+
+          {/* Address details */}
+          <p className="flex-fill mb-0 address-p">
+            <span className="serial-number me-2">{index + 1}.</span>
+            {address.house}, {address.street_address}{" "}
+            {address.street_address_line2}, {address.landmark},{" "}
+            {address.city} - {address.state} {address.postal_code}{" "}
+            {address.country}
+          </p>
+
+          {/* Dropdown menu */}
+          <Dropdown>
+            <Dropdown.Toggle
+              as="span"
+              id={`dropdown-from-${address.address_id}`}
+              className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+              bsPrefix="custom-toggle"
+            >
+              <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="dropdown-menu-end">
+              <Dropdown.Item
+                onClick={() => {
+                  setAddressToEdit(address?.address_id);
+                  setIsEditingAddress(true);
+                }}
+              >
+                Edit
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  {/* To Section */}
+  <div className="to-addresses">
+    <h4 className="mb-3">To</h4>
+    {addresses.map((address, index) => (
+      <div key={`to-${address.address_id}`} className="mb-3">
+        <div className="d-flex align-items-center">
+          {/* Radio button for setSelectedTo */}
+          <input
+            type="radio"
+            name="address-to"
+            id={`address-to-${address.address_id}`}
+            checked={selectedTo?.address_id === address?.address_id} // Check if this is the selected "To" address
+            onChange={() => setSelectedTo(address)} // Set the selected "To" address when clicked
+            className="me-2"
+            style={{ cursor: "pointer" }}
+          />
+
+          {/* Address details */}
+          <p className="flex-fill mb-0 address-p">
+            <span className="serial-number me-2">{index + 1}.</span>
+            {address.house}, {address.street_address}{" "}
+            {address.street_address_line2}, {address.landmark},{" "}
+            {address.city} - {address.state} {address.postal_code}{" "}
+            {address.country}
+          </p>
+
+          {/* Dropdown menu */}
+          <Dropdown>
+            <Dropdown.Toggle
+              as="span"
+              id={`dropdown-to-${address.address_id}`}
+              className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+              bsPrefix="custom-toggle"
+            >
+              <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+            </Dropdown.Toggle>
+            <Dropdown.Menu className="dropdown-menu-end">
+              <Dropdown.Item
+                onClick={() => {
+                  setAddressToEdit(address?.address_id);
+                  setIsEditingAddress(true);
+                }}
+              >
+                Edit
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
+
 
           <a className="add-address" onClick={() => setIsAddingAddress(true)}>
             + Add New Address
@@ -769,9 +957,33 @@ const BookingSection = () => {
               />
             </Modal.Body>
           </Modal>
-
-         
         </div>
+
+</>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
