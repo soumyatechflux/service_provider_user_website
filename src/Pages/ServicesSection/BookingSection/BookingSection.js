@@ -269,7 +269,10 @@ const BookingSection = () => {
         booking: {
           category_id: service?.category_id,
           sub_category_id: service?.id,
-          visit_date: selectedDate, // Using the selectedDate as per your context
+          
+          // visit_date: selectedDate, 
+          visit_date: new Date(selectedDate.setDate(selectedDate.getDate() + 1)),
+
           visit_time: (() => {
             if (selectedTime) {
               const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
