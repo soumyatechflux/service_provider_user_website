@@ -410,17 +410,18 @@ const BookingSection = () => {
                   </div>
                   {/* </div> */}
 
-                <div className="booking-form-group">
-                  <label className="booking-form-label" htmlFor="time-input">
-                    Select Time of Visit
-                  </label>
-                  <div
-                    className="dropdown-wrapper"
-                    onClick={handleDropdownClick}
-                  >
-                    {selectedTime || "Select a time" }
-                  </div>
-                </div>
+                  <div className="booking-form-group">
+  <label className="booking-form-label" htmlFor="time-input">
+    Select Time of Visit
+  </label>
+  <input
+    type="time"
+    id="time-input"
+    className="booking-form-input"
+    value={selectedTime}
+    onChange={(e) => setSelectedTime(e.target.value)}
+  />
+</div>
 
                 {showGrid && (
                   <div className="time-grid">
