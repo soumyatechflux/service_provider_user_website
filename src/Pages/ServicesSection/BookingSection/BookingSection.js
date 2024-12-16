@@ -261,6 +261,10 @@ const BookingSection = () => {
   const grandTotal = total - discount + gst; // Final Grand Total
 
   const [callRazorPay, setCallRazorPay] = useState(false);
+
+  const [makeDisable, setMakeDisable] = useState(false);
+
+
   const [BookingData, setBookingData] = useState();
 
   const handlePayment = async (mod) => {
@@ -1331,19 +1335,30 @@ const BookingSection = () => {
                 <div className="payment-options">
                   <button
                     className="payment-action-button"
-                    onClick={() => {
+                    onClick={(event) => {
                       handlePayment("online");
                       setCallRazorPay(true);
+                      event.target.disabled = true; // Disable the clicked button
+                      event.target.nextSibling.disabled = true; // Disable the sibling button
+                      setMakeDisable(true);
+
                     }}
+                    disabled = {makeDisable}
+
                   >
                     Pay Now
                   </button>
                   <button
                     className="payment-action-button"
-                    onClick={() => {
+                    onClick={(event) => {
                       handlePayment("cod");
                       setCallRazorPay(false);
+                      event.target.disabled = true; // Disable the clicked button
+                      event.target.previousSibling.disabled = true; // Disable the sibling button
+                      setMakeDisable(true);
                     }}
+                    disabled = {makeDisable}
+
                   >
                     Pay Later
                   </button>
