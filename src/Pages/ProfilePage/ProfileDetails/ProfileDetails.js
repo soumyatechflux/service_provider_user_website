@@ -4,7 +4,7 @@ import "./ProfileDetails.css";
 import { getProfileAPI, editProfileAPI } from "../../../utils/APIs/ProfileApis/ProfileApi";
 import Loader from "../../Loader/Loader";
 import axios from "axios";
-import { BsThreeDotsVertical } from "react-icons/bs";
+import { BsPencil, BsTrash, BsThreeDotsVertical } from "react-icons/bs";
 import { Dropdown } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Modal, Button } from "react-bootstrap";
@@ -166,6 +166,10 @@ const ProfileDetails = () => {
         setEditedProfile(response.data.data);
         setIsEditing(false);
         setEditingField(null);
+        setMessage("Profile Data Updated sucessfully");
+        setShow(true);
+        handleShow(); // Show the modal
+      return;
       }
       else{
         setMessage(response?.data?.message||"");
@@ -440,7 +444,7 @@ const ProfileDetails = () => {
               setIsEditingAddress(true);
             }}
           >
-            Edit
+            <BsPencil size={16} className="me-2" /> Edit
           </Dropdown.Item>
           <Dropdown.Item
             onClick={() => {
@@ -448,7 +452,7 @@ const ProfileDetails = () => {
               setIsDeletingAddress(true); // Show the confirmation modal
             }}
           >
-            Delete
+            <BsTrash size={16} className="me-2" /> Delete
           </Dropdown.Item>
         </Dropdown.Menu>
       </Dropdown>

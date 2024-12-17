@@ -156,9 +156,15 @@ const SignUpPage = () => {
       const response = await OTPAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
-        alert("Sign up successful!");
+      
+        setMessage("Sign up successful!");
+      setShow(true);
+      handleShow(); // Show the modal
 
-        navigate("/login");
+        
+        setTimeout(() => {
+          navigate("/login");
+        }, 5000); // Adjust delay as needed
 
         setStep("otp");
       } else {

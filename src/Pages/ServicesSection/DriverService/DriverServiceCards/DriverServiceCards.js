@@ -3,7 +3,9 @@ import React, { useEffect, useState } from "react";
 import "./DriverServiceCards.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Loader } from "lucide-react";
+import Loader from "../../../Loader/Loader";
+import MessageModal from "../../../MessageModal/MessageModal";
+// import { Loader } from "lucide-react";
 
 
 const DriverServiceCards = () => {
@@ -15,6 +17,10 @@ const DriverServiceCards = () => {
   const [loading, setLoading] = useState(false);
   const [slides, setSlides] = useState([]);
   const [viewMore, setViewMore] = useState(false); // State to toggle description
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
 
   useEffect(() => {
@@ -35,6 +41,9 @@ const DriverServiceCards = () => {
       setLoading(false);
 
       }
+      finally{
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -44,7 +53,10 @@ const DriverServiceCards = () => {
   const handleBooking = (service) => {
     const token = sessionStorage.getItem("ServiceProviderUserToken");
     if (!token) {
-      alert("Please log in to book the service."); // Alert if no token found
+      
+      setMessage("Please log in to book the service.");
+        setShow(true);
+        handleShow(); // Show the modal
     } else {
       navigate("/booking", { state: { service } }); // Navigate to booking page with the service details
     }
@@ -62,11 +74,15 @@ const DriverServiceCards = () => {
     };
   };
 
+  if(loading){
+    return <Loader/>
+  }
+
   return (
     <>
-    {loading && <Loader />}
+    
     <div className="container-bg-color">
-      <div className="nav-container container cook-services">
+      <div className="nav-container container cook-services mt-4  ">
         <div className="container">
           <h2 className="section-title">Driver Services</h2>
           <div className="service-cards-wrapper">
@@ -144,12 +160,19 @@ const DriverServiceCards = () => {
                 </div>
               </div>
             ))}
+            <MessageModal
+                show={show}
+                handleClose={handleClose}
+                handleShow={handleShow}
+                message={message}
+              />
           </div>
         </div>
       </div>
     </div>
     </>
   );
+
 };
 
 export default DriverServiceCards;

@@ -1,5 +1,6 @@
 import React from "react";
 import { Modal, Button } from "react-bootstrap";
+import './MessageModal.css'
 
 const MessageModal = ({ show, handleClose, message }) => {
   return (
@@ -9,7 +10,7 @@ const MessageModal = ({ show, handleClose, message }) => {
       </Modal.Header>
       <Modal.Body>{message}</Modal.Body>
       <Modal.Footer>
-        <Button className="button" variant="primary" onClick={handleClose}>
+        <Button className="button-message" variant="primary" onClick={handleClose}>
           Ok
         </Button>
       </Modal.Footer>

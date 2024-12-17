@@ -9,31 +9,28 @@ import './HomeHeroSection.css';
 
 const slides = [
   {
-    title: "WANT'S THE",
-    service: "CHEF SERVICE" ,
-    subtitle: "# On demand household services",
+    title: "Convenience at Your Doorstep",
+    service: "Your trusted professional services are now just a click away. Simplify your life with expert assistance anytime, anywhere.",
     buttonText: "Book Now",
-    image: "./HomeHeroSection/cheaf.jpg?height=400&width=400"
+    image: "./HomeHeroSection/category1.png",
   },
   {
-    title: "WANT'S THE",
-    service: "DRIVER SERVICE" ,
-    subtitle: "# On demand household services",
+    title: "Convenience at Your Doorstep",
+    service: "Your trusted professional services are now just a click away. Simplify your life with expert assistance anytime, anywhere.",
     buttonText: "Book Now",
-    image: "./HomeHeroSection/driver.jpg?height=400&width=400"
+    image: "./HomeHeroSection/category2.png",
   },
   {
-    title: "WANT'S THE",
-    service: "GARDENER SERVICE" ,
-    subtitle: "# On demand household services",
+    title: "Convenience at Your Doorstep",
+    service: "Your trusted professional services are now just a click away. Simplify your life with expert assistance anytime, anywhere.",
     buttonText: "Book Now",
-    image: "./HomeHeroSection/gardener.jpg?height=400&width=400"
+    image: "./HomeHeroSection/category3.png",
   },
 ];
 
 const HomeHeroSection = () => {
   return (
-    <div className="swiper-container ">
+    <div className="swiper-container">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]} // Add Autoplay module
         spaceBetween={30}
@@ -42,27 +39,31 @@ const HomeHeroSection = () => {
         pagination={{ clickable: true }}
         loop={true}
         autoplay={{
-          delay: 3000, // Time between slides (3 seconds)
-          disableOnInteraction: false, // Keeps autoplay active after user interaction
+          delay: 3000, 
+          disableOnInteraction: false, 
         }}
         speed={1000} // Smooth transition speed in milliseconds
       >
         {slides.map((slide, index) => (
           <SwiperSlide key={index}>
-            <div className="slide-content">
-              <img src={slide.image} alt={slide.service} className="slide-image" />
+            <div
+              className="slide-content"
+              style={{
+                backgroundImage: `url(${slide.image})`, // Set background image
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+              }}
+            >
               <div className="slide-text">
-                <p className="slide-subtitle">{slide.subtitle}</p>
                 <h2 className="slide-title">
                   {slide.title}
-                  <br />
-                  <span style={{ fontWeight: 700 }}>{slide.service}</span>
                 </h2>
-                <div>
-                <button className="slide-button">
-                  <i className="bi bi-play-fill" style={{ marginRight: '5px' }}></i>
-                  {slide.buttonText}
-                </button>
+                <p style={{ fontWeight: 700 }} className="slide-service">{slide.service}</p>
+                <div className='slide-btn-main'>
+                  <button className="slide-button col-12">
+                    <i className="bi bi-play-fill" style={{ marginRight: '5px' }}></i>
+                    {slide.buttonText}
+                  </button>
                 </div>
               </div>
             </div>

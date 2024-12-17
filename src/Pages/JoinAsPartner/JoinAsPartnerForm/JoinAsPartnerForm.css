@@ -4,6 +4,8 @@
     display: flex;
     gap: 2rem;
     flex-wrap: wrap;
+    font-family: "DM Sans";
+
   }
   
   .join-partner-section {

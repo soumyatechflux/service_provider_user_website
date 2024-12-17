@@ -1,69 +1,119 @@
 /* Container for the entire section */
 .book-ease-container {
-    background-color: #f9f9f9;
-    font-family: "Roboto";
-    
-  }
-  
-  /* Title styling */
+  /* background-color: #f9f9f9; */
+  font-family: "DM Sans";
+  padding: 20px; /* Add padding for smaller screens */
+  display: flex;
+  flex-wrap: wrap; /* Ensure cards wrap on smaller screens */
+  justify-content: center; /* Center align cards */
+}
+.container-bg-book{
+  background-color: #F8F8FF;
+}
+/* Title styling */
+.book-ease-title {
+  font-size: 36px;
+  font-weight: 700;
+  color: #151522;
+  margin-bottom: 30px;
+  line-height: 42px;
+  font-family: "DM Sans";
+  /* text-align: center; */
+}
+
+/* Step card styling */
+.book-ease-card {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s ease-in-out;
+  padding: 40px 10px 20px 20px;
+  min-height: auto;
+  height: 300px;
+  width: 280px;
+}
+
+/* Icon styling */
+.book-ease-icon {
+  font-size: 2.5rem;
+  color: #6c63ff;
+  text-align: center;
+}
+
+.book-ease-icon img {
+  width: 80px; /* Adjust as needed */
+  transition: transform 0.3s ease-in-out;
+}
+
+.book-ease-icon:hover {
+  transform: translateY(-5px);
+}
+
+.book-ease-card:hover .book-ease-icon img {
+  transform: scale(1.2); /* Animation effect */
+}
+
+/* Step title styling */
+.book-ease-step-title {
+  font-size: 22.5px;
+  font-weight: bold;
+  color: #333;
+  margin: 1rem 0.5rem;
+}
+
+/* Description text styling */
+.book-ease-description {
+  font-size: 17.5px;
+  color: #666;
+  line-height: 1.5;
+  margin: 0rem 0.5rem 1rem 0.5rem;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
   .book-ease-title {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 20px !important;
+    font-size: 1.75rem;
   }
-  
-  /* Step card styling */
+
   .book-ease-card {
-    background-color: #fff;
-    border-radius: 12px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s, box-shadow 0.3s;
-    padding: 45px 18px 5px 18px ;
+    width: 90%; /* Adjust card width for smaller screens */
+    margin: 10px auto; /* Center cards with auto margins */
+    height: auto;
   }
-  
-  .book-ease-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Icon styling */
-  .book-ease-icon {
-    font-size: 2.5rem;
-    color: #6c63ff;
-  }
-  
-  /* Step title styling */
+
   .book-ease-step-title {
-    font-size: 1.2rem;
-    font-weight: bold;
-    color: #333;
-    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
   }
-  
-  /* Description text styling */
+
   .book-ease-description {
-    font-size: 0.95rem;
-    color: #666;
-    line-height: 1.5;
+    font-size: 1rem;
   }
-  
-  /* Responsive styles */
-  @media (max-width: 576px) {
-    .book-ease-title {
-      font-size: 1.75rem;
-    }
-  
-    .book-ease-icon {
-      font-size: 2rem;
-    }
-  
-    .book-ease-step-title {
-      font-size: 1rem;
-    }
-  
-    .book-ease-description {
-      font-size: 0.85rem;
-    }
+
+  .book-ease-icon img {
+    width: 70px; /* Adjust icon size */
   }
-  
+}
+
+@media (max-width: 576px) {
+  .book-ease-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+
+  .book-ease-card {
+    padding: 15px;
+    height: auto;
+  }
+
+  .book-ease-step-title {
+    font-size: 1rem;
+  }
+
+  .book-ease-description {
+    font-size: 0.85rem;
+  }
+
+  .book-ease-icon img {
+    width: 60px; /* Further reduce icon size */
+  }
+}

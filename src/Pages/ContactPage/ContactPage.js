@@ -75,7 +75,8 @@ function ContactPage() {
   };
 
   return (
-    <div className="container nav-container contact-page">
+    <>
+    <div className="container nav-container contact-page ">
       <div className="content-wrapper">
         {/* Contact Form */}
         <div className="contact-form-wrapper">
@@ -190,6 +191,7 @@ function ContactPage() {
         </div>
       </div>
     </div>
+    </>
   );
 }
 

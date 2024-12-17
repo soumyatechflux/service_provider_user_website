@@ -40,8 +40,8 @@
   /* Summary View Styles */
   .booking-summary {
     background-color: #E6EAFF;
-    border-radius: 8px;
-    padding: 20px;
+    border-radius: 20px;
+    padding: 20px 40px;
   }
   
   .summary-header {

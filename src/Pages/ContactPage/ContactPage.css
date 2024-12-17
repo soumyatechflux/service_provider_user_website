@@ -1,6 +1,8 @@
 .contact-page {
     padding: 40px 0 !important;
     background-color: #fff;
+    font-family: "DM Sans";
+
   }
   .content-wrapper {
     display: flex;
@@ -133,6 +135,7 @@
     border-radius: 8px;
     margin-left: 3px;
     /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); */
+    font-family: "DM Sans";
   }
   
   .back-arrow {

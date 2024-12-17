@@ -194,7 +194,7 @@ const WhyBookCooks = () => {
                   </div>
                 ))}
 
-                <div className={`highlight-circle ${activeFeature ? 'active' : ''}`} />
+                {/* <div className={`highlight-circle ${activeFeature ? 'active' : ''}`} /> */}
               </div>
             </div>
           </div>

@@ -1,132 +1,3 @@
-// import React, { useEffect, useState } from "react";
-// import "./CookServiceCards.css";
-// import { useNavigate } from "react-router-dom";
-// import axios from "axios";
-// import { Loader } from "lucide-react";
-// // import cook1 from '../../../../../public/ServicesSection/chef-cooking.jpg'
-
-// const CookServiceCards = () => {
-//   const navigate = useNavigate();
-
-//   const token = sessionStorage.getItem("ServiceProviderUserToken");
-//   const [loading, setLoading] = useState(false);
-//   const [slides, setSlides] = useState([]);
-
-
-//   useEffect(() => {
-//     const fetchData = async () => {
-//       setLoading(true);
-//       try {
-//         const response = await axios.get(`${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/sub_category_by_category_id/1`);
-
-//         if(response?.data?.success === true){
-//         setSlides(response?.data?.data || []);
-//         }else{ setSlides([])}
-
-//       setLoading(false);
-
-//       } catch (error) {
-//         console.error("Error fetching restaurant locations:", error);
-//         setSlides([]);
-//       setLoading(false);
-
-//       }
-//     };
-//     fetchData();
-//   }, []);
-
-
-
-
-//   const handleBooking = (service) => {
-//     const token = sessionStorage.getItem("ServiceProviderUserToken");
-//     if (!token) {
-//       alert("Please log in to book the service."); // Alert if no token found
-//     } else {
-//       navigate("/booking", { state: { service } }); // Navigate to booking page with the service details
-//     }
-//   };
-
-
-
-//   return (
-//     <>
-//     {loading && <Loader />}
-//     <div className="container-bg-color">
-//       <div className="nav-container container cook-services">
-//         <div className="">
-//           <h2 className="section-title">Cook Services</h2>
-//           <div className="service-cards-wrapper">
-//             {slides.map((service, index) => (
-//               <div key={index} className="service-card" >
-//                 <img
-//                   src={service?.image}
-//                   alt={service?.sub_category_name}
-//                   className="card-image"
-//                   style={{height:"200px", width:"300px"}}
-//                 />
-//                 <div className="card-content">
-//                   <h3>{service?.sub_category_name}</h3>
-//                   <div className="rating-cook">
-//                     <span className="stars">
-//                       {"★".repeat(Math.floor(service?.rating))}
-//                       {"☆".repeat(5 - Math.floor(service?.rating))}
-//                     </span>
-//                     <span className="reviews">({service?.reviews} reviews)</span>
-
-
-//                   </div>
-
-
-//                {service?.description && (   <span className="reviews"> Description : {service?.description}</span>
-
-//                )}
-
-               
-//                   {/* <ul className="features">
-//                     {service.features.map((feature, featureIndex) => (
-//                       <li key={featureIndex}>
-//                         <span className="check-icon">&#10003;</span>
-//                         {feature}
-//                       </li>
-//                     ))}
-//                   </ul> */}
-
-//                   {/* <a href="#" className="view-details">
-//                     View Details
-//                   </a> */}
-
-
-//                   <div className="price-section">
-//                     <div className="price">
-//                       Starting from
-//                       <div className="amount">
-//                         <span className="currency">₹</span>
-//                         <span className="value">{service?.price}</span>
-//                         <span className="period">/{service?.number_of_people}</span>
-//                       </div>
-//                     </div>
-//                     <div>
-//                       <button className="book-now" 
-//                    onClick={() => handleBooking(service)}
-//                       >
-//                         <span className="book-icon">▶</span> Book Now
-//                       </button>
-//                     </div>
-//                   </div>
-//                 </div>
-//               </div>
-//             ))}
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//     </>
-//   );
-// };
-
-// export default CookServiceCards;
-
 
 
 
@@ -134,7 +5,9 @@ import React, { useEffect, useState } from "react";
 import "./CookServiceCards.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Loader } from "lucide-react";
+import Loader from "../../../Loader/Loader";
+import MessageModal from "../../../MessageModal/MessageModal";
+
 // import cook1 from '../../../../../public/ServicesSection/chef-cooking.jpg'
 
 const CookServiceCards = () => {
@@ -144,6 +17,10 @@ const CookServiceCards = () => {
   const [loading, setLoading] = useState(false);
   const [slides, setSlides] = useState([]);
   const [viewMore, setViewMore] = useState(false); // State to toggle description
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,6 +42,9 @@ const CookServiceCards = () => {
         setSlides([]);
         setLoading(false);
       }
+      finally{
+        setLoading(false);
+      }
     };
     fetchData();
   }, []);
@@ -172,7 +52,11 @@ const CookServiceCards = () => {
   const handleBooking = (service) => {
     const token = sessionStorage.getItem("ServiceProviderUserToken");
     if (!token) {
-      alert("Please log in to book the service."); // Alert if no token found
+      
+      setMessage("Please log in to book the service.");
+        setShow(true);
+        handleShow(); // Show the modal
+      
     } else {
       navigate("/booking", { state: { service } }); // Navigate to booking page with the service details
     }
@@ -190,11 +74,15 @@ const CookServiceCards = () => {
     };
   };
 
+  if(loading){
+    return <Loader/>
+  }
+
   return (
     <>
-      {loading && <Loader />}
+      {/* {loading && <Loader />}ujhj */}
       <div className="container-bg-color">
-        <div className="nav-container container cook-services">
+        <div className="nav-container container cook-services mt-4">
           <div className="">
             <h2 className="section-title">Cook Services</h2>
             <div className="service-cards-wrapper">
@@ -264,12 +152,19 @@ const CookServiceCards = () => {
                   </div>
                 );
               })}
+                <MessageModal
+              show={show}
+              handleClose={handleClose}
+              handleShow={handleShow}
+              message={message}
+            />
             </div>
           </div>
         </div>
       </div>
     </>
   );
+
 };
 
 export default CookServiceCards;

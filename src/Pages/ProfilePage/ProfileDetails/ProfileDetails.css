@@ -2,6 +2,8 @@
   margin: 0 auto;
   padding: 40px 0px !important;
   max-width: 1200px;
+  font-family: "DM Sans";
+
 }
 
 h1 {
@@ -13,7 +15,7 @@ h1 {
 
 .serial-number {
   font-weight: bold;
-  color: #007bff; /* Or any color you prefer */
+
 }
 
 .custom-toggle::after {
@@ -36,11 +38,11 @@ h1 {
   padding: 40px;
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.3s ease;
+  /* transition: box-shadow 0.3s ease; */
 }
 
 .profile-content:hover {
-  box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
+  /* box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05); */
 }
 
 /* Avatar Section */
@@ -207,7 +209,7 @@ h1 {
   flex: 1;
   min-width: 0;
   padding-left: 40px;
-  border-left: 2px solid #e5e7eb;
+  /* border-left: 2px solid #e5e7eb; */
 }
 
 .address-header {

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './JoinAsPartnerForm.css';
+import { Link } from 'react-router-dom';
 
 const JoinAsPartnerForm = () => {
   const [formData, setFormData] = useState({
@@ -117,9 +118,9 @@ const JoinAsPartnerForm = () => {
 
         <div className="join-partner-help-section">
           <h3 className="join-partner-help-title">Need Help?</h3>
-          <a href="#" className="join-partner-link text-center">
+          <Link to="/contact-us" className="join-partner-link text-center">
             Open Help Centre →
-          </a>
+          </Link>
         </div>
 
         <div className="join-partner-address-section">

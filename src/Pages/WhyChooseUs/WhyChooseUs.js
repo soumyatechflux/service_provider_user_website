@@ -13,7 +13,7 @@ const WhyChooseUs = () => {
       title: "Verified and trained",
     },
     {
-      icon: "bi bi-calendar2-check",
+      icon: "bi bi-calendar",
       title: "Easy and prompt booking",
     },
     {
@@ -23,13 +23,13 @@ const WhyChooseUs = () => {
   ];
 
   return (
-    <div className="container why-choose-us-container text-center pages-margin">
+    <div className="container why-choose-us-container text-center">
       <h2 className="why-choose-us-title mb-5">Why Choose Us</h2>
       <div className="row justify-content-center">
         {items.map((item, index) => (
-          <div key={index} className="col-6 col-md-3 ">
+          <div key={index} className="col-6 col-md-3 mt-3">
             <div className="why-choose-us-icon-container mx-auto">
-              <i className={item.icon}></i>
+            <i className={`${item.icon} responsive-icon`}></i>
             </div>
             <p className="why-choose-us-text text-center mt-3">{item.title}</p>
           </div>

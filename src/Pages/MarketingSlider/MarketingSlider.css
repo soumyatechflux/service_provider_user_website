@@ -13,17 +13,25 @@
     width: 100%;
     object-fit: cover; /* Ensure image scales proportionally without distortion */
   }
+  .slick-slide {
+    transition: none !important;
+  }
+  
+  .slick-list {
+    will-change: transform;
+  }
   
   .marketing-slide-text {
+    font-family: "DM Sans";
     position: absolute;
     width: 100%;
     left: 50%;
     top: 40%; /* Center text vertically */
     transform: translateX(-50%);
-    font-size: 36px;
-    font-weight: bold;
+    font-size: 48px;
+    font-weight: 500;
     color: white;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+    /* text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); */
     z-index: 10; /* Ensure text appears above image */
   }
   

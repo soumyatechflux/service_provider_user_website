@@ -150,163 +150,172 @@
   
    */
 
-
-
-   .services-section {
-    padding: 60px 0;
-    background-color: #fff;
+.services-section {
+  padding: 60px 0;
+  background-color: #fff;
+  font-family: "DM Sans";
 }
 
 .service-item {
-    display: flex;
-    margin-bottom: 100px;
-    align-items: center;
-    gap: 40px;
-    opacity: 0;
-    transform: translateX(-100px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
+  display: flex;
+  margin-bottom: 100px;
+  align-items: center;
+  gap: 40px;
+  opacity: 0;
+  /* transform: translateX(-100px);
+  transition: opacity 0.8s ease, transform 0.8s ease; */
 }
 
 .service-item:nth-child(even) {
-    transform: translateX(100px);
+  transform: translateX(100px);
 }
 
 .service-item.visible {
-    opacity: 1;
-    transform: translateX(0);
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .service-item:last-child {
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 
 .service-content {
-    flex: 1;
-    padding: 20px;
+  flex: 1;
+  padding: 20px;
 }
 
 .service-image {
-    flex: 1;
-    background: #f8f9fa;
-    border-radius: 8px;
-    overflow: hidden;
-    height: 400px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  flex: 1;
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .service-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .content-left {
-    order: 1;
+  order: 1;
 }
 
 .content-right {
-    order: 2;
+  order: 2;
 }
 
 .image-left {
-    order: 1;
+  order: 1;
 }
 
 .image-right {
-    order: 2;
+  order: 2;
 }
 
-h2 {
-    font-size: 32px;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #1a1a1a;
+.marketing-title{
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1a1a1a;
 }
 
-p {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #666;
-    margin-bottom: 15px;
+.marketing-description{
+  font-size: 20px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 15px;
 }
-
 .book-now-marketing {
-    background-color: transparent;
-    border: none;
-    color: #6366f1;
-    font-weight: 500;
-    font-size: 16px;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: color 0.4s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c77ff; /* Initial text color */
+  background-color: transparent; /* No background initially */
+  border: none;
+  font-size: 18px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease; /* Smooth transition */
 }
 
-.book-now:hover {
-    color: #4f46e5;
+.book-now-marketing .book-icon {
+  margin-right: 8px; /* Space between icon and text */
+  color: #6c77ff; /* Initial icon color */
+  transition: transform 0.2s ease; /* Smooth movement for the icon */
 }
 
-.book-icon {
-    font-size: 12px;
+.book-now-marketing:hover {
+  background-color: #a8b4ff; /* Light purple background on hover */
+  color: #ffffff; /* White text color on hover */
+  transform: translateY(3px); /* Button moves slightly down */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
 }
+
+.book-now-marketing:hover .book-icon {
+  color: #ffffff; /* White icon color on hover */
+  transform: translateX(3px); /* Icon moves slightly right */
+}
+
 
 /* Responsive styles */
 @media (max-width: 991px) {
-    .service-item {
-        flex-direction: column;
-        margin-bottom: 60px;
-        gap: 30px;
-    }
+  .service-item {
+    flex-direction: column;
+    margin-bottom: 60px;
+    gap: 30px;
+  }
 
-    .service-image {
-        width: 100%;
-        height: 300px;
-        margin-bottom: 30px;
-    }
+  .service-image {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 30px;
+  }
 
-    .service-content {
-        order: 2;
-        padding: 10px 20px;
-    }
+  .service-content {
+    order: 2;
+    padding: 10px 20px;
+  }
 
-    .service-image {
-        order: 1;
-    }
+  .service-image {
+    order: 1;
+  }
 }
 
 @media (max-width: 768px) {
-    .services-section {
-        padding: 40px 15px;
-    }
+  .services-section {
+    padding: 40px 15px;
+  }
 
-    .service-item {
-        gap: 0px;
-    }
+  .service-item {
+    gap: 0px;
+  }
 
-    h2 {
-        font-size: 28px;
-    }
+  h2 {
+    font-size: 28px;
+  }
 
-    .service-image {
-        height: 250px;
-    }
+  .service-image {
+    height: 250px;
+  }
 }
 
 @media (max-width: 576px) {
-    .service-item {
-        margin-bottom: 40px;
-    }
+  .service-item {
+    margin-bottom: 40px;
+  }
 
-    h2 {
-        font-size: 24px;
-    }
+  h2 {
+    font-size: 24px;
+  }
 
-    .service-image {
-        height: 200px;
-    }
+  .service-image {
+    height: 200px;
+  }
 }
-

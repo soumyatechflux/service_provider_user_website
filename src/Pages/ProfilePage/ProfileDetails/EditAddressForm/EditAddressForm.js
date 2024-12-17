@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Check, X } from "lucide-react";
 import Loader from "../../../Loader/Loader";
+import MessageModal from "../../../MessageModal/MessageModal";
 
 const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
   const [houseNumber, setHouseNumber] = useState("");
@@ -15,6 +16,10 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
   const [loading, setLoading] = useState(false);
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [setaddressId,setAddressId]=useState(0);
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
   // Fetch address by ID
   useEffect(() => {
     const fetchAddress = async () => {
@@ -67,17 +72,26 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       if(response?.status===200 && response?.data?.success){
-        alert(response?.data?.message||"Address updated successfully!");
+        // alert(response?.data?.message||"Address updated successfully!");
+        setMessage(response?.data?.message||"Address updated successfully!");
+        setShow(true);
+        handleShow(); // Show the modal
       }
       else{
-        alert(response?.data?.message||"Failed to update Address!");
+        // alert(response?.data?.message||"Failed to update Address!");
+        setMessage(response?.data?.message||"Failed to update Address!");
+        setShow(true);
+        handleShow(); // Show the modal
       }
      
       refreshAddresses(); // Callback to refresh the address list
       closeModal();
     } catch (error) {
       console.error("Error updating address:", error);
-      alert("Failed to update address.");
+      // alert("Failed to update address.");
+      setMessage("Failed to update address.");
+        setShow(true);
+        handleShow(); // Show the modal
     }
   };
 
@@ -189,8 +203,15 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
           </div>
         </>
       )}
+        <MessageModal
+              show={show}
+              handleClose={handleClose}
+              handleShow={handleShow}
+              message={message}
+            />
     </div>
   );
+
 };
 
 export default EditAddressForm;

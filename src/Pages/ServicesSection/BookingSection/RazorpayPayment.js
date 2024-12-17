@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MessageModal from "../../MessageModal/MessageModal";
 
 const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) => {
   const navigate = useNavigate();
   const [isScriptReady, setIsScriptReady] = useState(false);
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   // Load Razorpay script dynamically
   useEffect(() => {
@@ -81,7 +86,10 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
             .catch((err) => {
               
               console.error("Verification failed:", err);
-              // alert("Payment verification failed. Please try again.");
+              alert("Payment verification failed. Please try again.");
+              setMessage("Payment verification failed. Please try again.");
+        setShow(true);
+        handleShow(); // Show the modal
               handleConfirmBooking();
 
             });
@@ -102,7 +110,10 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
         },
         modal: {
           ondismiss: () => {
-            alert("Payment modal closed");
+            // alert("Payment modal closed");
+            setMessage("Payment modal closed");
+        setShow(true);
+        handleShow(); // Show the modal
           },
         },
       };
@@ -110,12 +121,21 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
       // Create the Razorpay instance and open the payment modal
       const razorpay = new window.Razorpay(options);
       razorpay.on("payment.failed", (response) => {
-        alert(`Payment failed! Error: ${response.error.description}`);
+        // alert(`Payment failed! Error: ${response.error.description}`);
+        setMessage(`Payment failed! Error: ${response.error.description}`);
+        setShow(true);
+        handleShow(); // Show the modal
       });
       razorpay.open();
     } else {
       console.error("Razorpay object not found or script not ready.");
     }
+    <MessageModal
+  show={show}
+  handleClose={handleClose}
+  handleShow={handleShow}
+  message={message}
+  />
   };
 
   // Trigger payment on component load if `callRazorPay` is true and script is ready
@@ -127,5 +147,6 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
 
   return null; // This component doesn't render anything on its own
 };
+
 
 export default RazorpayPayment;

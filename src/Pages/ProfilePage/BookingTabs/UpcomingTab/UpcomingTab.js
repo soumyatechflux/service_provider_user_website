@@ -9,6 +9,7 @@ import Loader from "./../../../Loader/Loader";
 import { toast } from "react-toastify";
 import axios from "axios";
 import ModifyBooking from "../../ModifyBooking/ModifyBooking";
+import MessageModal from "../../../MessageModal/MessageModal";
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -18,6 +19,10 @@ const UpcomingTab = () => {
   const [error, setError] = useState(null);
   const [selectedReason, setSelectedReason] = useState("");
   const token = sessionStorage.getItem("ServiceProviderUserToken");
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const navigate = useNavigate();
 
@@ -125,16 +130,24 @@ const UpcomingTab = () => {
 
       if (response?.status === 200 && response?.data?.success) {
         setCurrentModal("success");
-        alert(response?.data?.message || "Booking canceled successfully!");
+        // alert(response?.data?.message || "Booking canceled successfully!");
+
+        setMessage(response?.data?.message || "Booking canceled successfully!");
+        setShow(true);
+        handleShow(); // Show the modal
       } else {
-        alert(response?.data?.message || "Failed to cancel booking!");
+        // alert(response?.data?.message || "Failed to cancel booking!");
+        setMessage(response?.data?.message || "Failed to cancel booking!");
+        setShow(true);
+        handleShow(); // Show the modal
       }
     } catch (error) {
       console.error(
         "Error during cancellation:",
         error.response?.data || error.message
       );
-      alert(error.response?.data?.message || "Failed to cancel booking.");
+      // alert(error.response?.data?.message || "Failed to cancel booking.");
+      
     }
   };
 
@@ -150,8 +163,6 @@ const UpcomingTab = () => {
     return <div>{error}</div>;
   }
 
-
-  
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-GB", {
@@ -160,22 +171,19 @@ const UpcomingTab = () => {
       year: "numeric",
     }).format(date);
   };
-  
+
   // Function to format time to "04:39 PM"
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
     date.setHours(hours, minutes);
-  
+
     return date.toLocaleString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
-
-
-
 
   return (
     <>
@@ -191,10 +199,10 @@ const UpcomingTab = () => {
                 <div className="booking-details mt-3">
                   <div className="column1">
                     <div className="details-header">
-                 
-                <h2 className="details-head">
-    {formatDate(bookingsIdWise?.visit_date)} at {formatTime(bookingsIdWise?.visit_time)}
-  </h2>
+                      <h2 className="details-head">
+                        {formatDate(bookingsIdWise?.visit_date)} at{" "}
+                        {formatTime(bookingsIdWise?.visit_time)}
+                      </h2>
                       <div className="service-image image-flex">
                         <img src="./../ServicesSection/CookingSection/chef-cooking-2.jpg" />
                         <h3 className="heading-text">
@@ -221,8 +229,11 @@ const UpcomingTab = () => {
                         </div>
                         <div className="provider-details">
                           <h4 className="provider-name">
-                          <p>{bookingsIdWise?.partner?.name ? bookingsIdWise?.partner?.name : "No Partner Accepted"}</p>
-
+                            <p>
+                              {bookingsIdWise?.partner?.name
+                                ? bookingsIdWise?.partner?.name
+                                : "No Partner Accepted"}
+                            </p>
                           </h4>
                           <p className="provider-role">
                             {bookingsIdWise?.category?.category_name}
@@ -242,8 +253,8 @@ const UpcomingTab = () => {
                         <div>
                           <Trophy className="clock-icon mr-1" />
                           <span className="">
-                            {bookingsIdWise?.partner?.years_of_experience} yrs of
-                            exp.
+                            {bookingsIdWise?.partner?.years_of_experience} yrs
+                            of exp.
                           </span>
                         </div>
                       </div>
@@ -296,8 +307,10 @@ const UpcomingTab = () => {
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
-    {`${formatDate(bookingsIdWise?.visit_date)}, ${formatTime(bookingsIdWise?.visit_time)}`}
-  </p>
+                          {`${formatDate(
+                            bookingsIdWise?.visit_date
+                          )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                        </p>
                       </div>
                       <div className="info-group">
                         <h4 className="booking-subtitle">
@@ -368,19 +381,22 @@ const UpcomingTab = () => {
                       {booking?.booking_status}
                     </div>
                   </div>
-  
+
                   <div className="summary-content">
                     <div className="time-provider">
                       <p>{booking?.booking_date_time}</p>
 
-                      <p>Service Provider - {booking?.partner_id ? booking?.partner_name : "No Partner Accepted"}</p>
-
-
+                      <p>
+                        Service Provider -{" "}
+                        {booking?.partner_id
+                          ? booking?.partner_name
+                          : "No Partner Accepted"}
+                      </p>
                     </div>
-  
+
                     <div className="amount">₹{booking?.billing_amount}</div>
                   </div>
-  
+
                   <div className="summary-actions">
                     <button
                       className="btn-modify"
@@ -403,7 +419,7 @@ const UpcomingTab = () => {
             </div>
           ))
         )}
-  
+
         {cancelId !== null && (
           <>
             <CancellationModal
@@ -429,11 +445,17 @@ const UpcomingTab = () => {
               bookingsIdWise={bookingsIdWise}
               fetchUpcommingBookings={fetchUpcommingBookings}
             />
+            <MessageModal
+              show={show}
+              handleClose={handleClose}
+              handleShow={handleShow}
+              message={message}
+            />
           </>
         )}
       </div>
     </>
-  );  
+  );
 };
 
 export default UpcomingTab;

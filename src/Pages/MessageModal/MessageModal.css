@@ -1,7 +1,8 @@
-.button{
-    background-color : #6366f1
+.button-message{
+    background-color : #6366f1 !important;
 }
 
-.button:hover {
-    color: #6c63ff !important;
+.button-message:hover {
+    background-color: #6c63ff !important;
+    color: white !important;
   }

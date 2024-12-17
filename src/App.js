@@ -26,6 +26,8 @@ import SignUpPage from "./Pages/Credentials/SignUpPage/SignUpPage";
 import MarketingSlider from "./Pages/MarketingSlider/MarketingSlider";
 import BookingSection from "./Pages/ServicesSection/BookingSection/BookingSection";
 import ServiceDetails from "./Pages/ServicesSection/ServiceDetails/ServiceDetails";
+import NavbarTest from "./Template/Navbar/NavbarTest";
+import AppMarketing from "./Pages/AppMarketing/AppMarketing";
 // import Credentials from "./Pages/Credentials/Credentials";
 
 function App() {
@@ -77,9 +79,10 @@ function App() {
               <>
                 <HomeHeroSection />
                 <ServicesSection />
-                <MarketingSection />
-                <MarketingSlider/>
+                {/* <MarketingSection /> */}
+                <AppMarketing/>
                 <WhyChooseUs />
+                <MarketingSlider/>
                 <BookWithEase />
                 <Testimonials />
               </>
@@ -113,7 +116,7 @@ function App() {
 function ConditionalNavbar() {
   const location = useLocation();
   const showNavbar = location.pathname !== "/login" && location.pathname !==  "/sign-up";
-  return showNavbar ? <NavbarComponent /> : null;
+  return showNavbar ? <NavbarTest /> : null;
 }
 
 // Conditional Footer Component
