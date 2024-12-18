@@ -243,7 +243,7 @@ const NavbarTest = () => {
                     href="#"
                     onClick={(e) => {
                       e.preventDefault();
-                      handleLocationChange("Mumbai");
+                      handleLocationChange("Delhi");
                     }}
                   >
                     Delhi
