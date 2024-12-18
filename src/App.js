@@ -92,7 +92,7 @@ function App() {
           <Route path="/services/cook-service" element={<CookService />} />
           <Route path="/services/driver-service" element={<DriverService />} />
           <Route path="/services/gardener-service" element={<GardenerService />} />
-          <Route path="/services/:id" element={<ServiceDetails />} />
+          <Route path="/services/:id" element={<ServicesSection />} />
            <Route path="/contact-us" element={<ContactPage />} />
           <Route path="/about-us" element={<AboutUs />} />
           <Route path="/my-profile" element={<ProfilePage />} />

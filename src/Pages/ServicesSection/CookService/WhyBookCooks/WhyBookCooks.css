@@ -1,5 +1,5 @@
 /* fade in animation */
-/* 
+/* Base Section Styles */
 .why-book-section {
   padding: 80px 0;
   background-color: #fff;
@@ -7,7 +7,7 @@
   overflow: hidden;
   opacity: 0;
   transform: translateY(20px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transition: opacity 1.2s ease-out, transform 1.2s ease-out; /* Slower transition */
 }
 
 .why-book-section.animate {
@@ -15,6 +15,7 @@
   transform: translateY(0);
 }
 
+/* Section Title */
 .section-title {
   text-align: center;
   font-size: 32px;
@@ -22,6 +23,7 @@
   margin-bottom: 60px;
 }
 
+/* Features Container */
 .features-container {
   display: flex;
   justify-content: center;
@@ -29,11 +31,18 @@
   position: relative;
 }
 
+/* Main Image Animation: Starts Small and Grows */
 .central-image-container {
   position: relative;
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+  transform: scale(0.5); /* Start small */
+  transition: transform 2s ease-out; /* Slower animation */
+}
+
+.animate .central-image-container {
+  transform: scale(1); /* Grow to normal size */
 }
 
 .central-image {
@@ -41,13 +50,9 @@
   height: auto;
   border-radius: 20px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-  transition: transform 0.5s ease-out;
 }
 
-.animate .central-image {
-  transform: scale(1.05);
-}
-
+/* Text Boxes Slide-In Animations */
 .feature-box {
   position: absolute;
   display: flex;
@@ -61,15 +66,40 @@
   z-index: 2;
   font-size: 16px;
   opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+  transform: translateX(-150px); /* Start off-screen */
+  transition: opacity 1.5s ease-out, transform 1.5s ease-out; /* Slower animation */
 }
 
 .animate .feature-box {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0); /* Slide to original position */
 }
 
+.top-left {
+  left: -150px;
+  top: 15%;
+  transition-delay: 0.4s; /* Add delay */
+}
+
+.top-right {
+  right: -150px;
+  top: 21%;
+  transition-delay: 0.6s;
+}
+
+.middle-left {
+  left: -150px;
+  top: 57%;
+  transition-delay: 0.8s;
+}
+
+.bottom-right {
+  right: -150px;
+  bottom: 25%;
+  transition-delay: 1s;
+}
+
+/* Check Icon Styles */
 .check-icon-whyBook {
   color: #22c55e;
   flex-shrink: 0;
@@ -78,92 +108,54 @@
   padding: 2px;
 }
 
-.top-left {
-  left: -80px;
-  top: 15%;
-  transition-delay: 0.2s;
-}
-
-.top-right {
-  right: -80px;
-  top: 21%;
-  transition-delay: 0.4s;
-}
-
-.middle-left {
-  left: -60px;
-  top: 57%;
-  transition-delay: 0.6s;
-}
-
-.bottom-right {
-  right: -80px;
-  bottom: 25%;
-  transition-delay: 0.8s;
-}
-
 .why-book-text {
   max-width: 200px;
 }
 
-@media (max-width: 1200px) {
-  .feature-box {
-      padding: 12px 16px;
-      font-size: 14px;
-  }
-  
-  .top-left { left: -60px; }
-  .top-right { right: -60px; }
-  .middle-left { left: -40px; }
-  .bottom-right { right: -60px; }
-}
-
+/* Responsive Adjustments */
 @media (max-width: 992px) {
   .features-container {
-      flex-direction: column;
+    flex-direction: column;
   }
 
   .central-image-container {
-      max-width: 400px;
-      margin-bottom: 40px;
+    max-width: 400px;
+    margin-bottom: 40px;
   }
 
   .feature-box {
-      position: static;
-      margin: 10px auto;
-      width: 100%;
-      max-width: 300px;
-      transform: none;
+    position: static;
+    margin: 10px auto;
+    width: 100%;
+    max-width: 300px;
+    transform: none;
+    opacity: 1;
   }
 
   .why-book-text {
-      max-width: none;
+    max-width: none;
   }
 }
 
 @media (max-width: 576px) {
   .section-title {
-      font-size: 28px;
-      margin-bottom: 40px;
+    font-size: 28px;
+    margin-bottom: 40px;
   }
 
   .central-image-container {
-      max-width: 300px;
+    max-width: 300px;
   }
 
   .feature-box {
-      padding: 10px 15px;
-      font-size: 14px;
+    padding: 10px 15px;
+    font-size: 14px;
   }
 }
- */
-
-
-
 
  /* other animation */
 
-
+/* 
  .why-book-section {
   padding: 50px 0;
   background-color: #fff;
@@ -374,4 +366,4 @@
       font-size: 14px;
   }
 }
-
+ */

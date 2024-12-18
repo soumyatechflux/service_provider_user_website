@@ -154,4 +154,9 @@
     font-size: 1rem;
     background-color: white;
   }
+  .error-text {
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+  }
   

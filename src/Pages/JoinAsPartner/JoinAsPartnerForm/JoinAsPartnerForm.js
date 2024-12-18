@@ -11,17 +11,67 @@ const JoinAsPartnerForm = () => {
     message: '',
   });
 
+  const [errors, setErrors] = useState({});
+
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    // Update the formData state
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    // Clear the error for the field being edited
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '', // Clear the error for this field
+    }));
+  };
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.name.trim()) {
+      newErrors.name = 'Name is required.';
+    }
+    if (!formData.mobile.trim()) {
+      newErrors.mobile = 'Mobile number is required.';
+    } else if (!/^\d{10}$/.test(formData.mobile)) {
+      newErrors.mobile = 'Enter a valid 10-digit mobile number.';
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = 'Email is required.';
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)
+    ) {
+      newErrors.email = 'Enter a valid email address.';
+    }
+    if (!formData.city.trim()) {
+      newErrors.city = 'City is required.';
+    }
+    if (!formData.message.trim()) {
+      newErrors.message = 'Message is required.';
+    }
+    return newErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+    } else {
+      console.log('Form submitted:', formData);
+      // Clear the form and errors
+      setFormData({
+        name: '',
+        mobile: '',
+        email: '',
+        city: '',
+        message: '',
+      });
+      setErrors({});
+    }
   };
 
   return (
@@ -39,6 +89,7 @@ const JoinAsPartnerForm = () => {
               value={formData.name}
               onChange={handleChange}
             />
+            {errors.name && <p className="error-text">{errors.name}</p>}
           </div>
 
           <div className="join-partner-form-group">
@@ -58,6 +109,7 @@ const JoinAsPartnerForm = () => {
                 onChange={handleChange}
               />
             </div>
+            {errors.mobile && <p className="error-text">{errors.mobile}</p>}
           </div>
 
           <div className="join-partner-form-group">
@@ -69,6 +121,7 @@ const JoinAsPartnerForm = () => {
               value={formData.email}
               onChange={handleChange}
             />
+            {errors.email && <p className="error-text">{errors.email}</p>}
           </div>
 
           <div className="join-partner-form-group">
@@ -84,6 +137,7 @@ const JoinAsPartnerForm = () => {
               <option value="bangalore">Bangalore</option>
               <option value="chennai">Chennai</option>
             </select>
+            {errors.city && <p className="error-text">{errors.city}</p>}
           </div>
 
           <div className="join-partner-form-group">
@@ -94,6 +148,7 @@ const JoinAsPartnerForm = () => {
               value={formData.message}
               onChange={handleChange}
             />
+            {errors.message && <p className="error-text">{errors.message}</p>}
           </div>
 
           <button type="submit" className="join-partner-button">
@@ -104,16 +159,14 @@ const JoinAsPartnerForm = () => {
 
       {/* Join As A Partner Section */}
       <div className="join-partner-section2">
-        
         <div className="join-partner-text-center">
-        <h2 className="join-partner-title">Join As A Partner</h2>
+          <h2 className="join-partner-title">Join As A Partner</h2>
           <p>Download Our Partner App</p>
           <div>
-          <button className="join-partner-button-download">
-            Download App
-          </button>
+            <button className="join-partner-button-download">
+              Download App
+            </button>
           </div>
-          
         </div>
 
         <div className="join-partner-help-section">
@@ -125,7 +178,9 @@ const JoinAsPartnerForm = () => {
 
         <div className="join-partner-address-section">
           <h3 className="join-partner-address-title">Our office addresses</h3>
-          <p className="join-partner-address-text">123 Connaught Place, Rajiv Chowk,</p>
+          <p className="join-partner-address-text">
+            123 Connaught Place, Rajiv Chowk,
+          </p>
           <p className="join-partner-address-text">New Delhi, Delhi, 110001</p>
           <a href="#" className="join-partner-link">
             Check Map →

@@ -7,6 +7,7 @@ const NavbarTest = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null); // Default to null
 
   const navbarRef = useRef(null);
   const navigate = useNavigate();
@@ -44,6 +45,11 @@ const NavbarTest = () => {
     };
   }, []);
 
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location); // Update the selected location
+    setActiveDropdown(null); // Close the dropdown
+  };
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light sticky-top"
@@ -51,7 +57,14 @@ const NavbarTest = () => {
     >
       <div className="container container-nav">
         {/* Logo */}
-        <Link className="navbar-brand" to="/">
+        <Link
+          className="navbar-brand"
+          to="/"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            closeAllDropdowns();
+          }}
+        >
           <span className="logo">Servyo</span>
         </Link>
 
@@ -71,8 +84,16 @@ const NavbarTest = () => {
           }`}
         >
           <ul className="navbar-nav">
+            {/* Home Link */}
             <li className="nav-item">
-              <Link className="nav-link" to="/" onClick={closeAllDropdowns}>
+              <Link
+                className="nav-link"
+                to="/"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  closeAllDropdowns();
+                }}
+              >
                 Home
               </Link>
             </li>
@@ -96,7 +117,7 @@ const NavbarTest = () => {
                     className="dropdown-item"
                     onClick={closeAllDropdowns}
                   >
-                    Chef
+                    Cook
                   </Link>
                   <Link
                     to="/services/driver-service"
@@ -138,7 +159,7 @@ const NavbarTest = () => {
           {/* Right Side Items */}
           <div className="navbar-nav right-items">
             {/* Location Dropdown */}
-            <div className="nav-item dropdown location-dropdown">
+            {/* <div className="nav-item dropdown location-dropdown">
               <a
                 className="nav-link dropdown-toggle location-drop"
                 href="#"
@@ -188,6 +209,77 @@ const NavbarTest = () => {
                   </a>
                 </div>
               )}
+            </div> */}
+
+            <div className="nav-item dropdown location-dropdown">
+              <a
+                className="nav-link dropdown-toggle location-drop"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveDropdown(
+                    activeDropdown === "location" ? null : "location"
+                  );
+                }}
+              >
+                <div>
+                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                  <span style={{ color: "#999999", fontSize: "16px" }}>
+                    {selectedLocation || "Select Location"}
+                  </span>
+                </div>
+                <i
+                  className={`ms-1 bi ${
+                    activeDropdown === "location"
+                      ? "bi-chevron-up"
+                      : "bi-chevron-down"
+                  }`}
+                ></i>
+              </a>
+              {activeDropdown === "location" && (
+                <div className="dropdown-menu show">
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Mumbai");
+                    }}
+                  >
+                    Delhi
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Mumbai");
+                    }}
+                  >
+                    Mumbai
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Bangalore");
+                    }}
+                  >
+                    Bangalore
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Chennai");
+                    }}
+                  >
+                    Chennai
+                  </a>
+                </div>
+              )}
             </div>
 
             {/* Download App Button */}
@@ -211,34 +303,33 @@ const NavbarTest = () => {
               </a>
               {activeDropdown === "profile" && (
                 <div className="custom-dropdown-menu">
-                {isLoggedIn ? (
-                  <>
-                    <Link
-                      to="/my-profile"
-                      className="custom-dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      My Profile
-                    </Link>
+                  {isLoggedIn ? (
+                    <>
+                      <Link
+                        to="/my-profile"
+                        className="custom-dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/login"
+                        className="custom-dropdown-item"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </Link>
+                    </>
+                  ) : (
                     <Link
                       to="/login"
                       className="custom-dropdown-item"
-                      onClick={handleLogout}
+                      onClick={closeAllDropdowns}
                     >
-                      Logout
+                      Login
                     </Link>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    className="custom-dropdown-item"
-                    onClick={closeAllDropdowns}
-                  >
-                    Login
-                  </Link>
-                )}
-              </div>
-              
+                  )}
+                </div>
               )}
             </div>
           </div>

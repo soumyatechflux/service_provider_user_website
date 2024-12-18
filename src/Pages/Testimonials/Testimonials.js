@@ -57,8 +57,8 @@ const Testimonials = () => {
   };
 
   const currentTestimonial = testimonials[currentIndex];
-  const words = currentTestimonial.text.split(' '); // Split text into words
-  const isTextLong = words.length > 20; // Check if word count exceeds 20
+  const words = currentTestimonial.text.split(' '); 
+  const isTextLong = words.length > 20; 
 
   return (
     <div className="testimonial-container pages-margin">
@@ -94,7 +94,7 @@ const Testimonials = () => {
             <div>
               <p className="testimonial-text">
                 {isTextLong && !showFullText
-                  ? `${words.slice(0, 20).join(" ")}...` // Show first 20 words
+                  ? `${words.slice(0, 20).join(" ")}...` 
                   : currentTestimonial.text}
               </p>
               {isTextLong && (

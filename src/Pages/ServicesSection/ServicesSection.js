@@ -49,7 +49,15 @@ const ServicesSection = () => {
                 onClick={() => handleCardClick(index)}
               >
                 <Link
-                  to={`/services/${service.id}`}
+                   to={
+                    service.id === 1
+                      ? "/services/cook-service"
+                      : service.id === 2
+                      ? "/services/driver-service"
+                      : service.id === 3
+                      ? "/services/gardener-service"
+                      : `/services/${service.id}`
+                  }
                   className="text-decoration-none card-color"
                 >
                   <img

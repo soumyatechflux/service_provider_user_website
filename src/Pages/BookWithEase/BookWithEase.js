@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./BookWithEase.css"; // Custom CSS for styling
+import "./BookWithEase.css"; 
 
 const BookWithEase = () => {
   const steps = [
