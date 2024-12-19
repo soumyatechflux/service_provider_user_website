@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './JoinAsPartnerForm.css';
 import { Link } from 'react-router-dom';
+import MessageModal from '../../MessageModal/MessageModal';
 
 const JoinAsPartnerForm = () => {
   const [formData, setFormData] = useState({
@@ -12,71 +13,126 @@ const JoinAsPartnerForm = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false); 
+  const [responseMessage, setResponseMessage] = useState(''); 
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [message, setMessage] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Update the formData state
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
 
-    // Clear the error for the field being edited
     setErrors((prev) => ({
       ...prev,
-      [name]: '', // Clear the error for this field
+      [name]: '', 
     }));
   };
 
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) {
-      newErrors.name = 'Name is required.';
+      // newErrors.name = 'Name is required.';
+      setMessage("Name is required.");
+      handleShow();
     }
     if (!formData.mobile.trim()) {
-      newErrors.mobile = 'Mobile number is required.';
+      // newErrors.mobile = 'Mobile number is required.';
+      setMessage("Mobile number is required.");
+      handleShow();
     } else if (!/^\d{10}$/.test(formData.mobile)) {
-      newErrors.mobile = 'Enter a valid 10-digit mobile number.';
+      // newErrors.mobile = 'Enter a valid 10-digit mobile number.';
+      setMessage("Enter a valid 10-digit mobile number.");
+      handleShow();
     }
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required.';
+      // newErrors.email = 'Email is required.';
+      setMessage("Email is required.");
+      handleShow();
     } else if (
       !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email)
     ) {
-      newErrors.email = 'Enter a valid email address.';
+      // newErrors.email = 'Enter a valid email address.';
+      setMessage("Enter a valid email address.");
+      handleShow();
     }
     if (!formData.city.trim()) {
-      newErrors.city = 'City is required.';
+      // newErrors.city = 'City is required.';
+      setMessage("City is required.");
+      handleShow();
     }
     if (!formData.message.trim()) {
-      newErrors.message = 'Message is required.';
+      // newErrors.message = 'Message is required.';
+      setMessage("Message is required.");
+      handleShow();
     }
     return newErrors;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+  
+    // Validate the form before submission
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
     } else {
-      console.log('Form submitted:', formData);
-      // Clear the form and errors
-      setFormData({
-        name: '',
-        mobile: '',
-        email: '',
-        city: '',
-        message: '',
-      });
-      setErrors({});
+      // Format the form data as the 'support' object
+      const supportData = {
+        support: {
+          name: formData.name,
+          mobile: formData.mobile,
+          email: formData.email,
+          city: formData.city,
+          description: formData.message,
+        },
+      };
+  
+      try {
+        // Send the data to the API
+        const response = await fetch(
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(supportData),
+          }
+        );
+  
+        const result = await response.json();
+  
+        // Handle success response
+        if (response.ok) {
+          console.log('Form submitted successfully:', result);
+          setFormData({
+            name: '',
+            mobile: '',
+            email: '',
+            city: '',
+            message: '',
+          });
+          setErrors({});
+        } else {
+          // Handle error response
+          console.error('Error submitting form:', result);
+        }
+      } catch (error) {
+        // Handle any network errors
+        console.error('Error during API request:', error);
+      }
     }
   };
+  
 
   return (
     <div className="container nav-container join-partner-container">
-      {/* Get In Touch Section */}
       <div className="join-partner-section">
         <h2 className="join-partner-title">Get In Touch</h2>
         <form onSubmit={handleSubmit}>
@@ -151,13 +207,18 @@ const JoinAsPartnerForm = () => {
             {errors.message && <p className="error-text">{errors.message}</p>}
           </div>
 
-          <button type="submit" className="join-partner-button">
-            Send Now
+          <button type="submit" className="join-partner-button" disabled={isSubmitting}>
+            {isSubmitting ? 'Submitting...' : 'Send Now'}
           </button>
         </form>
+
+        {responseMessage && (
+          <p className={`response-message ${responseMessage.includes('Error') ? 'error' : 'success'}`}>
+            {responseMessage}
+          </p>
+        )}
       </div>
 
-      {/* Join As A Partner Section */}
       <div className="join-partner-section2">
         <div className="join-partner-text-center">
           <h2 className="join-partner-title">Join As A Partner</h2>
@@ -187,6 +248,12 @@ const JoinAsPartnerForm = () => {
           </a>
         </div>
       </div>
+      <MessageModal
+        show={show}
+        handleClose={handleClose}
+        handleShow={handleShow}
+        message={message}
+      />
     </div>
   );
 };

@@ -28,6 +28,7 @@ import BookingSection from "./Pages/ServicesSection/BookingSection/BookingSectio
 import ServiceDetails from "./Pages/ServicesSection/ServiceDetails/ServiceDetails";
 import NavbarTest from "./Template/Navbar/NavbarTest";
 import AppMarketing from "./Pages/AppMarketing/AppMarketing";
+import ServiceDetailsModal from "./Pages/ServicesSection/ServiceDetailsModal/ServiceDetailsModal";
 // import Credentials from "./Pages/Credentials/Credentials";
 
 function App() {
@@ -77,6 +78,7 @@ function App() {
             path="/"
             element={
               <>
+             
                 <HomeHeroSection />
                 <ServicesSection />
                 {/* <MarketingSection /> */}
@@ -99,6 +101,8 @@ function App() {
           <Route path="/join-as-partner" element={<JoinAsPartner />} />
           <Route path="/modify-booking" element={<ModifyBooking />} />
           <Route path ="/booking" element={<BookingSection/>} />
+         
+          
           {/* Login Page */}
           <Route path="/login" element={<LogInPage />} />
           <Route path="/sign-up" element={<SignUpPage/>}/>

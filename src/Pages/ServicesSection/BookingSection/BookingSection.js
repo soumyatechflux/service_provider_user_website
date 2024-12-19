@@ -1175,7 +1175,7 @@ const BookingSection = () => {
 
               <button
                 className="btn back-home-btn"
-                onClick={() => navigate("/")} // Navigate to home page
+                onClick={() => navigate("/")} 
               >
                 Back to Home
               </button>

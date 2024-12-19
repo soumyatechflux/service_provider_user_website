@@ -125,7 +125,7 @@ const AddAddressForm = ({ cancelAddAddress,fetchProfile }) => {
       </div>
       <div className="d-flex gap-2">
         <input
-          type="number"
+          type="text"
           placeholder="Pincode"
           value={pincode}
           onChange={(e) => setPincode(e.target.value)}
