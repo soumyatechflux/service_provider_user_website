@@ -18,6 +18,7 @@ import { Dropdown, Modal } from "react-bootstrap";
 import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageModal from "../../MessageModal/MessageModal";
+import { IoIosArrowForward } from "react-icons/io";
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -255,12 +256,19 @@ const BookingSection = () => {
   const [BookingData, setBookingData] = useState();
 
   const handlePayment = async (mod) => {
+
+const dateObj = new Date(selectedDate);
+
+// Add 1 day to the current date
+dateObj.setDate(dateObj.getDate() + 1);
+
+
     try {
       const body = {
         booking: {
           category_id: service?.category_id,
           sub_category_id: service?.id,
-          visit_date: selectedDate, // Using the selectedDate as per your context
+          visit_date: dateObj.toISOString(), 
           visit_time: (() => {
             if (selectedTime) {
               const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
@@ -570,7 +578,7 @@ const BookingSection = () => {
                         console.log("Cancellation policy clicked");
                       }}
                     >
-                      READ CANCELLATION POLICY
+                      READ CANCELLATION POLICY<IoIosArrowForward className="arrow_for_cancellation"/>
                     </a>
                   </div>
                 </div>
@@ -1174,7 +1182,7 @@ const BookingSection = () => {
 
               <button
                 className="btn back-home-btn"
-                onClick={() => navigate("/")} // Navigate to home page
+                onClick={() => navigate("/")} 
               >
                 Back to Home
               </button>
