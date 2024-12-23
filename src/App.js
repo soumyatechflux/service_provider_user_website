@@ -29,6 +29,8 @@ import ServiceDetails from "./Pages/ServicesSection/ServiceDetails/ServiceDetail
 import NavbarTest from "./Template/Navbar/NavbarTest";
 import AppMarketing from "./Pages/AppMarketing/AppMarketing";
 import ServiceDetailsModal from "./Pages/ServicesSection/ServiceDetailsModal/ServiceDetailsModal";
+import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
+import TermsAndConditions from "./Pages/TermsAndConditions/TermsAndConditions";
 // import Credentials from "./Pages/Credentials/Credentials";
 
 function App() {
@@ -101,6 +103,11 @@ function App() {
           <Route path="/join-as-partner" element={<JoinAsPartner />} />
           <Route path="/modify-booking" element={<ModifyBooking />} />
           <Route path ="/booking" element={<BookingSection/>} />
+
+          <Route path ="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path ="/terms-and-conditions" element={<TermsAndConditions />} />
+
+
          
           
           {/* Login Page */}

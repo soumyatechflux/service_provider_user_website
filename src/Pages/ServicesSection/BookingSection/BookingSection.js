@@ -235,13 +235,7 @@ const BookingSection = () => {
     nextStep();
   };
 
-  const handleChangeAddressValues = (e) => {
-    const { name, value } = e.target;
-    // setAddressForm((prevState) => ({
-    //   ...prevState,
-    //   [name]: value,
-    // }));
-  };
+
 
   // Assuming you have values for people, service price, discount, and GST
   const total = people * (service?.price || 0);
