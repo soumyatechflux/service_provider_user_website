@@ -18,7 +18,6 @@ import { Dropdown, Modal } from "react-bootstrap";
 import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageModal from "../../MessageModal/MessageModal";
-import { IoIosArrowForward } from "react-icons/io";
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -571,7 +570,7 @@ const BookingSection = () => {
                         console.log("Cancellation policy clicked");
                       }}
                     >
-                      READ CANCELLATION POLICY<IoIosArrowForward className="arrow_for_cancellation"/>
+                      READ CANCELLATION POLICY
                     </a>
                   </div>
                 </div>
@@ -1175,7 +1174,7 @@ const BookingSection = () => {
 
               <button
                 className="btn back-home-btn"
-                onClick={() => navigate("/")} 
+                onClick={() => navigate("/")} // Navigate to home page
               >
                 Back to Home
               </button>
