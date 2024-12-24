@@ -156,10 +156,12 @@ const SignUpPage = () => {
       const response = await OTPAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
+      
         setMessage("Sign up successful!");
-        setShow(true);
-        handleShow(); // Show the modal
+      setShow(true);
+      handleShow(); // Show the modal
 
+        
         setTimeout(() => {
           navigate("/login");
         }, 5000); // Adjust delay as needed
@@ -250,12 +252,10 @@ const SignUpPage = () => {
                 />
                 <label htmlFor="terms-checkbox" className="terms-and-condition">
                   I agree to the{" "}
-                  <a
-                    href="#"
-                    className="terms-link-unique"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default anchor behavior
-                    }}
+                  <a href="#" className="terms-link-unique"
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent default anchor behavior
+                  }}
                   >
                     Terms & Conditions
                   </a>{" "}

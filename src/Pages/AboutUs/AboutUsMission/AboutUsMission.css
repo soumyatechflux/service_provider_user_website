@@ -48,11 +48,11 @@
   /* Stats Section */
   .mission-stats {
     display: flex;
-    height: 150px;
+    height: 200px;
     justify-content: space-around;
     align-items: center;
-    background-color: #6979F8;
-    color: white;
+    background-color: #E6EAFF;
+    color: #6979F8;
     padding: 20px 100px;
   }
   
@@ -61,15 +61,16 @@
   }
   
   .stat h3 {
-    font-size: 40px;
-    font-weight: bold;
+    font-size: 52px;
+    font-weight: 700;
+    line-height: 74px;
     margin: 0;
   }
   
   .stat p {
     font-size: 18px;
-    margin: 5px 0 0;
-    color: white;
+    /* margin: 5px 0 0; */
+    color: #2A4E51;
   }
   
   /* Responsive Adjustments */
@@ -148,10 +149,12 @@
   
     .mission-stats {
       gap: 15px; /* Reduce spacing between stats */
+      height: 120px;
     }
   
     .stat h3 {
       font-size: 28px;
+      line-height: 40px;
     }
   
     .stat p {

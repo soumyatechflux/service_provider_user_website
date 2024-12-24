@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
 import MessageModal from "../../../MessageModal/MessageModal";
+import ServiceDetailsModal from "../../ServiceDetailsModal/ServiceDetailsModal";
 
 const GardenerServiceCards = () => {
   const navigate = useNavigate();
@@ -16,6 +17,8 @@ const GardenerServiceCards = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [modalOpen, setModalOpen] = useState(false); // Track modal state
+  const [selectedService, setSelectedService] = useState(null); // Store selected service
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +56,11 @@ const GardenerServiceCards = () => {
     } else {
       navigate("/booking", { state: { service } }); // Navigate to booking page with the service details
     }
+  };
+
+  const handleViewDetails = (service) => {
+    setSelectedService(service); // Set selected service
+    setModalOpen(true); // Open the modal
   };
 
   // Helper function to truncate text
@@ -116,6 +124,14 @@ const GardenerServiceCards = () => {
                       </div>
                     )}
 
+                    <div className="mt-3">
+                      <a
+                        className="view-more-button"
+                        onClick={() => handleViewDetails(service)} // Open the modal with service details
+                      >
+                        View Details
+                      </a>
+                    </div>
                     {/* <ul className="features">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex}>
@@ -162,6 +178,13 @@ const GardenerServiceCards = () => {
           </div>
         </div>
       </div>
+
+       {/* Service Details Modal */}
+       <ServiceDetailsModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        service={selectedService} // Pass the selected service data to the modal
+      />
     </>
   );
 };

@@ -1,77 +1,107 @@
 /* Newsletter Section */
 .newsletter-section {
-    background-color: #2A4E51;
-    color: white;
-    text-align: center;
-    padding: 40px 20px !important;
-    border-radius: 8px;
-    margin-bottom: 40px;
-    margin-left: 35px;
-    margin-right: 35px;
+  background-color: #2A4E51;
+  color: white;
+  text-align: center;
+  padding: 20px 165px !important;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  margin-left: 35px;
+  margin-right: 35px;
+}
+
+.newsletter-heading {
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  line-height: 56px;
+  color: white;
+}
+
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 10px;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+}
+
+.newsletter-button {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.newsletter-button:hover {
+  background-color: #333333;
+}
+
+/* Responsive Design for smaller screens */
+@media (max-width: 768px) {
+  .newsletter-section {
+    padding: 20px 40px !important; /* Reduce side padding for smaller screens */
+    margin-left: 20px;
+    margin-right: 20px;
   }
-  
+
   .newsletter-heading {
-    font-size: 1.8rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    line-height: 1.4;
-    color: white;
+    font-size: 24px; /* Reduce font size for headings */
+    line-height: 36px; /* Adjust line height */
+    margin-bottom: 15px;
   }
-  
+
   .newsletter-form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-width: 600px;
-    margin: 0 auto;
-    gap: 10px;
-    border-radius: 6px;
-    background-color: white;
+    flex-direction: column; /* Stack input and button vertically */
+    gap: 10px; /* Add spacing between stacked elements */
+    padding: 0px 5px;
   }
-  
+
   .newsletter-input {
-    flex: 1;
-    padding: 10px 15px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 6px;
-    outline: none;
+    width: 100%; /* Ensure the input spans full width */
+    font-size: 0.9rem; /* Adjust font size */
+    padding: 10px; /* Adjust padding for smaller inputs */
   }
-  
+
   .newsletter-button {
-    background-color: #1a1a1a;
-    color: white;
-    padding: 10px 20px;
-    font-size: 1rem;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    margin: 5px;
+    width: 100%; /* Full-width button */
+    padding: 10px; /* Adjust padding */
+    font-size: 0.9rem; /* Adjust button font size */
   }
-  
-  .newsletter-button:hover {
-    background-color: #333333;
+}
+
+/* Extra Small Screens (Mobile) */
+@media (max-width: 576px) {
+  .newsletter-section {
+    padding: 15px !important; /* Reduce overall padding */
+    margin-left: 10px;
+    margin-right: 10px;
   }
-  
-  /* Responsive Design */
-  @media (max-width: 576px) {
-    .newsletter-heading {
-      font-size: 1.4rem;
-      padding: 0 10px;
-    }
-  
-    .newsletter-form {
-      flex-direction: column;
-      gap: 10px;
-    }
-  
-    .newsletter-input {
-      width: 100%;
-    }
-  
-    .newsletter-button {
-      width: 90%;
-    }
+
+  .newsletter-heading {
+    font-size: 20px; /* Further reduce font size */
+    line-height: 25px; /* Adjust line height */
   }
-  
+
+  .newsletter-button {
+    padding: 8px; /* Smaller padding for buttons */
+    font-size: 0.8rem; /* Reduce button font size */
+  }
+}

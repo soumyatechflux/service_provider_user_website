@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Pencil, MapPin, Plus, Pen, Check, X } from "lucide-react";
 import "./ProfileDetails.css";
-import { getProfileAPI, editProfileAPI } from "../../../utils/APIs/ProfileApis/ProfileApi";
 import Loader from "../../Loader/Loader";
 import axios from "axios";
 import { BsPencil, BsTrash, BsThreeDotsVertical } from "react-icons/bs";
 import { Dropdown } from "react-bootstrap";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { Modal, Button } from "react-bootstrap";
 import AddAddressForm from "./../ProfileDetails/AddAddressForm/AddAddressForm"; // Import the new form component
 import EditAddressForm from "./EditAddressForm/EditAddressForm";
@@ -34,7 +32,38 @@ const ProfileDetails = () => {
   const [message, setMessage] = useState("");
   const handleShow = () => setShow(true);
 
- 
+  const [dropdownOpen, setDropdownOpen] = useState(null); // Track open dropdown
+  const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
+
+  const dropdownRefs = useRef([]);
+
+  const handleDropdownToggle = (index) => {
+    setOpenDropdownIndex(openDropdownIndex === index ? null : index);
+  };
+
+  const handleOutsideClick = (e) => {
+    // Close dropdown if click is outside
+    if (
+      dropdownRefs.current &&
+      !dropdownRefs.current.some((ref) => ref.contains(e.target))
+    ) {
+      setOpenDropdownIndex(null);
+    }
+  };
+
+  // Add event listener for outside clicks
+  useEffect(() => {
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
+
+  const toggleDropdown = (id) => {
+    setDropdownOpen((prev) => (prev === id ? null : id));
+  };
+
   const [newAddress, setNewAddress] = useState({
     houseNumber: "",
     streetAddress: "",
@@ -79,12 +108,6 @@ const ProfileDetails = () => {
     setIsAddingAddress(false);
   };
 
-
-
-
-   
-
-
   // Fetch profile data
   const fetchProfile = async () => {
     try {
@@ -93,7 +116,6 @@ const ProfileDetails = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-    
       if (response?.status && response?.data?.success) {
         setProfileDataResponse(response?.data?.data);
         const data = response?.data?.data;
@@ -115,7 +137,6 @@ const ProfileDetails = () => {
     fetchProfile();
   }, []);
 
-
   const handleDelete = async (id) => {
     try {
       setLoading(true); // Show a loading spinner or disable UI during API call
@@ -123,13 +144,12 @@ const ProfileDetails = () => {
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response?.status && response?.data?.success) {
         setIsDeletingAddress(false); // Close the modal
         // Optionally refresh the address list or notify the user
         console.log("Address deleted successfully");
         fetchProfile();
-
       }
     } catch (err) {
       console.error("Error deleting address:", err);
@@ -139,8 +159,6 @@ const ProfileDetails = () => {
   };
 
   const saveChanges = async () => {
-
-    
     try {
       setLoading(true);
       const data = new FormData();
@@ -169,10 +187,9 @@ const ProfileDetails = () => {
         setMessage("Profile Data Updated sucessfully");
         setShow(true);
         handleShow(); // Show the modal
-      return;
-      }
-      else{
-        setMessage(response?.data?.message||"");
+        return;
+      } else {
+        setMessage(response?.data?.message || "");
         handleShow();
       }
     } catch (err) {
@@ -209,7 +226,7 @@ const ProfileDetails = () => {
   };
 
   if (loading) {
-    return <Loader />
+    return <Loader />;
   }
 
   if (!profileDataResponse) {
@@ -218,92 +235,94 @@ const ProfileDetails = () => {
 
   return (
     <>
-     <div className="container nav-container profile-container">
-      <h1>Profile</h1>
+      <div className="container nav-container profile-container">
+        <h1>Profile</h1>
 
-      <div className="profile-content">
-        {/* Avatar Section */}
-        <div className="avatar-div">
-        <div className="avatar">
-          {editedProfile.image ? (
-            <img
-              src={
-                typeof editedProfile.image === "string"
-                  ? editedProfile.image
-                  : URL.createObjectURL(editedProfile.image)
-              }
-              alt="Avatar"
-              className="avatar-img"
-            />
-          ) : (
-            <span className="avatar-placeholder">
-              {profileDataResponse.name.charAt(0).toUpperCase()}
-            </span>
-          )}
-
-          <button
-            className="avatar-edit"
-            onClick={() => {
-              document.getElementById("fileInput").click(); // Trigger file input click
-              setIsEditing(true);
-              setEditingField("image");
-            }}
-          >
-            <Pen size={16} />
-          </button>
-
-          <input
-            id="fileInput"
-            type="file"
-            accept="image/*"
-            style={{ display: "none" }}
-            onChange={handleImageChange}
-          />
-        </div>
-        </div>
-
-        {/* Details Section */}
-        <div className="details-section">
-          {/* Name */}
-          <div className="detail-item">
-            <label>Full Name</label>
-            <div className="detail-value">
-              {isEditing && editingField === "name" ? (
-                <input
-                  type="text"
-                  value={editedProfile.name || name} // Autofill with state
-                  onChange={(e) => handleInputChange("name", e.target.value)}
+        <div className="profile-content">
+          {/* Avatar Section */}
+          <div className="avatar-div">
+            <div className="avatar">
+              {editedProfile.image ? (
+                <img
+                  src={
+                    typeof editedProfile.image === "string"
+                      ? editedProfile.image
+                      : URL.createObjectURL(editedProfile.image)
+                  }
+                  alt="Avatar"
+                  className="avatar-img"
                 />
               ) : (
-                <span>{profileDataResponse.name}</span>
+                <span className="avatar-placeholder">
+                  {profileDataResponse.name.charAt(0).toUpperCase()}
+                </span>
               )}
+
               <button
-                className="edit-button"
+                className="avatar-edit"
                 onClick={() => {
+                  document.getElementById("fileInput").click(); // Trigger file input click
                   setIsEditing(true);
-                  setEditingField("name");
+                  setEditingField("image");
                 }}
               >
-                <Pencil size={16} />
+                <Pen size={16} />
               </button>
+
+              <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleImageChange}
+              />
             </div>
           </div>
 
-          {/* Mobile */}
-          <div className="detail-item">
-            <label>Mobile Number</label>
-            <div className="detail-value">
-              {isEditing && editingField === "mobile" ? (
-                <input
-                  type="text"
-                  value={editedProfile.mobile || phone} // Autofill with state
-                  onChange={(e) => handleInputChange("mobile", e.target.value)}
-                  disabled
-                />
-              ) : (
-                <span>{profileDataResponse.mobile}</span>
-              )}
-              {/* <button
+          {/* Details Section */}
+          <div className="details-section">
+            {/* Name */}
+            <div className="detail-item">
+              <label>Full Name</label>
+              <div className="detail-value">
+                {isEditing && editingField === "name" ? (
+                  <input
+                    type="text"
+                    value={editedProfile.name || name} // Autofill with state
+                    onChange={(e) => handleInputChange("name", e.target.value)}
+                  />
+                ) : (
+                  <span>{profileDataResponse.name}</span>
+                )}
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditingField("name");
+                  }}
+                >
+                  <Pencil size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Mobile */}
+            <div className="detail-item">
+              <label>Mobile Number</label>
+              <div className="detail-value">
+                {isEditing && editingField === "mobile" ? (
+                  <input
+                    type="text"
+                    value={editedProfile.mobile || phone} // Autofill with state
+                    onChange={(e) =>
+                      handleInputChange("mobile", e.target.value)
+                    }
+                    disabled
+                  />
+                ) : (
+                  <span>{profileDataResponse.mobile}</span>
+                )}
+                {/* <button
                 className="edit-button"
                 onClick={() => {
                   setIsEditing(true);
@@ -312,240 +331,181 @@ const ProfileDetails = () => {
               >
                 <Pencil size={16} />
               </button> */}
+              </div>
             </div>
+
+            {/* Email */}
+            <div className="detail-item">
+              <label>Email</label>
+              <div className="detail-value">
+                {isEditing && editingField === "email" ? (
+                  <input
+                    type="email"
+                    value={editedProfile.email || email} // Autofill with state
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                  />
+                ) : (
+                  <span>{profileDataResponse.email}</span>
+                )}
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditingField("email");
+                  }}
+                >
+                  <Pencil size={16} />
+                </button>
+              </div>
+            </div>
+
+            {isEditing && (
+              <div className="edit-actions">
+                <button
+                  className="save-button btn-edit-profile"
+                  onClick={saveChanges}
+                >
+                  <Check size={16} /> Save
+                </button>
+                <button
+                  className="cancel-button btn-edit-profile"
+                  onClick={cancelEdit}
+                >
+                  <X size={16} /> Cancel
+                </button>
+              </div>
+            )}
           </div>
 
-          {/* Email */}
-          <div className="detail-item">
-            <label>Email</label>
-            <div className="detail-value">
-              {isEditing && editingField === "email" ? (
-                <input
-                  type="email"
-                  value={editedProfile.email || email} // Autofill with state
-                  onChange={(e) => handleInputChange("email", e.target.value)}
+          {/* Address Section */}
+          <div className="address-section">
+            <div className="address-header">
+              <MapPin size={20} />
+              <h2>Manage Address</h2>
+            </div>
+
+            {addresses.map((address, index) => (
+              <div key={address.id} className="mb-3">
+                <div className="d-flex align-items-center">
+                  <p className="flex-fill mb-0 address-p">
+                    <span className="serial-number me-2">{index + 1}.</span>
+                    {address.house}, {address.street_address}{" "}
+                    {address.street_address_line2}, {address.landmark},{" "}
+                    {address.city} - {address.state} {address.postal_code}{" "}
+                    {address.country}
+                  </p>
+                  <div
+                    className="position-relative"
+                    ref={(el) => (dropdownRefs.current[index] = el)}
+                  >
+                    <button
+                      className="custom-dropdown-toggle"
+                      onClick={() => handleDropdownToggle(index)}
+                    >
+                      <BsThreeDotsVertical
+                        size={18}
+                        style={{ cursor: "pointer" }}
+                      />
+                    </button>
+                    {openDropdownIndex === index && (
+                      <div className="custom-dropdown-menu">
+                        <button
+                          className="custom-dropdown-item"
+                          onClick={() => {
+                            setAddressToEdit(address?.address_id);
+                            setIsEditingAddress(true);
+                            setOpenDropdownIndex(null); // Close dropdown
+                          }}
+                        >
+                          <BsPencil size={16} className="me-2" /> Edit
+                        </button>
+                        <button
+                          className="custom-dropdown-item"
+                          onClick={() => {
+                            setAddressToDelete(address?.address_id);
+                            setIsDeletingAddress(true);
+                            setOpenDropdownIndex(null); // Close dropdown
+                          }}
+                        >
+                          <BsTrash size={16} className="me-2" /> Delete
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <a className="add-address" onClick={() => setIsAddingAddress(true)}>
+              + Add New Address
+            </a>
+
+            {/* Modal for Adding New Address */}
+            <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
+              <Modal.Header closeButton>
+                <Modal.Title>Add New Address</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <AddAddressForm
+                  fetchProfile={fetchProfile}
+                  cancelAddAddress={cancelAddAddress}
                 />
-              ) : (
-                <span>{profileDataResponse.email}</span>
-              )}
-              <button
-                className="edit-button"
-                onClick={() => {
-                  setIsEditing(true);
-                  setEditingField("email");
-                }}
-              >
-                <Pencil size={16} />
-              </button>
-            </div>
+              </Modal.Body>
+            </Modal>
+
+            {/* Modal for Editing Address */}
+            <Modal
+              show={isEditingAddress}
+              onHide={() => setIsEditingAddress(false)}
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Edit Address</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <EditAddressForm
+                  addressId={addressToEdit}
+                  closeModal={() => setIsEditingAddress(false)}
+                  refreshAddresses={fetchProfile} // A function to refresh the address list
+                />
+              </Modal.Body>
+            </Modal>
+
+            {/* Modal for Deleting Address */}
+            <Modal
+              show={isDeletingAddress}
+              onHide={() => setIsDeletingAddress(false)}
+              centered
+            >
+              <Modal.Header closeButton>
+                <Modal.Title>Delete Address</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <p>Are you sure you want to delete this address?</p>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button
+                  variant="secondary"
+                  onClick={() => setIsDeletingAddress(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="danger"
+                  onClick={() => {
+                    handleDelete(addressToDelete); // Delete the selected address
+                  }}
+                >
+                  Delete
+                </Button>
+              </Modal.Footer>
+            </Modal>
           </div>
-
-          {isEditing && (
-            <div className="edit-actions">
-              <button
-                className="save-button btn-edit-profile"
-                onClick={saveChanges}
-              >
-                <Check size={16} /> Save
-              </button>
-              <button
-                className="cancel-button btn-edit-profile"
-                onClick={cancelEdit}
-              >
-                <X size={16} /> Cancel
-              </button>
-            </div>
-          )}
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        {/* Address Section */}
-        <div className="address-section">
-          <div className="address-header">
-            <MapPin size={20} />
-            <h2>Manage Address</h2>
-          </div>
-
-
-
-          {addresses.map((address, index) => (
-  <div key={address.id} className="mb-3">
-    <div className="d-flex align-items-center">
-      <p className="flex-fill mb-0 address-p">
-        <span className="serial-number me-2">{index + 1}.</span>
-        {address.house}, {address.street_address}{" "}
-        {address.street_address_line2}, {address.landmark},{" "}
-        {address.city} - {address.state} {address.postal_code}{" "}
-        {address.country}
-      </p>
-      <Dropdown>
-        <Dropdown.Toggle
-          as="span"
-          id="dropdown-custom-components"
-          className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
-          bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
-        >
-          <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
-        </Dropdown.Toggle>
-        <Dropdown.Menu className="dropdown-menu-end">
-          <Dropdown.Item
-            onClick={() => {
-              setAddressToEdit(address?.address_id);
-              setIsEditingAddress(true);
-            }}
-          >
-            <BsPencil size={16} className="me-2" /> Edit
-          </Dropdown.Item>
-          <Dropdown.Item
-            onClick={() => {
-              setAddressToDelete(address?.address_id); // Set the address ID to delete
-              setIsDeletingAddress(true); // Show the confirmation modal
-            }}
-          >
-            <BsTrash size={16} className="me-2" /> Delete
-          </Dropdown.Item>
-        </Dropdown.Menu>
-      </Dropdown>
-    </div>
-  </div>
-))}
-
-
-
-          <a className="add-address" onClick={() => setIsAddingAddress(true)}>
-            + Add New Address
-          </a>
-
-          {/* Modal for Adding New Address */}
-          <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Add New Address</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <AddAddressForm
-                fetchProfile={fetchProfile}
-                cancelAddAddress={cancelAddAddress}
-              />
-            </Modal.Body>
-          </Modal>
-
-          {/* Modal for Editing Address */}
-          <Modal show={isEditingAddress} onHide={() => setIsEditingAddress(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Address</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <EditAddressForm
-                addressId={addressToEdit}
-                closeModal={() => setIsEditingAddress(false)}
-                refreshAddresses={fetchProfile} // A function to refresh the address list
-              />
-            </Modal.Body>
-          </Modal>
-
-          {/* Modal for Deleting Address */}
-          <Modal show={isDeletingAddress} onHide={() => setIsDeletingAddress(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Delete Address</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <p>Are you sure you want to delete this address?</p>
-            </Modal.Body>
-            <Modal.Footer>
-              <Button variant="secondary" onClick={() => setIsDeletingAddress(false)}>
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                onClick={() => {
-                  handleDelete(addressToDelete); // Delete the selected address
-                }}
-              >
-                Delete
-              </Button>
-            </Modal.Footer>
-          </Modal>
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       </div>
-    </div>
-    
-    <MessageModal
-        show={show}
-        handleClose={handleClose}
-        message={message}
-      />
+
+      <MessageModal show={show} handleClose={handleClose} message={message} />
     </>
-   
   );
 };
 

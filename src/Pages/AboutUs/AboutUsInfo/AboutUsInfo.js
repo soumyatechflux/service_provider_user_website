@@ -18,20 +18,20 @@ const AboutUsInfo = () => {
         {/* Top Row */}
         <div className="image-flex-wrapper-top">
           <div >
-            <img className="image-box image-top-left" src="./../ServicesSection/AboutUs/testing4.jpg" />
+            <img className="image-box image-top-left" src="./../ServicesSection/AboutUs/new.png" />
           </div>
           <div >
-            <img className="image-box image-top-right" src="./../ServicesSection/AboutUs/testing.jpg" />
+            <img className="image-box image-top-right" src="./../ServicesSection/AboutUs/new2.png" />
           </div>
         </div>
 
         {/* Bottom Row */}
         <div className="image-flex-wrapper-bottom">
           <div >
-            <img className="image-box image-bottom-left" src="./../ServicesSection/AboutUs/testing2.jpg" />
+            <img className="image-box image-bottom-left" src="./../ServicesSection/AboutUs/new3.png" />
           </div>
           <div >
-            <img className="image-box image-bottom-right" src="./../ServicesSection/AboutUs/testing3.jpg"/>
+            <img className="image-box image-bottom-right" src="./../ServicesSection/AboutUs/new4.png"/>
           </div>
         </div>
       </div>

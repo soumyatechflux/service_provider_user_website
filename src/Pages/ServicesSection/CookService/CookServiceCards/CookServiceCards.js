@@ -119,6 +119,20 @@ const CookServiceCards = () => {
                         )}
                       </div>
                     )}
+
+                     {/* <ul className="features">
+                    {service.features.map((feature, featureIndex) => (
+                      <li key={featureIndex}>
+                        <span className="check-icon">&#10003;</span>
+                        {feature}
+                      </li>
+                    ))}
+                  </ul> */}
+
+                    {/* <a href="#" className="view-details">
+                    View Details
+                  </a> */}
+                  
                     <div className="mt-3">
                       <a
                         className="view-more-button"

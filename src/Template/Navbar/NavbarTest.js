@@ -308,12 +308,15 @@ const NavbarTest = () => {
                       <Link
                         to="/my-profile"
                         className="custom-dropdown-item"
-                        onClick={closeAllDropdowns}
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                          closeAllDropdowns();
+                        }}
                       >
                         My Profile
                       </Link>
                       <Link
-                        to="/login"
+                        to="/"
                         className="custom-dropdown-item"
                         onClick={handleLogout}
                       >

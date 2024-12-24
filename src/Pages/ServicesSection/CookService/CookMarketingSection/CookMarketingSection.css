@@ -287,35 +287,68 @@
     order: 1;
   }
 }
+/* Styles for larger screens remain unchanged */
 
+/* Responsive styles for tablets and smaller devices */
 @media (max-width: 768px) {
   .services-section {
-    padding: 40px 15px;
+    padding: 30px 10px;
   }
 
   .service-item {
-    gap: 0px;
+    flex-direction: column; /* Stack items vertically */
+    margin-bottom: 50px; /* Reduce spacing between items */
+    gap: 20px; /* Smaller gap between elements */
   }
 
-  h2 {
-    font-size: 28px;
+  .service-content {
+    padding: 15px;
+    text-align: center; /* Center-align text for better readability */
   }
 
   .service-image {
-    height: 250px;
+    width: 100%;
+    height: 220px; /* Reduce height for smaller screens */
+    margin-bottom: 15px; /* Add spacing below the image */
+    order: -1; /* Place image above the content */
+  }
+
+  .marketing-title {
+    font-size: 24px; /* Reduce font size for titles */
+    margin-bottom: 10px;
+  }
+
+  .marketing-description {
+    font-size: 16px; /* Reduce font size for descriptions */
+    line-height: 1.4;
+  }
+
+  .book-now-marketing {
+    font-size: 16px; /* Adjust button font size */
+    padding: 6px 12px; /* Adjust padding for smaller buttons */
   }
 }
 
+/* Responsive styles for mobile devices */
 @media (max-width: 576px) {
   .service-item {
-    margin-bottom: 40px;
-  }
-
-  h2 {
-    font-size: 24px;
+    margin-bottom: 30px; /* Further reduce spacing */
   }
 
   .service-image {
-    height: 200px;
+    height: 180px; /* Adjust image height for smaller screens */
+  }
+
+  .marketing-title {
+    font-size: 20px; /* Further reduce title font size */
+  }
+
+  .marketing-description {
+    font-size: 14px; /* Further reduce description font size */
+  }
+
+  .book-now-marketing {
+    font-size: 14px; /* Adjust button size */
+    padding: 4px 10px; /* Smaller padding for buttons */
   }
 }

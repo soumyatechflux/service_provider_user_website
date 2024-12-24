@@ -53,7 +53,7 @@ const Footer = () => {
             <h4>For Partners</h4>
             <ul className="footer-subContent">
               <li>
-                <a href="/register">Register as a Professional</a>
+                <a href="/join-as-partner">Register as a Professional</a>
               </li>
             </ul>
           </div>

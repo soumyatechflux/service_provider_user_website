@@ -1,5 +1,4 @@
 
-
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import './Testimonials.css';
@@ -96,15 +95,17 @@ const Testimonials = () => {
                 {isTextLong && !showFullText
                   ? `${words.slice(0, 20).join(" ")}...` 
                   : currentTestimonial.text}
-              </p>
-              {isTextLong && (
+                  {isTextLong && (
                 <button
-                  className="toggle-text-btn"
+                  className="toggle-text-btn ml-4"
                   onClick={() => setShowFullText((prev) => !prev)}
                 >
                   {showFullText ? "View Less" : "View More"}
                 </button>
               )}
+              
+              </p>
+              
             </div>
 
             <p className="author-name">{currentTestimonial.author}</p>

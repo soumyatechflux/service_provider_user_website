@@ -87,21 +87,20 @@
 }
 
 .description {
-  color: #6c757d;
+  color: #666666;
   font-family: "DM Sans";
   font-size: 20px;
   font-weight: 400;
   line-height: 32px;
   text-align: left;
   margin-top: 20px;
-
 }
 
 /* Responsive Design */
 /* Tablet Screens (768px and below) */
 @media (max-width: 768px) {
   .about-us-container {
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 20px;
   }
 
@@ -115,14 +114,23 @@
     justify-content: space-around;
   }
 
-  .image-box {
-    /* width: auto;
-      height: auto; */
-  }
-
   .text-section {
     max-width: 100%;
     text-align: center;
+  }
+  .title {
+    font-size: 50px; /* Reduce font size */
+    line-height: 60px; /* Adjust line height */
+  }
+
+  .subtitle {
+    font-size: 28px; /* Reduce font size */
+    line-height: 34px; /* Adjust line height */
+  }
+
+  .description {
+    font-size: 18px; /* Slightly smaller font */
+    line-height: 28px; /* Adjust line height for readability */
   }
 }
 
@@ -132,6 +140,7 @@
     flex-direction: column;
     align-items: center;
     gap: 10px;
+    padding: 30px
   }
 
   .image-flex-wrapper-top,
@@ -143,7 +152,6 @@
 
   .image-box {
     width: 100%;
-    max-width: 200px;
     height: auto;
     margin: 0; /* Removed unnecessary margins */
     padding: 0; /* Removed unnecessary padding */
@@ -154,14 +162,50 @@
   }
 
   .title {
-    font-size: 1.8rem;
+    font-size: 40px; /* Further reduce font size for small screens */
+    line-height: 44px; /* Adjust line height */
   }
 
   .subtitle {
-    font-size: 1.2rem;
+    font-size: 24px; /* Further reduce font size */
+    line-height: 30px; /* Adjust line height */
+    margin-bottom: 0;
   }
 
   .description {
-    font-size: 0.9rem;
+    font-size: 16px; /* Smaller font size */
+    line-height: 24px; /* Adjust line height for readability */
+  }
+}
+
+/* Large Screens (1200px and above) */
+@media (min-width: 1200px) {
+  .about-us-container {
+    padding: 60px 0;
+    gap: 60px; /* Increase gap for larger screens */
+  }
+
+  .image-flex-wrapper {
+    max-width: 50%;
+    gap: 30px; /* Increase gap between image boxes */
+  }
+
+  .text-section {
+    padding: 30px;
+  }
+
+  .title {
+    font-size: 80px; /* Increase font size */
+    line-height: 100px; /* Adjust line height */
+  }
+
+  .subtitle {
+    font-size: 42px; /* Increase font size */
+    line-height: 50px; /* Adjust line height */
+  }
+
+  .description {
+    font-size: 22px; /* Slightly larger font */
+    line-height: 36px; /* Adjust line height for readability */
   }
 }

@@ -137,49 +137,6 @@ const LogInPage = () => {
       },
     };
 
-  //   try {
-  //     setLoading(true); // Start loader
-
-  //     const response = await OTPAPI(data);
-  //     console.log("API Response:", response);
-
-  //     if (response?.status === 200 && response?.data?.success === true) {
-  //       // Store token and login status
-  //       sessionStorage.setItem(
-  //         "ServiceProviderUserToken",
-  //         response?.data?.token
-  //       );
-  //       sessionStorage.setItem("IsLogedIn", true);
-  //       setMessage(response?.data?.message || "LogIn Successfull");
-  //       setShow(true);
-  //       handleShow();
-
-  //       // Navigate to home on success
-  //       navigate("/");
-  //     } else {
-  //       console.error("Failed:", response?.data?.message);
-
-  //       // Show failure message
-  //       // setMessage(
-  //       //   response?.data?.message || "Failed to verify OTP. Please try again."
-  //       // );
-  //       setMessage(
-  //         response?.data?.message || "Failed to verify OTP. Please try again."
-  //       );
-  //       setShow(true);
-  //       handleShow();
-  //     }
-  //   } catch (err) {
-  //     console.error("Error verifying OTP:", err);
-
-  //     // Show error message
-  //     setMessage("An error occurred while verifying OTP. Please try again.");
-  //     handleShow();
-  //   } finally {
-  //     // Stop the loader in all cases
-  //     setLoading(false);
-  //   }
-  // };
 
   try {
     setLoading(true); // Start loader

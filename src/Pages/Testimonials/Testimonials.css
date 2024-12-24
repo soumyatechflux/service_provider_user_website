@@ -4,15 +4,20 @@
   background-color: #fff;
   font-family: "DM Sans";
 }
-.toggle-text-btn{
+.toggle-text-btn {
   background-color: transparent;
   text-decoration: underline;
   padding: 0;
   margin-bottom: 20px;
   text-align: left;
   color: #6c63ff;
+  font-family: "DM Sans", sans-serif;
+  font-size: 15.6px;
+  font-style: italic;
+  font-weight: 700;
+  line-height: 29.92px;
 }
-.testimonial-btn:hover{
+.testimonial-btn:hover {
   background-color: #6c63ff !important;
   color: white !important;
 }
@@ -33,7 +38,7 @@
 }
 
 .star.filled {
-  color: #F88600 !important; /* Gold color for filled stars */
+  color: #f88600 !important; /* Gold color for filled stars */
 }
 
 /* Text Content */
@@ -89,7 +94,7 @@
 }
 
 .testimonial-text {
-  font-family: 'DM Sans', sans-serif;
+  font-family: "DM Sans", sans-serif;
   font-size: 17.6px;
   font-style: italic;
   font-weight: 700;

@@ -57,3 +57,17 @@
     transform: scale(1.1);
   }
   
+
+  /* Tablet Screens (768px and below) */
+@media (max-width: 768px) {
+  .team-container {
+    gap: 20px; /* Reduce the gap for tablet screens */
+  }
+}
+
+/* Mobile Screens (576px and below) */
+@media (max-width: 576px) {
+  .team-container {
+    gap: 0; /* Completely remove the gap for smaller screens */
+  }
+}
