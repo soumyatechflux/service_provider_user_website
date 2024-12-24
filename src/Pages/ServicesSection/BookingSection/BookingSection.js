@@ -249,6 +249,15 @@ const BookingSection = () => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
+
+
+
+
+
+
+
+
+
   const handlePayment = async (mod) => {
 
 const dateObj = new Date(selectedDate);
@@ -257,33 +266,20 @@ const dateObj = new Date(selectedDate);
 dateObj.setDate(dateObj.getDate() + 1);
 
 
+
+// console.log(selectedTime, "selectedTimerehjge");
+
+
+
     try {
       const body = {
         booking: {
           category_id: service?.category_id,
           sub_category_id: service?.id,
           visit_date: dateObj.toISOString(), 
-          visit_time: (() => {
-            if (selectedTime) {
-              const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
-              if (timeParts) {
-                let hours = parseInt(timeParts[1], 10);
-                const minutes = parseInt(timeParts[2], 10);
 
-                // If the time is less than 12:00, convert it to 24-hour format
-                if (hours < 12) {
-                  hours = hours + 12; // Add 12 for PM conversion
-                }
+          visit_time: selectedTime,
 
-                // Format hours and minutes to ensure they are two digits
-                const formattedTime = `${hours
-                  .toString()
-                  .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`; // Add seconds as `00`
-                return formattedTime;
-              }
-            }
-            return "00:00:00"; 
-          })(),
           visit_address_id: selectedLocation?.address_id,
           address_from: "",
           address_to: "",
