@@ -219,6 +219,7 @@ const BookingSection = () => {
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
   const handleCheckboxChange = (id) => {
     if (menu.includes(id)) {
       setMenu(menu.filter((item) => item !== id));
@@ -226,6 +227,18 @@ const BookingSection = () => {
       setMenu([...menu, id]);
     }
   };
+
+  const handleCheckboxChangeForDriver = (id) => {
+    // If the item is already selected, do nothing
+    if (menu.includes(id)) {
+      return;
+    }
+  
+    // Otherwise, set the selected item to the new id and close the dropdown
+    setMenu([id]); // This ensures only one item is selected
+    setIsDropdownOpen(false); // Close the dropdown after selection
+  };
+  
 
   const validateFieldsStepOne = (e) => {
     // Prevent default form submission behavior
@@ -475,7 +488,26 @@ dateObj.setDate(dateObj.getDate() + 1);
                     Select Menu / Service (Optional)
                   </label>
 
-                  {/* Dropdown container */}
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+               
+{(service?.category_id === 1 || service?.category_id === 3 )&& (
+               
+               <>
+            
+               
+              
                   <div
                     className="dropdown-container"
                     style={{
@@ -484,7 +516,6 @@ dateObj.setDate(dateObj.getDate() + 1);
                       gap: "4px", // Reduce gap between elements
                     }}
                   >
-                    {/* Toggle to open dropdown */}
                     <div
                       className="dropdown-input"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -563,6 +594,183 @@ dateObj.setDate(dateObj.getDate() + 1);
                       </div>
                     )}
                   </div>
+
+                  </>
+
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+               
+               
+{(service?.category_id === 2)&& (
+               
+               <>
+            
+               
+              
+            <div
+  className="dropdown-container"
+  style={{
+    display: "flex",
+    flexDirection: "column",
+    gap: "4px", // Reduce gap between elements
+  }}
+>
+  <div
+    className="dropdown-input"
+    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+    style={{
+      cursor: "pointer",
+      padding: "8px",
+      fontSize: "16px",
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+      width: "100%", // Full width for better alignment
+    }}
+  >
+    {menu.length > 0
+      ? `Selected: ${menuOrServicesOptions
+          .filter((option) => menu.includes(option.id))
+          .map((option) => option.name)
+          .join(", ")}`
+      : "Select a service"}
+    <span>{isDropdownOpen ? "▲" : "▼"}</span>
+  </div>
+
+  {/* Dropdown options list */}
+  {isDropdownOpen && (
+    <div
+      className="dropdown-options"
+      style={{
+        position: "absolute",
+        top: "100%", // Place the dropdown directly below the input
+        left: 0,
+        right: 0,
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        backgroundColor: "white",
+        width: "100%", // Match the width of the input
+        maxHeight: "200px",
+        overflowY: "auto",
+        zIndex: 10,
+        padding: "0", // Remove padding to reduce space
+      }}
+    >
+      {menuOrServicesOptions.map((option) => (
+        <div
+          key={option.id}
+          className="dropdown-option"
+          style={{
+            padding: "8px",
+            display: "flex", // Align checkbox and label on the same line
+            alignItems: "center", // Center the checkbox and text vertically
+            gap: "8px", // Add space between checkbox and text
+          }}
+        >
+          <input
+            type="checkbox"
+            className="menu-checkbox"
+            id={`service-${option.id}`}
+            value={option.id}
+            checked={menu.includes(option.id)}
+            onChange={() => handleCheckboxChangeForDriver(option.id)}
+            style={{
+              margin: 0, // Remove any margin around the checkbox
+              cursor: "pointer",
+            }}
+          />
+          <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
+            {option.name}{" "}
+          </label>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+                  </>
+
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 </div>
               </div>
 
