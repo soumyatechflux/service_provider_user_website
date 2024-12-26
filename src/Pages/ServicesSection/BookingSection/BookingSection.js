@@ -263,27 +263,30 @@ dateObj.setDate(dateObj.getDate() + 1);
           category_id: service?.category_id,
           sub_category_id: service?.id,
           visit_date: dateObj.toISOString(), 
-          visit_time: (() => {
-            if (selectedTime) {
-              const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
-              if (timeParts) {
-                let hours = parseInt(timeParts[1], 10);
-                const minutes = parseInt(timeParts[2], 10);
+          // visit_time: (() => {
+          //   if (selectedTime) {
+          //     const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
+          //     if (timeParts) {
+          //       let hours = parseInt(timeParts[1], 10);
+          //       const minutes = parseInt(timeParts[2], 10);
 
-                // If the time is less than 12:00, convert it to 24-hour format
-                if (hours < 12) {
-                  hours = hours + 12; // Add 12 for PM conversion
-                }
+          //       // If the time is less than 12:00, convert it to 24-hour format
+          //       if (hours < 12) {
+          //         hours = hours + 12; // Add 12 for PM conversion
+          //       }
 
-                // Format hours and minutes to ensure they are two digits
-                const formattedTime = `${hours
-                  .toString()
-                  .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`; // Add seconds as `00`
-                return formattedTime;
-              }
-            }
-            return "00:00:00"; 
-          })(),
+          //       // Format hours and minutes to ensure they are two digits
+          //       const formattedTime = `${hours
+          //         .toString()
+          //         .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`; // Add seconds as `00`
+          //       return formattedTime;
+          //     }
+          //   }
+          //   return "00:00:00"; 
+          // })(),
+
+          visit_time: selectedTime,
+
           visit_address_id: selectedLocation?.address_id,
           address_from: "",
           address_to: "",
@@ -1114,6 +1117,10 @@ dateObj.setDate(dateObj.getDate() + 1);
               </div>
               <div className="payment-section-body">
                 <p>Complete your payment to confirm the booking.</p>
+
+                <span>
+                ₹ {grandTotal}
+                </span>
                 <div className="payment-options">
                   <button
                     className="payment-action-button"
