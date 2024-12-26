@@ -6,7 +6,6 @@ import CancellationModal from "../../CancelBooking/CancellationModal/Cancellatio
 import ConfirmationModal from "../../CancelBooking/ConfirmationModal/ConfirmationModal";
 import SuccessModal from "../../CancelBooking/SuccessModal/SuccessModal";
 import Loader from "./../../../Loader/Loader";
-import { toast } from "react-toastify";
 import axios from "axios";
 import ModifyBooking from "../../ModifyBooking/ModifyBooking";
 import MessageModal from "../../../MessageModal/MessageModal";
@@ -147,7 +146,6 @@ const UpcomingTab = () => {
         error.response?.data || error.message
       );
       // alert(error.response?.data?.message || "Failed to cancel booking.");
-      
     }
   };
 
@@ -376,9 +374,28 @@ const UpcomingTab = () => {
                         {booking?.sub_category_name}
                       </h2>
                     </div>
-                    <div className="status-message">
-                      <span className="status-dot"></span>
-                      {booking?.booking_status}
+                    <div
+                      className="status-message"
+                      style={{
+                        color:
+                          booking?.booking_status === "cancelled"
+                            ? "red"
+                            : "green",
+                      }}
+                    >
+                      <span
+                        className="status-dot"
+                        style={{
+                          backgroundColor:
+                            booking?.booking_status === "cancelled"
+                              ? "red"
+                              : "green",
+                        }}
+                      ></span>
+                      {booking?.booking_status
+                        ? booking.booking_status.charAt(0).toUpperCase() +
+                          booking.booking_status.slice(1)
+                        : ""}
                     </div>
                   </div>
 
@@ -401,6 +418,15 @@ const UpcomingTab = () => {
                     <button
                       className="btn-modify"
                       onClick={() => handleModifyButton(booking?.booking_id)}
+                      disabled={booking?.booking_status === "cancelled"}
+                      style={{
+                        cursor:
+                          booking?.booking_status === "cancelled"
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          booking?.booking_status === "cancelled" ? 0.5 : 1,
+                      }}
                     >
                       Modify
                     </button>

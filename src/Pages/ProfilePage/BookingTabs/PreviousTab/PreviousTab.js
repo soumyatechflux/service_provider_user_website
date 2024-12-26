@@ -69,8 +69,6 @@ function PreviousTab() {
     return <Loader />;
   }
 
-
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-GB", {
@@ -79,20 +77,19 @@ function PreviousTab() {
       year: "numeric",
     }).format(date);
   };
-  
+
   // Function to format time to "04:39 PM"
   const formatTime = (timeString) => {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
     date.setHours(hours, minutes);
-  
+
     return date.toLocaleString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
   };
-
 
   return (
     <div className="booking-container">
@@ -108,10 +105,10 @@ function PreviousTab() {
               <div className="booking-details mt-3">
                 <div className="column1">
                   <div className="details-header">
-
-                <h2 className="details-head">
-    {formatDate(bookingsIdWise?.visit_date)} at {formatTime(bookingsIdWise?.visit_time)}
-  </h2>
+                    <h2 className="details-head">
+                      {formatDate(bookingsIdWise?.visit_date)} at{" "}
+                      {formatTime(bookingsIdWise?.visit_time)}
+                    </h2>
 
                     <div className="service-image image-flex">
                       <img src="./../ServicesSection/CookingSection/chef-cooking-2.jpg" />
@@ -196,9 +193,10 @@ function PreviousTab() {
                       <h4 className="booking-subtitle">Date & Time</h4>
 
                       <p className="booking-info-text">
-    {`${formatDate(bookingsIdWise?.visit_date)}, ${formatTime(bookingsIdWise?.visit_time)}`}
-  </p>
-
+                        {`${formatDate(
+                          bookingsIdWise?.visit_date
+                        )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                      </p>
                     </div>
                     <div className="info-group">
                       <h4 className="booking-subtitle">
@@ -264,20 +262,45 @@ function PreviousTab() {
                       {booking?.sub_category_name}
                     </h2>
                   </div>
-                  <div className="status-message">
-                    <span className="status-dot"></span>
-                    {booking?.booking_status}
+                  <div
+                    className="status-message"
+                    style={{
+                      color:
+                        booking?.booking_status === "cancelled"
+                          ? "red"
+                          : booking?.booking_status === "Completed"
+                          ? "green"
+                          : "inherit",
+                    }}
+                  >
+                    <span
+                      className="status-dot"
+                      style={{
+                        backgroundColor:
+                          booking?.booking_status === "cancelled"
+                            ? "red"
+                            : booking?.booking_status === "Completed"
+                            ? "green"
+                            : "transparent",
+                      }}
+                    ></span>
+                    {booking?.booking_status
+                      ? booking.booking_status.charAt(0).toUpperCase() +
+                        booking.booking_status.slice(1)
+                      : ""}
                   </div>
                 </div>
 
                 <div className="summary-content">
                   <div className="time-provider">
-
                     <p>{booking?.booking_date_time}</p>
 
-                    <p>Service Provider - {booking?.partner_id ? booking?.partner_name : "No Partner Accepted"}</p>
-
-
+                    <p>
+                      Service Provider -{" "}
+                      {booking?.partner_id
+                        ? booking?.partner_name
+                        : "No Partner Accepted"}
+                    </p>
                   </div>
 
                   <div className="amount">₹{booking?.billing_amount}</div>

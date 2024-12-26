@@ -20,14 +20,14 @@
 .image-flex-wrapper-top {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 35px;
 }
 
 /* Bottom Row Wrapper */
 .image-flex-wrapper-bottom {
   display: flex;
   justify-content: space-between;
-  gap: 10px;
+  gap: 35px;
 }
 
 /* Individual Image Boxes */
@@ -38,28 +38,28 @@
 
 /* Specific Image Sizes */
 .image-top-left {
-  width: 320px;
-  height: 220px;
-  margin-top: 20px;
+  width: 370px !important;
+  height: 270px !important;
+  margin-top: 55px;
 }
 
 .image-bottom-left {
-  width: 180px;
-  height: 210px;
-  margin-top: 25px;
-  margin-left: 50px;
+  width: 270px !important;
+  height: 300px !important;
+  margin-top: 25px !important;
+  margin-left: 0px !important;
 }
 
 .image-top-right {
-  width: 180px;
-  height: 210px;
-  margin-bottom: 20px;
-  margin-right: 50px;
+  width: 270px !important;
+  height: 300px !important;
+  margin-bottom: 30px !important;
+  margin-right: 0px !important;
 }
 
 .image-bottom-right {
-  width: 320px;
-  height: 210px;
+  width: 370px !important;
+  height: 270px !important;
 }
 
 /* Text Section */
@@ -100,7 +100,7 @@
 /* Tablet Screens (768px and below) */
 @media (max-width: 768px) {
   .about-us-container {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse !important;
     gap: 20px;
   }
 

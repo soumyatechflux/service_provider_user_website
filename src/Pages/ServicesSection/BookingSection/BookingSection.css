@@ -801,7 +801,7 @@
 }
 
 .booking-summary-footer {
-  display: flex;
+  /* display: flex; */
   justify-content: space-between;
   align-items: center;
   background: #fff;
@@ -813,12 +813,15 @@
 .estimated-fare {
   font-size: 16px;
   font-weight: bold;
+  display: flex;
+  justify-content: space-between;
 }
 
 .checkout-button {
   background: #6200ea;
   color: #fff;
   border: none;
+  width: 100%;
   padding: 10px 20px;
   font-size: 16px;
   border-radius: 6px;
@@ -915,6 +918,7 @@
   height: calc(100vh - 80px);
   margin: 20px 0px;
   border: 3px solid black;
+  align-content: flex-end;
 }
 
 .success-content {

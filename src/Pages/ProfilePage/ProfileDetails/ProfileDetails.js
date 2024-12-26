@@ -119,7 +119,7 @@ const ProfileDetails = () => {
       if (response?.status && response?.data?.success) {
         setProfileDataResponse(response?.data?.data);
         const data = response?.data?.data;
-        setAvatar(data.image || data.name.charAt(0).toUpperCase());
+        setAvatar(data.image  || data.name.charAt(0).toUpperCase()) ;
         setName(data.name);
         setPhone(data.mobile);
         setEmail(data.email);
@@ -164,7 +164,7 @@ const ProfileDetails = () => {
       const data = new FormData();
 
       if (editingField === "image" && editedProfile.image) {
-        data.append("image", editedProfile.image);
+        data.append("image", editedProfile.image || null);
       } else if (editingField === "name") {
         data.append("name", editedProfile.name);
       } else if (editingField === "email") {
@@ -172,7 +172,7 @@ const ProfileDetails = () => {
       } else if (editingField === "mobile") {
         data.append("mobile", editedProfile.mobile);
       }
-
+      setIsEditing(false);
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
         data,
@@ -185,11 +185,17 @@ const ProfileDetails = () => {
         setIsEditing(false);
         setEditingField(null);
         setMessage("Profile Data Updated sucessfully");
+        setIsEditing(false);
         setShow(true);
         handleShow(); // Show the modal
+        // Reset editing state
+       
+        setEditingField(null);
         return;
       } else {
         setMessage(response?.data?.message || "");
+        setIsEditing(false);
+        setShow(true);
         handleShow();
       }
     } catch (err) {
@@ -217,12 +223,21 @@ const ProfileDetails = () => {
       }));
       setEditingField("image");
     }
+    else{
+      setEditedProfile((prev) => ({
+        ...prev,
+        image: null,
+      }));
+      setEditingField("image");
+    }
   };
 
   const cancelEdit = () => {
     setEditedProfile({ ...profileDataResponse });
     setIsEditing(false);
     setEditingField(null);
+  setEditedProfile(profileDataResponse); // Reset editedProfile to initial data
+
   };
 
   if (loading) {
@@ -246,8 +261,8 @@ const ProfileDetails = () => {
                 <img
                   src={
                     typeof editedProfile.image === "string"
-                      ? editedProfile.image
-                      : URL.createObjectURL(editedProfile.image)
+                      ? editedProfile.image || null
+                      : URL.createObjectURL(editedProfile.image || null)
                   }
                   alt="Avatar"
                   className="avatar-img"

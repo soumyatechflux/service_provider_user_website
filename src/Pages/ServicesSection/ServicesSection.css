@@ -2,7 +2,7 @@
   border: none;
   border-radius: 24px !important;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 370px; /* Ensure the card height is fixed */
+  height: 370px !important; /* Ensure the card height is fixed */
   width: 370px; /* Ensure the card width is fixed */
   overflow: hidden;
   position: relative; /* Change from fixed to relative */
@@ -47,7 +47,7 @@
 .card .card-text {
   font-family: "DM Sans" !important;
   font-weight: 400;
-  font-size: 15px;
+  font-size: 17px;
   color: #666666;
   text-align: center;
   opacity: 1;

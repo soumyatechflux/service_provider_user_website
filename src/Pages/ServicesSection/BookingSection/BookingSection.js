@@ -249,15 +249,6 @@ const BookingSection = () => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
-
-
-
-
-
-
-
-
-
   const handlePayment = async (mod) => {
 
 const dateObj = new Date(selectedDate);
@@ -266,20 +257,33 @@ const dateObj = new Date(selectedDate);
 dateObj.setDate(dateObj.getDate() + 1);
 
 
-
-// console.log(selectedTime, "selectedTimerehjge");
-
-
-
     try {
       const body = {
         booking: {
           category_id: service?.category_id,
           sub_category_id: service?.id,
           visit_date: dateObj.toISOString(), 
+          visit_time: (() => {
+            if (selectedTime) {
+              const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
+              if (timeParts) {
+                let hours = parseInt(timeParts[1], 10);
+                const minutes = parseInt(timeParts[2], 10);
 
-          visit_time: selectedTime,
+                // If the time is less than 12:00, convert it to 24-hour format
+                if (hours < 12) {
+                  hours = hours + 12; // Add 12 for PM conversion
+                }
 
+                // Format hours and minutes to ensure they are two digits
+                const formattedTime = `${hours
+                  .toString()
+                  .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`; // Add seconds as `00`
+                return formattedTime;
+              }
+            }
+            return "00:00:00"; 
+          })(),
           visit_address_id: selectedLocation?.address_id,
           address_from: "",
           address_to: "",
@@ -353,7 +357,7 @@ dateObj.setDate(dateObj.getDate() + 1);
               >
                 ←
               </button>
-              <h2 className="booking-form-title">Booking</h2>
+              <h1 className="booking-form-title">Booking For :</h1>
             </div>
 
             <form>
@@ -685,7 +689,7 @@ dateObj.setDate(dateObj.getDate() + 1);
 
 
        {addresses.map((address, index) => (
-  <div key={address.address_id} className="mb-3">
+  <div key={address.address_id} className="mb-3" style={{border:"2px solid #D8D8D8", padding:"5px", borderRadius:"5px"}}>
     <div className="d-flex align-items-center">
       {/* Radio button for selecting address */}
       <input
@@ -1072,18 +1076,25 @@ dateObj.setDate(dateObj.getDate() + 1);
               </div>
             </div>
 
-            <div className="booking-summary-footer">
+            <div className="booking-summary-footer ">
               <div className="estimated-fare">
+                <div>
                 <h4>Estimated Fare</h4>
+                </div>
+                <div>
+                  
                 <p>
                   {" "}
                   <h4>₹{grandTotal} </h4>
                 </p>
+                </div>
               </div>
+              
               <button className="checkout-button" onClick={nextStep}>
                 Checkout
               </button>
-            </div>
+              </div>
+              
           </div>
         )}
 
@@ -1165,7 +1176,7 @@ dateObj.setDate(dateObj.getDate() + 1);
 
               <h2 className="success-title">Booking Successful!</h2>
 
-              <p className="success-message">
+              <p className="success-message" style={{marginBottom:"200px", textAlign:"center" ,fontWeight:"bold"}}>
                 Your booking is currently awaiting confirmation from the service
                 provider. We'll update you as soon as it's accepted!
               </p>

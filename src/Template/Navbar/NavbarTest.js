@@ -31,9 +31,23 @@ const NavbarTest = () => {
     setIsMobileMenuOpen(false);
   };
 
+  
+
   // Handle clicks outside navbar
   const handleClickOutside = (event) => {
+    // Check if click is outside navbar
     if (!navbarRef.current?.contains(event.target)) {
+      closeAllDropdowns();
+      return;
+    }
+    
+    // Check if click is on navbar but not on dropdown toggles
+    const isDropdownToggle = event.target.closest('.dropdown-toggle') || 
+                            event.target.closest('.user-icon-navbar');
+    const isDropdownItem = event.target.closest('.dropdown-item') ||
+                          event.target.closest('.custom-dropdown-item');
+                          
+    if (!isDropdownToggle && !isDropdownItem) {
       closeAllDropdowns();
     }
   };
@@ -158,59 +172,6 @@ const NavbarTest = () => {
 
           {/* Right Side Items */}
           <div className="navbar-nav right-items">
-            {/* Location Dropdown */}
-            {/* <div className="nav-item dropdown location-dropdown">
-              <a
-                className="nav-link dropdown-toggle location-drop"
-                href="#"
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveDropdown(
-                    activeDropdown === "location" ? null : "location"
-                  );
-                }}
-              >
-                <div>
-                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-                  <span style={{ color: "#999999", fontSize: "16px" }}>
-                    Delhi
-                  </span>
-                </div>
-                <i
-                  className={`ms-1 bi ${
-                    activeDropdown === "location"
-                      ? "bi-chevron-up"
-                      : "bi-chevron-down"
-                  }`}
-                ></i>
-              </a>
-              {activeDropdown === "location" && (
-                <div className="dropdown-menu show">
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={closeAllDropdowns}
-                  >
-                    Mumbai
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={closeAllDropdowns}
-                  >
-                    Bangalore
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={closeAllDropdowns}
-                  >
-                    Chennai
-                  </a>
-                </div>
-              )}
-            </div> */}
-
             <div className="nav-item dropdown location-dropdown">
               <a
                 className="nav-link dropdown-toggle location-drop"

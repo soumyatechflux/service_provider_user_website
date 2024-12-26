@@ -36,7 +36,7 @@ function CookFAQs() {
   return (
     <div className="faq-section">
       <div className="nav-container container">
-        <h1>FAQs</h1>
+        <h1 style={{fontSize:"36px"}}>FAQs</h1>
         <div className="faq-list">
           {faqs.map((faq) => (
             <div 

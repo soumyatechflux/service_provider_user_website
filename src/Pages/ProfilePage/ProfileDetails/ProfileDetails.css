@@ -288,7 +288,7 @@ h1 {
 .address-section {
   flex: 1;
   min-width: 0;
-  padding-left: 40px;
+  /* padding-left: 40px; */
   /* border-left: 2px solid #e5e7eb; */
 }
 

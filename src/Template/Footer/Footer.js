@@ -12,7 +12,7 @@ const Footer = () => {
         </div>
 
         {/* Footer Columns */}
-        <div className="footer-columns">
+        <div className="container nav-container footer-columns">
           {/* Company Section */}
           <div className="footer-column">
             <h4>Company</h4>

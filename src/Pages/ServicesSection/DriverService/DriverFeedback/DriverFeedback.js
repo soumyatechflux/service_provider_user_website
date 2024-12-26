@@ -68,14 +68,14 @@ const DriverFeedback = () => {
             <h2>See What Our Clients Say</h2>
             <div className="navigation-buttons">
               <button
-                className="nav-button"
+                className="nav-button testimonial-btn"
                 onClick={handlePrevious}
                 aria-label="Previous testimonial"
               >
                 <ChevronLeft size={24} />
               </button>
               <button
-                className="nav-button"
+                className="nav-button testimonial-btn"
                 onClick={handleNext}
                 aria-label="Next testimonial"
               >
@@ -86,7 +86,7 @@ const DriverFeedback = () => {
 
           <div className="testimonial-content">
             <div className="quote-mark">
-              <img src="./../Testimonials/Quote.jpg" alt="Quote Mark" />
+              <img src="/Testimonials/Quote.jpg" alt="Quote Mark" />
             </div>
             <div className="rating rating-flex">
               {renderStars(currentTestimonial.rating)}
@@ -94,17 +94,19 @@ const DriverFeedback = () => {
             <div>
               <p className="testimonial-text">
                 {isTextLong && !showFullText
-                  ? `${words.slice(0, 20).join(" ")}...` // Show first 20 words
+                  ? `${words.slice(0, 20).join(" ")}...` 
                   : currentTestimonial.text}
-              </p>
-              {isTextLong && (
+                  {isTextLong && (
                 <button
-                  className="toggle-text-btn"
+                  className="toggle-text-btn ml-4"
                   onClick={() => setShowFullText((prev) => !prev)}
                 >
                   {showFullText ? "View Less" : "View More"}
                 </button>
               )}
+              
+              </p>
+              
             </div>
 
             <p className="author-name">{currentTestimonial.author}</p>

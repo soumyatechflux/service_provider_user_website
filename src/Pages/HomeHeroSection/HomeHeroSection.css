@@ -61,7 +61,7 @@
 }
 
 .slide-button {
-  margin-top: 5px;
+  margin-top: 5px ;
   /* padding: 15px 28px; */
   padding: 10px 20px;
   background-color: #ffffff;
@@ -81,7 +81,7 @@
   height: 75px;
   background-color: rgba(247, 255, 255, 0.7); 
   text-align: center;
-  padding: 11px;
+  padding: 11px 15px;
 }
 
 .slide-btn-main:hover {
@@ -108,8 +108,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 40px; 
-  height: 40px; 
+  width: 56px; 
+  height: 56px; 
   transition: background-color 0.3s ease, transform 0.3s ease;
 }
 .swiper-button-prev:after{

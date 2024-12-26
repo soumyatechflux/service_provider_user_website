@@ -11,7 +11,7 @@ const CookServiceCards = () => {
 
   const [loading, setLoading] = useState(false);
   const [slides, setSlides] = useState([]);
-  const [viewMore, setViewMore] = useState(false);
+  const [viewMoreStates, setViewMoreStates] = useState({}); // Track viewMore for each card
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const [modalOpen, setModalOpen] = useState(false); // Track modal state
@@ -70,6 +70,13 @@ const CookServiceCards = () => {
     };
   };
 
+  const toggleViewMore = (index) => {
+    setViewMoreStates((prevStates) => ({
+      ...prevStates,
+      [index]: !prevStates[index], // Toggle the viewMore state for the specific card
+    }));
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -77,7 +84,7 @@ const CookServiceCards = () => {
   return (
     <>
       <div className="container-bg-color">
-        <div className="nav-container container cook-services mt-4">
+        <div className="nav-container container cook-services mt-4 pb-4">
           <div>
             <h2 className="section-title">Cook Services</h2>
             <div className="service-cards-wrapper">
@@ -105,34 +112,21 @@ const CookServiceCards = () => {
                       <div className="reviews">
                         <span>
                           Description:{" "}
-                          {viewMore
+                          {viewMoreStates[index]
                             ? service.description
                             : truncateText(service.description, 30).truncated}
                         </span>
                         {truncateText(service.description, 30).isTruncated && (
                           <a
                             className="view-more-button"
-                            onClick={() => setViewMore(!viewMore)}
+                            onClick={() => toggleViewMore(index)}
                           >
-                            {viewMore ? "View Less" : "View More"}
+                            {viewMoreStates[index] ? "View Less" : "View More"}
                           </a>
                         )}
                       </div>
                     )}
 
-                     {/* <ul className="features">
-                    {service.features.map((feature, featureIndex) => (
-                      <li key={featureIndex}>
-                        <span className="check-icon">&#10003;</span>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul> */}
-
-                    {/* <a href="#" className="view-details">
-                    View Details
-                  </a> */}
-                  
                     <div className="mt-3">
                       <a
                         className="view-more-button"
@@ -186,3 +180,4 @@ const CookServiceCards = () => {
 };
 
 export default CookServiceCards;
+

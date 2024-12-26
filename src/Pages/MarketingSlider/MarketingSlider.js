@@ -38,16 +38,6 @@ const slides = [
 ];
 
 const MarketingSlider = () => {
-  // const settings = {
-  //   dots: false,
-  //   infinite: true,
-  //   speed: 800,
-  //   slidesToShow: 1,
-  //   slidesToScroll: 1,
-  //   autoplay: true,
-  //   autoplaySpeed: 3000,
-  //   arrows: true, // Enable default arrows
-  // };
 
   const settings = {
     dots: false,
@@ -56,25 +46,14 @@ const MarketingSlider = () => {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000, // Change slides every 1 second
+    autoplaySpeed: 2000, // Change slides every 2 seconds
     arrows: true,
+    pauseOnHover: false, // Prevent autoplay from pausing on hover
   };
   
+  
   return (
-    // <div className="marketing-slider-container">
-    //   <Slider {...settings}>
-    //     {slides.map((slide) => (
-    //       <div key={slide.id} className="marketing-slide">
-    //         <img
-    //           src={slide.image}
-    //           alt={`Slide ${slide.id}`}
-    //           className="marketing-slide-image"
-    //         />
-    //         <div className="marketing-slide-text">{slide.text}</div>
-    //       </div>
-    //     ))}
-    //   </Slider>
-    // </div>
+
     <div className="marketing-slider-container">
     <Slider {...settings}>
       {slides.map((slide) => (

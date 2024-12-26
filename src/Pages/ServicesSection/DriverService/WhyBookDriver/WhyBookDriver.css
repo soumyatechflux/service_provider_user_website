@@ -82,9 +82,9 @@
     transition: transform 0.3s ease-out;
 }
 
-.feature-box:hover .check-icon-whyBook, .feature-box.active .check-icon-whyBook {
+/* .feature-box:hover .check-icon-whyBook, .feature-box.active .check-icon-whyBook {
     transform: scale(1.1);
-}
+} */
 
 .top-left {
     left: -80px;
@@ -114,44 +114,8 @@
     max-width: 200px;
 }
 
-.highlight-circle {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
 
-.highlight-circle.active {
-    opacity: 1;
-}
 
-.top-left.active ~ .highlight-circle {
-    top: 10%;
-    left: 10%;
-    transform: translate(-50%, -50%);
-}
-
-.top-right.active ~ .highlight-circle {
-    top: 10%;
-    right: 10%;
-    transform: translate(50%, -50%);
-}
-
-.middle-left.active ~ .highlight-circle {
-    top: 50%;
-    left: 10%;
-    transform: translate(-50%, -50%);
-}
-
-.bottom-right.active ~ .highlight-circle {
-    bottom: 10%;
-    right: 10%;
-    transform: translate(50%, 50%);
-}
 
 @media (max-width: 1200px) {
     .feature-box {

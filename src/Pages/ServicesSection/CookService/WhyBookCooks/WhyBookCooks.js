@@ -84,42 +84,45 @@ const WhyBookCooks = () => {
     }, []);
 
     return (
-        <div className={`why-book-section ${isVisible ? 'animate' : ''}`} ref={sectionRef}>
-          <div className="nav-container container">
-            <h2 className="section-title">Why Book Cooks From Us</h2>
-            
-            <div className="features-container">
-              <div className="central-image-container">
-                <img 
-                  src="/ServicesSection/Frame.jpg"
-                  alt="Professional Chef"
-                  className="central-image"
-                />
-                
-                <div className="feature-box top-left">
-                  <Check className="check-icon-whyBook" size={24} />
-                  <span className='why-book-text'>Professional and trained cooks</span>
-                </div>
-    
-                <div className="feature-box top-right">
-                  <Check className="check-icon-whyBook" size={24} />
-                  <span className='why-book-text'>Safety and hygiene</span>
-                </div>
-    
-                <div className="feature-box middle-left">
-                  <Check className="check-icon-whyBook" size={24} />
-                  <span className='why-book-text'>Food customized to your taste</span>
-                </div>
-    
-                <div className="feature-box bottom-right">
-                  <Check className="check-icon-whyBook" size={24} />
-                  <span className='why-book-text'>Multi cuisine</span>
-                </div>
-              </div>
-            </div>
+      <div className={`why-book-section ${isVisible ? 'animate' : ''}`} ref={sectionRef}>
+          <div className="dotted-line-container">
+              <img
+                  src="/ServicesSection/ClipPathGroup.jpg" 
+                  alt="Decorative dotted line"
+                  className="dotted-line-image"
+              />
           </div>
-        </div>
-    );
+          <div className="nav-container container">
+              <h2 className="section-title">Why Book Cooks From Us</h2>
+              <div className="features-container">
+                  <div className="central-image-container">
+                      <img
+                          src="/ServicesSection/Frame.jpg"
+                          alt="Professional Chef"
+                          className="central-image"
+                      />
+                      <div className="feature-box top-left">
+                          <Check className="check-icon-whyBook" size={24} />
+                          <span className='why-book-text'>Professional and trained cooks</span>
+                      </div>
+                      <div className="feature-box top-right">
+                          <Check className="check-icon-whyBook" size={24} />
+                          <span className='why-book-text'>Safety and hygiene</span>
+                      </div>
+                      <div className="feature-box middle-left">
+                          <Check className="check-icon-whyBook" size={24} />
+                          <span className='why-book-text'>Food customized to your taste</span>
+                      </div>
+                      <div className="feature-box bottom-right">
+                          <Check className="check-icon-whyBook" size={24} />
+                          <span className='why-book-text'>Multi cuisine</span>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  );
+  
 }
 
 export default WhyBookCooks

@@ -38,7 +38,7 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  height: 100%;
+  height: auto;
   flex: 0 1 calc(33.333% - 20px); /* 3 cards per row, with spacing */
   padding: 18px;
 }
@@ -85,6 +85,7 @@
   color: #666;
   font-size: 14px;
 }
+
 
 .features {
   margin-bottom: 0px !important;

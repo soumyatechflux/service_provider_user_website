@@ -104,6 +104,13 @@ const WhyBookDriver = () => {
 
     return (
         <div className={`why-book-section ${isVisible ? 'animate' : ''}`} ref={sectionRef}>
+          <div className="dotted-line-container">
+              <img
+                  src="/ServicesSection/ClipPathGroup.jpg" 
+                  alt="Decorative dotted line"
+                  className="dotted-line-image"
+              />
+          </div>
           <div className="nav-container container">
             <h2 className="section-title">Why Book Drivers From Us</h2>
             
