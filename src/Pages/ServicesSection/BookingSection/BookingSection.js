@@ -159,6 +159,10 @@ const BookingSection = () => {
     const today = new Date();
     const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
     setSelectedDate(formattedDate); // Set default selected date as today
+
+    // console.log(service.category_id,"servicehuewfservicejhefservice");
+
+
   }, []);
 
   const currentTime = new Date().toISOString().slice(0, 16); // Get the current time in 'HH:MM' format
@@ -179,6 +183,20 @@ const BookingSection = () => {
 
   const [selectedLocation, setSelectedLocation] = useState({
   });
+
+  const [selectedLocationFromForDriver, setSelectedLocationFromForDriver] = useState({
+  });  
+  const [selectedLocationToForDriver, setSelectedLocationToForDriver] = useState({
+  });
+
+  useEffect(() => {
+    if (addresses && addresses.length > 0) {
+      setSelectedLocation(addresses[0]);
+      setSelectedLocationFromForDriver(addresses[0]);
+      setSelectedLocationToForDriver(addresses[0]);
+
+    }
+  }, [addresses]);
 
 
   
@@ -262,7 +280,11 @@ dateObj.setDate(dateObj.getDate() + 1);
         booking: {
           category_id: service?.category_id,
           sub_category_id: service?.id,
-          visit_date: dateObj.toISOString(), 
+
+          // visit_date: dateObj.toISOString(), 
+
+          visit_date:selectedDate,
+
           // visit_time: (() => {
           //   if (selectedTime) {
           //     const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
@@ -288,8 +310,11 @@ dateObj.setDate(dateObj.getDate() + 1);
           visit_time: selectedTime,
 
           visit_address_id: selectedLocation?.address_id,
-          address_from: "",
-          address_to: "",
+
+  
+          address_from: service?.category_id === 2 ? selectedLocationFromForDriver?.address_id : "",
+          address_to: service?.category_id === 2 ? selectedLocationToForDriver?.address_id : "",
+
           number_of_people: people, 
           guest_name: BookingForGuestName,
           instructions: specialRequests || "",
@@ -342,6 +367,11 @@ dateObj.setDate(dateObj.getDate() + 1);
       // setModalMessage("An error occurred. Please try again later.");
     }
   };
+
+
+
+
+
 
   return (
     <>
@@ -619,78 +649,18 @@ dateObj.setDate(dateObj.getDate() + 1);
 
 
 
+<div 
+style={{
+  overflowY: "auto", 
+  maxHeight: "450px",
+}} 
+className="address-section mt-0">
+     
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              {/* <div className="address-card">
-                <div className="address-icon">📍</div>
-                <div className="address-text">
-                  123 Conni, 110001
-                </div>
-              </div>
-
-              <button className="add-address-link" onClick={nextStep}>
-                Add New Address
-              </button> */}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div className="address-section mt-0">
-          <div className="address-header">
-            {/* <MapPin size={20} /> */}
-            {/* <h2>Select Address</h2> */}
-          </div>
-
-
-
+{(service?.category_id === 1 || service?.category_id === 3 )&& (
+  <>
        {addresses.map((address, index) => (
   <div key={address.address_id} className="mb-3" style={{border:"2px solid #D8D8D8", padding:"5px", borderRadius:"5px"}}>
     <div className="d-flex align-items-center">
@@ -699,8 +669,8 @@ dateObj.setDate(dateObj.getDate() + 1);
         type="radio"
         name="address"
         id={`address-${address.address_id}`}
-        checked={selectedLocation?.address_id === address?.address_id} // Check if this is the selected address
-        onChange={() => setSelectedLocation(address)} // Set the selected address when clicked
+        checked={selectedLocation?.address_id === address?.address_id} 
+        onChange={() => setSelectedLocation(address)} 
         className="me-2"
         style={{cursor:"pointer", width:"auto"}}
       />
@@ -734,6 +704,206 @@ dateObj.setDate(dateObj.getDate() + 1);
     </div>
   </div>
 ))}
+
+</>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<>
+      {(service?.category_id === 2) && (
+        <>
+          <span>Select Address From:</span>
+          {addresses.map((address, index) => (
+            <div
+              key={address.address_id}
+              className="mb-3"
+              style={{ border: "2px solid #D8D8D8", padding: "5px", borderRadius: "5px" }}
+            >
+              <div className="d-flex align-items-center">
+                {/* Radio button for selecting address */}
+                <input
+                  type="radio"
+                  name="address-from"
+                  id={`address-from-${address.address_id}`}
+                  checked={selectedLocationFromForDriver?.address_id === address?.address_id}
+                  onChange={() => setSelectedLocationFromForDriver(address)}
+                  className="me-2"
+                  style={{ cursor: "pointer", width: "auto" }}
+                />
+                <p className="flex-fill mb-0 address-p">
+                  <span className="serial-number me-2">{index + 1}.</span>
+                  {address.house}, {address.street_address} {address.street_address_line2}, {address.landmark}, {address.city} - {address.state} {address.postal_code} {address.country}
+                </p>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as="span"
+                    id="dropdown-custom-components"
+                    className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+                    bsPrefix="custom-toggle"
+                  >
+                    <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="dropdown-menu-end">
+                    <Dropdown.Item
+                      onClick={() => {
+                        setAddressToEdit(address?.address_id);
+                        setIsEditingAddress(true);
+                      }}
+                    >
+                      Edit
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+
+      <hr />
+
+      {(service?.category_id === 2) && (
+        <>
+          <span>Select Address To:</span>
+          {addresses.map((address, index) => (
+            <div
+              key={address.address_id}
+              className="mb-3"
+              style={{ border: "2px solid #D8D8D8", padding: "5px", borderRadius: "5px" }}
+            >
+              <div className="d-flex align-items-center">
+                {/* Radio button for selecting address */}
+                <input
+                  type="radio"
+                  name="address-to"
+                  id={`address-to-${address.address_id}`}
+                  checked={selectedLocationToForDriver?.address_id === address?.address_id}
+                  onChange={() => setSelectedLocationToForDriver(address)}
+                  className="me-2"
+                  style={{ cursor: "pointer", width: "auto" }}
+                />
+                <p className="flex-fill mb-0 address-p">
+                  <span className="serial-number me-2">{index + 1}.</span>
+                  {address.house}, {address.street_address} {address.street_address_line2}, {address.landmark}, {address.city} - {address.state} {address.postal_code} {address.country}
+                </p>
+                <Dropdown>
+                  <Dropdown.Toggle
+                    as="span"
+                    id="dropdown-custom-components"
+                    className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+                    bsPrefix="custom-toggle"
+                  >
+                    <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
+                  </Dropdown.Toggle>
+                  <Dropdown.Menu className="dropdown-menu-end">
+                    <Dropdown.Item
+                      onClick={() => {
+                        setAddressToEdit(address?.address_id);
+                        setIsEditingAddress(true);
+                      }}
+                    >
+                      Edit
+                    </Dropdown.Item>
+                  </Dropdown.Menu>
+                </Dropdown>
+              </div>
+            </div>
+          ))}
+        </>
+      )}
+    </>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -969,13 +1139,25 @@ dateObj.setDate(dateObj.getDate() + 1);
                 </div>
                 <div>{BookingForGuestName}</div>
               </div>
+
+
+
+
+
+
+
+
+
+              {(service?.category_id === 1 || service?.category_id === 3) && (
+
+<>
+
               <div className="booking-detail-card">
                 <div>
                   <strong>Address : </strong>
                 </div>
                 <div>
                 <p className="flex-fill mb-0 address-p">
- 
         {selectedLocation.house}, {selectedLocation.street_selectedLocation}{" "}
         {selectedLocation.street_selectedLocation_line2}, {selectedLocation.landmark},{" "}
         {selectedLocation.city} - {selectedLocation.state} {selectedLocation.postal_code}{" "}
@@ -983,6 +1165,92 @@ dateObj.setDate(dateObj.getDate() + 1);
       </p>
                   </div>
               </div>
+              </>
+
+)}
+
+
+
+
+
+{(service?.category_id === 2) && (
+
+<>
+
+              <div className="booking-detail-card">
+                <div>
+                  <strong>Address From:</strong>
+                </div>
+                <div>
+                <p className="flex-fill mb-0 address-p">
+      {selectedLocationFromForDriver?.house}, {selectedLocationFromForDriver?.street_address}{" "}
+      {selectedLocationFromForDriver?.street_address_line2}, {selectedLocationFromForDriver?.landmark}, {" "}
+      {selectedLocationFromForDriver?.city} - {selectedLocationFromForDriver?.state} {selectedLocationFromForDriver?.postal_code}{" "}
+      {selectedLocationFromForDriver?.country}
+    </p>
+                  </div>
+              </div>
+
+
+
+
+
+
+
+
+              <div className="booking-detail-card">
+                <div>
+                  <strong>Address To:</strong>
+                </div>
+                <div>
+                <p className="flex-fill mb-0 address-p">
+                {selectedLocationToForDriver?.house}, {selectedLocationToForDriver?.street_address}{" "}
+      {selectedLocationToForDriver?.street_address_line2}, {selectedLocationToForDriver?.landmark}, {" "}
+      {selectedLocationToForDriver?.city} - {selectedLocationToForDriver?.state} {selectedLocationToForDriver?.postal_code}{" "}
+      {selectedLocationToForDriver?.country}
+    </p>
+                  </div>
+              </div>
+
+              </>
+
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               <div className="booking-detail-card">
                 <div>
