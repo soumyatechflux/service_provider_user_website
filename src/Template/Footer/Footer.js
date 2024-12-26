@@ -93,10 +93,10 @@ const Footer = () => {
             </div>
             <div className="app-buttons ">
               <a href="/app-store" className="store-button-footer google-play">
-                <img className="store-img" src="./Footer/AppStore.png" alt="App Store" />
+                <img className="store-img" src="/Footer/AppStore.png" alt="App Store" />
               </a>
               <a href="/google-play" className="store-button-footer google-play">
-                <img className="store-img" src="./Footer/GooglePlayStore.png" alt="Google Play" />
+                <img className="store-img" src="/Footer/GooglePlayStore.png" alt="Google Play" />
               </a>
             </div>
           </div>

@@ -159,6 +159,7 @@
 
   .text-section {
     padding: 10px;
+    line-height: 25px !important;
   }
 
   .title {

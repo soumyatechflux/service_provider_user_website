@@ -80,8 +80,8 @@ const DriverMarketingSection = () => {
                         data-id={service.id}
                     >
                         <div className={`service-content ${service.id % 2 === 0 ? 'content-left' : 'content-right'}`}>
-                            <h2>{service.title}</h2>
-                            <p>{service.description}</p>
+                        <h2 className='marketing-title'>{service.title}</h2>
+                        <p className='marketing-description'>{service.description}</p>
                             <button className="book-now-marketing">
                                 <span className="book-icon">▶</span> Book Now
                             </button>
