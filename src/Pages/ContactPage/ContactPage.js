@@ -25,7 +25,7 @@ function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     // Perform custom form validation
     if (!formData.name.trim()) {
       setMessage("Name is required.");
@@ -34,6 +34,11 @@ function ContactPage() {
     }
     if (!formData.mobile.trim()) {
       setMessage("Mobile number is required.");
+      handleShow();
+      return;
+    }
+    if (!/^\d{10}$/.test(formData.mobile)) {
+      setMessage("Enter a valid 10-digit mobile number.");
       handleShow();
       return;
     }
@@ -52,7 +57,7 @@ function ContactPage() {
       handleShow();
       return;
     }
-
+  
     try {
       const payload = {
         support: {
@@ -63,7 +68,7 @@ function ContactPage() {
           description: formData.message,
         },
       };
-
+  
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
         payload,
@@ -74,9 +79,9 @@ function ContactPage() {
         }
       );
       console.log("API Response:", response.data);
-
+  
       setShowPopup(true);
-
+  
       // Clear the form fields after submission
       setFormData({
         name: "",

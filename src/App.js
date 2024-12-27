@@ -18,7 +18,6 @@ import GardenerService from "./Pages/ServicesSection/GardenerService/GardenerSer
 import ContactPage from "./Pages/ContactPage/ContactPage";
 import AboutUs from "./Pages/AboutUs/AboutUs";
 import ProfilePage from "./Pages/ProfilePage/ProfilePage";
-// import LogInPage from "./Pages/LogInPage/LogInPage";
 import JoinAsPartner from "./Pages/JoinAsPartner/JoinAsPartner";
 import ModifyBooking from "./Pages/ProfilePage/ModifyBooking/ModifyBooking";
 import LogInPage from "./Pages/Credentials/LogInPage/LogInPage";
@@ -26,12 +25,10 @@ import SignUpPage from "./Pages/Credentials/SignUpPage/SignUpPage";
 import MarketingSlider from "./Pages/MarketingSlider/MarketingSlider";
 import BookingSection from "./Pages/ServicesSection/BookingSection/BookingSection";
 import ServiceDetails from "./Pages/ServicesSection/ServiceDetails/ServiceDetails";
-import NavbarTest from "./Template/Navbar/NavbarTest";
 import AppMarketing from "./Pages/AppMarketing/AppMarketing";
-import ServiceDetailsModal from "./Pages/ServicesSection/ServiceDetailsModal/ServiceDetailsModal";
-// import Credentials from "./Pages/Credentials/Credentials";
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import TermsAndConditions from "./Pages/TermsAndConditions/TermsAndConditions";
+import Navbar from "./Template/Navbar/Navbar";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -129,7 +126,7 @@ function App() {
 function ConditionalNavbar() {
   const location = useLocation();
   const showNavbar = location.pathname !== "/login" && location.pathname !==  "/sign-up";
-  return showNavbar ? <NavbarTest /> : null;
+  return showNavbar ? <Navbar /> : null;
 }
 
 // Conditional Footer Component

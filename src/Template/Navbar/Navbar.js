@@ -1,49 +1,53 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
+import { ChevronDown, MapPin, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 
 const Navbar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState(null); // Default to null
 
-  const navbarRef = useRef(null); // Reference for the entire navbar
-  const locationDropdownRef = useRef(null);
-  const servicesDropdownRef = useRef(null);
-  const profileDropdownRef = useRef(null);
-
+  const navbarRef = useRef(null);
   const navigate = useNavigate();
 
+  // Check login status on mount
   useEffect(() => {
     const loginStatus = sessionStorage.getItem("IsLogedIn");
-    if (loginStatus === "true") {
-      setIsLoggedIn(true);
-    }
+    setIsLoggedIn(loginStatus === "true");
   }, []);
 
+  // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
     sessionStorage.setItem("IsLogedIn", "false");
     closeAllDropdowns();
   };
 
-  const handleJoinAsPartner = () => {
-    closeAllDropdowns();
-    navigate("/join-as-partner");
-  };
-
+  // Close all dropdowns
   const closeAllDropdowns = () => {
     setActiveDropdown(null);
-    setIsOpen(false); // Also close the hamburger menu
+    setIsMobileMenuOpen(false);
   };
 
+  
+
+  // Handle clicks outside navbar
   const handleClickOutside = (event) => {
-    if (
-      !navbarRef.current?.contains(event.target) &&
-      !locationDropdownRef.current?.contains(event.target) &&
-      !servicesDropdownRef.current?.contains(event.target) &&
-      !profileDropdownRef.current?.contains(event.target)
-    ) {
+    // Check if click is outside navbar
+    if (!navbarRef.current?.contains(event.target)) {
+      closeAllDropdowns();
+      return;
+    }
+    
+    // Check if click is on navbar but not on dropdown toggles
+    const isDropdownToggle = event.target.closest('.dropdown-toggle') || 
+                            event.target.closest('.user-icon-navbar');
+    const isDropdownItem = event.target.closest('.dropdown-item') ||
+                          event.target.closest('.custom-dropdown-item');
+                          
+    if (!isDropdownToggle && !isDropdownItem) {
       closeAllDropdowns();
     }
   };
@@ -55,50 +59,135 @@ const Navbar = () => {
     };
   }, []);
 
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location); // Update the selected location
+    setActiveDropdown(null); // Close the dropdown
+  };
+
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light sticky-top"
       ref={navbarRef} // Attach the ref to the entire navbar
     >
-      <div className="container nav-container nav-container-flex">
-        <Link to="/" className="navbar-brand font-serif" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
-          Servyo
+      <div className="container container-nav">
+        {/* Logo */}
+        <Link
+          className="navbar-brand"
+          to="/"
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            closeAllDropdowns();
+          }}
+        >
+          <span className="logo">Servyo</span>
         </Link>
+
+        {/* Mobile Toggle Button */}
         <button
           className="navbar-toggler"
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-controls="navbarNav"
-          aria-expanded={isOpen}
-          aria-label="Toggle navigation"
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
         >
           <span className="navbar-toggler-icon"></span>
         </button>
+
+        {/* Navigation Items */}
         <div
-          className={`collapse navbar-collapse ${isOpen ? "show" : ""}`}
-          id="navbarNav"
+          className={`collapse navbar-collapse ${
+            isMobileMenuOpen ? "show" : ""
+          }`}
         >
-          <ul className="navbar-nav me-auto mb-lg-0 ml-3">
-            {/* Location Dropdown */}
-            <li className="" ref={locationDropdownRef}>
-              <div
-                className="nav-link dropdown-toggle location-dropdown"
-                onClick={() =>
+          <ul className="navbar-nav">
+            {/* Home Link */}
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/"
+                onClick={() => {
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  closeAllDropdowns();
+                }}
+              >
+                Home
+              </Link>
+            </li>
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveDropdown(
+                    activeDropdown === "services" ? null : "services"
+                  );
+                }}
+              >
+                Services <ChevronDown className="dropdown-icon" />
+              </a>
+              {activeDropdown === "services" && (
+                <div className="dropdown-menu services-drop show">
+                  <Link
+                    to="/services/cook-service"
+                    className="dropdown-item"
+                    onClick={closeAllDropdowns}
+                  >
+                    Cook
+                  </Link>
+                  <Link
+                    to="/services/driver-service"
+                    className="dropdown-item"
+                    onClick={closeAllDropdowns}
+                  >
+                    Driver
+                  </Link>
+                  <Link
+                    to="/services/gardener-service"
+                    className="dropdown-item"
+                    onClick={closeAllDropdowns}
+                  >
+                    Gardener
+                  </Link>
+                </div>
+              )}
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/about-us"
+                onClick={closeAllDropdowns}
+              >
+                About Us
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link
+                className="nav-link"
+                to="/join-as-partner"
+                onClick={closeAllDropdowns}
+              >
+                Join As Partner
+              </Link>
+            </li>
+          </ul>
+
+          {/* Right Side Items */}
+          <div className="navbar-nav right-items">
+            <div className="nav-item dropdown location-dropdown">
+              <a
+                className="nav-link dropdown-toggle location-drop"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
                   setActiveDropdown(
                     activeDropdown === "location" ? null : "location"
-                  )
-                }
-                role="button"
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
-                  padding: "10px 10px"
+                  );
                 }}
               >
                 <div>
                   <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-                  <span style={{ color: "#999999", fontSize: "16px" }}>Delhi</span>
+                  <span style={{ color: "#999999", fontSize: "16px" }}>
+                    {selectedLocation || "Select Location"}
+                  </span>
                 </div>
                 <i
                   className={`ms-1 bi ${
@@ -107,194 +196,111 @@ const Navbar = () => {
                       : "bi-chevron-down"
                   }`}
                 ></i>
-              </div>
-              {activeDropdown === "location" && (
-                <ul className="custom-dropdown" style={{ width: "283px" }}>
-                  <li>
-                    <a
-                      href="#"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Delhi
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Mumbai
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Bangalore
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Chennai
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Kolkata
-                    </a>
-                  </li>
-                </ul>
-              )}
-            </li>
-
-            <li className="  right-margin home-margin">
-              <a href="/" className="nav-link">
-                Home
               </a>
-            </li>
+              {activeDropdown === "location" && (
+                <div className="dropdown-menu show">
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Delhi");
+                    }}
+                  >
+                    Delhi
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Mumbai");
+                    }}
+                  >
+                    Mumbai
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Bangalore");
+                    }}
+                  >
+                    Bangalore
+                  </a>
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Chennai");
+                    }}
+                  >
+                    Chennai
+                  </a>
+                </div>
+              )}
+            </div>
 
-            {/* Services Dropdown */}
-            <li className=" right-margin" ref={servicesDropdownRef}>
-              <div
-                className="nav-link dropdown-toggle"
-                onClick={() =>
+            {/* Download App Button */}
+            <button className="btn btn-primary d-none d-lg-inline-block nav-buttons">
+              Download App
+            </button>
+
+            {/* Profile Dropdown */}
+            <div className="nav-item dropdown">
+              <a
+                className="nav-link"
+                href="#"
+                onClick={(e) => {
+                  e.preventDefault();
                   setActiveDropdown(
-                    activeDropdown === "services" ? null : "services"
-                  )
-                }
-                role="button"
-                style={{
-                  cursor: "pointer",
-                  display: "flex",
-                  alignItems: "center",
+                    activeDropdown === "profile" ? null : "profile"
+                  );
                 }}
               >
-                Services
-                <i
-                  className={`ms-1 bi mt-1 ml-1 ${
-                    activeDropdown === "services"
-                      ? "bi-chevron-up"
-                      : "bi-chevron-down"
-                  }`}
-                ></i>
-              </div>
-              {activeDropdown === "services" && (
-                <ul className="custom-dropdown">
-                  <li>
+                <User className="user-icon-navbar" />
+              </a>
+              {activeDropdown === "profile" && (
+                <div className="custom-dropdown-menu">
+                  {isLoggedIn ? (
+                    <>
+                      <Link
+                        to="/my-profile"
+                        className="custom-dropdown-item"
+                        onClick={() => {
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                          closeAllDropdowns();
+                        }}
+                      >
+                        My Profile
+                      </Link>
+                      <Link
+                        to="/"
+                        className="custom-dropdown-item"
+                        onClick={handleLogout}
+                      >
+                        Logout
+                      </Link>
+                    </>
+                  ) : (
                     <Link
-                      to="/services/cook-service"
-                      className="dropdown-item"
+                      to="/login"
+                      className="custom-dropdown-item"
                       onClick={closeAllDropdowns}
                     >
-                      Chef
+                      Login
                     </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/driver-service"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Driver
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      to="/services/gardener-service"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Gardener
-                    </Link>   
-                    </li>
-                  </ul>
-                )}
-              </li>
-  
-              <li className="">
-                <Link to="/about-us" className="nav-link">
-                  About Us
-                </Link>
-              </li>
-            </ul>
-  
-            {/* Profile and Buttons */}
-            <div className="d-flex align-items-center justify-content-center ">
-              {/* Profile Dropdown */}
-              <div className="right-margin " ref={profileDropdownRef}>
-                <div
-                  className="btn btn-link nav-link "
-                  onClick={() =>
-                    setActiveDropdown(
-                      activeDropdown === "profile" ? null : "profile"
-                    )
-                  }
-                  role="button"
-                  style={{ cursor: "pointer" }}
-                >
-                  <i className="bi bi-person-fill"></i>
+                  )}
                 </div>
-                {activeDropdown === "profile" && (
-                  <ul className="custom-dropdown dropdown-menu-end">
-                    {isLoggedIn ? (
-                      <>
-                        <li>
-                          <Link
-                            to="/my-profile"
-                            className="dropdown-item"
-                            onClick={closeAllDropdowns}
-                          >
-                            My Profile
-                          </Link>
-                        </li>
-                        <li>
-                          <a
-                            href="/login"
-                            className="dropdown-item"
-                            onClick={handleLogout}
-                          >
-                            Logout
-                          </a>
-                        </li>
-                      </>
-                    ) : (
-                      <li>
-                        <Link to="/login" className="dropdown-item">
-                          Login
-                        </Link>
-                      </li>
-                    )}
-                  </ul>
-                )}
-              </div>
-  
-              <button
-                className="btn btn-outline-primary mr-4 d-none d-lg-inline-block nav-buttons"
-                onClick={handleJoinAsPartner}
-              >
-                Join As Partner
-              </button>
-              <button className="btn btn-primary d-none d-lg-inline-block nav-buttons">
-                Download App
-              </button>
+              )}
             </div>
           </div>
         </div>
-      </nav>
-    );
-  };
-  
-  export default Navbar;
-  
+      </div>
+    </nav>
+  );
+};
+
+export default Navbar;
