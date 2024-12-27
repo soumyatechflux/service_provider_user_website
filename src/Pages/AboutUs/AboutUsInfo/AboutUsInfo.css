@@ -1,212 +1,246 @@
 /* Main Container */
 .about-us-container {
   display: flex;
-  gap: 40px;
-  padding: 40px 0 !important;
+  gap: 90px !important;
+  /* padding: 40px 0; */
   justify-content: space-between;
   align-items: center;
+  flex-wrap: nowrap !important; /* Ensures wrapping on smaller screens */
 }
 
-/* Image Wrapper */
+/* Left Section (Images) */
 .image-flex-wrapper {
   display: flex;
   flex-direction: column;
-  flex: 1 1 50%;
-  gap: 20px;
+  gap: 30px !important;
+  flex: 1 1 50%; /* Adjusts flex basis for wrapping */
   max-width: 50%;
 }
 
-/* Top Row Wrapper */
-.image-flex-wrapper-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 35px;
-}
-
-/* Bottom Row Wrapper */
+.image-flex-wrapper-top,
 .image-flex-wrapper-bottom {
   display: flex;
+  gap: 25px !important;
   justify-content: space-between;
-  gap: 35px;
-}
-
-/* Individual Image Boxes */
-.image-box {
-  background-color: #d3d3d3;
-  border-radius: 20px;
+  flex-wrap: nowrap; /* Ensures wrapping of images */
 }
 
 /* Specific Image Sizes */
 .image-top-left {
   width: 370px !important;
   height: 270px !important;
-  margin-top: 55px;
+  margin-top: 50px !important;
 }
 
 .image-bottom-left {
-  width: 270px !important;
+  width: 270px !important ;
   height: 300px !important;
-  margin-top: 25px !important;
   margin-left: 0px !important;
 }
 
 .image-top-right {
-  width: 270px !important;
+  width: 270px !important ;
   height: 300px !important;
-  margin-bottom: 30px !important;
-  margin-right: 0px !important;
 }
 
 .image-bottom-right {
-  width: 370px !important;
+  width: 370px !important ;
   height: 270px !important;
+  margin-left: 0px;
 }
 
-/* Text Section */
+/* Right Section (Text) */
 .text-section {
-  flex: 1 1 50%;
-  max-width: 50%;
-  padding: 20px;
+  flex: 1 1 45%; /* Adjusts flex basis for wrapping */
+  padding: 0 20px;
 }
 
 .title {
-  font-family: "DM Sans";
-  font-size: 70px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 64px;
   font-weight: 600;
-  line-height: 84px;
-  text-align: left;
   margin-bottom: 10px;
+  color: #1d1d1f;
 }
 
 .subtitle {
-  font-family: "DM Sans";
-  font-size: 36px;
+  font-family: "DM Sans", sans-serif;
+  font-size: 32px;
   font-weight: 700;
-  line-height: 42.19px;
-  text-align: left;
+  color: #4a4a4a;
+  margin-bottom: 20px;
 }
 
 .description {
+  font-family: "DM Sans", sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
   color: #666666;
-  font-family: "DM Sans";
-  font-size: 20px;
-  font-weight: 400;
-  line-height: 32px;
-  text-align: left;
-  margin-top: 20px;
 }
 
 /* Responsive Design */
-/* Tablet Screens (768px and below) */
-@media (max-width: 768px) {
+
+/* Small Laptops (1366px and below) */
+@media (max-width: 1366px) {
   .about-us-container {
-    flex-direction: column-reverse !important;
-    gap: 20px;
+    /* flex-wrap: wrap !important; */
+    gap: 30px !important;
   }
 
   .image-flex-wrapper {
     max-width: 100%;
   }
 
-  .image-flex-wrapper-top,
-  .image-flex-wrapper-bottom {
-    flex-direction: row;
-    justify-content: space-around;
+  .image-top-left,
+  .image-bottom-right {
+    width: 300px !important;
+    height: 220px !important;
+  }
+
+  .image-bottom-left,
+  .image-top-right {
+    width: 240px !important;
+    height: 240px !important;
   }
 
   .text-section {
     max-width: 100%;
-    text-align: center;
   }
+
   .title {
-    font-size: 50px; /* Reduce font size */
-    line-height: 60px; /* Adjust line height */
+    font-size: 48px;
   }
 
   .subtitle {
-    font-size: 28px; /* Reduce font size */
-    line-height: 34px; /* Adjust line height */
+    font-size: 28px;
   }
 
   .description {
-    font-size: 18px; /* Slightly smaller font */
-    line-height: 28px; /* Adjust line height for readability */
+    font-size: 16px;
   }
 }
 
-/* Mobile Screens (576px and below) */
-@media (max-width: 576px) {
-  .image-flex-wrapper {
+/* Medium Screens (1024px and below) */
+@media (max-width: 1024px) {
+  .about-us-container {
     flex-direction: column;
+    gap: 30px !important;
+    padding: 20px;
+  }
+
+  .image-flex-wrapper {
+    max-width: 100%;
     align-items: center;
-    gap: 10px;
-    padding: 30px
   }
 
   .image-flex-wrapper-top,
   .image-flex-wrapper-bottom {
-    flex-direction: column;
-    align-items: center;
     gap: 10px;
   }
 
-  .image-box {
-    width: 100%;
-    height: auto;
-    margin: 0; /* Removed unnecessary margins */
-    padding: 0; /* Removed unnecessary padding */
+  .image-top-left,
+  .image-bottom-right {
+    width: 260px !important;
+    height: 180px !important;
+  }
+
+  .image-bottom-left,
+  .image-top-right {
+    width: 200px !important;
+    height: 220px !important ;
+  }
+
+  .text-section {
+    text-align: center;
+    max-width: 100%;
+  }
+
+  .title {
+    font-size: 40px;
+  }
+
+  .subtitle {
+    font-size: 24px;
+  }
+
+  .description {
+    font-size: 14px;
+  }
+}
+
+/* Small Screens (768px and below) */
+@media (max-width: 768px) {
+  .image-flex-wrapper-top,
+  .image-flex-wrapper-bottom {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+
+  .image-top-left,
+  .image-bottom-right {
+    width: 220px !important;
+    height: 160px !important;
+  }
+
+  .image-bottom-left,
+  .image-top-right {
+    width: 180px !important;
+    height: 200px !important;
   }
 
   .text-section {
     padding: 10px;
-    line-height: 25px !important;
   }
 
   .title {
-    font-size: 40px; /* Further reduce font size for small screens */
-    line-height: 44px; /* Adjust line height */
+    font-size: 32px;
   }
 
   .subtitle {
-    font-size: 24px; /* Further reduce font size */
-    line-height: 30px; /* Adjust line height */
-    margin-bottom: 0;
+    font-size: 20px;
   }
 
   .description {
-    font-size: 16px; /* Smaller font size */
-    line-height: 24px; /* Adjust line height for readability */
+    font-size: 12px;
   }
 }
 
-/* Large Screens (1200px and above) */
-@media (min-width: 1200px) {
-  .about-us-container {
-    padding: 60px 0;
-    gap: 60px; /* Increase gap for larger screens */
+/* Extra Small Screens (576px and below) */
+@media (max-width: 576px) {
+  .image-flex-wrapper-top,
+  .image-flex-wrapper-bottom {
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
   }
 
-  .image-flex-wrapper {
-    max-width: 50%;
-    gap: 30px; /* Increase gap between image boxes */
+  .image-top-left,
+  .image-bottom-right {
+    width: 200px;
+    height: 140px;
+  }
+
+  .image-bottom-left,
+  .image-top-right {
+    width: 160px;
+    height: 180px;
   }
 
   .text-section {
-    padding: 30px;
+    text-align: center;
+    padding: 10px;
   }
 
   .title {
-    font-size: 80px; /* Increase font size */
-    line-height: 100px; /* Adjust line height */
+    font-size: 28px;
   }
 
   .subtitle {
-    font-size: 42px; /* Increase font size */
-    line-height: 50px; /* Adjust line height */
+    font-size: 18px;
   }
 
   .description {
-    font-size: 22px; /* Slightly larger font */
-    line-height: 36px; /* Adjust line height for readability */
+    font-size: 12px;
   }
 }
