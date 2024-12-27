@@ -294,9 +294,9 @@ dateObj.setDate(dateObj.getDate() + 1);
           category_id: service?.category_id,
           sub_category_id: service?.id,
 
-          // visit_date: dateObj.toISOString(), 
+          visit_date: dateObj.toISOString(), 
 
-          visit_date:selectedDate,
+          // visit_date:selectedDate,
 
           // visit_time: (() => {
           //   if (selectedTime) {
