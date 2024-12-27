@@ -259,12 +259,15 @@ const ProfileDetails = () => {
             <div className="avatar">
               {editedProfile.image ? (
                 <img
-                  src={
-                    typeof editedProfile.image === "string"
-                      ? editedProfile.image || null
-                      : URL.createObjectURL(editedProfile.image || null)
-                  }
-                  alt="Avatar"
+                src={
+                  editedProfile.image
+                    ? typeof editedProfile.image === "string"
+                      ? editedProfile.image
+                      : URL.createObjectURL(editedProfile.image)
+                    : "/dummy-image.jpg"
+                }
+                alt="Profile"
+                onError={(e) => (e.target.src = "/dummy-image.jpg")} // Fallback if the image URL fails
                   className="avatar-img"
                 />
               ) : (

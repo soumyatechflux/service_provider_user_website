@@ -215,7 +215,7 @@ const UpcomingTab = () => {
                           <img
                             src={
                               bookingsIdWise?.partner?.image ||
-                              bookingsIdWise?.partner?.name?.charAt(0)
+                              "/dummy-image.jpg"
                             }
                             alt="image"
                             style={{

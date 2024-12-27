@@ -124,7 +124,7 @@ function PreviousTab() {
                         <img
                           src={
                             bookingsIdWise?.partner?.image ||
-                            bookingsIdWise?.partner?.name?.charAt(0)
+                            "/dummy-image.jpg"
                           }
                           style={{
                             height: "60px",
