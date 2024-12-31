@@ -294,9 +294,9 @@ dateObj.setDate(dateObj.getDate() + 1);
           category_id: service?.category_id,
           sub_category_id: service?.id,
 
-          visit_date: dateObj.toISOString(), 
+          // visit_date: dateObj.toISOString(), 
 
-          // visit_date:selectedDate,
+          visit_date:selectedDate,
 
           // visit_time: (() => {
           //   if (selectedTime) {
@@ -382,6 +382,14 @@ dateObj.setDate(dateObj.getDate() + 1);
   };
 
 
+  const handleDateChange = (newValue) => {
+    const istDate = format(newValue, "yyyy-MM-dd'T'HH:mm:ssXXX", {
+      timeZone: "Asia/Kolkata",
+    });
+    setSelectedDate(istDate); // Store date in IST format
+  };
+
+
 
 
 
@@ -422,22 +430,22 @@ dateObj.setDate(dateObj.getDate() + 1);
               </div>
 
               <div >
-                {/* <div className="d-flex"> */}
-                  <div className="booking-form-group flex-fill">
-                  <label className="booking-form-label" htmlFor="time-input">
-                    Select Visit Date
-                  </label>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}  style={{ width: '100%' }}>
-                      <DatePicker
-                        // label="Select Visit Date"
-                        value={selectedDate}
-                        onChange={(newValue) => setSelectedDate(newValue)}
-                        minDate={new Date()}
-                        renderInput={(params) => <TextField {...params}  />}
-                      />
-                    </LocalizationProvider>
-                  </div>
-                  {/* </div> */}
+
+
+                <div className="booking-form-group flex-fill">
+      <label className="booking-form-label" htmlFor="time-input">
+        Select Visit Date
+      </label>
+      <LocalizationProvider dateAdapter={AdapterDateFns}>
+        <DatePicker
+          value={selectedDate}
+          onChange={handleDateChange}
+          minDate={new Date()}
+          renderInput={(params) => <TextField {...params} />}
+        />
+      </LocalizationProvider>
+    </div>
+
 
                 <div className="booking-form-group">
                   <label className="booking-form-label" htmlFor="time-input">
