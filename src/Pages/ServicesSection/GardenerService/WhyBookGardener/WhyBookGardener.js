@@ -109,7 +109,7 @@ const WhyBookGardener = () => {
               <img
                   src="/ServicesSection/ClipPathGroup.jpg" 
                   alt="Decorative dotted line"
-                  className="dotted-line-image"
+                  className="dotted-line-image "
               />
           </div>
           <div className="nav-container container">

@@ -36,12 +36,12 @@ const ServicesSection = () => {
   };
 
   return (
-    <div className="container-bg-color mt-5 mb-5">
-      <div className="container nav-container pages-margin">
+    <div className="container-bg-color mt-5 mb-5 pt-4">
+      <div className="container nav-container ">
         <h2 className="text-center mb-4 services-title">Services</h2>
-        <div className="row services-div">
+        <div className="row services-div" >
           {allServices.map((service, index) => (
-            <div key={index} className="col-md-4 mb-2">
+            <div key={index} className="col-md-4 " style={{justifyItems:"center"}}>
               <div
                 className={`card text-center ${
                   activeCard === index ? "active" : ""

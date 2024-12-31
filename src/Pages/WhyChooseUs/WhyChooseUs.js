@@ -25,7 +25,7 @@ const WhyChooseUs = () => {
   return (
     <div className="container why-choose-us-container text-center">
       <h2 className="why-choose-us-title mb-5">Why Choose Us</h2>
-      <div className="row justify-content-center">
+      <div className="row justify-content-center" style={{gap:"0px"}}> 
         {items.map((item, index) => (
           <div key={index} className="col-6 col-md-3 mt-3">
             <div className="why-choose-us-icon-container mx-auto">

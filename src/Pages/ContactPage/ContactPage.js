@@ -17,15 +17,23 @@ function ContactPage() {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [message, setMessage] = useState("");
+  const [activeDropdown, setActiveDropdown] = useState(null); // Dropdown toggle state
+  const [selectedLocation, setSelectedLocation] = useState("");
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const handleLocationChange = (location) => {
+    setSelectedLocation(location);
+    setFormData({ ...formData, city: location });
+    setActiveDropdown(null); // Close the dropdown after selection
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     // Perform custom form validation
     if (!formData.name.trim()) {
       setMessage("Name is required.");
@@ -57,7 +65,7 @@ function ContactPage() {
       handleShow();
       return;
     }
-  
+
     try {
       const payload = {
         support: {
@@ -68,7 +76,7 @@ function ContactPage() {
           description: formData.message,
         },
       };
-  
+
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
         payload,
@@ -79,9 +87,9 @@ function ContactPage() {
         }
       );
       console.log("API Response:", response.data);
-  
+
       setShowPopup(true);
-  
+
       // Clear the form fields after submission
       setFormData({
         name: "",
@@ -173,18 +181,47 @@ function ContactPage() {
                     onChange={handleInputChange}
                   />
                 </div>
+
+                {/* Location Dropdown */}
                 <div className="form-group">
-                  <select
-                    name="city"
-                    value={formData.city}
-                    onChange={handleInputChange}
-                  >
-                    <option value="">City</option>
-                    <option value="mumbai">Mumbai</option>
-                    <option value="delhi">Delhi</option>
-                    <option value="bangalore">Bangalore</option>
-                  </select>
+                <div className="nav-item dropdown location-dropdown">
+              <a
+                className="nav-link dropdown-toggle location-drop"
+                href="#"
+                style={{width:"auto", marginRight:"0px"}}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveDropdown(activeDropdown === "location" ? null : "location");
+                }}
+              >
+                <div style={{gap:"10px"}}>
+                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                  <span style={{ color: "#999999", fontSize: "16px" }}>
+                    {selectedLocation || "Select Location"}
+                  </span>
+                  
                 </div>
+              </a>
+              {activeDropdown === "location" && (
+                <div className="dropdown-menu show">
+                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
+                    <a
+                      key={city}
+                      className="dropdown-item"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleLocationChange(city);
+                      }}
+                    >
+                      {city}
+                    </a>
+                  ))}
+                </div>
+              )}
+            </div>
+                </div>
+
                 <div className="form-group">
                   <textarea
                     name="message"

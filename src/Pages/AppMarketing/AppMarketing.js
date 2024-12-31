@@ -31,7 +31,7 @@ const AppMarketing = () => {
   }, []);
 
   return (
-    <div className="col-md-12 col-12 hero-container" ref={sectionRef}>
+    <div className="col-md-12 col-12 hero-container" style={{overflowX : "hidden"}} ref={sectionRef}>
       <div className="col-md-4 col-12 content">
         <p className="subtitle-app">No more switching apps</p>
         <h1 className="title-app">

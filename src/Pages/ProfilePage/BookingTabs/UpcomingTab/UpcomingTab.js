@@ -261,7 +261,15 @@ const UpcomingTab = () => {
                       <button
                         className="btn-cancel"
                         onClick={() => handleCancelClick(booking?.booking_id)}
-                      >
+                        disabled={booking?.booking_status === "cancelled"}
+                      style={{
+                        cursor:
+                          booking?.booking_status === "cancelled"
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          booking?.booking_status === "cancelled" ? 0.5 : 1,
+                      }}>
                         Cancel
                       </button>
                       <button
@@ -269,6 +277,15 @@ const UpcomingTab = () => {
                         onClick={() => {
                           handleModifyButton(booking?.booking_id);
                         }}
+                        disabled={booking?.booking_status === "cancelled"}
+                      style={{
+                        cursor:
+                          booking?.booking_status === "cancelled"
+                            ? "not-allowed"
+                            : "pointer",
+                        opacity:
+                          booking?.booking_status === "cancelled" ? 0.5 : 1,
+                      }}
                       >
                         Modify
                       </button>

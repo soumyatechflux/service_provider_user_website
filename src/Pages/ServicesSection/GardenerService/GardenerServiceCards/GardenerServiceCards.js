@@ -107,7 +107,10 @@ const GardenerServiceCards = () => {
                     {service?.description && (
                       <div className="reviews">
                         <span>
-                          Description: {viewMore[index] ? service.description : truncateText(service.description, 30).truncated}
+                          Description:{" "}
+                          {viewMore[index]
+                            ? service.description
+                            : truncateText(service.description, 30).truncated}
                         </span>
                         {truncateText(service.description, 30).isTruncated && (
                           <a
@@ -135,7 +138,9 @@ const GardenerServiceCards = () => {
                         <div className="amount">
                           <span className="currency">₹</span>
                           <span className="value">{service?.price}</span>
-                          <span className="period">/{service?.number_of_people}</span>
+                          <span className="period">
+                            /{service?.number_of_people}
+                          </span>
                         </div>
                       </div>
                       <div>
@@ -173,29 +178,19 @@ const GardenerServiceCards = () => {
 
 export default GardenerServiceCards;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- {/* <ul className="features">
+{
+  /* <ul className="features">
                     {service.features.map((feature, featureIndex) => (
                       <li key={featureIndex}>
                         <span className="check-icon">&#10003;</span>
                         {feature}
                       </li>
                     ))}
-                  </ul> */}
+                  </ul> */
+}
 
-                    {/* <a href="#" className="view-details">
+{
+  /* <a href="#" className="view-details">
                     View Details
-                  </a> */}
+                  </a> */
+}

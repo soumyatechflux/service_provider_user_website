@@ -7,52 +7,46 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState(null); // Default to null
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   const navbarRef = useRef(null);
   const navigate = useNavigate();
 
-  // Check login status on mount
   useEffect(() => {
     const loginStatus = sessionStorage.getItem("IsLogedIn");
     setIsLoggedIn(loginStatus === "true");
   }, []);
 
-  // Logout function
   const handleLogout = () => {
     setIsLoggedIn(false);
     sessionStorage.setItem("IsLogedIn", "false");
     closeAllDropdowns();
   };
 
-  // Close all dropdowns
   const closeAllDropdowns = () => {
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   };
 
-  
-
-  // Handle clicks outside navbar
-  const handleClickOutside = (event) => {
-    // Check if click is outside navbar
-    if (!navbarRef.current?.contains(event.target)) {
-      closeAllDropdowns();
-      return;
+  const handleNavbarClick = (e) => {
+    // Check if the clicked element is within an interactive dropdown or navbar item
+    if (
+      e.target.closest(".nav-item.dropdown") ||
+      e.target.closest(".navbar-toggler") ||
+      e.target.closest(".custom-dropdown-menu")
+    ) {
+      return; // Do not close dropdowns if interacting with these elements
     }
-    
-    // Check if click is on navbar but not on dropdown toggles
-    const isDropdownToggle = event.target.closest('.dropdown-toggle') || 
-                            event.target.closest('.user-icon-navbar');
-    const isDropdownItem = event.target.closest('.dropdown-item') ||
-                          event.target.closest('.custom-dropdown-item');
-                          
-    if (!isDropdownToggle && !isDropdownItem) {
-      closeAllDropdowns();
-    }
+    closeAllDropdowns();
   };
 
   useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (!navbarRef.current?.contains(event.target)) {
+        closeAllDropdowns();
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
@@ -60,17 +54,23 @@ const Navbar = () => {
   }, []);
 
   const handleLocationChange = (location) => {
-    setSelectedLocation(location); // Update the selected location
-    setActiveDropdown(null); // Close the dropdown
+    setSelectedLocation(location);
+    closeAllDropdowns();
+  };
+
+  const handleNavigationCustom = (path) => {
+    closeAllDropdowns();
+    navigate(path);
   };
 
   return (
     <nav
       className="navbar navbar-expand-lg navbar-light sticky-top"
-      ref={navbarRef} // Attach the ref to the entire navbar
+      id="except-div"
+      ref={navbarRef}
+      onClick={handleNavbarClick} // Add this handler to listen for clicks on the navbar
     >
       <div className="container container-nav">
-        {/* Logo */}
         <Link
           className="navbar-brand"
           to="/"
@@ -82,7 +82,6 @@ const Navbar = () => {
           <span className="logo">Servyo</span>
         </Link>
 
-        {/* Mobile Toggle Button */}
         <button
           className="navbar-toggler"
           type="button"
@@ -91,25 +90,20 @@ const Navbar = () => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Navigation Items */}
         <div
           className={`collapse navbar-collapse ${
             isMobileMenuOpen ? "show" : ""
           }`}
         >
           <ul className="navbar-nav">
-            {/* Home Link */}
             <li className="nav-item">
-              <Link
+              <a
                 className="nav-link"
-                to="/"
-                onClick={() => {
-                  window.scrollTo({ top: 0, behavior: "smooth" });
-                  closeAllDropdowns();
-                }}
+                onClick={() => handleNavigationCustom("/")}
+                style={{ cursor: "pointer" }}
               >
                 Home
-              </Link>
+              </a>
             </li>
             <li className="nav-item dropdown">
               <a
@@ -122,7 +116,17 @@ const Navbar = () => {
                   );
                 }}
               >
-                Services <ChevronDown className="dropdown-icon" />
+                Services{" "}
+                <ChevronDown
+                  className="dropdown-icon"
+                  style={{
+                    transition: "transform 0.3s",
+                    transform:
+                      activeDropdown === "services"
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                  }}
+                />
               </a>
               {activeDropdown === "services" && (
                 <div className="dropdown-menu services-drop show">
@@ -150,27 +154,27 @@ const Navbar = () => {
                 </div>
               )}
             </li>
+
             <li className="nav-item">
-              <Link
+              <a
                 className="nav-link"
-                to="/about-us"
-                onClick={closeAllDropdowns}
+                style={{ cursor: "pointer" }}
+                onClick={() => handleNavigationCustom("/about-us")}
               >
                 About Us
-              </Link>
+              </a>
             </li>
             <li className="nav-item">
               <Link
                 className="nav-link"
                 to="/join-as-partner"
-                onClick={closeAllDropdowns}
+                onClick={() => handleNavigationCustom("/join-as-partner")}
               >
                 Join As Partner
               </Link>
             </li>
           </ul>
 
-          {/* Right Side Items */}
           <div className="navbar-nav right-items">
             <div className="nav-item dropdown location-dropdown">
               <a
@@ -188,67 +192,37 @@ const Navbar = () => {
                   <span style={{ color: "#999999", fontSize: "16px" }}>
                     {selectedLocation || "Select Location"}
                   </span>
+                  <ChevronDown
+                    className="ms-1"
+                    style={{
+                      transition: "transform 0.3s",
+                      transform:
+                        activeDropdown === "location"
+                          ? "rotate(180deg)"
+                          : "rotate(0deg)",
+                    }}
+                  />
                 </div>
-                <i
-                  className={`ms-1 bi ${
-                    activeDropdown === "location"
-                      ? "bi-chevron-up"
-                      : "bi-chevron-down"
-                  }`}
-                ></i>
               </a>
               {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLocationChange("Delhi");
-                    }}
-                  >
-                    Delhi
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLocationChange("Mumbai");
-                    }}
-                  >
-                    Mumbai
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLocationChange("Bangalore");
-                    }}
-                  >
-                    Bangalore
-                  </a>
-                  <a
-                    className="dropdown-item"
-                    href="#"
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLocationChange("Chennai");
-                    }}
-                  >
-                    Chennai
-                  </a>
+                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
+                    <a
+                      key={city}
+                      className="dropdown-item"
+                      href="#"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleLocationChange(city);
+                      }}
+                    >
+                      {city}
+                    </a>
+                  ))}
                 </div>
               )}
             </div>
 
-            {/* Download App Button */}
-            <button className="btn btn-primary d-none d-lg-inline-block nav-buttons">
-              Download App
-            </button>
-
-            {/* Profile Dropdown */}
             <div className="nav-item dropdown">
               <a
                 className="nav-link"
@@ -269,10 +243,7 @@ const Navbar = () => {
                       <Link
                         to="/my-profile"
                         className="custom-dropdown-item"
-                        onClick={() => {
-                          window.scrollTo({ top: 0, behavior: "smooth" });
-                          closeAllDropdowns();
-                        }}
+                        onClick={closeAllDropdowns}
                       >
                         My Profile
                       </Link>

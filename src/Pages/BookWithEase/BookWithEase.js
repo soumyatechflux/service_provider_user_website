@@ -7,7 +7,7 @@ const BookWithEase = () => {
     {
       icon: "./BookWithEase/app.jpg",
       title: "Register on app",
-      description: "Download the Servyo app and register yourself",
+      description: "Get started with Servyo by downloading the app and creating your account.",
     },
     {
       icon: "./BookWithEase/service.jpg",

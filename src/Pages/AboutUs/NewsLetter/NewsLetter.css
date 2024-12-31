@@ -111,6 +111,8 @@
   }
 
   .newsletter-form {
+   
+   padding: 5px 10px;
     gap: 10px; /* Adjust spacing between form elements */
   }
 

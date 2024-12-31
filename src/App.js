@@ -66,7 +66,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App" id="inner-body">
       <BrowserRouter>
         <ScrollToTop />
         <ConditionalNavbar />
@@ -77,7 +77,6 @@ function App() {
             path="/"
             element={
               <>
-             
                 <HomeHeroSection />
                 <ServicesSection />
                 {/* <MarketingSection /> */}
@@ -117,6 +116,7 @@ function App() {
         </Routes>
         <ConditionalDownloadApp />
         <ConditionalFooter />
+        
       </BrowserRouter>
     </div>
   );

@@ -188,7 +188,7 @@
   
   @media (max-width: 767px) {
     .contact-page {
-      padding: 20px 0;
+      padding: 0px 0 !important;
     }
   
     .contact-form,

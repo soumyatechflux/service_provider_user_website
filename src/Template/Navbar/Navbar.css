@@ -194,9 +194,7 @@
   
     }
     
-    .custom-dropdown-menu .custom-dropdown-item + .custom-dropdown-item {
-    }
-    
+
     
   /* Responsive styles */
   @media (max-width: 991px) {
@@ -230,7 +228,7 @@
       background-color: white;
     }
     .custom-dropdown-menu{
-      left: -2px;
+      left: 1px !important;
       /* top: 0; */
       width: auto;
       padding: 5px;

@@ -13,7 +13,9 @@
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Enhanced shadow effect */
   border: 3px solid #6979F8;
 }
-
+.margin-responsive{
+  margin-bottom: 10px !important;
+}
 .card .card-img-top {
   width: 160px;
   height: 160px;
@@ -72,6 +74,11 @@
   }
   .card{
     width: auto;
+    
+  }
+ 
+  .margin-responsive{
+    margin-bottom: 30px !important;
   }
   .card-title {
     font-size: 1.1rem;
@@ -82,10 +89,11 @@
   }
   .row{
       margin: 0px 15px;
+      gap: 25px;
     
   }
   .services-div{
-    padding-bottom: 30px !important;
+    /* padding-bottom: 30px !important; */
   }
   .services-title{
     padding-top: 20px;

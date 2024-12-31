@@ -2,7 +2,7 @@
 .book-ease-container {
   /* background-color: #f9f9f9; */
   font-family: "DM Sans";
-  padding: 20px; /* Add padding for smaller screens */
+  padding: 20px 0px; /* Add padding for smaller screens */
   display: flex;
   flex-wrap: wrap; /* Ensure cards wrap on smaller screens */
   justify-content: center; /* Center align cards */
@@ -27,10 +27,8 @@
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s, box-shadow 0.3s ease-in-out;
-  padding: 40px 10px 20px 20px;
-  min-height: auto;
-  height: 300px;
-  /* width: 280px; */
+  padding: 40px 0px 10px 20px;
+  height: auto;
 }
 
 /* Icon styling */
@@ -59,10 +57,10 @@
 
 /* Description text styling */
 .book-ease-description {
-  font-size: 17.5px;
+  font-size: 18px;
   color: #666;
   line-height: 1.5;
-  margin: 0rem 0.5rem 1rem 0.5rem;
+  margin: 0px 35px 10px 10px
 }
 
 /* Responsive styles */
@@ -92,7 +90,10 @@
 
 @media (max-width: 576px) {
   .book-ease-title {
-    font-size: 1.5rem;
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 42px;
+    font-family: "DM Sans";
     margin-bottom: 20px;
   }
 
@@ -102,14 +103,14 @@
   }
 
   .book-ease-step-title {
-    font-size: 1rem;
+    font-size: 26px;
   }
 
   .book-ease-description {
-    font-size: 0.85rem;
+    font-size: 18px;
   }
 
   .book-ease-icon img {
-    width: 60px; /* Further reduce icon size */
+    width: 80px; /* Further reduce icon size */
   }
 }

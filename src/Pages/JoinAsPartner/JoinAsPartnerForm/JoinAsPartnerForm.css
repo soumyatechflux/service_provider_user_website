@@ -153,17 +153,74 @@
   margin-bottom: 0.5rem;
 }
 
-.join-partner-select {
+/* Wrapper for dropdown */
+.join-partner-form-group {
+  display: flex;
+  flex-direction: column;
   width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
-  color: #666;
-  font-size: 1rem;
-  background-color: white;
+  margin-bottom: 1rem;
 }
+
+/* Responsive select styling */
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.join-partner-select {
+  width: 600px; /* Set your desired width */
+  max-width: 100%; /* Optional: ensures it doesn't overflow the container */
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  appearance: none; /* Removes default dropdown arrow styling */
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Add focus effect */
+.join-partner-select:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+/* Error message styling */
 .error-text {
-  color: red;
+  color: #ff0000;
   font-size: 0.875rem;
   margin-top: 0.25rem;
+}
+
+/* Add a custom dropdown arrow */
+.custom-select-wrapper::after {
+  content: "▼";
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  pointer-events: none; /* Prevent the arrow from blocking interaction */
+  font-size: 0.75rem;
+  color: #666;
+}
+
+
+
+
+
+@media (max-width: 768px) {
+  .join-partner-container{
+    padding: 0 !important;
+    gap: 0;
+  }
+  .join-partner-select {
+    font-size: 0.9rem;
+    padding: 0.4rem; /* Adjust padding for smaller screens */
+  }
+
+  .error-text {
+    font-size: 0.75rem; /* Reduce font size for error messages */
+  }
 }

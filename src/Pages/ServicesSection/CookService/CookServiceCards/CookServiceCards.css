@@ -191,7 +191,7 @@
 /* Responsive styles */
 @media (max-width: 768px) {
   .cook-services {
-      padding: 40px 0;
+      padding: 0px 0;
   }
 
   .section-title {
