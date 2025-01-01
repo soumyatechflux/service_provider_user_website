@@ -5,6 +5,7 @@ import axios from "axios";
 import Loader from "../../../Loader/Loader";
 import MessageModal from "../../../MessageModal/MessageModal";
 import ServiceDetailsModal from "../../ServiceDetailsModal/ServiceDetailsModal";
+import BookingMessageModal from "../../BookingSection/BookingMessageModal/BookingMessageModal";
 
 const CookServiceCards = () => {
   const navigate = useNavigate();
@@ -159,6 +160,12 @@ const CookServiceCards = () => {
                 </div>
               ))}
               <MessageModal
+                show={show}
+                handleClose={handleClose}
+                handleShow={handleShow}
+                message={message}
+              />
+              <BookingMessageModal
                 show={show}
                 handleClose={handleClose}
                 handleShow={handleShow}

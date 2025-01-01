@@ -137,54 +137,51 @@ const LogInPage = () => {
       },
     };
 
+    try {
+      setLoading(true); // Start loader
 
-  try {
-    setLoading(true); // Start loader
-  
-    const response = await OTPAPI(data);
-    console.log("API Response:", response);
-  
-    if (response?.status === 200 && response?.data?.success === true) {
-      // Store token and login status
-      sessionStorage.setItem(
-        "ServiceProviderUserToken",
-        response?.data?.token
-      );
-      sessionStorage.setItem("IsLogedIn", true);
-  
-      // Show success message in modal
-      
-  
-      // Navigate to home after a short delay (optional)
-      
+      const response = await OTPAPI(data);
+      console.log("API Response:", response);
+
+      if (response?.status === 200 && response?.data?.success === true) {
+        // Store token and login status
+        sessionStorage.setItem(
+          "ServiceProviderUserToken",
+          response?.data?.token
+        );
+        sessionStorage.setItem("IsLogedIn", true);
+
+        // Show success message in modal
+
+        // Navigate to home after a short delay (optional)
+
         navigate("/");
-      
 
-      setMessage(response?.data?.message || "LogIn Successful");
-      setShow(true);
-      handleShow(); // Show the modal
-    } else {
-      console.error("Failed:", response?.data?.message);
-  
-      // Show failure message in modal
-      setMessage(
-        response?.data?.message || "Failed to verify OTP. Please try again."
-      );
+        setMessage(response?.data?.message || "LogIn Successful");
+        setShow(true);
+        handleShow(); // Show the modal
+      } else {
+        console.error("Failed:", response?.data?.message);
+
+        // Show failure message in modal
+        setMessage(
+          response?.data?.message || "Failed to verify OTP. Please try again."
+        );
+        setShow(true);
+        handleShow();
+      }
+    } catch (err) {
+      console.error("Error verifying OTP:", err);
+
+      // Show error message in modal
+      setMessage("An error occurred while verifying OTP. Please try again.");
       setShow(true);
       handleShow();
+    } finally {
+      // Stop the loader in all cases
+      setLoading(false);
     }
-  } catch (err) {
-    console.error("Error verifying OTP:", err);
-  
-    // Show error message in modal
-    setMessage("An error occurred while verifying OTP. Please try again.");
-    setShow(true);
-    handleShow();
-  } finally {
-    // Stop the loader in all cases
-    setLoading(false);
-  }
-}
+  };
 
   useEffect(() => {
     let timer;
@@ -213,6 +210,9 @@ const LogInPage = () => {
   if (loading) {
     return <Loader />;
   }
+  const handleBackToHome = () => {
+    navigate("/"); // Navigate to the home route
+  };
 
   return (
     <>
@@ -288,13 +288,19 @@ const LogInPage = () => {
               </button>
             </div>
           )}
-          <div>
+          <div style={{ textAlign: "center" }}>
             <p className="signup-text">
               Don't have an account?{" "}
               <Link to="/sign-up" className="signup-link">
                 Sign Up
               </Link>
             </p>
+            <button
+              className="back-button-unique1"
+              onClick={handleBackToHome} 
+            >
+              ← Back To Home
+            </button>
           </div>
         </div>
       </div>

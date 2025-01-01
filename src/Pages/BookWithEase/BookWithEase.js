@@ -18,7 +18,7 @@ const BookWithEase = () => {
     {
       icon: "./BookWithEase/calendar.jpg",
       title: "Choose date and time",
-      description: "Book your slot as per your convenience and availability",
+      description: "Book your slot easily as per your convenience and availability",
     },
     {
       icon: "./BookWithEase/sitback.jpg",

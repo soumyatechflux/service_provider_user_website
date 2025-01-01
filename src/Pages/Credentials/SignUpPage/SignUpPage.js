@@ -163,8 +163,8 @@ const SignUpPage = () => {
 
         
         setTimeout(() => {
-          navigate("/login");
-        }, 5000); // Adjust delay as needed
+          navigate("/");
+        }, 3000); // Adjust delay as needed
 
         setStep("otp");
       } else {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Pencil, MapPin, Plus, Pen, Check, X } from "lucide-react";
 import "./ProfileDetails.css";
 import Loader from "../../Loader/Loader";
@@ -41,15 +41,18 @@ const ProfileDetails = () => {
     setOpenDropdownIndex(openDropdownIndex === index ? null : index);
   };
 
-  const handleOutsideClick = (e) => {
-    // Close dropdown if click is outside
-    if (
-      dropdownRefs.current &&
-      !dropdownRefs.current.some((ref) => ref.contains(e.target))
-    ) {
-      setOpenDropdownIndex(null);
+  const handleOutsideClick = useCallback((e) => {
+    // Check if dropdownRefs.current exists and has entries
+    if (dropdownRefs.current) {
+      const clickedOutside = Object.values(dropdownRefs.current).every(
+        (ref) => !ref || !ref.contains(e.target)
+      );
+      
+      if (clickedOutside) {
+        setOpenDropdownIndex(null);
+      }
     }
-  };
+  }, []);
 
   // Add event listener for outside clicks
   useEffect(() => {
@@ -58,7 +61,10 @@ const ProfileDetails = () => {
     return () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
-  }, []);
+  }, [handleOutsideClick]);
+  useEffect(() => {
+    dropdownRefs.current = {};
+  }, [addresses]);
 
   const toggleDropdown = (id) => {
     setDropdownOpen((prev) => (prev === id ? null : id));
@@ -414,7 +420,13 @@ const ProfileDetails = () => {
                   </p>
                   <div
                     className="position-relative"
-                    ref={(el) => (dropdownRefs.current[index] = el)}
+                    ref={(el) => {
+                      if (el) {
+                        dropdownRefs.current[index] = el;
+                      } else {
+                        delete dropdownRefs.current[index];
+                      }
+                    }}
                   >
                     <button
                       className="custom-dropdown-toggle"

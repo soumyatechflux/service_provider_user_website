@@ -268,7 +268,7 @@ function PreviousTab() {
                       color:
                         booking?.booking_status === "cancelled"
                           ? "red"
-                          : booking?.booking_status === "Completed"
+                          : booking?.booking_status === "completed"
                           ? "green"
                           : "inherit",
                     }}
@@ -279,7 +279,7 @@ function PreviousTab() {
                         backgroundColor:
                           booking?.booking_status === "cancelled"
                             ? "red"
-                            : booking?.booking_status === "Completed"
+                            : booking?.booking_status === "completed"
                             ? "green"
                             : "transparent",
                       }}

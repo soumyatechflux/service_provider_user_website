@@ -178,8 +178,13 @@ const ModifyBooking = ({fetchUpcommingBookings }) => {
       if(response?.status===200 && response?.data?.success){
         // alert(response?.data?.message||"booking updated successfully!");
         setMessage(response?.data?.message||"booking updated successfully!");
+
         setShow(true);
         handleShow(); // Show the modal
+        // Delay navigation to allow the user to see the success message
+        setTimeout(() => {
+          navigate("/my-profile");
+        }, 2000); // 2 seconds delay
       }
       else{
         // alert(response?.data?.message||"Failed to update Booking!");

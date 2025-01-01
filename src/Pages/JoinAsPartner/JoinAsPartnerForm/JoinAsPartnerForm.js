@@ -276,9 +276,7 @@ const JoinAsPartnerForm = () => {
             123 Connaught Place, Rajiv Chowk,
           </p>
           <p className="join-partner-address-text">New Delhi, Delhi, 110001</p>
-          <a href="#" className="join-partner-link">
-            Check Map →
-          </a>
+          
         </div>
       </div>
       <MessageModal

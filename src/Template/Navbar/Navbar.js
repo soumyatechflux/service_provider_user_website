@@ -2,12 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { ChevronDown, MapPin, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import { Modal, Button } from "react-bootstrap";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   const navbarRef = useRef(null);
   const navigate = useNavigate();
@@ -26,6 +28,21 @@ const Navbar = () => {
   const closeAllDropdowns = () => {
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
+  };
+  const handleLogoutClick = () => {
+    setShowLogoutModal(true);
+  };
+
+  const confirmLogout = () => {
+    setShowLogoutModal(false);
+    handleLogout();
+    sessionStorage.clear()
+    localStorage.clear();
+    navigate("/")
+  };
+
+  const cancelLogout = () => {
+    setShowLogoutModal(false);
   };
 
   const handleNavbarClick = (e) => {
@@ -248,9 +265,9 @@ const Navbar = () => {
                         My Profile
                       </Link>
                       <Link
-                        to="/"
+                        to="#"
                         className="custom-dropdown-item"
-                        onClick={handleLogout}
+                        onClick={handleLogoutClick}
                       >
                         Logout
                       </Link>
@@ -270,6 +287,21 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+      {/* Logout Confirmation Modal */}
+      <Modal show={showLogoutModal} onHide={cancelLogout} centered>
+        <Modal.Header closeButton>
+          <Modal.Title>Confirm Logout</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Are you sure you want to log out?</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={cancelLogout}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={confirmLogout}>
+            Logout
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </nav>
   );
 };

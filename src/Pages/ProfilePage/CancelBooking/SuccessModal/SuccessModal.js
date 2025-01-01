@@ -1,6 +1,13 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom';
 
 const SuccessModal = ({ isOpen, onClose }) => {
+  const navigate = useNavigate();
+
+  const handleCloseAndNavigate = () => {
+    onClose(); // Call the onClose function to close the modal
+    window.location.reload(); // Refresh the page after navigation
+  };
     return (
         <div className={`modal ${isOpen ? 'show' : ''}`} style={{ display: isOpen ? 'block' : 'none' }}>
           <div className="modal-dialog modal-dialog-centered">
@@ -14,7 +21,7 @@ const SuccessModal = ({ isOpen, onClose }) => {
                   Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed uis aliquod tempor
                   incididunt ut labore et dolore magna aliqua
                 </p>
-                <button className="btn btn-primary px-4" onClick={onClose}>
+                <button className="btn btn-primary px-4" onClick={handleCloseAndNavigate}>
                   Go back
                 </button>
               </div>

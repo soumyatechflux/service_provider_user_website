@@ -12,9 +12,67 @@
 
 .serial-number {
   font-weight: bold;
-
+}
+/* General Styling */
+.custom-dropdown-container {
+  position: relative;
+  display: inline-block;
 }
 
+/* Dropdown Toggle Styling */
+.custom-dropdown-toggle {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+/* Dropdown Menu Styling */
+.custom-dropdown-menu-booking {
+  position: absolute !important;
+  right: 0 !important;
+  left: -140px !important;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  max-width:  100px;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid #e5e5e5;
+}
+
+/* Dropdown Item Styling */
+.custom-dropdown-item-booking {
+  /* padding: 10px 15px; */
+  font-size: 16px;
+  color: #333;
+  transition: background-color 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.custom-dropdown-item-booking:hover {
+  color: white !important;
+  background-color: #6c63ff !important;
+}
+
+
+
+.custom-booking-drop {
+  position: absolute !important;
+  top: 100% !important;
+  width: 100px !important;
+  right: 0 !important;
+  background: white !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+  border-radius: 4px !important;
+  z-index: 1000 !important;
+}
+.custom-booking-drop:hover{
+  color: white !important;
+  background-color: #6c63ff !important;
+}
 /* Booking Form */
 .booking-booking-form {
   flex: 1;
@@ -122,15 +180,14 @@
 }
 
 .time-slot:hover {
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: #fff;
 }
 
 .time-slot.selected {
-  background-color: #6366F1;
+  background-color: #6366f1;
   color: #fff;
 }
-
 
 /* Calendar Grid */
 .booking-calendar-grid {
@@ -337,7 +394,7 @@
   position: relative;
   top: -14px;
 }
-.arrow_for_cancellation{
+.arrow_for_cancellation {
   font-weight: 100;
   position: relative;
   top: -2px;
@@ -960,7 +1017,8 @@
   width: 100%;
   border-radius: 8px;
   font-size: 16px;
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease,
+    background-color 0.3s ease;
   color: white;
   cursor: pointer;
 }
@@ -971,7 +1029,6 @@
   transform: scale(1.05); /* Slightly increase size */
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); /* Add shadow */
 }
-
 
 @media screen and (max-width: 768px) {
   /* For tablets and smaller devices */

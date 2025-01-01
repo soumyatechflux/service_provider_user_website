@@ -129,11 +129,7 @@ const UpcomingTab = () => {
 
       if (response?.status === 200 && response?.data?.success) {
         setCurrentModal("success");
-        // alert(response?.data?.message || "Booking canceled successfully!");
-
-        setMessage(response?.data?.message || "Booking canceled successfully!");
-        setShow(true);
-        handleShow(); // Show the modal
+       
       } else {
         // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");
@@ -202,7 +198,7 @@ const UpcomingTab = () => {
                         {formatTime(bookingsIdWise?.visit_time)}
                       </h2>
                       <div className="service-image image-flex">
-                        <img src="./../ServicesSection/CookingSection/chef-cooking-2.jpg" />
+                        <img src="./../ServicesSection/demoCancel.jpg" />
                         <h3 className="heading-text">
                           {bookingsIdWise?.sub_category?.sub_category_name}
                         </h3>

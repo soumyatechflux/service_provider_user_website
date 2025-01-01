@@ -38,6 +38,7 @@ const BookingSection = () => {
   const [addressToEdit, setAddressToEdit] = useState(null); // Track the address being edited
   const [isEditingAddress, setIsEditingAddress] = useState(false); // State for editing address modal
   const [makeDisable, setMakeDisable] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
 
@@ -389,7 +390,7 @@ dateObj.setDate(dateObj.getDate() + 1);
     setSelectedDate(istDate); // Store date in IST format
   };
 
-
+  
 
 
 
@@ -897,24 +898,32 @@ className="address-section mt-0">
         {address.city} - {address.state} {address.postal_code}{" "}
         {address.country}
       </p>
-      <Dropdown>
+
+
+      
+
+
+      <Dropdown className="custom-dropdown-container">
         <Dropdown.Toggle
           as="span"
           id="dropdown-custom-components"
-          className="cursor-pointer border-0 bg-transparent p-0 d-flex align-items-center"
+           className="custom-dropdown-toggle"
           bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
         >
           <BsThreeDotsVertical size={18} style={{ cursor: "pointer" }} />
         </Dropdown.Toggle>
-        <Dropdown.Menu className="dropdown-menu-end">
+        <Dropdown.Menu className="custom-dropdown-menu-booking">
+          
           <Dropdown.Item
+          className="custom-dropdown-item-booking"
             onClick={() => {
               setAddressToEdit(address?.address_id);
               setIsEditingAddress(true);
             }}
           >
-            Edit
+           <span>Edit</span> 
           </Dropdown.Item>
+          
         </Dropdown.Menu>
       </Dropdown>
     </div>
