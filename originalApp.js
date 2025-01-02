@@ -72,12 +72,14 @@ function App() {
         <ConditionalNavbar />
         {isOffline && <InternetChecker />}
         <Routes>
-          {/* <Route
+          {/* Home Page */}
+          <Route
             path="/"
             element={
               <>
                 <HomeHeroSection />
                 <ServicesSection />
+                {/* <MarketingSection /> */}
                 <AppMarketing/>
                 <WhyChooseUs />
                 <MarketingSlider/>
@@ -85,10 +87,9 @@ function App() {
                 <Testimonials />
               </>
             }
-          /> */}
-
-          
-          {/* <Route path="/services/cook-service" element={<CookService />} />
+          />
+          {/* Services */}
+          <Route path="/services/cook-service" element={<CookService />} />
           <Route path="/services/driver-service" element={<DriverService />} />
           <Route path="/services/gardener-service" element={<GardenerService />} />
           <Route path="/services/:id" element={<ServicesSection />} />
@@ -104,16 +105,14 @@ function App() {
           <Route path ="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path ="/terms-and-conditions" element={<TermsAndConditions />} />
 
- */}
 
 
-          <Route path="/" element={<LogInPage />} />
 
-          
-          {/* <Route path="/sign-up" element={<SignUpPage/>}/>
-          <Route path="*" element={<Navigate to="/" />} /> */}
-
-
+          {/* Login Page */}
+          <Route path="/login" element={<LogInPage />} />
+          <Route path="/sign-up" element={<SignUpPage/>}/>
+          {/* Catch-all route */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <ConditionalDownloadApp />
         <ConditionalFooter />
