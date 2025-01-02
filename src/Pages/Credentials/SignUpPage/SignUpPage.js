@@ -158,6 +158,12 @@ const SignUpPage = () => {
       if (response?.status === 200 && response?.data?.success === true) {
       
         setMessage("Sign up successful!");
+        
+        sessionStorage.setItem(
+          "user_name",
+          name
+        );
+
       setShow(true);
       handleShow(); // Show the modal
 

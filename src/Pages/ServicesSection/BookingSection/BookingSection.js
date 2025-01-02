@@ -19,6 +19,10 @@ import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddA
 import { BsThreeDotsVertical } from "react-icons/bs";
 import MessageModal from "../../MessageModal/MessageModal";
 import { IoIosArrowForward } from "react-icons/io";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -28,7 +32,7 @@ const BookingSection = () => {
   const { service } = location.state || {}; // Handle case where no state is passed
   const [menuOrServicesOptions, setmenuOrServicesOptions] = useState([]);
   const [menu, setMenu] = useState([]);
-  const [selectedTime, setSelectedTime] = useState("");
+  // const [selectedTime, setSelectedTime] = useState("");
   const [showGrid, setShowGrid] = useState(false);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
@@ -108,22 +112,6 @@ const BookingSection = () => {
 
 
 
-  const dummyTimeSlots = Array(12)
-    .fill()
-    .map((_, index) => {
-      const hours = Math.floor(index / 4);
-      const minutes = index % 2 === 0 ? "00" : "30";
-      return `${hours.toString().padStart(2, "0")}:${minutes}`;
-    });
-
-  const handleDropdownClick = () => {
-    setShowGrid(!showGrid);
-  };
-
-  const handleTimeSelection = (time) => {
-    setSelectedTime(time);
-    setShowGrid(false); // Close the grid after selection
-  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -150,23 +138,94 @@ const BookingSection = () => {
 
   const [BookingForGuestName, setBookingForGuestName] = useState("");
 
-  const [step, setStep] = useState(1); // Manage the current step
-
-  const [selectedDate, setSelectedDate] = useState("");
-  // const [selectedTime, setSelectedTime] = useState("");
-
   useEffect(() => {
-    // Get today's date and format it as MM-DD-YYYY
-    const today = new Date();
-    const formattedDate = today.toISOString().split("T")[0]; // YYYY-MM-DD format
-    setSelectedDate(formattedDate); // Set default selected date as today
-
-    // console.log(service.category_id,"servicehuewfservicejhefservice");
-
-
+    const storedName = sessionStorage.getItem("user_name");
+    if (storedName) {
+      setBookingForGuestName(storedName);
+    }
   }, []);
 
-  const currentTime = new Date().toISOString().slice(0, 16); // Get the current time in 'HH:MM' format
+
+  const [step, setStep] = useState(1); // Manage the current step
+
+
+
+
+
+
+
+
+
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedTime, setSelectedTime] = useState("");
+  const [minTime, setMinTime] = useState("");
+
+  useEffect(() => {
+    updateMinTime(new Date());
+  }, []);
+
+  // Helper to get current time in HH:MM format in Asia/Kolkata timezone
+  const getCurrentTimeInDelhi = () => {
+    const now = new Date();
+    const delhiTime = new Date(
+      now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    const hours = String(delhiTime.getHours()).padStart(2, "0");
+    const minutes = String(delhiTime.getMinutes()).padStart(2, "0");
+    return `${hours}:${minutes}`;
+  };
+
+  // Update minTime based on the selected date
+  const updateMinTime = (date) => {
+    const isToday = date.toDateString() === new Date().toDateString();
+    setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
+  };
+
+  // Handle Date Change
+  const handleDateChange = (newDate) => {
+    const delhiDate = new Date(
+      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    setSelectedDate(delhiDate);
+
+    const isToday =
+      delhiDate.toDateString() ===
+      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }).toDateString();
+
+    if (isToday) {
+      updateMinTime(new Date()); // Update minTime to current time for today
+    } else {
+      setMinTime("00:00"); // Reset minTime for future dates
+    }
+
+    setSelectedTime(""); // Clear the time selection
+  };
+
+// Handle Time Change
+const handleTimeChange = (e) => {
+  const selectedTimeValue = e.target.value;
+
+  if (selectedDate.toDateString() === new Date().toDateString()) {
+    const currentTime = getCurrentTimeInDelhi();
+
+    if (selectedTimeValue < currentTime) {
+      toast.error("You cannot select a past time for today's date!");
+      setSelectedTime(currentTime); // Set the selected time to the current time
+      return; // Exit the function
+    }
+  }
+
+  setSelectedTime(selectedTimeValue); // Update the selected time if valid
+};
+
+
+
+
+
+
+
+
+
 
   const [people, setPeople] = useState(1);
   const [specialRequests, setSpecialRequests] = useState("");
@@ -383,15 +442,6 @@ dateObj.setDate(dateObj.getDate() + 1);
   };
 
 
-  const handleDateChange = (newValue) => {
-    const istDate = format(newValue, "yyyy-MM-dd'T'HH:mm:ssXXX", {
-      timeZone: "Asia/Kolkata",
-    });
-    setSelectedDate(istDate); // Store date in IST format
-  };
-
-  
-
 
 
 
@@ -430,39 +480,79 @@ dateObj.setDate(dateObj.getDate() + 1);
                 />
               </div>
 
-              <div >
+     
 
 
-                <div className="booking-form-group flex-fill">
-      <label className="booking-form-label" htmlFor="time-input">
-        Select Visit Date
-      </label>
-      <LocalizationProvider dateAdapter={AdapterDateFns}>
-        <DatePicker
-          value={selectedDate}
-          onChange={handleDateChange}
-          minDate={new Date()}
-          renderInput={(params) => <TextField {...params} />}
+
+
+
+
+
+
+
+
+
+
+
+
+
+              <div>
+      {/* Date Picker */}
+      <div className="booking-form-group flex-fill">
+        <label className="booking-form-label" htmlFor="date-input">
+          Select Visit Date
+        </label>
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          <DatePicker
+            value={selectedDate}
+            onChange={handleDateChange}
+            minDate={new Date()} // Disable past dates
+            renderInput={(params) => <TextField {...params} />}
+          />
+        </LocalizationProvider>
+      </div>
+
+      {/* Time Picker */}
+      <div className="booking-form-group">
+        <label className="booking-form-label" htmlFor="time-input">
+          Select Time of Visit
+        </label>
+        <input
+          type="time"
+          id="time-input"
+          className="booking-form-input"
+          value={selectedTime}
+          onChange={handleTimeChange}
+          min={minTime} // Restrict past times dynamically
         />
-      </LocalizationProvider>
+      </div>
     </div>
 
 
-                <div className="booking-form-group">
-                  <label className="booking-form-label" htmlFor="time-input">
-                    Select Time of Visit
-                  </label>
-                  <input
-    type="time"
-    id="time-input"
-    className="booking-form-input"
-    value={selectedTime}
-    onChange={(e) => setSelectedTime(e.target.value)}
-  />
-                </div>
 
-         
-              </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               <div>
                 <div className="booking-form-group">

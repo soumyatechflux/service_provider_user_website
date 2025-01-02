@@ -149,6 +149,15 @@ const LogInPage = () => {
           "ServiceProviderUserToken",
           response?.data?.token
         );
+
+
+
+        sessionStorage.setItem(
+          "user_name",
+          response?.data?.user_name
+        );
+
+
         sessionStorage.setItem("IsLogedIn", true);
 
         // Show success message in modal
