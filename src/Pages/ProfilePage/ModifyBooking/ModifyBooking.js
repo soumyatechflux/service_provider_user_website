@@ -161,10 +161,10 @@ const ModifyBooking = ({fetchUpcommingBookings }) => {
       booking:{
         booking_id:id,
         category_id:bookingsIdWise?.category_id,
-        visit_date:selectedDate,
+        // visit_date:selectedDate,
         menu_and_services:menu,
         number_of_people:people,
-        visit_time:time,
+        // visit_time:time,
         instructions:specialRequests,
       }
     };
