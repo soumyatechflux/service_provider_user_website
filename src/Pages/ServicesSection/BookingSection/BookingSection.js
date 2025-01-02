@@ -175,31 +175,32 @@ const BookingSection = () => {
     return `${hours}:${minutes}`;
   };
 
-  // Update minTime based on the selected date
   const updateMinTime = (date) => {
     const isToday = date.toDateString() === new Date().toDateString();
     setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
   };
+  
 
-  // Handle Date Change
+
   const handleDateChange = (newDate) => {
     const delhiDate = new Date(
       newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
+  
     setSelectedDate(delhiDate);
-
-    const isToday =
-      delhiDate.toDateString() ===
-      new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" }).toDateString();
-
+  
+    const isToday = delhiDate.toDateString() === new Date().toDateString();
+  
     if (isToday) {
       updateMinTime(new Date()); // Update minTime to current time for today
     } else {
       setMinTime("00:00"); // Reset minTime for future dates
     }
-
+  
     setSelectedTime(""); // Clear the time selection
   };
+
+  
 
   // Handle Time Change
   const handleTimeChange = (e) => {
