@@ -171,7 +171,7 @@ const BookingSection = () => {
       now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
     const hours = String(delhiTime.getHours()).padStart(2, "0");
-    const minutes = String(delhiTime.getMinutes()).padStart(2, "0");
+    const minutes = String(Math.floor(delhiTime.getMinutes() / 15) * 15).padStart(2, "0");
     return `${hours}:${minutes}`;
   };
 
@@ -201,23 +201,22 @@ const BookingSection = () => {
     setSelectedTime(""); // Clear the time selection
   };
 
-// Handle Time Change
-const handleTimeChange = (e) => {
-  const selectedTimeValue = e.target.value;
+  // Handle Time Change
+  const handleTimeChange = (e) => {
+    const selectedTimeValue = e.target.value;
 
-  if (selectedDate.toDateString() === new Date().toDateString()) {
-    const currentTime = getCurrentTimeInDelhi();
+    if (selectedDate.toDateString() === new Date().toDateString()) {
+      const currentTime = getCurrentTimeInDelhi();
 
-    if (selectedTimeValue < currentTime) {
-      toast.error("You cannot select a past time for today's date!");
-      setSelectedTime(currentTime); // Set the selected time to the current time
-      return; // Exit the function
+      if (selectedTimeValue < currentTime) {
+        toast.error("You cannot select a past time for today's date!");
+        setSelectedTime(currentTime); // Set the selected time to the current time
+        return; // Exit the function
+      }
     }
-  }
 
-  setSelectedTime(selectedTimeValue); // Update the selected time if valid
-};
-
+    setSelectedTime(selectedTimeValue); // Update the selected time if valid
+  };
 
 
 
@@ -524,12 +523,10 @@ dateObj.setDate(dateObj.getDate() + 1);
           value={selectedTime}
           onChange={handleTimeChange}
           min={minTime} // Restrict past times dynamically
+          step="900" // 15-minute intervals
         />
       </div>
     </div>
-
-
-
 
 
 
