@@ -16,7 +16,7 @@
 }
 
 .service-item:nth-child(even) {
-  transform: translateX(100px);
+  /* transform: translateX(100px); */
 }
 
 .service-item.visible {
@@ -65,6 +65,23 @@
 .image-right {
   order: 2;
 }
+
+.service-content.content-left {
+  text-align: left;
+}
+
+.service-content.content-right {
+  /* text-align: right; */
+}
+
+.service-image.image-left {
+  float: left;
+}
+
+.service-image.image-right {
+  float: right;
+}
+
 
 .marketing-title{
   font-size: 36px;

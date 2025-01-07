@@ -239,6 +239,10 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+            {/* Download App Button */}
+            <button className="btn btn-primary d-lg-inline-block nav-buttons">
+              Download App
+            </button>
 
             <div className="nav-item dropdown">
               <a

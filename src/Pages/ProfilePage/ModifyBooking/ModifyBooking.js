@@ -12,7 +12,7 @@ const ModifyBooking = ({fetchUpcommingBookings }) => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [people, setPeople] = useState(0);
   const [time, setTime] = useState("12:15 AM");
-  const [menu, setMenu] = useState("");
+  const [menu, setMenu] = useState([]); // Updated to an array
   const [specialRequests, setSpecialRequests] = useState("");
   const [loading, setLoading] = useState(true);
   const [bookingsIdWise,setBookingsIdwise]= useState([]);
@@ -154,50 +154,47 @@ const ModifyBooking = ({fetchUpcommingBookings }) => {
     return `${weekday}, ${day}${getOrdinal(day)} ${month} ${year}`;
   };
 
-
+  const handleMenuChange = (e) => {
+    const { value, checked } = e.target;
+    if (checked) {
+      setMenu((prev) => [...prev, value]); // Add the selected menu
+    } else {
+      setMenu((prev) => prev.filter((item) => item !== value)); // Remove the unselected menu
+    }
+  };
 
   const handleSave = async () => {
     const updatedAddress = {
-      booking:{
-        booking_id:id,
-        category_id:bookingsIdWise?.category_id,
-        // visit_date:selectedDate,
-        menu_and_services:menu,
-        number_of_people:people,
-        // visit_time:time,
-        instructions:specialRequests,
-      }
+      booking: {
+        booking_id: id,
+        category_id: bookingsIdWise?.category_id,
+        visit_date: selectedDate,
+        menu_and_services: menu, // Send multiple selected menu items
+        number_of_people: people,
+        visit_time: time,
+        instructions: specialRequests,
+      },
     };
     try {
-     
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/update_booking`,
         updatedAddress,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if(response?.status===200 && response?.data?.success){
-        // alert(response?.data?.message||"booking updated successfully!");
-        setMessage(response?.data?.message||"booking updated successfully!");
-
-        setShow(true);
-        handleShow(); // Show the modal
-        // Delay navigation to allow the user to see the success message
+      if (response?.status === 200 && response?.data?.success) {
+        setMessage(response?.data?.message || "Booking updated successfully!");
+        handleShow();
         setTimeout(() => {
           navigate("/my-profile");
-        }, 2000); // 2 seconds delay
-      }
-      else{
-        // alert(response?.data?.message||"Failed to update Booking!");
-        setMessage(response?.data?.message||"Failed to update Booking!");
-        setShow(true);
-        handleShow(); // Show the modal
+        }, 2000);
+      } else {
+        setMessage(response?.data?.message || "Failed to update booking!");
+        handleShow();
       }
     } catch (error) {
       console.error("Error updating address:", error);
-      // alert("Failed to update address.");
-      setMessage("Failed to update address.");
-        setShow(true);
-        handleShow(); // Show the modal
+      setMessage("Failed to update booking.");
+      handleShow();
     }
   };
   
@@ -264,26 +261,35 @@ const ModifyBooking = ({fetchUpcommingBookings }) => {
           </div>
 
           <div className="modify-form-group">
-            <label className="modify-form-label">Select Menu (Optional)</label>
-            <select
-              className="modify-select-input"
-              value={menu}
-              onChange={(e) => setMenu(e.target.value)}
-            >
-              {/* <option value="">Menu and Cuisine</option> */}
-              {categoryIdWise.length > 0 ? (
-          categoryIdWise.map((category) => (
-            <option key={category.id} value={category.name}>
-              {category.name}
-            </option>
-          ))
-        ) : (
-          <option value="" disabled>
-            No Countries found
-          </option>
-        )}
-            </select>
-          </div>
+  <label className="modify-form-label">Select Menu (Optional)</label>
+  <div className="modify-checkbox-group">
+    {categoryIdWise.length > 0 ? (
+      categoryIdWise.map((category) => (
+        <div key={category.id} className="modify-checkbox-item">
+          <input
+            type="checkbox"
+            id={`menu-${category.id}`}
+            value={category.name}
+            checked={menu.includes(category.name)}
+            onChange={(e) => {
+              const { value, checked } = e.target;
+              setMenu((prevMenu) =>
+                checked
+                  ? [...prevMenu, value] // Add selected item
+                  : prevMenu.filter((item) => item !== value) // Remove unselected item
+              );
+            }}
+          />
+          <label htmlFor={`menu-${category.id}`}>{category.name}</label>
+        </div>
+      ))
+    ) : (
+      <p>No menu options available</p>
+    )}
+  </div>
+</div>
+
+
 
           <div className="modify-form-group">
             <label className="modify-form-label">

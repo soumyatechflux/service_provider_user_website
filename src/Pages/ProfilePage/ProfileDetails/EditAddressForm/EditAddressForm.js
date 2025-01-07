@@ -15,7 +15,7 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
   const [country, setCountry] = useState("");
   const [loading, setLoading] = useState(false);
   const token = sessionStorage.getItem("ServiceProviderUserToken");
-  const [setaddressId,setAddressId]=useState(0);
+  const [setaddressId, setAddressId] = useState(0);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -30,7 +30,7 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
           { headers: { Authorization: `Bearer ${token}` } }
         );
         const data = response?.data?.data;
-        setAddressId(data.address_id)
+        setAddressId(data.address_id);
         setHouseNumber(data.house || "");
         setStreetAddress(data.street_address || "");
         setStreetAddressLine(data.street_address_line2 || "");
@@ -52,53 +52,44 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
   // Save address
   const handleSave = async () => {
     const updatedAddress = {
-      address:{
-        address_id:addressId,
-          house:houseNumber,
-          street_address:streetAddress,
-          street_address_line2:streetAddressLine,
-          landmark:landmark,
-          city:city,
-          state:state,
-          postal_code:pincode,
-          country:country,
-      }
+      address: {
+        address_id: addressId,
+        house: houseNumber,
+        street_address: streetAddress,
+        street_address_line2: streetAddressLine,
+        landmark: landmark,
+        city: city,
+        state: state,
+        postal_code: pincode,
+        country: country,
+      },
     };
+
     try {
-     
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address`,
         updatedAddress,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      if(response?.status===200 && response?.data?.success){
-        // alert(response?.data?.message||"Address updated successfully!");
-        setMessage(response?.data?.message||"Address updated successfully!");
-        setShow(true);
-        handleShow(); // Show the modal
+
+      if (response?.status === 200 && response?.data?.success) {
+        setMessage(response?.data?.message || "Address updated successfully!");
+        refreshAddresses(); // Refresh the address list
+      } else {
+        setMessage(response?.data?.message || "Failed to update Address!");
       }
-      else{
-        // alert(response?.data?.message||"Failed to update Address!");
-        setMessage(response?.data?.message||"Failed to update Address!");
-        setShow(true);
-        handleShow(); // Show the modal
-      }
-     
-      refreshAddresses(); // Callback to refresh the address list
-      closeModal();
     } catch (error) {
       console.error("Error updating address:", error);
-      // alert("Failed to update address.");
       setMessage("Failed to update address.");
-        setShow(true);
-        handleShow(); // Show the modal
+    } finally {
+      handleShow(); // Show the MessageModal
     }
   };
 
   return (
     <div className="new-address-form">
       {loading ? (
-        <Loader/>
+        <Loader />
       ) : (
         <>
           <div className="form-group mb-2">
@@ -203,15 +194,17 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
           </div>
         </>
       )}
-        <MessageModal
-              show={show}
-              handleClose={handleClose}
-              handleShow={handleShow}
-              message={message}
-            />
+      <MessageModal
+        show={show}
+        handleClose={() => {
+          setShow(false); // Hide the MessageModal
+          closeModal(); // Close the EditAddressForm modal
+        }}
+        message={message}
+      />
+      ;
     </div>
   );
-
 };
 
 export default EditAddressForm;

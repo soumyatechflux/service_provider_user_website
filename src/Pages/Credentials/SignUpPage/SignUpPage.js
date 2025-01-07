@@ -37,6 +37,10 @@ const SignUpPage = () => {
     }
   };
 
+  const handleBackToHome = () => {
+    navigate("/"); // Navigate to the home route
+  };
+
   const handleSendOtp = async () => {
     if (!name.trim()) {
       setMessage("Name cannot be empty.");
@@ -156,13 +160,23 @@ const SignUpPage = () => {
       const response = await OTPAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
-      
-        setMessage("Sign up successful!");
-        
+
+        sessionStorage.setItem(
+          "ServiceProviderUserToken",
+          response?.data?.token
+        );
+    
+
         sessionStorage.setItem(
           "user_name",
           name
         );
+
+        sessionStorage.setItem("IsLogedIn", true);
+
+        setMessage("Sign up successful!");
+        
+       
 
       setShow(true);
       handleShow(); // Show the modal
@@ -170,7 +184,7 @@ const SignUpPage = () => {
         
         setTimeout(() => {
           navigate("/");
-        }, 3000); // Adjust delay as needed
+        }, 2000); // Adjust delay as needed
 
         setStep("otp");
       } else {
@@ -281,6 +295,12 @@ const SignUpPage = () => {
                   Log In
                 </a>
               </p>
+              <button
+              className="back-button-unique1"
+              onClick={handleBackToHome} 
+            >
+              ← Back To Home
+            </button>
             </div>
           ) : (
             <div className="otp-card-unique">

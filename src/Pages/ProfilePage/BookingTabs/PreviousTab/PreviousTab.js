@@ -4,6 +4,7 @@ import "./PreviousTab.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
+import ReviewModal from "../ReviewModal/ReviewModal";
 
 function PreviousTab() {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -11,6 +12,7 @@ function PreviousTab() {
   const [bookingsIdWise, setBookingIdwise] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isRatingModalOpen, setIsRatingModalOpen] = useState(false); // Modal state
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
   const navigate = useNavigate();
@@ -38,6 +40,13 @@ function PreviousTab() {
     } finally {
       setLoading(false);
     }
+  };
+  const handleRatingButtonClick = () => {
+    setIsRatingModalOpen(true);
+  };
+
+  const handleCloseRatingModal = () => {
+    setIsRatingModalOpen(false);
   };
 
   useEffect(() => {
@@ -123,8 +132,7 @@ function PreviousTab() {
                       <div className="provider-avatar">
                         <img
                           src={
-                            bookingsIdWise?.partner?.image ||
-                            "/dummy-image.jpg"
+                            bookingsIdWise?.partner?.image || "/dummy-image.jpg"
                           }
                           style={{
                             height: "60px",
@@ -244,6 +252,19 @@ function PreviousTab() {
                       </span>
                     </div>
                   </div>
+                  
+                  {bookingsIdWise?.booking_status === "completed" ? (
+                    <button
+                      className="rating-button"
+                      onClick={handleRatingButtonClick}
+                    >
+                      Give Rating to Partner
+                    </button>
+                  ) : (
+                    <button className="rating-button disabled" disabled>
+                      Rating Unavailable
+                    </button>
+                  )}
                 </div>
                 <button
                   className="btn-view-less"
@@ -322,6 +343,10 @@ function PreviousTab() {
           </div>
         ))
       )}
+      <ReviewModal
+        isOpen={isRatingModalOpen}
+        onClose={handleCloseRatingModal}
+      />
     </div>
   );
 }

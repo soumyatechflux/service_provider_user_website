@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./BookingSection.css";
+import "./ModifyBooking.css";
 import { ChevronLeft, ChevronRight, Loader, MapPin } from "lucide-react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
@@ -7,29 +7,34 @@ import "react-clock/dist/Clock.css";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
-import RazorpayPayment from "./RazorpayPayment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import TextField from "@mui/material/TextField";
 import { ArrowBarDown } from "react-bootstrap-icons";
-import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
 import { Dropdown, Modal } from "react-bootstrap";
-import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import MessageModal from "../../MessageModal/MessageModal";
 import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import MessageModal from "../../MessageModal/MessageModal";
+import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
+import EditAddressForm from "../ProfileDetails/EditAddressForm/EditAddressForm";
+import AddAddressForm from "../ProfileDetails/AddAddressForm/AddAddressForm";
 
 
 
-const BookingSection = () => {
+const ModifyBooking = () => {
+
+    const location = useLocation();
+    const navigate = useNavigate();
+
+   const { id } = location.state || {};
+   const { service } = location.state || {};
+
+
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { service } = location.state || {}; // Handle case where no state is passed
   const [menuOrServicesOptions, setmenuOrServicesOptions] = useState([]);
   const [menu, setMenu] = useState([]);
   // const [selectedTime, setSelectedTime] = useState("");
@@ -102,6 +107,10 @@ const BookingSection = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+
+
+
 
 
 
@@ -501,6 +510,50 @@ dateObj.setDate(dateObj.getDate() + 1);
       // setModalMessage("An error occurred. Please try again later.");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  const handleGetAppPrefilledData = async () => {
+    try {
+      setLoading(true);
+  
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/bookings/${id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      console.log("Upcomming Booking response:", response);
+  
+      if (response.status === 200 && response.data.success === true) {
+        const mainGetResData = response.data.data;
+
+      
+
+
+
+      }
+      
+    } catch (error) {
+      console.error("Failed to fetch upcoming bookings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  useEffect(() => {
+    handleGetAppPrefilledData();
+  }, []);
+
+
 
 
 
@@ -1978,4 +2031,4 @@ className="address-section mt-0">
 
 };
 
-export default BookingSection;
+export default ModifyBooking;

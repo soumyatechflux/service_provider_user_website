@@ -1,66 +1,73 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import './CookFAQs.css';
 
-const faqs = [
-  {
-    id: 1,
-    question: "Can I customize my meal plan or menu?",
-    answer: "Yes, feel free to discuss any specific meal requirements or preferences with your cook at the start of the service"
-  },
-  {
-    id: 2,
-    question: "How do I book a service?",
-    answer: "You can book a service through our website by selecting your preferred service type, date, and time. Follow the simple booking process and make the payment to confirm your booking."
-  },
-  {
-    id: 3,
-    question: "What is the cancellation policy?",
-    answer: "We understand plans can change. You can cancel your booking up to 24 hours before the scheduled service for a full refund. Cancellations within 24 hours may be subject to a cancellation fee."
-  },
-  {
-    id: 4,
-    question: "Are the professionals verified?",
-    answer: "Yes, all our cooks undergo thorough background checks and verification processes. We ensure they have proper documentation and required certifications before joining our platform."
-  },
-  {
-    id: 5,
-    question: "How can I contact customer support?",
-    answer: "Our customer support team is available 24/7. You can reach us through email at support@example.com, call us at 1-800-COOK, or use the chat feature on our website."
-  }
-];
-
 function CookFAQs() {
+  const [faqs, setFaqs] = useState([]); // Ensure this is initialized as an array
   const [openId, setOpenId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const token = sessionStorage.getItem("ServiceProviderUserToken");
+
+  const fetchFAQs = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/faqs?${1}`,
+        // { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      // Log the response to check the structure
+      console.log('API Response:', response.data);
+
+      // Filter FAQs by category_id = 1 (Cook section)
+      const filteredFaqs = response.data.data.filter(faq => faq.category_id === 1);
+      setFaqs(filteredFaqs);
+    } catch (err) {
+      setError('Failed to fetch FAQs. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchFAQs();
+  }, []);
+
+  if (loading) {
+    return <div className="faq-section">Loading FAQs...</div>;
+  }
+
+  if (error) {
+    return <div className="faq-section">{error}</div>;
+  }
 
   return (
     <div className="faq-section">
       <div className="nav-container container">
-        <h1 style={{fontSize:"36px"}}>FAQs</h1>
+        <h1 style={{ fontSize: "36px" }}>FAQs</h1>
         <div className="faq-list">
-          {faqs.map((faq) => (
-            <div 
-              key={faq.id} 
-              className="faq-item"
-            >
+          {faqs && Array.isArray(faqs) && faqs.map((faq) => (
+            <div key={faq.faq_id} className="faq-item">
               <button
                 className="faq-question"
-                onClick={() => setOpenId(openId === faq.id ? null : faq.id)}
-                aria-expanded={openId === faq.id}
-                aria-controls={`faq-answer-${faq.id}`}
+                onClick={() => setOpenId(openId === faq.faq_id ? null : faq.faq_id)}
+                aria-expanded={openId === faq.faq_id}
+                aria-controls={`faq-answer-${faq.faq_id}`}
               >
                 <span>{faq.question}</span>
-                {openId === faq.id ? (
+                {openId === faq.faq_id ? (
                   <ChevronUp className="icon" />
                 ) : (
                   <ChevronDown className="icon" />
                 )}
               </button>
-              <div 
-                id={`faq-answer-${faq.id}`}
-                className={`faq-answer ${openId === faq.id ? 'open' : ''}`}
+              <div
+                id={`faq-answer-${faq.faq_id}`}
+                className={`faq-answer ${openId === faq.faq_id ? 'open' : ''}`}
                 role="region"
-                aria-labelledby={`faq-question-${faq.id}`}
+                aria-labelledby={`faq-question-${faq.faq_id}`}
               >
                 {faq.answer}
               </div>
@@ -73,4 +80,3 @@ function CookFAQs() {
 }
 
 export default CookFAQs;
-

@@ -3,7 +3,8 @@ import { Check, X } from "react-feather";
 import MessageModal from "../../../MessageModal/MessageModal";
 import Loader from "../../../Loader/Loader";
 import axios from "axios";
-import './AddAddressForm.css'
+import "./AddAddressForm.css";
+import { Modal, Button } from "react-bootstrap";
 
 const AddAddressForm = ({ cancelAddAddress, fetchProfile }) => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -39,7 +40,8 @@ const AddAddressForm = ({ cancelAddAddress, fetchProfile }) => {
     if (!city) newErrors.city = "City is required.";
     if (!state) newErrors.state = "State is required.";
     if (!pincode) newErrors.pincode = "Pincode is required.";
-    else if (!/^\d{6}$/.test(pincode)) newErrors.pincode = "Pincode must be a 6-digit number.";
+    else if (!/^\d{6}$/.test(pincode))
+      newErrors.pincode = "Pincode must be a 6-digit number.";
     if (!country) newErrors.country = "Country is required.";
 
     setErrors(newErrors);
@@ -50,50 +52,52 @@ const AddAddressForm = ({ cancelAddAddress, fetchProfile }) => {
     if (!validateForm()) return; // Stop if validation fails
 
     try {
-      if (!token) {
-        setModalMessage("Please log in first.");
-        handleShow();
-        return;
-      }
+        if (!token) {
+            setModalMessage("Please log in first.");
+            handleShow();
+            return;
+        }
 
-      const body = {
-        address: {
-          house: houseNumber,
-          street_address: streetAddress,
-          street_address_line2: streetAddressLine,
-          landmark: landmark,
-          city: city,
-          state: state,
-          postal_code: pincode,
-          country: country,
-        },
-      };
+        const body = {
+            address: {
+                house: houseNumber,
+                street_address: streetAddress,
+                street_address_line2: streetAddressLine,
+                landmark: landmark,
+                city: city,
+                state: state,
+                postal_code: pincode,
+                country: country,
+            },
+        };
 
-      setLoading(true);
+        setLoading(true);
 
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/add`,
-        body,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+        const response = await axios.post(
+            `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/add`,
+            body,
+            { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-      if (response?.status === 200 && response?.data?.success) {
-        setModalMessage("Address Added Successfully.");
-        handleShow();
-        fetchProfile();
-        cancelAddAddress();
-      } else {
-        setModalMessage(response?.data?.message || "Failed to add address");
-        handleShow();
-      }
+        if (response?.status === 200 && response?.data?.success) {
+            setModalMessage("Address Added Successfully.");
+            handleShow(); // Show the modal first
+            fetchProfile();
+            setTimeout(() => {
+                cancelAddAddress(); // Close the form after a short delay
+            }, 2000);
+        } else {
+            setModalMessage(response?.data?.message || "Failed to add address");
+            handleShow();
+        }
     } catch (error) {
-      console.error("Error fetching data:", error);
-      setModalMessage("An error occurred. Please check your connection.");
-      handleShow();
+        console.error("Error fetching data:", error);
+        setModalMessage("An error occurred. Please check your connection.");
+        handleShow();
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
 
   if (loading) {
     return <Loader />;
@@ -123,7 +127,9 @@ const AddAddressForm = ({ cancelAddAddress, fetchProfile }) => {
             value={streetAddress}
             onChange={(e) => setStreetAddress(e.target.value)}
           />
-          {errors.streetAddress && <p className="error">{errors.streetAddress}</p>}
+          {errors.streetAddress && (
+            <p className="error">{errors.streetAddress}</p>
+          )}
         </div>
 
         <div className="form-group form-group-address">
@@ -210,11 +216,19 @@ const AddAddressForm = ({ cancelAddAddress, fetchProfile }) => {
         </div>
       </div>
 
-      <MessageModal
-        show={show}
-        handleClose={handleClose}
-        message={modalMessage}
-      />
+      {show && (
+        <Modal show={show} backdrop="static" keyboard={false} centered>
+          <Modal.Header>
+            <Modal.Title>Message</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>{modalMessage}</Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary" onClick={handleClose}>
+              OK
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      )}
     </>
   );
 };

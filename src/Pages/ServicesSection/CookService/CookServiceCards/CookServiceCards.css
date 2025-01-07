@@ -29,7 +29,7 @@
 /* Service Cards Wrapper */
 .service-cards-wrapper {
   display: flex;
-  justify-content: space-between; /* Space between the cards */
+  justify-content: flex-start;
   gap: 20px; /* Space between cards */
 }
 
