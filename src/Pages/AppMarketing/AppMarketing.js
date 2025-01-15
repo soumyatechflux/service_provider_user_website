@@ -33,7 +33,8 @@ const AppMarketing = () => {
   return (
     <div className="col-md-12 col-12 hero-container" style={{overflowX : "hidden"}} ref={sectionRef}>
       <div className="col-md-4 col-12 content">
-        <p className="subtitle-app">No more switching apps</p>
+        <p className="subtitle-app">No more switching apps—book your home services on one
+        screen, one app with just a few clicks; anytime you need them</p>
         <h1 className="title-app">
           Why download many
           <br />

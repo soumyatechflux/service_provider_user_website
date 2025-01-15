@@ -198,10 +198,11 @@ const UpcomingTab = () => {
                         {formatTime(bookingsIdWise?.visit_time)}
                       </h2>
                       <div className="service-image image-flex">
-                        <img src="./../ServicesSection/demoCancel.jpg" />
-                        <h3 className="heading-text">
+                        <img src="./../ServicesSection/demoCancel.jpg" 
+                        style={{marginBottom:"15px"}}/>
+                        <h2 className="heading-text">
                           {bookingsIdWise?.sub_category?.sub_category_name}
-                        </h3>
+                        </h2>
                       </div>
                     </div>
                     <div className="provider-section">

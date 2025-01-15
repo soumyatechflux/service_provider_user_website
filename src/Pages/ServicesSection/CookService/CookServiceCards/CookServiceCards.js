@@ -112,7 +112,7 @@ const CookServiceCards = () => {
                     {service?.description && (
                       <div className="reviews">
                         <span>
-                          Description:{" "}
+                          {" "}
                           {viewMoreStates[index]
                             ? service.description
                             : truncateText(service.description, 30).truncated}
@@ -128,6 +128,23 @@ const CookServiceCards = () => {
                       </div>
                     )}
 
+                    {/* Checklist Section */}
+                    <ul className="checklist">
+                      {[
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                      ].map((item, idx) => (
+                        <li key={idx}>
+                          <div className="circle-icon">
+                            <span className="check-icon">✔</span>
+                          </div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+
                     <div className="mt-3">
                       <a
                         className="view-more-button"
@@ -136,7 +153,7 @@ const CookServiceCards = () => {
                         View Details
                       </a>
                     </div>
-                    <div className="price-section mt-2">
+                    <div className="price-section mt-2 mb-0">
                       <div className="price">
                         Starting from
                         <div className="amount">
@@ -187,4 +204,3 @@ const CookServiceCards = () => {
 };
 
 export default CookServiceCards;
-

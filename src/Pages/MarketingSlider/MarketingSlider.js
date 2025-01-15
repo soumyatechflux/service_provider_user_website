@@ -8,7 +8,7 @@ const slides = [
   {
     id: 1,
     image: "./MarketingSlider/marketing1.png",
-    text: "End Your Night Right—Safe Rides, Every Time",
+    text: " End Your Night Right—Safe Rides, Every Time",
   },
   {
     id: 2,
@@ -18,17 +18,17 @@ const slides = [
   {
     id: 3,
     image: "./MarketingSlider/marketing3.png",
-    text: "Traffic's a Mess—Your Ride Doesn't Have to Be",
+    text: "Traffic’s a Mess—Your Ride Doesn’t Have to Be",
   },
   {
     id: 4,
     image: "./MarketingSlider/marketing4.png",
-    text: "Your Daily Meals, Cooked Fresh Right in Your Kitchen",
+    text: "Your Daily Meals, Cooked fresh right in your kitchen",
   },
   {
     id: 5,
     image: "./MarketingSlider/marketing5.png",
-    text: "You Catch Up on Work, We'll Catch Up on Road",
+    text: "You Catch Up on Work, We’ll Catch Up on Road",
   },
   {
     id: 6,

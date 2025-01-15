@@ -98,6 +98,9 @@ function ContactPage() {
         city: "",
         message: "",
       });
+
+      // Reset the selected location to "Select Location"
+      setSelectedLocation("Select Location");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -111,35 +114,124 @@ function ContactPage() {
 
   const faqSections = {
     a: {
-      title: "A. Booking process related faqs",
+      title: "A. Booking process related FAQs",
       items: [
-        "Why can't I complete my booking?",
-        "What should I do if no partner is assigned to my booking?",
-        "How do I know my booking is confirmed?",
+        {
+          question: "Why can't I complete my booking?",
+          answer:
+            "There may be an issue with your internet connection, or the service might not be available at your selected time. Please check your details and try again.",
+        },
+        {
+          question: "What should I do if no partner is assigned to my booking?",
+          answer:
+            "If your booking has not been confirmed by a partner, please consider re-booking with a different time slot or checking back later for availability.",
+        },
+        {
+          question: "How do I know my booking is confirmed?",
+          answer:
+            "You will receive a booking confirmation on your app once your booking request is confirmed and a provider is assigned to you. If you received a notification that your booking is confirmed but you are not able to see the details in the app, please fill out this form with a description of your booking. Our team can confirm your booking status.",
+        },
+        {
+          question: "I can’t find my booking history. Where is it?",
+          answer:
+            "Your past booking details should be available in the ‘my bookings’ section of the app. If you can’t find it, try refreshing your app or logging out and back in.",
+        },
+        {
+          question: "Why does the app keep crashing when I try to book?",
+          answer:
+            "This may be due to a bug or an outdated version of the app, try reinstalling/updating the app or clear your cache.",
+        },
       ],
     },
     b: {
-      title: "B. Payment related faqs",
+      title: "B. Payment related FAQs",
       items: [
-        "What payment methods are accepted?",
-        "Is advance payment required?",
-        "How do I get a refund?",
+        {
+          question: "What payment methods are accepted?",
+          answer:
+            "We accept the following payment methods: Cards, Net Banking, UPI, Wallets, and Cash",
+        },
+        {
+          question: "Can I pay after the service is completed?",
+          answer:
+            "Yes, you can pay after your service is completed by cash.",
+        },
+        {
+          question: "Why am I not able to make online payments? / why was my payment declined?",
+          answer:
+            "This can be due to various reasons which include: Incorrect information such as entering wrong card number, CVV, or UPI PIN; insufficient funds in your account; network issues that may prevent the payment from going through; card may have expired, in which case, you may need to update your card details. Please check the above before proceeding with online payment. If your issue is still unresolved, please fill out this form with a description of your concern. Our team will get back to you promptly.",
+        },
+        {
+          question: "Is my payment information secure? ",
+          answer:
+            "We use data encryption and secure payment gateways to protect your payment information. Please read our privacy policy for further details.",
+        },
+        {
+          question: "What if my payment has gone through but I didn’t receive a booking confirmation? ",
+          answer:
+            "If you haven’t received a confirmation but the payment has been processed from your bank, please fill out this form to contact customer support to resolve the discrepancy.",
+        },
+        {
+          question: "I was charged more than my actual usage",
+          answer:
+            "Our systems use advanced technology and are programmed to precisely calculate the fare based on various factors as detailed in each category. If your issue is still unresolved, please fill out this form with a description of your concern. Our team will get back to you promptly.",
+        },
       ],
     },
     c: {
-      title: "C. Refund and cancellation faqs",
+      title: "C. Refund and cancellation FAQs",
       items: [
-        "What is the cancellation policy?",
-        "How long does a refund take?",
-        "Can I reschedule my booking?",
+        {
+          question: "What is your cancellation policy? Are there any cancellation charges?",
+          answer:
+            "Our cancellation policies vary by services, so please check the cancellation policy, deadlines and associated cancellation fees, when booking the service.",
+        },
+        {
+          question: "How do I cancel my booking?",
+          answer: "You can simply cancel by clicking the cancel button at your booking page. You might be asked to select a reason for cancellation. A nominal fee might be applicable depending on how long before the service you cancel.",
+        },
+        {
+          question: "How long does it take to process a refund?",
+          answer: "Refunds are typically processed within 7-15 business days. If you haven't received your refund within the expected timeframe, please fill out this form with a description of your concern. Our team will get back to you promptly.",
+        },
+        {
+          question: "Can I modify my booking instead of canceling?",
+          answer: "Yes, please check your booking page to edit your booking details up to a certain time before your booking starts. If you can’t see the modify option, you may need to cancel the booking and make a new booking.",
+        },
+        {
+          question: "What happens if my booking is cancelled by the provider?",
+          answer: "In case our provider cancels your booking, we will try our best to assign the next available provider to your booking request.",
+        },
       ],
     },
     d: {
-      title: "D. Safety issues faqs",
+      title: "D. Safety issues FAQs",
       items: [
-        "Are the service providers verified?",
-        "What safety measures are in place?",
-        "How do I report an issue?",
+        {
+          question: "My provider’s behaviour made me feel unsafe",
+          answer:
+            "We sincerely apologize for any inconvenience or discomfort you may have felt. Your safety is our first priority, and we take these reports extremely seriously. We request you to give us further information about the incident so that we can better understand the situation and make sure that your feedback is appropriately addressed. This will help us in taking the necessary action in this matter. Please fill out this form with a description of your concern. Our team will get back to you promptly.",
+        },
+        {
+          question: "Item went missing in the presence of my provider",
+          answer:
+            "If any item went missing, it’s important to note that neither Servyo nor the provider can be held responsible for the items that go missing after the booking has completed, rest assured we are here to help you to the best of our abilities. We do not guarantee that our provider has your item. Please fill out this form with a description of your concern to register your complaint. Our team will get back to you promptly.",
+        },
+        {
+          question: "My provider asked to book the service offline",
+          answer:
+            "Asking our customers to book a service offline is against our strict policies. Please note we will not be responsible for any issue or damage caused by the provider if you choose to book the service offline. Please fill out this form to give more details about the incident. Our team will promptly resolve the issue. We thank you for your support in following Servyo’s policies and guidelines.",
+        },
+        {
+          question: "My driver drove dangerously",
+          answer:
+            "We sincerely apologize for any inconvenience or discomfort you may have felt. Your safety is our first priority, and we take these reports extremely seriously. We request you to give us further information about the incident so that we can better understand the situation and make sure that your feedback is appropriately addressed. This will help us in taking the necessary action in this matter. Please fill out this form and our team will address the issue promptly.",
+        },
+        {
+          question: "I was involved in an accident",
+          answer:
+            "Your safety is our top priority. We sincerely apologize for any inconvenience you experienced. We request you to give us further information about the incident so that we can better understand the situation and make sure that your feedback is appropriately addressed. This will help us in taking the necessary action in this matter. Please fill out this form and our team will address your issue promptly.",
+        },
       ],
     },
   };
@@ -151,7 +243,12 @@ function ContactPage() {
           {/* Contact Form */}
           <div className="contact-form-wrapper">
             <div className="contact-form">
-              <h2 className="contact-title">Get In Touch</h2>
+              <h2 className="contact-title mb-2">Get In Touch</h2>
+              <p>
+                Please provide the following details to get in touch with us.
+                For any booking related queries or complaints, please visit the
+                help centre.{" "}
+              </p>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
                   <input
@@ -183,43 +280,46 @@ function ContactPage() {
                 </div>
 
                 {/* Location Dropdown */}
-                <div className="form-group">
-                <div className="nav-item dropdown location-dropdown">
-              <a
-                className="nav-link dropdown-toggle location-drop"
-                href="#"
-                style={{width:"auto", marginRight:"0px"}}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveDropdown(activeDropdown === "location" ? null : "location");
-                }}
-              >
-                <div style={{gap:"10px"}}>
-                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-                  <span style={{ color: "#999999", fontSize: "16px" }}>
-                    {selectedLocation || "Select Location"}
-                  </span>
-                  
-                </div>
-              </a>
-              {activeDropdown === "location" && (
-                <div className="dropdown-menu show">
-                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
+                <div className="join-partner-form-group">
+                  <div className="nav-item dropdown location-dropdown">
                     <a
-                      key={city}
-                      className="dropdown-item"
+                      className="nav-link dropdown-toggle location-drop"
                       href="#"
+                      style={{ width: "auto", marginRight: "0px" }}
                       onClick={(e) => {
                         e.preventDefault();
-                        handleLocationChange(city);
+                        setActiveDropdown(
+                          activeDropdown === "location" ? null : "location"
+                        );
                       }}
                     >
-                      {city}
+                      <div style={{ gap: "10px" }}>
+                        <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                        <span style={{ color: "#999999", fontSize: "16px" }}>
+                          {selectedLocation || "Select Location"}
+                        </span>
+                      </div>
                     </a>
-                  ))}
-                </div>
-              )}
-            </div>
+                    {activeDropdown === "location" && (
+                      <div className="dropdown-menu show">
+                        {["Delhi", "Mumbai", "Bangalore", "Chennai"].map(
+                          (city) => (
+                            <a
+                              key={city}
+                              className="dropdown-item"
+                              href="#"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleLocationChange(city);
+                              }}
+                            >
+                              {city}
+                            </a>
+                          )
+                        )}
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="form-group">
@@ -275,7 +375,12 @@ function ContactPage() {
                   >
                     {section.items.map((item, index) => (
                       <div key={index} className="faq-item-contact">
-                        {item}
+                        <p>
+                          <strong>Q:</strong> {item.question} <br/>
+                          <strong>Ans:</strong> {item.answer}
+                        </p>
+                        
+                        
                       </div>
                     ))}
                   </div>

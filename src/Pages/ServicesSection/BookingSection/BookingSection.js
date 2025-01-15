@@ -5,7 +5,7 @@ import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { format } from "date-fns";
 import RazorpayPayment from "./RazorpayPayment";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
@@ -45,6 +45,23 @@ const BookingSection = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
+
+  const dropdownRef = useRef(null); // Reference to the dropdown container
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false); // Close the dropdown
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    // Cleanup the event listener when the component unmounts
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
 
   const cancelAddAddress = () => {
     setNewAddress({
@@ -109,6 +126,46 @@ const BookingSection = () => {
 
 
 
+  const [basicDataByGet, setBasicDataByGet] = useState();
+
+
+  useEffect(() => {
+    const fetchBasicDataFun = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`
+        );
+
+        if (response?.data?.success === true) {
+          setBasicDataByGet(response?.data?.data || {});
+        } else {
+          setBasicDataByGet({});
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Error fetching restaurant locations:", error);
+        setBasicDataByGet({});
+        setLoading(false);
+      }
+    };
+    fetchBasicDataFun();
+  }, []);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -133,8 +190,13 @@ const BookingSection = () => {
         setLoading(false);
       }
     };
-    fetchData();
+    // fetchData();
   }, []);
+
+
+
+
+
 
   const [BookingForGuestName, setBookingForGuestName] = useState("");
 
@@ -289,16 +351,15 @@ const BookingSection = () => {
 
 
   const [people, setPeople] = useState(1);
-  const [specialRequests, setSpecialRequests] = useState("");
 
-  const additionalDetails = {
-    surchargeTiming: "10:00 PM - 6:00 AM",
-    surchargeRate: "20%",
-  };
+  const [totalPrice, setTotalPrice] = useState();
+  const [approxTime, setApproxTime] = useState();
 
-  const cancellationPolicy = {
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-  };
+
+
+  const [specialRequests, setSpecialRequests] = useState();
+
+
 
   // step 3 constants
 
@@ -341,13 +402,13 @@ const BookingSection = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const handleCheckboxChange = (id) => {
-    if (menu.includes(id)) {
-      setMenu(menu.filter((item) => item !== id));
-    } else {
-      setMenu([...menu, id]);
-    }
-  };
+  // const handleCheckboxChange = (id) => {
+  //   if (menu.includes(id)) {
+  //     setMenu(menu.filter((item) => item !== id));
+  //   } else {
+  //     setMenu([...menu, id]);
+  //   }
+  // };
 
   const handleCheckboxChangeForDriver = (id) => {
     // If the item is already selected, do nothing
@@ -389,14 +450,6 @@ const BookingSection = () => {
 
 
 
-  // Assuming you have values for people, service price, discount, and GST
-  const total = people * (service?.price || 0);
-  // const total = service?.price || 0;
-
-  const discount = 0; // Discount value
-  const gst = 0; // GST value
-
-  const grandTotal = total - discount + gst; // Final Grand Total
 
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
@@ -501,6 +554,122 @@ dateObj.setDate(dateObj.getDate() + 1);
       // setModalMessage("An error occurred. Please try again later.");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  const minPeople = basicDataByGet?.no_of_people[0]?.people_count; 
+  const maxPeople = basicDataByGet?.no_of_people[basicDataByGet?.no_of_people.length - 1]?.people_count; 
+  
+
+
+  const htmlToText = (htmlString) => {
+    const tempElement = document.createElement('div');
+    tempElement.innerHTML = htmlString; // Set its inner HTML to the provided HTML string
+    return tempElement.textContent || tempElement.innerText; // Extract and return plain text
+  };
+  
+  const cancellationPolicy = htmlToText(basicDataByGet?.sub_category?.cancellation_policy);
+
+  const additionalDetails =  htmlToText(basicDataByGet?.sub_category?.booking_details);
+
+
+
+  useEffect(() => {
+    setPeople(minPeople);
+  }, [minPeople]);
+
+
+  useEffect(() => {
+    setmenuOrServicesOptions(basicDataByGet?.dishes);
+  }, [basicDataByGet]);
+
+
+  const menuOrServicesOptionsOri = basicDataByGet?.dishes.map((dish) => ({
+    id: dish.dish_id,
+    name: dish.dish_name || "Unnamed Dish", // Fallback for empty dish_name
+  }));
+
+  const handleCheckboxChange = (id) => {
+    if (menu.includes(id)) {
+      setMenu(menu.filter((item) => item !== id));
+    } else {
+      setMenu([...menu, id]);
+    }
+  };
+
+
+  const handleIncrement = () => {
+    if (people < maxPeople) {
+      setPeople(people + 1);
+    } else {
+      toast.error(`Maximum limit reached: ${maxPeople} people`);
+    }
+  };
+
+  const handleDecrement = () => {
+    if (people > minPeople) {
+      setPeople(people - 1);
+    } else {
+      toast.error(`Minimum limit reached: ${minPeople} people`);
+    }
+  };
+
+
+
+useEffect(() => {
+  // Find the corresponding entry for the selected number of people
+  const selectedEntry = basicDataByGet?.no_of_people.find(item => item?.no_of_people === people);
+  if (selectedEntry) {
+    setTotalPrice(selectedEntry.people_count);
+    setApproxTime(selectedEntry.aprox_time);
+  }
+}, [people, basicDataByGet?.no_of_people]);
+
+
+
+
+
+
+  const discount = 0;
+  const gst = 0; 
+
+  const grandTotal = totalPrice - discount + gst; 
+
+
+
+  const formatTime = (timeInMinutes) => {
+    const hours = Math.floor(timeInMinutes / 60);
+    const minutes = timeInMinutes % 60;
+  
+    if (hours > 0 && minutes > 0) {
+      return `${hours} hour(s) and ${minutes} minute(s)`;
+    } else if (hours > 0) {
+      return `${hours} hour(s)`;
+    } else {
+      return `${minutes} minute(s)`;
+    }
+  };
+
+
+
 
 
 
@@ -625,25 +794,25 @@ dateObj.setDate(dateObj.getDate() + 1);
               <div>
                 <div className="booking-form-group">
                   <label className="booking-form-label">Number of People</label>
-                  <div className="booking-counter-container">
-                    <button
-                      type="button"
-                      className="booking-counter-button"
-                      onClick={() => setPeople(Math.max(1, people - 1))} // Ensure people never go below 1
-                    >
-                      -
-                    </button>
-                    <span className="booking-counter-value">{people}</span>
-                    <button
-                      type="button"
-                      className="booking-counter-button"
-                      onClick={() => setPeople(people + 1)} // Increment people
-                    >
-                      +
-                    </button>
-                  </div>
+              <div className="booking-counter-container">
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleDecrement}
+      >
+        -
+      </button>
+      <span className="booking-counter-value">{people}</span>
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleIncrement}
+      >
+        +
+      </button>
+    </div>
                   <div className="booking-cooking-time">
-                    Total cooking time: 3.5 hours
+                  Total Cooking Time: {formatTime(approxTime)}
                   </div>
                 </div>
 
@@ -669,102 +838,91 @@ dateObj.setDate(dateObj.getDate() + 1);
                
                
                
-{(service?.category_id === 1 || service?.category_id === 3 )&& (
-               
-               <>
-            
-               
-              
-                  <div
-                    className="dropdown-container"
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      gap: "4px", // Reduce gap between elements
-                    }}
-                  >
-                    <div
-                      className="dropdown-input"
-                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      style={{
-                        cursor: "pointer",
-                        padding: "8px",
-                        fontSize: "16px",
-                        border: "1px solid #ccc",
-                        borderRadius: "4px",
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        width: "100%", // Full width for better alignment
-                      }}
-                    >
-                      {menu.length > 0
-                        ? `Selected: ${menuOrServicesOptions
-                            .filter((option) => menu.includes(option.id))
-                            .map((option) => option.name)
-                            .join(", ")}`
-                        : "Select a service"}
-                      <span>{isDropdownOpen ? "▲" : "▼"}</span>
-                    </div>
+                  {(service?.category_id === 1 || service?.category_id === 3) && (
+        <>
+        <div
+      className="dropdown-container"
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "4px",
+      }}
+    >
+      <div
+        className="dropdown-input"
+        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+        style={{
+          cursor: "pointer",
+          padding: "8px",
+          fontSize: "16px",
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          width: "100%",
+        }}
+      >
+        {menu.length > 0
+          ? `Selected: ${menuOrServicesOptionsOri
+              .filter((option) => menu.includes(option.id))
+              .map((option) => option.name)
+              .join(", ")}`
+          : "Select a service"}
+        <span>{isDropdownOpen ? "▲" : "▼"}</span>
+      </div>
 
-                    {/* Dropdown options list */}
-                    {isDropdownOpen && (
-                      <div
-                        className="dropdown-options"
-                        style={{
-                          position: "absolute",
-                          top: "100%", // Place the dropdown directly below the input
-                          left: 0,
-                          right: 0,
-                          border: "1px solid #ccc",
-                          borderRadius: "4px",
-                          backgroundColor: "white",
-                          width: "100%", // Match the width of the input
-                          maxHeight: "200px",
-                          overflowY: "auto",
-                          zIndex: 10,
-                          padding: "0", // Remove padding to reduce space
-                        }}
-                      >
-                        {menuOrServicesOptions.map((option) => (
-                          <div
-                            key={option.id}
-                            className="dropdown-option"
-                            style={{
-                              padding: "8px",
-                              display: "flex", // Align checkbox and label on the same line
-                              alignItems: "center", // Center the checkbox and text vertically
-                              gap: "8px", // Add space between checkbox and text
-                            }}
-                          >
-                            <input
-                              type="checkbox"
-                              className="menu-checkbox"
-                              id={`service-${option.id}`}
-                              value={option.id}
-                              checked={menu.includes(option.id)}
-                              onChange={() => handleCheckboxChange(option.id)}
-                              style={{
-                                margin: 0, // Remove any margin around the checkbox
-                                cursor: "pointer"
-                              }}
-                            />
-                            <label
-                              htmlFor={`service-${option.id}`}
-                              style={{ margin: 0 }}
-                            >
-                              {option.name}{" "}
-                              {/* Using the 'name' property from the API */}
-                            </label>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  </>
-
-)}
+      {isDropdownOpen && (
+        <div
+          className="dropdown-options"
+          style={{
+            position: "absolute",
+            top: "100%",
+            left: 0,
+            right: 0,
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            backgroundColor: "white",
+            width: "100%",
+            maxHeight: "200px",
+            overflowY: "auto",
+            zIndex: 10,
+            padding: "0",
+          }}
+        >
+          {menuOrServicesOptionsOri.map((option) => (
+            <div
+              key={option.id}
+              className="dropdown-option"
+              style={{
+                padding: "8px",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+              }}
+            >
+              <input
+                type="checkbox"
+                className="menu-checkbox"
+                id={`service-${option.id}`}
+                value={option.id}
+                checked={menu.includes(option.id)}
+                onChange={() => handleCheckboxChange(option.id)}
+                style={{
+                  margin: 0,
+                  cursor: "pointer",
+                }}
+              />
+              <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
+                {option.name}
+              </label>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+        </>
+      )}
 
 
 
@@ -957,39 +1115,32 @@ dateObj.setDate(dateObj.getDate() + 1);
                 <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
-                    <span className="mb-1">🌙 Night Surcharge Policy</span>
-                    <span className="mb-1">
-                      ⏰ Timing: {additionalDetails.surchargeTiming}
-                    </span>
-                    <span className="mb-1">
-                      💵 Surcharge: {additionalDetails.surchargeRate}
-                    </span>
+                  {additionalDetails}
                   </div>
                 </div>
 
                 <div className="cancellation-policy">
                   <h3>Cancellation Policy</h3>
                   <div className="cancellation-policy-div">
-                    <p>{cancellationPolicy.text}</p>
-                    <a
-                      href="#"
+                    <p>
+                      {cancellationPolicy}
+
+                      </p>
+                    <Link
+                      to = "/cancellation-policy"
                       className="read-policy-button"
-                      onClick={(e) => {
-                        e.preventDefault(); // Prevent default anchor behavior
-                        // Add any additional logic here if needed
-                        console.log("Cancellation policy clicked");
-                      }}
+                      
                     >
                       READ CANCELLATION POLICY<IoIosArrowForward className="arrow_for_cancellation"/>
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
 
               <div className="payable-amount-section">
                 <p className="payable-amount">
-                  ₹ {total} <br />
-                  Payable Amount
+                  ₹ {totalPrice} <br />
+                  Amount
                 </p>
 
                 <button
@@ -1421,7 +1572,10 @@ className="address-section mt-0">
               {/* This button now sets the step to 5 */}
               <button
                 className="confirm-address-button"
-                onClick={() => setStep(5)}
+                onClick={() => {
+                  setStep(5); // Set the step
+                  window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top smoothly
+                }}
               >
                 Confirm Address
               </button>
@@ -1693,7 +1847,7 @@ className="address-section mt-0">
               <div className="fare-breakdown-card">
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Total:</div>
-                  <div> ₹ {total} </div>
+                  <div> ₹ {totalPrice} </div>
                 </div>
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Discount:</div>
@@ -1832,85 +1986,58 @@ className="address-section mt-0">
         <h2 className="payment-title">Bill Total: ₹ {grandTotal}</h2>
       </div>
 
-
       <div className="payment-section-body">
-
-
-      <button        onClick={(event) => {
-              handlePayment("online");
-              setCallRazorPay(true);
-              event.target.disabled = true;
-              setMakeDisable(true);
-            }}
-            disabled={makeDisable}  style={{cursor:"pointer"}}  >
-
-        <div className="payment-option">
-          <div className="payment-icon">
-            <img src="/atm-card.png" alt="Card Icon" />
+        <button 
+          className="payment-option-button"
+          onClick={(event) => {
+            handlePayment("online");
+            setCallRazorPay(true);
+            event.target.disabled = true;
+            setMakeDisable(true);
+          }}
+          disabled={makeDisable}
+        >
+          <div className="payment-option">
+            <div className="payment-icon">
+              <img src="/atm-card.png" alt="Card Icon" />
+            </div>
+            <div className="payment-details">
+              <h3>Pay using UPI, Cards</h3>
+              <p>Experience cashless bookings</p>
+            </div>
+            <div className="payment-arrow">→</div>
           </div>
-          <div className="payment-details">
-            <h3>Pay using UPI, Cards</h3>
-            <p>For cashless booking</p>
-          </div>
-          <button
-            className="payment-arrow-button"
-            onClick={(event) => {
-              handlePayment("online");
-              setCallRazorPay(true);
-              event.target.disabled = true;
-              setMakeDisable(true);
-            }}
-            disabled={makeDisable}
-          >
-            →
-          </button>
-        </div>
         </button>
 
-
-
-        <button
-            className="payment-arrow-button"
-            onClick={(event) => {
-              handlePayment("cod");
-              setCallRazorPay(false);
-              event.target.disabled = true;
-              setMakeDisable(true);
-            }}
-            disabled={makeDisable}
-            style={{cursor:"pointer"}} 
-          >
-        <div className="payment-option">
-          <div className="payment-icon">
-            <img src="/money.png" alt="Cash Icon" />
+        <button 
+          className="payment-option-button"
+          onClick={(event) => {
+            handlePayment("cod");
+            setCallRazorPay(false);
+            event.target.disabled = true;
+            setMakeDisable(true);
+          }}
+          disabled={makeDisable}
+        >
+          <div className="payment-option">
+            <div className="payment-icon">
+              <img src="/money.png" alt="Cash Icon" />
+            </div>
+            <div className="payment-details">
+              <h3>Pay after booking</h3>
+              <p>Book now, pay later</p>
+            </div>
+            <div className="payment-arrow">→</div>
           </div>
-          <div className="payment-details">
-            <h3>Pay after booking</h3>
-            <p>Pay in cash or UPI to service provider</p>
-          </div>
-          <button
-            className="payment-arrow-button"
-            onClick={(event) => {
-              handlePayment("cod");
-              setCallRazorPay(false);
-              event.target.disabled = true;
-              setMakeDisable(true);
-            }}
-            disabled={makeDisable}
-          >
-            →
-          </button>
-        </div>
         </button>
 
-
-
-
-        
+       
       </div>
     </div>
   </div>
 )}
+
+
 
 {callRazorPay && BookingData && (
   <RazorpayPayment

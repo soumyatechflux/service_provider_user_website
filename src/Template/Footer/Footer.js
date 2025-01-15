@@ -94,11 +94,26 @@ const Footer = () => {
               </a>
             </div>
             <div className="app-buttons ">
-              <a href="/app-store" className="store-button-footer google-play">
-                <img className="store-img" src="/Footer/AppStore.png" alt="App Store" />
+              <a
+                href="https://www.apple.com/app-store/" // Replace with your app's App Store URL
+                 Google Play Store URL
+                className="store-button-footer google-play"
+              >
+                <img
+                  className="store-img"
+                  src="/Footer/AppStore.png"
+                  alt="App Store"
+                />
               </a>
-              <a href="/google-play" className="store-button-footer google-play">
-                <img className="store-img" src="/Footer/GooglePlayStore.png" alt="Google Play" />
+              <a
+              href="https://play.google.com/store" // Replace with your app's
+                className="store-button-footer google-play"
+              >
+                <img
+                  className="store-img"
+                  src="/Footer/GooglePlayStore.png"
+                  alt="Google Play"
+                />
               </a>
             </div>
           </div>

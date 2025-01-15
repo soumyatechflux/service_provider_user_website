@@ -202,7 +202,7 @@ const EditAddressForm = ({ addressId, closeModal, refreshAddresses }) => {
         }}
         message={message}
       />
-      ;
+      
     </div>
   );
 };

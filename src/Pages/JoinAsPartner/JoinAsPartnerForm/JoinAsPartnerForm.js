@@ -88,7 +88,7 @@ const JoinAsPartnerForm = () => {
         name: formData.name,
         mobile: formData.mobile,
         email: formData.email,
-        city: formData.city,
+        city: selectedLocation, // Use selected location
         description: formData.message,
       },
     };
@@ -118,6 +118,7 @@ const JoinAsPartnerForm = () => {
           message: "",
         });
         setErrors({});
+        setSelectedLocation("Select Location"); // Reset the location dropdown
         setShowPopup(true); // Show the popup only on success
       } else {
         console.error("Error submitting form:", result);
@@ -132,7 +133,9 @@ const JoinAsPartnerForm = () => {
   return (
     <div className="container nav-container join-partner-container">
       <div className="join-partner-section">
-        <h2 className="join-partner-title">Get In Touch</h2>
+        <h2 className="join-partner-title mb-1" >Get In Touch</h2>
+        <p>Are you looking for work? Join us to get new bookings and earn more. Download the Servyo app on your mobile phone or fill your whatsapp number below and we will contact you. 
+        </p>
         <form onSubmit={handleSubmit}>
           <div className="join-partner-form-group">
             <input
@@ -183,18 +186,19 @@ const JoinAsPartnerForm = () => {
               <a
                 className="nav-link dropdown-toggle location-drop"
                 href="#"
-                style={{width:"auto", marginRight:"0px"}}
+                style={{ width: "auto", marginRight: "0px" }}
                 onClick={(e) => {
                   e.preventDefault();
-                  setActiveDropdown(activeDropdown === "location" ? null : "location");
+                  setActiveDropdown(
+                    activeDropdown === "location" ? null : "location"
+                  );
                 }}
               >
-                <div style={{gap:"10px"}}>
+                <div style={{ gap: "10px" }}>
                   <i className="bi bi-geo-alt-fill me-1"></i>{" "}
                   <span style={{ color: "#999999", fontSize: "16px" }}>
-                    {selectedLocation || "Select Location"}
+                  {selectedLocation || "Select Location"}
                   </span>
-                  
                 </div>
               </a>
               {activeDropdown === "location" && (
@@ -264,7 +268,8 @@ const JoinAsPartnerForm = () => {
         </div>
 
         <div className="join-partner-help-section">
-          <h3 className="join-partner-help-title">Need Help?</h3>
+          <h3 className="join-partner-help-title mb-2" >Need Help?</h3>
+          <p>Please visit our help center if you need any quick assistance with your reservations. Our assistance and frequently asked questions will provide you with an immediate solution.          </p>
           <Link to="/contact-us" className="join-partner-link text-center">
             Open Help Centre →
           </Link>
@@ -276,7 +281,6 @@ const JoinAsPartnerForm = () => {
             123 Connaught Place, Rajiv Chowk,
           </p>
           <p className="join-partner-address-text">New Delhi, Delhi, 110001</p>
-          
         </div>
       </div>
       <MessageModal

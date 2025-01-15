@@ -167,12 +167,13 @@
   .service-item {
     flex-direction: column; /* Stack items vertically */
     margin-bottom: 50px; /* Reduce spacing between items */
-    gap: 20px; /* Smaller gap between elements */
+    gap: 0px; /* Smaller gap between elements */
   }
 
   .service-content {
-    padding: 10px;
-    text-align: center; /* Center-align text for better readability */
+    /* padding: 0px; */
+    padding-top: 0;
+    text-align: center !important; /* Center-align text for better readability */
   }
 
   .service-image {
@@ -227,5 +228,6 @@
 
   .services-section {
     padding: 20px 10px; /* Compact padding for mobile screens */
+    overflow-y: hidden;
   }
 }

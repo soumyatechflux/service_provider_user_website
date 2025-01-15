@@ -15,16 +15,17 @@
   padding: 0;
 }
 
-.custom-dropdown-menu {
+.custom-dropdown-menu1 {
+  margin-left: -50px;
   position: absolute;
   top: 100%;
-  right: 0;
+  right: -1px;
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   z-index: 10;
-  width: 150px;
+  width: 100px;
 }
 
 .custom-dropdown-item {

@@ -1,14 +1,3 @@
-// import React from 'react'
-
-// const FindAnswers = () => {
-//   return (
-//     <div>FindAnswers</div>
-//   )
-// }
-
-// export default FindAnswers
-
-
 import React, { useState } from 'react';
 import { ChevronUp, ChevronDown } from 'lucide-react';
 import './FindAnswers.css';
@@ -16,40 +5,68 @@ import './FindAnswers.css';
 const faqs = [
   {
     id: 1,
-    question: "Can I customize my meal plan or menu?",
-    answer: "Yes, feel free to discuss any specific meal requirements or preferences with your cook at the start of the service"
+    question: "What is Servyo and what services do you provide?",
+    answer: "Servyo is a one-stop solution for on demand household services for all your home needs. We currently provide driver, cook, and gardener services for your homes. Please check out the 'about us' section for more information about Servyo."
   },
   {
     id: 2,
     question: "How do I book a service?",
-    answer: "You can book a service through our website by selecting your preferred service type, date, and time. Follow the simple booking process and make the payment to confirm your booking."
+    answer: "You can book a service (cook, driver, gardener) through our app or website by selecting the service type and providing the required details to complete the booking."
   },
   {
     id: 3,
-    question: "What is the cancellation policy?",
-    answer: "We understand plans can change. You can cancel your booking up to 24 hours before the scheduled service for a full refund. Cancellations within 24 hours may be subject to a cancellation fee."
+    question: "Are your service providers trained and vetted?",
+    answer: "Absolutely. All our partners are experienced professionals who have been background-checked and trained to provide high-quality service."
   },
   {
     id: 4,
-    question: "Are the professionals verified?",
-    answer: "Yes, all our cooks undergo thorough background checks and verification processes. We ensure they have proper documentation and required certifications before joining our platform."
+    question: "What cities do you operate in?",
+    answer: "Currently, we serve select cities across Delhi NCR, and we're expanding regularly. Check our service availability in your area on our app or website."
   },
   {
     id: 5,
-    question: "How can I contact customer support?",
-    answer: "Our customer support team is available 24/7. You can reach us through email at support@example.com, call us at 1-800-COOK, or use the chat feature on our website."
+    question: "Can I book a service for someone else?",
+    answer: "Absolutely, just enter their contact details during booking, and our partner will coordinate with them directly."
+  },
+  {
+    id: 6,
+    question: "How are service prices determined?",
+    answer: "Prices vary by service type and duration. All pricing details are transparent and shown at the time of booking."
+  },
+  {
+    id: 7,
+    question: "How can I pay for the service?",
+    answer: "Payments can be made through our app using various options like credit/debit cards, digital wallets, or UPI for seamless transactions. You can also pay in cash after service."
+  },
+  {
+    id: 8,
+    question: "What is the cancellation and refund policy?",
+    answer: "Terms of cancellation and refund vary by the type of service. Generally, we will provide a 100% refund if you cancel before a professional has been assigned. A nominal fee might be applicable depending on how long before the service you cancel."
+  },
+  {
+    id: 9,
+    question: "How do I get support regarding any issues?",
+    answer: "For any support, please visit the 'Help & Support' section in the app. Our FAQs will help you with quick answers to any questions or fill out the support form and our team will address your issue promptly."
+  },
+  {
+    id: 10,
+    question: "Can I rate my service?",
+    answer: "Yes, after every trip, you'll have the option to rate your service and provide feedback through our app."
   }
 ];
 
 function FindAnswers() {
   const [openId, setOpenId] = useState(null);
+  const [showAll, setShowAll] = useState(false);
+
+  const displayedFaqs = showAll ? faqs : faqs.slice(0, 5);
 
   return (
     <div className="faq-section">
       <div className="nav-container container">
         <h1 className='find-answers'>Find Answers</h1>
         <div className="faq-list">
-          {faqs.map((faq) => (
+          {displayedFaqs.map((faq) => (
             <div 
               key={faq.id} 
               className="faq-item"
@@ -78,10 +95,15 @@ function FindAnswers() {
             </div>
           ))}
         </div>
+        <button 
+          className="view-more-button2" 
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "View Less" : "View More FAQs"}
+        </button>
       </div>
     </div>
   );
 }
 
 export default FindAnswers;
-

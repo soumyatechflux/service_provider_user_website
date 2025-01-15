@@ -1,11 +1,13 @@
 /* Booking Details Grid for Columns */
 .booking-details {
-    display: flex;
-    flex-direction: row;
-    /* flex-wrap: wrap; */
-    gap: 20px; /* Space between columns */
-    padding: 20px 0px !important;
-  }
+  display: flex;
+  flex-direction: row;
+  /* flex-wrap: wrap; */
+  gap: 20px; /* Space between columns */
+  padding: 20px !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add box shadow */
+}
+
   .btn-modify:disabled {
     cursor: not-allowed;
     opacity: 0.5;
@@ -141,7 +143,7 @@
     /* height: 200px; */
     object-fit: cover;
     border-radius: 8px;
-    margin-bottom: 15px;
+    /* margin-bottom: 15px; */
   }
   
   .provider-section,
@@ -301,6 +303,8 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
+    font-size: 18px;
+    text-decoration: underline;
     background: none;
     color: #6366f1;
     padding: 10px 20px;
@@ -330,6 +334,11 @@
     .booking-info,
     .billing-info {
       flex: 1 1 100%;
+    }
+    .btn-view-less{
+      position: relative;
+      padding: 5px 15px;
+      left: 0;
     }
   
     .summary-header {

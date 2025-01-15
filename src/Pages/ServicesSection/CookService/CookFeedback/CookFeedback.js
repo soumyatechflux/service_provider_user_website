@@ -7,22 +7,40 @@ import './CookFeedback.css';
 const testimonials = [
   {
     id: 1,
-    text: "Super tasty food, just like homemade! Booking a cook was so easy, and the food tasted like home. The cook was polite, on time, and even left the kitchen spotless. Perfect solution for busy days!",
-    author: "Kiran Malhotra",
+    text: "We booked a cook for the whole day for our family. Breakfast, lunch, and dinner were all made fresh, and the taste was just like home. The cook was on time, organized, and I didn’t have to worry about anything. Very convenient and I recommend this service!",
+    author: "Yash",
     rating: 4
   },
   {
     id: 2,
-    text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    author: "Sarah Johnson",
+    text: "The food tastes like home, and I love how it’s customized to our family’s preferences. Makes cooking so much easier!",
+    author: "Rhythm Sachdeva",
     rating: 5
   },
   {
     id: 3,
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
-    author: "Michael Chen",
+    text: "We hired a cook for a get together, and the food was superhit! The cook handled everything smoothly from appetizers to main course, and I could actually relax and enjoy with my guests. Highly recommended for any dinner party or social gathering!",
+    author: " Ruchi Bansal",
     rating: 4
-  }
+  },
+  {
+    id: 4,
+    text: "I used to order in or eat out when I didn’t feel like cooking, but having a cook at home has changed that. The meals are cooked fresh, healthier, and customized to my taste",
+    author: " Hanisha",
+    rating: 4
+  },
+  {
+    id: 5,
+    text: "Super tasty food, just like homemade! Booking a cook was so easy,and the food tasted like home. The cook was olite, on time, and even left the kitchen spotless. Perfect solution for busy days!",
+    author: " Sakshi Gupta",
+    rating: 4
+  },
+  {
+    id: 6,
+    text: "I signed up for the monthly gardener service, and it’s been amazing! Each month, they handle everything from pruning to seasonal planting. I love that it’s all taken care of, and my garden looks healthier than ever!",
+    author: "Shivangi",
+    rating: 4
+  },
 ];
 
 

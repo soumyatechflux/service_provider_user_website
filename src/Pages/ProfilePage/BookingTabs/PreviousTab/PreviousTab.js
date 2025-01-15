@@ -120,7 +120,8 @@ function PreviousTab() {
                     </h2>
 
                     <div className="service-image image-flex">
-                      <img src="./../ServicesSection/CookingSection/chef-cooking-2.jpg" />
+                    <img src="./../ServicesSection/demoCancel.jpg" 
+                        style={{marginBottom:"15px"}}/>
                       <h3 className="heading-text">
                         {bookingsIdWise?.sub_category?.sub_category_name}
                       </h3>
@@ -268,6 +269,7 @@ function PreviousTab() {
                 </div>
                 <button
                   className="btn-view-less"
+                  
                   onClick={() => setOpenBookingIndex(null)}
                 >
                   View less

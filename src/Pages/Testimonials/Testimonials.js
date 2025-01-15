@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import './Testimonials.css';
@@ -7,22 +6,40 @@ import './Testimonials.css';
 const testimonials = [
   {
     id: 1,
-    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    author: "Kiran Malhotra",
+    text: "Having access to different services in one app only is so much easier. I don't need to download a different app for each service and I love that I can schedule everything from gardening to cooking without any hassle!",
+    author: "Neeru Goel",
     rating: 4
   },
   {
     id: 2,
-    text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    author: "Sarah Johnson",
+    text: "I appreciate the thorough background checks on service providers. As a mother, it gives me immense peace of mind knowing I can trust the people coming into my home.",
+    author: "Anku Bala",
     rating: 5
   },
   {
     id: 3,
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
-    author: "Michael Chen",
+    text: "Finally, an app that truly understands the needs of busy moms and working women. I appreciate the wide range of services available, it's easy to use and can manage multiple tasks at one place. I can't wait for them to add more services, I have tried different providers and I have been more than satisfied!",
+    author: " Roopali Gupta",
     rating: 4
-  }
+  },
+  {
+    id: 4,
+    text: "The drivers are punctual, friendly, and professional! It’s great knowing I can rely on this app for safe transportation when I need it.",
+    author: " Apoorv Narang",
+    rating: 4
+  },
+  {
+    id: 5,
+    text: "Super tasty food, just like homemade! Booking a cook was so easy,and the food tasted like home. The cook was olite, on time, and even left the kitchen spotless. Perfect solution for busy days!",
+    author: " Sakshi Gupta",
+    rating: 4
+  },
+  {
+    id: 6,
+    text: "I signed up for the monthly gardener service, and it’s been amazing! Each month, they handle everything from pruning to seasonal planting. I love that it’s all taken care of, and my garden looks healthier than ever!",
+    author: "Shivangi",
+    rating: 4
+  },
 ];
 
 const Testimonials = () => {

@@ -9,7 +9,9 @@
   z-index: 1040; /* Ensure it's below the modal but above other content */
   display: none;
 }
-
+.no-scroll {
+  overflow: hidden;
+}
 .modal-overlay.show {
   box-shadow: inset 0px 0px 15px rgba(0, 0, 0, 0.5); /* Dim overlay with subtle inset effect */
 }

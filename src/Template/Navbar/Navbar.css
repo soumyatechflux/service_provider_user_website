@@ -1,3 +1,84 @@
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -97%; /* Start off-screen */
+  width: 78%; /* Adjust width as needed */
+  /* max-width: 300px; */
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sidebar-close-btn {
+  /* position: absolute; */
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+/* Optional: Add focus style for accessibility */
+.sidebar-close-btn:focus {
+  outline: 2px solid #6c63ff !important;
+  outline-offset: 2px;
+}
+
+.sidebar-close-btn:hover {
+  color: #6c63ff !important;
+}
+
+/* Update sidebar padding to accommodate close button */
+.sidebar {
+  padding-top: 1rem; /* Increased top padding */
+}
+
+.sidebar.show {
+  transform: translateX(-100%);
+}
+
+.sidebar .nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.sidebar .location-dropdown,
+.sidebar .nav-buttons {
+  margin: 1rem 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1049;
+  display: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+
 /* Custom styles */
 .navbar {
     padding: 1rem 0;
@@ -84,7 +165,7 @@
     display: flex;
     border-radius: 5px;
     padding: 0.5rem 1rem !important;
-    margin-right: 1rem;
+    /* margin-right: 1rem; */
     justify-content: space-between;
   }
   .location-drop{
@@ -99,7 +180,7 @@
     position: absolute;
     top: 100%; /* Position below the trigger */
     left: 0; /* Align with the left edge of the trigger */
-    width: 93%; /* Take the same width as the parent */
+    width: 100%; /* Take the same width as the parent */
     background-color: #fff; /* White background */
     border: 1px solid #ddd;
     box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
@@ -193,6 +274,30 @@
       text-decoration: none;
   
     }
+  
+    @media (max-width : 768px) {
+      .navbar-nav .dropdown-menu {
+        width: 78%;
+      }
+      .dropdown-menu-w{
+        width: 64% !important;
+      }
+    }
+    @media (min-width: 992px) {
+      .sidebar {
+        display: none; /* Hide sidebar on desktop */
+      }
+      
+      .navbar-collapse {
+        justify-content: space-between;
+      }
+    
+      .right-items {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+      }
+    }
     
 
     
@@ -204,9 +309,13 @@
       gap: 1rem;
       margin-top: 1rem;
     }
+    .navbar-light{
+      padding: 0 10px !important;
+    }
   
     .location-dropdown {
       width: 100%;
+      margin: 0px !important;
     }
   
     .location-dropdown .nav-link {
@@ -224,8 +333,12 @@
     }
   
     .navbar-collapse {
+      display: none;
       padding-top: 1rem;
       background-color: white;
+    }
+    .navbar-collapse.show {
+      display: none; /* Ensure it stays hidden on mobile */
     }
     .custom-dropdown-menu{
       left: 1px !important;

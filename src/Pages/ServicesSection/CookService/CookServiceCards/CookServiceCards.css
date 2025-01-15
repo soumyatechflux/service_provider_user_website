@@ -30,7 +30,7 @@
 .service-cards-wrapper {
   display: flex;
   justify-content: flex-start;
-  gap: 20px; /* Space between cards */
+  gap: 30px; /* Space between cards */
 }
 
 .service-card {
@@ -101,6 +101,37 @@
   position: relative;
   display: flex;
   align-items: center;
+}
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555; /* Text color */
+}
+
+.circle-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 20px; /* Diameter of the circle */
+  height: 20px; /* Diameter of the circle */
+  border-radius: 50%; /* Makes the element circular */
+  background-color: #4caf50; /* Green background */
+  color: #fff; /* White checkmark */
+  margin-right: 10px; /* Spacing between icon and text */
+  font-size: 12px; /* Size of the check icon */
+  font-weight: bold;
+}
+
+.check-icon {
+  line-height: 1;
 }
 
 .features .check-icon {

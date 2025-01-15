@@ -4,10 +4,11 @@ import { ChevronUp, ChevronDown } from 'lucide-react';
 import './CookFAQs.css';
 
 function CookFAQs() {
-  const [faqs, setFaqs] = useState([]); // Ensure this is initialized as an array
+  const [faqs, setFaqs] = useState([]);
   const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAll, setShowAll] = useState(false); // State to toggle FAQs view
 
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
@@ -18,7 +19,6 @@ function CookFAQs() {
         // { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // Log the response to check the structure
       console.log('API Response:', response.data);
 
       // Filter FAQs by category_id = 1 (Cook section)
@@ -43,12 +43,15 @@ function CookFAQs() {
     return <div className="faq-section">{error}</div>;
   }
 
+  // Display only 5 FAQs initially, or all FAQs if showAll is true
+  const displayedFaqs = showAll ? faqs : faqs.slice(0, 5);
+
   return (
     <div className="faq-section">
       <div className="nav-container container">
         <h1 style={{ fontSize: "36px" }}>FAQs</h1>
         <div className="faq-list">
-          {faqs && Array.isArray(faqs) && faqs.map((faq) => (
+          {displayedFaqs.map((faq) => (
             <div key={faq.faq_id} className="faq-item">
               <button
                 className="faq-question"
@@ -74,6 +77,12 @@ function CookFAQs() {
             </div>
           ))}
         </div>
+        <button
+          className="view-more-button2"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "View Less" : "View More FAQs"}
+        </button>
       </div>
     </div>
   );

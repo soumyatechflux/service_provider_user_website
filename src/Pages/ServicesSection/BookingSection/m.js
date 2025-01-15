@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./ModifyBooking.css";
+// import "./ModifyBooking.css";
+import "./BookingSection.css";
+
 import { ChevronLeft, ChevronRight, Loader, MapPin } from "lucide-react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
@@ -17,10 +19,12 @@ import { BsThreeDotsVertical } from "react-icons/bs";
 import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 import MessageModal from "../../MessageModal/MessageModal";
-import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
-import EditAddressForm from "../ProfileDetails/EditAddressForm/EditAddressForm";
-import AddAddressForm from "../ProfileDetails/AddAddressForm/AddAddressForm";
+import RazorpayPayment from "./RazorpayPayment";
+import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
+import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
+
 
 
 
@@ -324,7 +328,6 @@ const ModifyBooking = () => {
       setSelectedLocation(addresses[0]);
       setSelectedLocationFromForDriver(addresses[0]);
       setSelectedLocationToForDriver(addresses[0]);
-
     }
   }, [addresses]);
 
@@ -453,7 +456,6 @@ dateObj.setDate(dateObj.getDate() + 1);
           visit_time: selectedTime,
 
           visit_address_id: selectedLocation?.address_id,
-
   
           address_from: service?.category_id === 2 ? selectedLocationFromForDriver?.address_id : "",
           address_to: service?.category_id === 2 ? selectedLocationToForDriver?.address_id : "",
@@ -521,6 +523,8 @@ dateObj.setDate(dateObj.getDate() + 1);
 
 
 
+  const [AllPreviousData, setAllPreviousData] = useState();
+  const [BookingMethod, setBookingMethod] = useState("");
 
   
   const handleGetAppPrefilledData = async () => {
@@ -531,13 +535,24 @@ dateObj.setDate(dateObj.getDate() + 1);
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/bookings/${id}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+
       console.log("Upcomming Booking response:", response);
   
-      if (response.status === 200 && response.data.success === true) {
-        const mainGetResData = response.data.data;
+      if (response?.status === 200 && response?.data.success === true) {
 
-      
+        const mainGetResData = response?.data?.data;
+      setAllPreviousData(mainGetResData);
 
+      setSelectedDate(mainGetResData?.visit_date);
+      setSelectedTime(mainGetResData?.visit_time);
+      setSelectedLocation(mainGetResData?.visit_address_id);
+      setSelectedLocationFromForDriver(mainGetResData?.address_from);
+      setSelectedLocationToForDriver(mainGetResData?.address_to);
+      setBookingMethod(mainGetResData?.payment_mode);
+      setPeople(mainGetResData?.number_of_people);
+      setSpecialRequests(mainGetResData?.instructions);
+      setBookingForGuestName(mainGetResData?.guest_name);
+      setMenu(mainGetResData?.menu_and_service_ids);
 
 
       }
@@ -1888,6 +1903,7 @@ className="address-section mt-0">
 
       <div className="payment-section-body">
 
+      {BookingMethod === "online" && (<>
 
       <button        onClick={(event) => {
               handlePayment("online");
@@ -1919,9 +1935,11 @@ className="address-section mt-0">
           </button>
         </div>
         </button>
+        </>
+      )}
 
 
-
+{BookingMethod === "cod" && (<>
         <button
             className="payment-arrow-button"
             onClick={(event) => {
@@ -1955,7 +1973,8 @@ className="address-section mt-0">
           </button>
         </div>
         </button>
-
+        </>
+)}
 
 
 

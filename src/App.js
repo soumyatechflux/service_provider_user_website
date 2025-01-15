@@ -29,6 +29,7 @@ import AppMarketing from "./Pages/AppMarketing/AppMarketing";
 import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import TermsAndConditions from "./Pages/TermsAndConditions/TermsAndConditions";
 import Navbar from "./Template/Navbar/Navbar";
+import CancellationPolicy from "./Pages/CancellationPolicy/CancellationPolicy";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -104,6 +105,8 @@ function App() {
 
           <Route path ="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path ="/terms-and-conditions" element={<TermsAndConditions />} />
+
+          <Route path="/cancellation-policy" element={<CancellationPolicy/>} />
 
 
 

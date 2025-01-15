@@ -1,6 +1,3 @@
-
-
-
 import React from "react";
 import "./TermsAndConditions.css"; // Optional: For custom styling
 

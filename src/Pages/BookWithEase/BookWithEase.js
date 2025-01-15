@@ -7,23 +7,23 @@ const BookWithEase = () => {
     {
       icon: "./BookWithEase/app.jpg",
       title: "Register on app",
-      description: "Get started with Servyo by downloading the app and creating your account.",
+      description: "Register on app- Download the Servyo app and register yourself",
     },
     {
       icon: "./BookWithEase/service.jpg",
       title: "Select service",
       description:
-        "Choose from the range of services and customise as per your needs",
+        "Select service - Choose from the range of services and customise as per your needs",
     },
     {
       icon: "./BookWithEase/calendar.jpg",
       title: "Choose date and time",
-      description: "Book your slot easily as per your convenience and availability",
+      description: "Choose date and time - Book your slot as per your convenience and availability",
     },
     {
       icon: "./BookWithEase/sitback.jpg",
       title: "Sit back and relax",
-      description: "Enjoy the service as our expert arrives at your doorstep",
+      description: "Sit back and relax - Enjoy the service as our expert arrives at your doorstep",
     },
   ];
 

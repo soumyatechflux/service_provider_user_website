@@ -7,24 +7,30 @@ import './DriverFeedback.css';
 const testimonials = [
   {
     id: 1,
-    text: "Amazing service! I always had a car sitting idle in my garage as I never gained confidence for driving myself - I love being able to book a driver for my own car. I love how they come to my doorstep and drive around wherever I want to go! Saves me the hassle and cost of cabs or public transport and I can enjoy the comfort of my own car",
-    author: "Kiran Malhotra",
+    text: "Amazing  service! I always had a car sitting idle in my garage as I never gained confidence for driving myself - I love being able to book a driver for my own car. I love how they come to my doorstep and drive around wherever I want to go! Saves me the hassle and cost of cabs or public transport and I can enjoy the comfort of my own car",
+    author: " Aashna Mahajan",
     rating: 4
   },
   {
     id: 2,
-    text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    author: "Sarah Johnson",
+    text: "I appreciate how easy it is to book a driver on short notice. The app is user-friendly, and I’ve always had great experiences with the drivers. It just makes it simpler getting a safe ride back from late night parties after I have had a few drinks especially.",
+    author: " Karan Bawa",
     rating: 5
   },
   {
     id: 3,
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
-    author: "Michael Chen",
+    text: "I hate driving in Delhi traffic and finding parking in Delhi is such a hassle now. I booked a driver for a day from Servyo. Having a driver to drive me around, I could do my shopping care free, meet my friends and enjoy the day without being tired from all the delhi road drama.",
+    author: " Shriya Kapoor",
     rating: 4
-  }
+  },
+  {
+    id: 4,
+    text: "The drivers are punctual, friendly, and professional! It’s great knowing I can rely on this app for safe transportation when I need it.",
+    author: " Apoorv Narang",
+    rating: 4
+  },
+  
 ];
-
 
 const DriverFeedback = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

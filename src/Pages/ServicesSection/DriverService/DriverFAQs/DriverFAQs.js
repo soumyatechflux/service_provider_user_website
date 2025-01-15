@@ -8,6 +8,7 @@ function DriverFAQs() {
   const [openId, setOpenId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showAll, setShowAll] = useState(false); // State to toggle between limited and full FAQ view
 
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
@@ -40,12 +41,15 @@ function DriverFAQs() {
     return <div className="faq-section">{error}</div>;
   }
 
+  // Determine FAQs to display based on `showAll` state
+  const displayedFaqs = showAll ? faqs : faqs.slice(0, 5);
+
   return (
     <div className="faq-section">
       <div className="nav-container container">
-        <h1 style={{fontSize: "36px"}}>FAQs</h1>
+        <h1 style={{ fontSize: "36px" }}>FAQs</h1>
         <div className="faq-list">
-          {faqs.map((faq) => (
+          {displayedFaqs.map((faq) => (
             <div key={faq.faq_id} className="faq-item">
               <button
                 className="faq-question"
@@ -71,6 +75,12 @@ function DriverFAQs() {
             </div>
           ))}
         </div>
+        <button
+          className="view-more-button2"
+          onClick={() => setShowAll(!showAll)}
+        >
+          {showAll ? "View Less" : "View More FAQs"}
+        </button>
       </div>
     </div>
   );

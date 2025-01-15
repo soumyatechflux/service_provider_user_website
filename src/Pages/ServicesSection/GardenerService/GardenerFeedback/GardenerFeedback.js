@@ -1,15 +1,3 @@
-// import React from 'react'
-
-// const GardenerFeedback = () => {
-//   return (
-//     <div>GardenerFeedback</div>
-//   )
-// }
-
-// export default GardenerFeedback
-
-
-
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react';
 import './GardenerFeedback.css';
@@ -18,22 +6,30 @@ import './GardenerFeedback.css';
 const testimonials = [
   {
     id: 1,
-    text: "Super tasty food, just like homemade! Booking a cook was so easy, and the food tasted like home. The cook was polite, on time, and even left the kitchen spotless. Perfect solution for busy days!",
-    author: "Kiran Malhotra",
+    text: "Our front garden had overgrown patches and needed work, so we booked a gardener from Servyo. He handled everything from mowing to weeding and even reshaped the flower beds. The whole booking process was simple, and our garden has never looked better!",
+    author: "Yash Chawla",
     rating: 4
   },
   {
     id: 2,
-    text: "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.",
-    author: "Sarah Johnson",
+    text: "Booked a gardener to revive my rooftop garden, and they did an amazing job! They pruned, replanted, and added new herbs just as I wanted. Great service—easy to book, and the space looks so much better!",
+    author: "Rishav",
     rating: 5
   },
   {
     id: 3,
-    text: "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit.",
-    author: "Michael Chen",
+    text: "I don’t have the time or energy to maintain my balcony garden, so hiring a gardener was the best decision. I have booked the monthly package with flexibility to choose visit time as per my schedule and they handle everything perfectly.",
+    author: " Ruchi Bansal",
     rating: 4
-  }
+  },
+  
+ 
+  {
+    id: 4,
+    text: "I signed up for the monthly gardener service, and it’s been amazing! Each month, they handle everything from pruning to seasonal planting. I love that it’s all taken care of, and my garden looks healthier than ever!",
+    author: "Shivangi",
+    rating: 4
+  },
 ];
 
 

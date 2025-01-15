@@ -108,7 +108,6 @@ const GardenerServiceCards = () => {
                     {service?.description && (
                       <div className="reviews">
                         <span>
-                          Description:{" "}
                           {viewMore[index]
                             ? service.description
                             : truncateText(service.description, 30).truncated}
@@ -123,6 +122,23 @@ const GardenerServiceCards = () => {
                         )}
                       </div>
                     )}
+
+                    {/* Checklist Section */}
+                    <ul className="checklist">
+                      {[
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                        "Lorem ipsum",
+                      ].map((item, idx) => (
+                        <li key={idx}>
+                          <div className="circle-icon">
+                            <span className="check-icon">✔</span>
+                          </div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
 
                     <div className="mt-3">
                       <a

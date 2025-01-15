@@ -47,7 +47,7 @@ const ProfileDetails = () => {
       const clickedOutside = Object.values(dropdownRefs.current).every(
         (ref) => !ref || !ref.contains(e.target)
       );
-      
+
       if (clickedOutside) {
         setOpenDropdownIndex(null);
       }
@@ -125,7 +125,7 @@ const ProfileDetails = () => {
       if (response?.status && response?.data?.success) {
         setProfileDataResponse(response?.data?.data);
         const data = response?.data?.data;
-        setAvatar(data.image  || data.name.charAt(0).toUpperCase()) ;
+        setAvatar(data.image || data.name.charAt(0).toUpperCase());
         setName(data.name);
         setPhone(data.mobile);
         setEmail(data.email);
@@ -167,8 +167,18 @@ const ProfileDetails = () => {
   const saveChanges = async () => {
     try {
       setLoading(true);
+  
+      // Validation for empty name
+      if (editingField === "name" && (!editedProfile.name || editedProfile.name.trim() === "")) {
+        setLoading(false);
+        setMessage("Name should not be empty.");
+        setShow(true);
+        handleShow(); // Show the modal
+        return;
+      }
+  
       const data = new FormData();
-
+  
       if (editingField === "image" && editedProfile.image) {
         data.append("image", editedProfile.image || null);
       } else if (editingField === "name") {
@@ -178,29 +188,25 @@ const ProfileDetails = () => {
       } else if (editingField === "mobile") {
         data.append("mobile", editedProfile.mobile);
       }
+  
       setIsEditing(false);
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       if (response?.status === 200 && response?.data?.success) {
         setProfileDataResponse(response.data.data);
         setEditedProfile(response.data.data);
         setIsEditing(false);
         setEditingField(null);
-        setMessage("Profile Data Updated sucessfully");
-        setIsEditing(false);
+        setMessage("Profile Data Updated successfully");
         setShow(true);
         handleShow(); // Show the modal
-        // Reset editing state
-       
-        setEditingField(null);
         return;
       } else {
         setMessage(response?.data?.message || "");
-        setIsEditing(false);
         setShow(true);
         handleShow();
       }
@@ -210,6 +216,7 @@ const ProfileDetails = () => {
       setLoading(false);
     }
   };
+  
 
   // Handle input changes
   const handleInputChange = (field, value) => {
@@ -228,8 +235,7 @@ const ProfileDetails = () => {
         image: file,
       }));
       setEditingField("image");
-    }
-    else{
+    } else {
       setEditedProfile((prev) => ({
         ...prev,
         image: null,
@@ -242,8 +248,7 @@ const ProfileDetails = () => {
     setEditedProfile({ ...profileDataResponse });
     setIsEditing(false);
     setEditingField(null);
-  setEditedProfile(profileDataResponse); // Reset editedProfile to initial data
-
+    setEditedProfile(profileDataResponse); // Reset editedProfile to initial data
   };
 
   if (loading) {
@@ -265,15 +270,15 @@ const ProfileDetails = () => {
             <div className="avatar">
               {editedProfile.image ? (
                 <img
-                src={
-                  editedProfile.image
-                    ? typeof editedProfile.image === "string"
-                      ? editedProfile.image
-                      : URL.createObjectURL(editedProfile.image)
-                    : "/dummy-image.jpg"
-                }
-                alt="Profile"
-                onError={(e) => (e.target.src = "/dummy-image.jpg")} // Fallback if the image URL fails
+                  src={
+                    editedProfile.image
+                      ? typeof editedProfile.image === "string"
+                        ? editedProfile.image
+                        : URL.createObjectURL(editedProfile.image)
+                      : "/dummy-image.jpg"
+                  }
+                  alt="Profile"
+                  onError={(e) => (e.target.src = "/dummy-image.jpg")} // Fallback if the image URL fails
                   className="avatar-img"
                 />
               ) : (
@@ -312,7 +317,7 @@ const ProfileDetails = () => {
                 {isEditing && editingField === "name" ? (
                   <input
                     type="text"
-                    value={editedProfile.name || name} // Autofill with state
+                    value={editedProfile.name} // Autofill with state
                     onChange={(e) => handleInputChange("name", e.target.value)}
                   />
                 ) : (
@@ -413,10 +418,15 @@ const ProfileDetails = () => {
                 <div className="d-flex align-items-center">
                   <p className="flex-fill mb-0 address-p">
                     <span className="serial-number me-2">{index + 1}.</span>
-                    {address.house}, {address.street_address}{" "}
-                    {address.street_address_line2}, {address.landmark},{" "}
-                    {address.city} - {address.state} {address.postal_code}{" "}
-                    {address.country}
+                    {address.house && `${address.house}, `}
+                    {address.street_address && `${address.street_address}, `}
+                    {address.street_address_line2 &&
+                      `${address.street_address_line2}, `}
+                    {address.landmark && `${address.landmark}, `}
+                    {address.city && `${address.city}, `}
+                    {address.state && `${address.state} `}
+                    {address.postal_code && `${address.postal_code} `}
+                    {address.country && `${address.country}`}
                   </p>
                   <div
                     className="position-relative"
@@ -438,7 +448,7 @@ const ProfileDetails = () => {
                       />
                     </button>
                     {openDropdownIndex === index && (
-                      <div className="custom-dropdown-menu">
+                      <div className="custom-dropdown-menu1">
                         <button
                           className="custom-dropdown-item"
                           onClick={() => {

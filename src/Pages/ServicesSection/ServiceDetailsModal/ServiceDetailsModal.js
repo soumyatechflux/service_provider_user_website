@@ -1,11 +1,23 @@
-
-
-
 import React from "react";
 import { Star } from "lucide-react";
 import "./ServiceDetailsModal.css";
+import { useEffect } from "react";
 
 function ServiceDetailsModal({ isOpen, onClose, service }) {
+
+  useEffect(() => {
+    // Add or remove the 'no-scroll' class based on the modal state
+    if (isOpen) {
+      document.body.classList.add("no-scroll");
+    } else {
+      document.body.classList.remove("no-scroll");
+    }
+
+    // Clean up when the component unmounts
+    return () => {
+      document.body.classList.remove("no-scroll");
+    };
+  }, [isOpen]);
   // Default data if the service data is missing
   const reviews = service?.reviews || [
     {

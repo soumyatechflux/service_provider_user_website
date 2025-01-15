@@ -5,13 +5,10 @@ import { OTPAPI, SignUpAPI } from "../../../utils/APIs/credentialsApis";
 import MessageModal from "../../MessageModal/MessageModal";
 import Loader from "../../Loader/Loader";
 
-// import { SignUpAPI } from "./path-to-your-api-file"; // Update the path as needed
-
 const countryCode = "+91";
 const SignUpPage = () => {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  // const [otp, setOtp] = useState(["", "", "", ""]);
   const [otp, setOtp] = useState(""); // Changed to a string for a 4-digit OTP
   const [countryCode, setCountryCode] = useState("+91");
   const [step, setStep] = useState("signup");
@@ -83,7 +80,6 @@ const SignUpPage = () => {
           localStorage.setItem("mobile", mobileNumber);
           localStorage.setItem("OTP", otp);
           setPhone(localStorage.getItem("mobile"));
-          // setOtp(localStorage.getItem("OTP"));
           console.log("Mobile Number:", mobileNumber); // 7878787878
           console.log("OTP:", otp); // 9284
           setMessage(
@@ -114,32 +110,28 @@ const SignUpPage = () => {
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
-      // Allow only one digit
       const newOtp = otp.split("");
-      newOtp[index] = value || ""; // Update the specific digit
+      newOtp[index] = value || "";
       setOtp(newOtp.join(""));
 
       if (value && index < 3) {
-        // Move to the next input field if a digit is entered
         const nextInput = document.getElementById(`otp-${index + 1}`);
         nextInput?.focus();
       }
     }
   };
+
   const handleKeyDown = (index, e) => {
     if (e.key === "Backspace") {
       const newOtp = otp.split("");
-
       if (!newOtp[index]) {
-        // Move to the previous input if the current is already empty
         if (index > 0) {
           const prevInput = document.getElementById(`otp-${index - 1}`);
           prevInput?.focus();
         }
       } else {
-        // Clear the current input value
         newOtp[index] = "";
-        setOtp(newOtp.join("")); // Join without a separator
+        setOtp(newOtp.join(""));
       }
     }
   };
@@ -160,37 +152,20 @@ const SignUpPage = () => {
       const response = await OTPAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
-
-        sessionStorage.setItem(
-          "ServiceProviderUserToken",
-          response?.data?.token
-        );
-    
-
-        sessionStorage.setItem(
-          "user_name",
-          name
-        );
-
+        sessionStorage.setItem("ServiceProviderUserToken", response?.data?.token);
+        sessionStorage.setItem("user_name", name);
         sessionStorage.setItem("IsLogedIn", true);
 
         setMessage("Sign up successful!");
-        
-       
+        setShow(true);
+        handleShow();
 
-      setShow(true);
-      handleShow(); // Show the modal
-
-        
         setTimeout(() => {
           navigate("/");
-        }, 2000); // Adjust delay as needed
-
+        }, 2000);
         setStep("otp");
       } else {
-        setMessage(
-          response?.data?.message || "Failed to send OTP. Please try again."
-        );
+        setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
         handleShow();
       }
     } catch (err) {
@@ -201,31 +176,33 @@ const SignUpPage = () => {
     } finally {
       setLoading(false);
     }
-    // console.log("OTP Verified:", otp.join(""));
   };
 
   useEffect(() => {
     let timer;
 
-    // Start countdown on mount and whenever the button is disabled
     if (isDisabled) {
       timer = setInterval(() => {
         setCountdown((prev) => {
-          if (prev > 0) return prev - 1; // Decrement countdown
-          clearInterval(timer); // Clear timer when countdown reaches 0
-          setIsDisabled(false); // Enable the button
+          if (prev > 0) return prev - 1;
+          clearInterval(timer);
+          setIsDisabled(false);
           return 0;
         });
       }, 1000);
     }
 
-    return () => clearInterval(timer); // Cleanup timer on unmount
+    return () => clearInterval(timer);
   }, [isDisabled]);
 
   const handleResendClick = () => {
-    handleSendOtp(); // Call the resend OTP function
-    setIsDisabled(true); // Disable the button
-    setCountdown(10); // Reset the countdown
+    handleSendOtp();
+    setIsDisabled(true);
+    setCountdown(10);
+  };
+
+  const handleTermsClick = () => {
+    navigate("/terms-and-conditions"); // Navigate to the Terms & Conditions page
   };
 
   if (loading) {
@@ -249,13 +226,12 @@ const SignUpPage = () => {
               />
               <label className="login-label text-left">Phone Number</label>
               <div className="phone-input">
-                {/* Display the fixed country code */}
                 <span className="country-code-display">{countryCode}</span>
                 <input
                   type="tel"
                   value={phone}
                   onChange={handlePhoneChange}
-                  onKeyDown={(e) => e.key === "Enter" && handleSendOtp()} // Send OTP on Enter
+                  onKeyDown={(e) => e.key === "Enter" && handleSendOtp()}
                   className={`phone-number-input ${
                     error ? "input-error-unique" : ""
                   }`}
@@ -272,10 +248,13 @@ const SignUpPage = () => {
                 />
                 <label htmlFor="terms-checkbox" className="terms-and-condition">
                   I agree to the{" "}
-                  <a href="#" className="terms-link-unique"
-                  onClick={(e) => {
-                    e.preventDefault(); // Prevent default anchor behavior
-                  }}
+                  <a
+                    href="#"
+                    className="terms-link-unique"
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default anchor behavior
+                      handleTermsClick(); // Navigate to Terms & Conditions
+                    }}
                   >
                     Terms & Conditions
                   </a>{" "}
@@ -283,10 +262,7 @@ const SignUpPage = () => {
                 </label>
               </div>
               {error && <p className="error-message-unique">{error}</p>}
-              <button
-                className="send-otp-button-unique"
-                onClick={handleSendOtp}
-              >
+              <button className="send-otp-button-unique" onClick={handleSendOtp}>
                 Send OTP
               </button>
               <p className="login-link-container-unique">
@@ -296,11 +272,11 @@ const SignUpPage = () => {
                 </a>
               </p>
               <button
-              className="back-button-unique1"
-              onClick={handleBackToHome} 
-            >
-              ← Back To Home
-            </button>
+                className="back-button-unique1"
+                onClick={handleBackToHome}
+              >
+                ← Back To Home
+              </button>
             </div>
           ) : (
             <div className="otp-card-unique">
@@ -318,12 +294,11 @@ const SignUpPage = () => {
                     id={`otp-${index}`}
                     type="text"
                     maxLength={1}
-                    value={otp[index] || ""} // Extract each digit from the OTP string
+                    value={otp[index] || ""}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
                     onKeyDown={(e) => {
-                      if (e.key === "Enter")
-                        handleVerifyOtp(); // Trigger OTP verification on Enter
-                      else handleKeyDown(index, e); // Handle regular key presses
+                      if (e.key === "Enter") handleVerifyOtp();
+                      else handleKeyDown(index, e);
                     }}
                     className="otp-input-unique"
                     inputMode="numeric"
@@ -332,7 +307,7 @@ const SignUpPage = () => {
               </div>
               {error && <p className="error-message-unique">{error}</p>}
               <button
-                className="verify-otp-button-unique"
+                className="verify-otp-button-unique mb-2"
                 onClick={handleVerifyOtp}
               >
                 Sign Up
