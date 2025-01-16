@@ -207,6 +207,10 @@ const BookingSection = () => {
           instructions: specialRequests || "",
           payment_mode: "",
           dishes: (service?.id === 1 || service?.id === 2) ? SelectedNamesOfDishes : [],
+
+
+          gardener_time_duration: (service?.id === 8 ) ? SelectedNumberOfHoursObjectForGardner : [],
+
           // menu: service?.id === 3 ? selectedMenuItemsForChefForParty : [],
           menu: service?.id === 3 
           ? selectedMenuItemsForChefForParty
@@ -411,6 +415,12 @@ const BookingSection = () => {
 
   const [people, setPeople] = useState(1);
 
+
+
+
+
+
+
   // const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState({});
   const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState(null);
 
@@ -597,6 +607,56 @@ const BookingSection = () => {
   // window.scrollTo({ top: 0, behavior: "smooth" }); 
 
   }
+
+
+
+
+
+  const [OptionsForNumberOFHoursForGardnerArray, setOptionsForNumberOFHoursForGardnerArray] = useState([]);
+  const [SelectedNumberOfHoursObjectForGardner, setSelectedNumberOfHoursObjectForGardner] = useState({ hours: 0, price: 0 });
+  
+  useEffect(() => {
+    if (basicDataByGet?.gardener_time_durations?.length) {
+      setOptionsForNumberOFHoursForGardnerArray(basicDataByGet?.gardener_time_durations);
+      // Initialize with the first option's hours and price
+      const firstOption = basicDataByGet?.gardener_time_durations[0];
+      setSelectedNumberOfHoursObjectForGardner({ hours: firstOption.hours, price: firstOption.price });
+    }
+  }, [basicDataByGet]);
+  
+  // Handle decrement
+  const handleDecrementHousForGardner = () => {
+    const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
+    );
+  
+    if (currentIndex > 0) {
+      const previousOption = OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
+      setSelectedNumberOfHoursObjectForGardner({ hours: previousOption.hours, price: previousOption.price });
+    } else {
+      // Show toast notification for min limit
+      toast.error("You have to select at least the minimum number of hours.");
+    }
+  };
+  
+  // Handle increment
+  const handleIncrementHousForGardner = () => {
+    const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
+    );
+  
+    if (currentIndex < OptionsForNumberOFHoursForGardnerArray.length - 1) {
+      const nextOption = OptionsForNumberOFHoursForGardnerArray[currentIndex + 1];
+      setSelectedNumberOfHoursObjectForGardner({ hours: nextOption.hours, price: nextOption.price });
+    } else {
+      // Show toast notification for max limit
+      toast.error("You've reached the maximum number of hours.");
+    }
+  };
+
+
+
+
 
 
 
@@ -821,10 +881,15 @@ useEffect(() => {
     if (service?.id === 3) {
       setBasePrice(parseFloat(totalPrice) + parseFloat(calculateTotalPriceForMenuForChefForParty()));
     } else {
-      setBasePrice(totalPrice);
-    }
-  }, [totalPrice, service,people,selectedMenuItemsForChefForParty]);
+      if(service?.id === 8 || service?.id === 9) {
+         setBasePrice(SelectedNumberOfHoursObjectForGardner?.price);
+        }
+      else {
+        setBasePrice(totalPrice); 
+      }
 
+    }
+  }, [totalPrice, service,people,selectedMenuItemsForChefForParty,SelectedNumberOfHoursObjectForGardner]);
 
 
 
@@ -952,23 +1017,21 @@ useEffect(() => {
 
 
               <div>
+
+
+
+
+
+               
+              {(service?.category_id === 1) && (
+               
+               <>
+
                 <div className="booking-form-group">
                   <label className="booking-form-label">
                     
+   Number of People
 
-                  {(service?.category_id === 1) ? (
-  <>
-    Number of People
-  </>
-) : (
-  <>
-    Number of Hours
-  </>
-)}
-
-                    
-                    
-                    
                     </label>
               <div className="booking-counter-container">
       <button
@@ -992,9 +1055,61 @@ useEffect(() => {
                   </div>
                 </div>
 
+</>
+)}
 
 
                 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{(service?.category_id === 3) && (
+               
+               <>
+ <div className="booking-form-group">
+    <label className="booking-form-label">Number of Hours</label>
+    <div className="booking-counter-container">
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleDecrementHousForGardner}
+      >
+        -
+      </button>
+      <span className="booking-counter-value">{SelectedNumberOfHoursObjectForGardner?.hours}</span>
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleIncrementHousForGardner}
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+</>
+)}
+
+
+                
+
+
+
+
+
 
                 <div
                   className="booking-form-group"
@@ -1004,7 +1119,7 @@ useEffect(() => {
 
                
                
-                  {(service?.category_id === 1 || service?.category_id === 3) && (service?.id !== 3) && (
+                  {(service?.category_id === 1 ) && (service?.id !== 3) && (
         <>
            <label className="booking-form-label">
                     Select Dishes (Optional)
@@ -2081,12 +2196,17 @@ className="address-section mt-0">
 
 
 
-              <div className="booking-detail-card">
-                <div>
-                  <strong>Number of People : </strong>
-                </div>
-                <div>{people}</div>
-              </div>
+<div className="booking-detail-card">
+  <div>
+    <strong>{service.id === 8 ? 'Number of Hours :' : 'Number of People :'}</strong>
+  </div>
+  <div>
+    {service.id === 8 
+      ? SelectedNumberOfHoursObjectForGardner?.hours 
+      : people}
+  </div>
+</div>
+
           
               <div className="booking-detail-card">
                 <div>
@@ -2131,24 +2251,48 @@ className="address-section mt-0">
 
 
 
-
+{service.category_id === 1 && (
+  <>
 <div className="fare-breakdown-div">
   <div className="fare-breakdown-title">Service Charges:</div>
   <div>
     {(() => {
       const numberOfPeople = JSON.parse(DataForPricesAppliedGet?.number_of_people || "{}");
       const { people_count, price } = numberOfPeople;
-      return `For ${people_count} person = +₹ ${ price}`;
+      return `For ${people_count} person = ₹ ${ price}`;
     })()}
   </div>
 </div>
+</>
+)}
 
 
 
+
+{service.id === 8 && (
+  <>
+<div className="fare-breakdown-div">
+  <div className="fare-breakdown-title">Service Charges:</div>
+  <div>
+    {(() => {
+      const numberOfHours = JSON.parse(DataForPricesAppliedGet?.gardener_time_duration || "{}");
+      const { hours, price } = numberOfHours;
+      return `For ${hours} hours = ₹ ${ price}`;
+    })()}
+  </div>
+</div>
+</>
+)}
+
+
+{service.category_id === 1 && (
+  <>
 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Charges for dishes/menu items:</div>
                   <div>+₹ {DataForPricesAppliedGet?.menu_amount}</div>
                 </div>
+                </>
+              )}
 
 
 
@@ -2181,7 +2325,7 @@ className="address-section mt-0">
 
 
 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Base Price:</div>
+                  <div className="fare-breakdown-title">Total Base Price:</div>
                   <div>+₹ {DataForPricesAppliedGet?.price}</div>
                 </div>
 
