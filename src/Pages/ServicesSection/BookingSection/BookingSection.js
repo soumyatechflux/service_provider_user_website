@@ -30,8 +30,18 @@ const BookingSection = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { service } = location.state || {}; // Handle case where no state is passed
-  const [menuOrServicesOptions, setmenuOrServicesOptions] = useState([]);
+  const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
+
+
+  const [menuItems, setMenuItems] = useState([]);
+  const [selectedMenuItemsForChefForParty, setSelectedMenuItemsForChefForParty] = useState([]);
+
+
   const [menu, setMenu] = useState([]);
+  const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
+
+
+
   // const [selectedTime, setSelectedTime] = useState("");
   const [showGrid, setShowGrid] = useState(false);
   const [message, setMessage] = useState("");
@@ -170,28 +180,98 @@ const BookingSection = () => {
 
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/menu_and_services/${service?.category_id}`
-        );
 
-        if (response?.data?.success === true) {
-          setmenuOrServicesOptions(response?.data?.data || []);
-        } else {
-          setmenuOrServicesOptions([]);
+  const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
+
+
+
+  const FunctionDataForPricesApplied = async () => {
+    setLoading(true);
+  
+    try {
+      const body = {
+        booking: {
+          category_id: service?.category_id || "",
+          sub_category_id: service?.id || "",
+          visit_date: selectedDate,
+          visit_time: selectedTime,
+          visit_address_id: selectedLocation?.address_id || "",
+          address_from: service?.category_id === 2 ? selectedLocationFromForDriver?.address_id : "",
+          address_to: service?.category_id === 2 ? selectedLocationToForDriver?.address_id : "",
+          car_type: "",
+          transmission_type: "",
+          no_of_hours_booked: "",
+          voucher_code: "",
+          number_of_people: SelectedObjectOfPeople || {},
+          guest_name: BookingForGuestName || "Guest",
+          instructions: specialRequests || "",
+          payment_mode: "",
+          dishes: (service?.id === 1 || service?.id === 2) ? SelectedNamesOfDishes : [],
+          // menu: service?.id === 3 ? selectedMenuItemsForChefForParty : [],
+          menu: service?.id === 3 
+          ? selectedMenuItemsForChefForParty
+              .filter(item => item.quantity > 0)
+              .map(item => ({
+                ...item, 
+                price: parseFloat(item.price) 
+              })) 
+          : [],
+        
+        },
+      };
+  
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_pricing`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
         }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error fetching restaurant locations:", error);
-        setmenuOrServicesOptions([]);
-        setLoading(false);
+      );
+  
+      if (response.data.success) {
+        setDataForPricesAppliedGet(response?.data?.data);
+        setStep(5); 
+        // window.scrollTo({ top: 0, behavior: "smooth" }); 
+      } else {
+        setDataForPricesAppliedGet({});
       }
-    };
-    // fetchData();
-  }, []);
+    } catch (error) {
+      console.error("Error:", error.response?.data || error.message);
+      toast.error(
+        error.response?.status === 400
+          ? "Invalid request. Please check your inputs."
+          : "An error occurred. Please try again later."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -263,50 +343,6 @@ const BookingSection = () => {
 
 
 
-  const roundToNearestInterval = (timeString, intervalMinutes = 15) => {
-  const [hours, minutes] = timeString.split(':').map(Number);
-  const totalMinutes = hours * 60 + minutes;
-  const roundedMinutes = Math.ceil(totalMinutes / intervalMinutes) * intervalMinutes;
-  
-  const newHours = Math.floor(roundedMinutes / 60);
-  const newMinutes = roundedMinutes % 60;
-  
-  return `${String(newHours).padStart(2, '0')}:${String(newMinutes).padStart(2, '0')}`;
-};
-
-// const handleTimeChange = (e) => {
-//   const selectedTimeValue = e.target.value;
-//   const roundedTime = roundToNearestInterval(selectedTimeValue);
-  
-//   if (selectedDate.toDateString() === new Date().toDateString()) {
-//     const currentTime = getCurrentTimeInDelhi();
-//     if (roundedTime < currentTime) {
-//       toast.error("You cannot select a past time for today's date!");
-//       setSelectedTime(currentTime);
-//       return;
-//     }
-//   }
-  
-//   setSelectedTime(roundedTime);
-// };
-
-
-  const handleTimeChange = (e) => {
-    const selectedTimeValue = e.target.value;
-    const roundedTime = roundToNearestInterval(selectedTimeValue);
-
-    if (selectedDate.toDateString() === new Date().toDateString()) {
-      const currentTime = getCurrentTimeInDelhi();
-      if (roundedTime < currentTime) {
-        toast.error("You cannot select a past time for today's date!");
-        setSelectedTime(currentTime);
-        return;
-      }
-    }
-
-    setSelectedTime(roundedTime);
-  };
-
 
   // Generate 15-minute intervals for the entire day
   const generateTimeIntervals = () => {
@@ -334,16 +370,39 @@ const BookingSection = () => {
     const today = currentDate.toDateString();
     const currentTime = getCurrentTimeInHHMM();
   
-    if (selectedDate.toDateString() === today) {
-      return timeOptions.filter((time) => time >= currentTime);
-    }
+    // Extract service start and end times
+    const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00:00";
+    const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59:59";
   
-    return timeOptions;
+    // Convert service times to HH:MM format
+    const startTime = serviceStartTime.slice(0, 5); // "00:00:00" -> "00:00"
+    const endTime = serviceEndTime.slice(0, 5); // "19:30:00" -> "19:30"
+  
+    // Filter time options
+    return timeOptions.filter((time) => {
+      const isWithinServiceHours = time >= startTime && time <= endTime;
+  
+      if (selectedDate.toDateString() === today) {
+        return time >= currentTime && isWithinServiceHours;
+      }
+  
+      return isWithinServiceHours;
+    });
   };
+  
   
   const filteredTimeOptions = filterTimeOptions();
 
 
+
+  const convertTo12HourFormat = (time) => {
+    if (!time) return "Not Available";
+    const [hours, minutes] = time.split(":");
+    const hourInt = parseInt(hours, 10);
+    const ampm = hourInt >= 12 ? "PM" : "AM";
+    const formattedHour = hourInt % 12 || 12; // Convert 0 to 12 for 12-hour format
+    return `${formattedHour}:${minutes} ${ampm}`;
+  };
 
 
 
@@ -352,8 +411,13 @@ const BookingSection = () => {
 
   const [people, setPeople] = useState(1);
 
+  // const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState({});
+  const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState(null);
+
+
   const [totalPrice, setTotalPrice] = useState();
   const [approxTime, setApproxTime] = useState();
+  const [basePrice, setBasePrice] = useState(totalPrice);
 
 
 
@@ -456,59 +520,16 @@ const BookingSection = () => {
 
   const handlePayment = async (mod) => {
 
-const dateObj = new Date(selectedDate);
-
-// Add 1 day to the current date
-dateObj.setDate(dateObj.getDate() + 1);
-
+    setLoading(true);
 
     try {
       const body = {
         booking: {
-          category_id: service?.category_id,
-          sub_category_id: service?.id,
-
-          // visit_date: dateObj.toISOString(), 
-
-          visit_date:selectedDate,
-
-          // visit_time: (() => {
-          //   if (selectedTime) {
-          //     const timeParts = selectedTime.match(/(\d{1,2}):(\d{2})/); // Match hours and minutes
-          //     if (timeParts) {
-          //       let hours = parseInt(timeParts[1], 10);
-          //       const minutes = parseInt(timeParts[2], 10);
-
-          //       // If the time is less than 12:00, convert it to 24-hour format
-          //       if (hours < 12) {
-          //         hours = hours + 12; // Add 12 for PM conversion
-          //       }
-
-          //       // Format hours and minutes to ensure they are two digits
-          //       const formattedTime = `${hours
-          //         .toString()
-          //         .padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:00`; // Add seconds as `00`
-          //       return formattedTime;
-          //     }
-          //   }
-          //   return "00:00:00"; 
-          // })(),
-
-          visit_time: selectedTime,
-
-          visit_address_id: selectedLocation?.address_id,
-
-  
-          address_from: service?.category_id === 2 ? selectedLocationFromForDriver?.address_id : "",
-          address_to: service?.category_id === 2 ? selectedLocationToForDriver?.address_id : "",
-
-          number_of_people: people, 
-          guest_name: BookingForGuestName,
-          instructions: specialRequests || "",
-          payment_mode: mod, 
-          menu_and_service_ids: menu || [],
-        },
+          booking_id: DataForPricesAppliedGet ? DataForPricesAppliedGet.booking_id : "",
+          payment_mode: mod
+        }
       };
+      
 
       setLoading(true);
 
@@ -541,7 +562,9 @@ dateObj.setDate(dateObj.getDate() + 1);
           // toast.info("Please confirm your booking to proceed.");
 
           nextStep(true);
+
         }
+
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
@@ -565,10 +588,15 @@ dateObj.setDate(dateObj.getDate() + 1);
 
 
 
+  const handleConfirmAddress = () => {
 
 
+ FunctionDataForPricesApplied();
 
+   // setStep(5); 
+  // window.scrollTo({ top: 0, behavior: "smooth" }); 
 
+  }
 
 
 
@@ -582,29 +610,99 @@ dateObj.setDate(dateObj.getDate() + 1);
 
   const htmlToText = (htmlString) => {
     const tempElement = document.createElement('div');
-    tempElement.innerHTML = htmlString; // Set its inner HTML to the provided HTML string
-    return tempElement.textContent || tempElement.innerText; // Extract and return plain text
+    tempElement.innerHTML = htmlString;
+    return tempElement.textContent || tempElement.innerText;
   };
   
   const cancellationPolicy = htmlToText(basicDataByGet?.sub_category?.cancellation_policy);
 
   const additionalDetails =  htmlToText(basicDataByGet?.sub_category?.booking_details);
 
+  const bookingSummery =  htmlToText(basicDataByGet?.sub_category?.booking_summary);
+
+
+
+
 
 
   useEffect(() => {
-    setPeople(minPeople);
-  }, [minPeople]);
-
-
-  useEffect(() => {
-    setmenuOrServicesOptions(basicDataByGet?.dishes);
+    setdishesOptionsArray(basicDataByGet?.dishes);    
   }, [basicDataByGet]);
 
 
-  const menuOrServicesOptionsOri = basicDataByGet?.dishes.map((dish) => ({
-    id: dish.dish_id,
-    name: dish.dish_name || "Unnamed Dish", // Fallback for empty dish_name
+
+
+    // Initialize the menu with default quantities
+    useEffect(() => {
+      if (basicDataByGet?.menu) {
+        const initialMenu = basicDataByGet?.menu.map((item, index) => ({
+          ...item,
+          quantity: index === 0 ? 1 : 0, // Set 1 for the first item, 0 for others
+        }));
+        setMenuItems(initialMenu);
+  
+        // Initialize selectedMenuItemsForChefForParty based on the menu
+        const initialSelectedItems = basicDataByGet?.menu.map((item, index) => ({
+          name: item.name,
+          price:  item.price,
+          quantity: index === 0 ? 1 : 0, // Set 1 for the first item, 0 for others
+        }));
+        setSelectedMenuItemsForChefForParty(initialSelectedItems);
+      }
+    }, [basicDataByGet]);
+  
+    // Calculate the total quantity of all selected items
+    const calculateTotalQuantityForChefForParty = () => {
+      return selectedMenuItemsForChefForParty.reduce((total, item) => total + item.quantity, 0);
+    };
+  
+    const calculateTotalPriceForMenuForChefForParty = () => {
+      return selectedMenuItemsForChefForParty.reduce(
+        (total, item) => total + item.price * item.quantity,
+        0
+      );
+    };
+
+  
+    const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
+      const totalQuantity = calculateTotalQuantityForChefForParty();
+    
+      // Check if the total quantity exceeds the maximum allowed (4)
+      if (totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity > 4) {
+        toast.error("Maximum total quantity reached (4).");
+        return; // Prevent further changes if total quantity exceeds 4
+      }
+    
+      // Prevent negative quantities for individual items
+      if (value < 0) value = 0;
+    
+      // Prevent the total quantity from being less than 1
+      const newTotalQuantity = totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity;
+      if (newTotalQuantity < 1) {
+        toast.error("You have to select at least 1 menu.");
+        return; // Prevent further changes if total quantity would become less than 1
+      }
+    
+      // Update the selectedMenuItemsForChefForParty state
+      const updatedSelectedItems = [...selectedMenuItemsForChefForParty];
+      updatedSelectedItems[index].quantity = value;
+      setSelectedMenuItemsForChefForParty(updatedSelectedItems);
+    };
+    
+  
+    // Calculate the total price for each item
+    const calculateTotalForMenuItemForChefForParty = (price, quantity) => price * quantity;
+
+
+
+
+
+  
+
+
+  const dishesOptionsArrayOri = basicDataByGet?.dishes.map((dish) => ({
+    id: dish?.dish_id,
+    name: dish?.dish_name || "Unnamed Dish",
   }));
 
   const handleCheckboxChange = (id) => {
@@ -614,6 +712,42 @@ dateObj.setDate(dateObj.getDate() + 1);
       setMenu([...menu, id]);
     }
   };
+
+
+
+  
+  useEffect(() => {
+    setPeople(minPeople);
+  }, [minPeople]);
+
+
+  useEffect(() => {
+    if (basicDataByGet?.no_of_people?.length > 0) {
+      const initialObject = basicDataByGet.no_of_people[0];
+      setSelectedObjectOfPeople({
+        aprox_time: Number(initialObject.aprox_time),
+        price: Number(initialObject.base_price),
+        people_count: Number(initialObject.people_count),
+      });
+    }
+  }, [basicDataByGet?.no_of_people]);
+  
+  useEffect(() => {
+    if (basicDataByGet?.no_of_people) {
+      const selectedObject = basicDataByGet.no_of_people.find(
+        (item) => Number(item.people_count) === Number(people)
+      );
+  
+      if (selectedObject) {
+        setSelectedObjectOfPeople({
+          aprox_time: Number(selectedObject.aprox_time),
+          price: Number(selectedObject.base_price),
+          people_count: Number(selectedObject.people_count),
+        });
+      }
+    }
+  }, [people, basicDataByGet?.no_of_people]);
+
 
 
   const handleIncrement = () => {
@@ -634,24 +768,36 @@ dateObj.setDate(dateObj.getDate() + 1);
 
 
 
+  useEffect(() => {
+
+    if (Array.isArray(basicDataByGet?.no_of_people) && people !== undefined) {
+      const selectedEntry = basicDataByGet.no_of_people.find(
+        (item) => Number(item?.people_count) === Number(people)
+      );
+  
+      if (selectedEntry) {
+        setTotalPrice(selectedEntry.base_price);
+        setApproxTime(selectedEntry.aprox_time);
+      } else {
+        console.log("No matching entry found for people:", people);
+      }
+    }
+  }, [people, basicDataByGet?.no_of_people]);
+  
+
+
+
+
 useEffect(() => {
-  // Find the corresponding entry for the selected number of people
-  const selectedEntry = basicDataByGet?.no_of_people.find(item => item?.no_of_people === people);
-  if (selectedEntry) {
-    setTotalPrice(selectedEntry.people_count);
-    setApproxTime(selectedEntry.aprox_time);
+  if (dishesOptionsArrayOri && dishesOptionsArrayOri.length > 0) {
+    const selectedOptions = dishesOptionsArrayOri.filter((option) =>
+      menu.includes(option?.id)
+    );
+    setSelectedNamesOfDishes(selectedOptions.map((option) => option.name));
+  } else {
+    setSelectedNamesOfDishes([]);
   }
-}, [people, basicDataByGet?.no_of_people]);
-
-
-
-
-
-
-  const discount = 0;
-  const gst = 0; 
-
-  const grandTotal = totalPrice - discount + gst; 
+}, [menu, dishesOptionsArrayOri]);
 
 
 
@@ -671,20 +817,31 @@ useEffect(() => {
 
 
 
+  useEffect(() => {
+    if (service?.id === 3) {
+      setBasePrice(parseFloat(totalPrice) + parseFloat(calculateTotalPriceForMenuForChefForParty()));
+    } else {
+      setBasePrice(totalPrice);
+    }
+  }, [totalPrice, service,people,selectedMenuItemsForChefForParty]);
 
 
 
 
   return (
     <>
+
       {loading && <Loader />}
 
       <div className="container nav-container booking-booking-container">
         {step === 1 && (
+       
           <div
             className="booking-booking-form"
             //  onSubmit={handleSubmitForm}
           >
+                    {loading && <Loader />}
+
             <div className="booking-form-header">
               <button
                 className="booking-back-button"
@@ -694,6 +851,9 @@ useEffect(() => {
               </button>
               <h1 className="booking-form-title">Booking For :</h1>
             </div>
+
+
+
 
             <form>
               <div className="booking-form-group">
@@ -758,10 +918,10 @@ useEffect(() => {
           Select a time
         </option>
         {filteredTimeOptions.map((time) => (
-          <option key={time} value={time}>
-            {time}
-          </option>
-        ))}
+      <option key={time} value={time}>
+        {time}
+      </option>
+    ))}
       </select>
     </div>
   </div>
@@ -793,7 +953,23 @@ useEffect(() => {
 
               <div>
                 <div className="booking-form-group">
-                  <label className="booking-form-label">Number of People</label>
+                  <label className="booking-form-label">
+                    
+
+                  {(service?.category_id === 1) ? (
+  <>
+    Number of People
+  </>
+) : (
+  <>
+    Number of Hours
+  </>
+)}
+
+                    
+                    
+                    
+                    </label>
               <div className="booking-counter-container">
       <button
         type="button"
@@ -816,30 +992,24 @@ useEffect(() => {
                   </div>
                 </div>
 
+
+
+                
+
                 <div
                   className="booking-form-group"
                   style={{ position: "relative" }}
                 >
-                  <label className="booking-form-label">
-                    Select Menu / Service (Optional)
-                  </label>
+               
 
                
                
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-               
-                  {(service?.category_id === 1 || service?.category_id === 3) && (
+                  {(service?.category_id === 1 || service?.category_id === 3) && (service?.id !== 3) && (
         <>
+           <label className="booking-form-label">
+                    Select Dishes (Optional)
+                  </label>
+
         <div
       className="dropdown-container"
       style={{
@@ -864,7 +1034,7 @@ useEffect(() => {
         }}
       >
         {menu.length > 0
-          ? `Selected: ${menuOrServicesOptionsOri
+          ? `Selected: ${dishesOptionsArrayOri
               .filter((option) => menu.includes(option.id))
               .map((option) => option.name)
               .join(", ")}`
@@ -890,7 +1060,7 @@ useEffect(() => {
             padding: "0",
           }}
         >
-          {menuOrServicesOptionsOri.map((option) => (
+          {dishesOptionsArrayOri.map((option) => (
             <div
               key={option.id}
               className="dropdown-option"
@@ -931,30 +1101,18 @@ useEffect(() => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         
                
                
-{(service?.category_id === 2)&& (
+{(service?.category_id === 2)&& (service?.id !== 3)  && (
                
                <>
             
                
-              
+                  <label className="booking-form-label">
+                    Select Cars (Optional)
+                  </label>
+
             <div
   className="dropdown-container"
   style={{
@@ -979,7 +1137,7 @@ useEffect(() => {
     }}
   >
     {menu.length > 0
-      ? `Selected: ${menuOrServicesOptions
+      ? `Selected: ${dishesOptionsArray
           .filter((option) => menu.includes(option.id))
           .map((option) => option.name)
           .join(", ")}`
@@ -1006,7 +1164,7 @@ useEffect(() => {
         padding: "0", // Remove padding to reduce space
       }}
     >
-      {menuOrServicesOptions.map((option) => (
+      {dishesOptionsArray.map((option) => (
         <div
           key={option.id}
           className="dropdown-option"
@@ -1075,6 +1233,60 @@ useEffect(() => {
 
 
 
+{(service?.id === 3)  && (
+  <>
+   <div className="menu-form">
+      <label className="booking-form-label">Select Menu Items</label>
+
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+          </tr>
+        </thead>
+        <tbody>
+          {selectedMenuItemsForChefForParty.map((item, index) => (
+            <tr key={index}>
+              <td>{item.name}</td>
+              <td>₹ {item.price}</td>
+              <td>
+                <input
+                  type="number"
+                  value={item.quantity}
+                  min={0}
+                  max={4}
+                  onChange={(e) =>
+                    handleQuantityChangeForMenuItemsForChefForParty(index, parseInt(e.target.value) || 0)
+                  }
+                  style={{
+                    width: "50px",
+                    padding: "5px",
+                    border: "1px solid #ddd",
+                  }}
+                />
+              </td>
+              <td>₹ {calculateTotalForMenuItemForChefForParty(item.price, item.quantity)}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      <div>
+        {/* <h3>Total Quantity: {calculateTotalQuantityForChefForParty()}</h3>
+        <h3>Total Price: ₹ {calculateTotalPriceForMenuForChefForParty()}</h3> */}
+      </div>
+    </div>
+
+    </>
+)}
+
+
+
+
+
 
 
 
@@ -1119,6 +1331,13 @@ useEffect(() => {
                   </div>
                 </div>
 
+                <div className="additional-details">
+                  <h3>Booking Summary</h3>
+                  <div className="details-item">
+                  {bookingSummery}
+                  </div>
+                </div>
+                
                 <div className="cancellation-policy">
                   <h3>Cancellation Policy</h3>
                   <div className="cancellation-policy-div">
@@ -1137,10 +1356,77 @@ useEffect(() => {
                 </div>
               </div>
 
+
+
+
+
+
+
+
+
+<table style={{ width: "100%", borderCollapse: "collapse" }}>
+  <tbody>
+    <tr>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd", fontWeight: "bold" }}>
+        Night Charge
+      </td>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
+        ₹ {basicDataByGet?.sub_category?.night_charge || "Not Available"}
+      </td>
+    </tr>
+    <tr>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd", fontWeight: "bold" }}>
+        Night Charge Starts From
+      </td>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
+        {convertTo12HourFormat(basicDataByGet?.sub_category?.night_charge_start_time)}
+      </td>
+    </tr>
+    <tr>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd", fontWeight: "bold" }}>
+        Night Charge Ends At
+      </td>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
+        {convertTo12HourFormat(basicDataByGet?.sub_category?.night_charge_end_time)}
+      </td>
+    </tr>
+
+    <tr>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd", fontWeight: "bold" }}>
+     Cancellation Facility will be Available Before
+      </td>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
+        {formatTime(basicDataByGet?.sub_category?.cancellation_time_before)}
+      </td>
+    </tr>
+
+
+
+    <tr>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd", fontWeight: "bold" }}>
+     Free Cancellation will be Available Before
+      </td>
+      <td style={{ padding: "8px", borderBottom: "1px solid #ddd" }}>
+      {formatTime(basicDataByGet?.sub_category?.free_cancellation_time_before)}
+      </td>
+    </tr>
+
+
+  </tbody>
+</table>
+
+
+
+
+
+
+
+
+
               <div className="payable-amount-section">
                 <p className="payable-amount">
-                  ₹ {totalPrice} <br />
-                  Amount
+                  ₹ {basePrice} <br />
+                  Base Amount
                 </p>
 
                 <button
@@ -1158,6 +1444,7 @@ useEffect(() => {
 
         {step === 2 && (
           <div className="location-container">
+                    {loading && <Loader />}
             <div className="location-content">
               <div className="add-location-header">
                 <button className="back-button" onClick={prevStep}>
@@ -1167,9 +1454,6 @@ useEffect(() => {
 
                 <h2 className="header-title">Select Booking Location</h2>
               </div>
-
-
-
 
 
 
@@ -1572,10 +1856,13 @@ className="address-section mt-0">
               {/* This button now sets the step to 5 */}
               <button
                 className="confirm-address-button"
-                onClick={() => {
-                  setStep(5); // Set the step
-                  window.scrollTo({ top: 0, behavior: "smooth" }); // Scroll to the top smoothly
-                }}
+                // onClick={() => {
+                //   setStep(5); 
+                //   window.scrollTo({ top: 0, behavior: "smooth" }); 
+                //   FunctionDataForPricesApplied();
+                // }}
+
+                onClick={handleConfirmAddress}
               >
                 Confirm Address
               </button>
@@ -1585,6 +1872,7 @@ className="address-section mt-0">
 
         {step === 3 && (
           <div className="add-location-container">
+                    {loading && <Loader />}
             <div className="add-location-content">
               <div className="add-location-header">
                 <button className="back-button" onClick={prevStep}>
@@ -1620,6 +1908,7 @@ className="address-section mt-0">
 
         {step === 4 && (
           <div className="address-step-container">
+                    {loading && <Loader />}
             <div className="address-step-content">
               <div className="address-step-header">
                 <button className="address-back-button" onClick={prevStep}>
@@ -1660,6 +1949,7 @@ className="address-section mt-0">
 
         {step === 5 && (
           <div className="booking-booking-form">
+                    {loading && <Loader />}
             <div className="booking-summary-header">
               <button
                onClick={() => setStep(2)}
@@ -1797,19 +2087,7 @@ className="address-section mt-0">
                 </div>
                 <div>{people}</div>
               </div>
-              <div className="booking-detail-card">
-                <div>
-                  <div className="selected-services">
-                    <strong>Menu / Services : </strong>
-                    {menu.length > 0
-                      ? menuOrServicesOptions
-                          .filter((option) => menu.includes(option.id)) // Filter selected services based on IDs
-                          .map((option) => option.name) // Extract names of selected services
-                          .join(", ") // Join names with commas
-                      : "No menu selected"}
-                  </div>
-                </div>
-              </div>
+          
               <div className="booking-detail-card">
                 <div>
                   <strong>Date & Time:</strong>{" "}
@@ -1845,34 +2123,92 @@ className="address-section mt-0">
             <h3 className="booking-summary-label">Fare Breakdown</h3>
             <div className="fare-breakdown-section">
               <div className="fare-breakdown-card">
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Total:</div>
-                  <div> ₹ {totalPrice} </div>
+
+                {/* <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Base Amount:</div>
+                  <div> ₹ {basePrice} </div>
+                </div> */}
+
+
+
+
+<div className="fare-breakdown-div">
+  <div className="fare-breakdown-title">Service Charges:</div>
+  <div>
+    {(() => {
+      const numberOfPeople = JSON.parse(DataForPricesAppliedGet?.number_of_people || "{}");
+      const { people_count, price } = numberOfPeople;
+      return `For ${people_count} person = +₹ ${ price}`;
+    })()}
+  </div>
+</div>
+
+
+
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Charges for dishes/menu items:</div>
+                  <div>+₹ {DataForPricesAppliedGet?.menu_amount}</div>
                 </div>
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount:</div>
-                  <div> -₹ {discount}</div>
-                </div>
+
+
+
+          
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">GST:</div>
-                  <div>+₹ {gst}</div>
+                  <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
                 </div>
+
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Secure Fee:</div>
+                  <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
+                </div>
+
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Platform Fee:</div>
+                  <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
+                </div>
+
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Night Charges:</div>
+                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                </div>
+
+
+
+
+
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Base Price:</div>
+                  <div>+₹ {DataForPricesAppliedGet?.price}</div>
+                </div>
+
+
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Discount:</div>
+                  <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
+                </div>
+
+
+
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
                     <h5>Grand Total:</h5>
                   </div>
                   <div>
-                    <h5>₹ {grandTotal}</h5>
+                    <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
                   </div>
                 </div>
                 <div className="fare-saving-message-div">
                   <p className="fare-saving-message text-center">
-                    Hurray! You saved ₹ {discount} on the final bill
+                    Hurray! You saved ₹ {DataForPricesAppliedGet?.discount_amount} on the final bill
                   </p>
                 </div>
               </div>
             </div>
-
+{/* 
             <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
@@ -1885,6 +2221,8 @@ className="address-section mt-0">
                 </span>
               </div>
             </div>
+            
+            */}
 
             <div className="booking-summary-footer ">
               <div className="estimated-fare">
@@ -1895,7 +2233,7 @@ className="address-section mt-0">
                   
                 <p>
                   {" "}
-                  <h4>₹{grandTotal} </h4>
+                  <h4>₹{DataForPricesAppliedGet?.billing_amount} </h4>
                 </p>
                 </div>
               </div>
@@ -1908,72 +2246,10 @@ className="address-section mt-0">
           </div>
         )}
 
-        {/* {step === 6 && (
-          <div className="payment-section-container">
-            <div className="flex-fill payment-section-main-div">
-              <div className="payment-section-header">
-                <h2 className="payment-title">Payment</h2>
-
-                <button
-                  className="payment-close-button"
-                  onClick={prevStep}
-                  aria-label="Close payment section"
-                >
-                  ✖
-                </button>
-              </div>
-              <div className="payment-section-body">
-                <p>Complete your payment to confirm the booking.</p>
-
-                <span>
-                ₹ {grandTotal}
-                </span>
-                <div className="payment-options">
-                  <button
-                    className="payment-action-button"
-                    onClick={(event) => {
-                      handlePayment("online");
-                      setCallRazorPay(true);
-                      event.target.disabled = true; // Disable the clicked button
-                      event.target.nextSibling.disabled = true; // Disable the sibling button
-                      setMakeDisable(true);
-
-                    }}
-                    disabled = {makeDisable}
-                  >
-                    Pay Now
-                  </button>
-                  <button
-                    className="payment-action-button"
-                    onClick={(event) => {
-                      handlePayment("cod");
-                      setCallRazorPay(false);
-                      event.target.disabled = true; // Disable the clicked button
-                      event.target.previousSibling.disabled = true; // Disable the sibling button
-                      setMakeDisable(true);
-                    }}
-                    disabled = {makeDisable}
-                  >
-                    Pay Later
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {callRazorPay && BookingData && (
-          <RazorpayPayment
-            BookingData={BookingData}
-            callRazorPay={callRazorPay}
-            handleConfirmBooking={nextStep}
-          />
-        )} */}
-
-
 
 {step === 6 && (
   <div className="payment-section-container">
+            {loading && <Loader />}
     <div className="payment-section-main-div">
       <div className="payment-section-header">
         <button
@@ -1983,7 +2259,7 @@ className="address-section mt-0">
         >
           ←
         </button>
-        <h2 className="payment-title">Bill Total: ₹ {grandTotal}</h2>
+        <h2 className="payment-title">Bill Total: ₹ {DataForPricesAppliedGet?.billing_amount}</h2>
       </div>
 
       <div className="payment-section-body">
@@ -2051,6 +2327,7 @@ className="address-section mt-0">
 
         {step === 7 && (
           <div className="success-container">
+                    {loading && <Loader />}
             <div className="success-content">
               <div className="checkmark-circle">
                 <svg
@@ -2091,13 +2368,19 @@ className="address-section mt-0">
             />
 
         <div className="booking-illustration-section">
-          <h1 className="booking-page-title"># Lorem ipsum dolor sit</h1>
-          <h2 className="booking-main-title">LOREM IPSUM</h2>
+   
+          <h2 className="booking-main-title">{basicDataByGet?.sub_category?.sub_category_name}</h2>
           <img
-            src="./../ServicesSection/modify-booking.jpg"
+            src={basicDataByGet?.sub_category?.image}
             alt="Chef illustration"
             className="booking-illustration"
           />
+            <h4 style={{marginTop:"10px"}}
+            
+             >
+          Description : 
+          <br />
+          {basicDataByGet?.sub_category?.description}</h4>
         </div>
       </div>
     </>
