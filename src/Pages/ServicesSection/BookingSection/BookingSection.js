@@ -549,11 +549,19 @@ const BookingSection = () => {
 
     setLoading(true);
 
+
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+    
+    const voucherCode = selectedCouponObject ? selectedCouponObject.voucher_code : null;
+
     try {
       const body = {
         booking: {
           booking_id: DataForPricesAppliedGet ? DataForPricesAppliedGet.booking_id : "",
-          payment_mode: mod
+          payment_mode: mod,
+          voucher_code: voucherCode ? voucherCode : "",
         }
       };
       
@@ -949,9 +957,9 @@ useEffect(() => {
     if (service?.id === 3) {
       setBasePrice(parseFloat(totalPrice) + parseFloat(calculateTotalPriceForMenuForChefForParty()));
     } else {
-      if(service?.id === 8 || service?.id !== 9) {
+      if(service?.id === 8 && service?.id !== 9) {
          setBasePrice(SelectedNumberOfHoursObjectForGardner?.price);
-        }      else if(service?.id !== 8 || service?.id === 9) {
+        }      else if(service?.id !== 8 && service?.id === 9) {
           setBasePrice(SelectedNumberOfSlotsObjectForMonthlyGardner?.price);
          } 
       else {
@@ -1011,6 +1019,14 @@ useEffect(() => {
 
   
 
+  const convertToAmPm = (time) => {
+    const [hours, minutes] = time.split(":");
+    let hour = parseInt(hours, 10);
+    const amPm = hour >= 12 ? "PM" : "AM";
+    hour = hour % 12 || 12; // Convert 0 hour to 12 for AM/PM format
+
+    return `${hour}:${minutes} ${amPm}`;
+  };
 
 
 
@@ -2384,10 +2400,7 @@ className="address-section mt-0">
                 </div>
                 <div>
                 <p className="flex-fill mb-0 address-p">
-        {selectedLocation.house}, {selectedLocation.street_selectedLocation}{" "}
-        {selectedLocation.street_selectedLocation_line2}, {selectedLocation.landmark},{" "}
-        {selectedLocation.city} - {selectedLocation.state} {selectedLocation.postal_code}{" "}
-        {selectedLocation.country}
+        {DataForPricesAppliedGet?.visit_address}
       </p>
                   </div>
               </div>
@@ -2485,7 +2498,7 @@ className="address-section mt-0">
   <div>
     {service.id === 8 
       ? SelectedNumberOfHoursObjectForGardner?.hours 
-      : people}
+      : DataForPricesAppliedGet?.people_count}
   </div>
 </div>
 
@@ -2503,7 +2516,11 @@ className="address-section mt-0">
   <>
     <div>
       <strong>Time :</strong>{" "}
-      <div>{new Date(`1970-01-01T${DataForPricesAppliedGet?.visit_time}Z`).toLocaleTimeString('en-GB')}</div>
+      <div>
+      {DataForPricesAppliedGet?.visit_time && (
+        <div>{convertToAmPm(DataForPricesAppliedGet.visit_time)}</div>
+      )}
+    </div>
     </div>
   </>
 )}
