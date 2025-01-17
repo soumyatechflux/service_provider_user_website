@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BookingSection.css";
-import { ChevronLeft, ChevronRight, Loader, MapPin } from "lucide-react";
+import { ChevronLeft, Loader, MapPin, Voicemail } from "lucide-react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
@@ -21,7 +21,8 @@ import MessageModal from "../../MessageModal/MessageModal";
 import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { ChevronRight, ChevronDown } from "react-feather";
+import { FaRupeeSign, FaPercent } from "react-icons/fa";
 
 
 const BookingSection = () => {
@@ -188,6 +189,12 @@ const BookingSection = () => {
   const FunctionDataForPricesApplied = async () => {
     setLoading(true);
   
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+    
+    const voucherCode = selectedCouponObject ? selectedCouponObject.voucher_code : null;
+
     try {
       const body = {
         booking: {
@@ -203,7 +210,7 @@ const BookingSection = () => {
           car_type: "",
           transmission_type: "",
           no_of_hours_booked: "",
-          voucher_code: "",
+
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
@@ -216,6 +223,7 @@ const BookingSection = () => {
           gardener_monthly_subscription: (service?.id === 9 ) ? SelectedNumberOfSlotsObjectForMonthlyGardner : {},
           gardener_visiting_slots: (service?.id === 9 ) ? selectedVisitDates : [],
           
+         voucher_code: voucherCode ? voucherCode : "",
 
           // menu: service?.id === 3 ? selectedMenuItemsForChefForParty : [],
           menu: service?.id === 3 
@@ -279,11 +287,17 @@ const BookingSection = () => {
 
 
   const [selectedCoupon, setSelectedCoupon] = useState(null); // State to hold the selected coupon
+  const [isCouponsVisible, setIsCouponsVisible] = useState(false); // State to toggle coupon menu visibility
 
-  const handleCheckboxChangeForCoupen = (voucherId) => {
-    setSelectedCoupon(voucherId); // Update the selected coupon
+  // Function to handle radio button change
+  const handleRadioChange = (voucherId) => {
+    setSelectedCoupon(voucherId); // Update the selected coupon when a radio button is clicked
   };
 
+  // Handle visibility of coupons dropdown
+  const handleCouponsVisibility = () => {
+    setIsCouponsVisible((prevState) => !prevState);
+  };
 
 
 
@@ -996,6 +1010,70 @@ useEffect(() => {
   }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate]);
 
   
+
+
+
+
+
+
+
+  const handleApplyCoupen = async () => {
+    // setIsCouponsVisible(false);
+    setLoading(true);
+
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+    
+    const voucherCode = selectedCouponObject ? selectedCouponObject.voucher_code : null;
+
+
+    try {
+      const body = {
+   
+          booking_id: DataForPricesAppliedGet ? DataForPricesAppliedGet.booking_id : "",
+          voucher_code: voucherCode ? voucherCode : "",
+        
+      };
+      
+
+      setLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/discount/verify`,
+
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLoading(false);
+
+  
+      if (response.data.success) {
+        setDataForPricesAppliedGet(response?.data?.data);
+        toast.success(response?.data?.message || "Coupen id Valid.");
+        setIsCouponsVisible(false);
+
+      } else {
+        toast.error(response?.data?.message || "Coupen id In-Valid at this time.");
+      }
+
+    } catch (error) {
+      setLoading(false);
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again later.");
+  
+    }
+  };
+
+
+
+
 
 
 
@@ -2172,53 +2250,6 @@ className="address-section mt-0">
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               {/* This button now sets the step to 5 */}
               <button
                 className="confirm-address-button"
@@ -2496,46 +2527,140 @@ className="address-section mt-0">
 
 
 
+              <div>
+      {/* Menu Toggle Button */}
+      <button
+  className="menu-toggle-button"
+  onClick={handleCouponsVisibility}
+  style={{
+    padding: "10px 20px",
+    backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50", // Change background color based on visibility
+    color: "white",
+    border: "none",
+    borderRadius: "5px",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center", // Center content horizontally
+    width: "100%",
+    textAlign: "center",
+    margin: "0 auto", // Center the button horizontally within its container
+  }}
+>
+  {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
+  {isCouponsVisible ? (
+    <ChevronDown size={16} style={{ marginLeft: "8px" }} />
+  ) : (
+    <ChevronRight size={16} style={{ marginLeft: "8px" }} />
+  )}
+</button>
 
 
-    <div>
-      {/* Display all coupons */}
-      {DataForPricesAppliedGet?.discount?.map((coupon) => (
-        <div key={coupon.voucher_id} className="offers-card">
-          <div>
-            {/* Displaying discount type and value */}
-            <strong>{coupon.discount_type === "fixed" ? "Fixed Discount" : "Percentage Discount"}:</strong> 
-            {coupon.discount_value}
-            <p className="mb-0 ml-2 text-sm">
-              see all coupons
-              <ChevronRight size={16} />
-            </p>
-          </div>
+      {/* Dropdown Options (Coupons) */}
+      {isCouponsVisible && (
+        <div
+          className="coupon-dropdown"
+          style={{
+            marginTop: "10px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+            boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+            padding: "10px",
+            maxHeight: "300px",
+            overflowY: "auto",
+          }}
+        >
+          {DataForPricesAppliedGet?.discount?.map((coupon) => (
+            <div
+              key={coupon.voucher_id}
+              className="offers-card"
+              style={{
+                borderBottom: "1px solid #ddd",
+                padding: "10px",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+  
 
-          <div>
-            {/* Radio button for selecting coupon */}
-            <input
-              type="radio"
-              id={`coupon-${coupon.voucher_id}`}
-              name="coupon"
-              checked={selectedCoupon === coupon.voucher_id} // Check if this coupon is selected
-              onChange={() => handleCheckboxChangeForCoupen(coupon.voucher_id)} // Handle radio button change
-            />
-            <label htmlFor={`coupon-${coupon.voucher_id}`}>Select this coupon</label>
-          </div>
+<div>
+  {/* Displaying discount type and value */}
+  <strong>
+    {coupon.discount_type === "fixed"
+      ? "Fixed Discount"
+      : "Percentage Discount"}:
+  </strong>{" "}
+  {/* Conditionally display rupee or percentage */}
+  {coupon.discount_type === "fixed" ? (
+    <>
+      ₹ {coupon.discount_value}{" "}
+      {/* <FaRupeeSign size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
+    </>
+  ) : (
+    <>
+      {coupon.discount_value} %{" "}
+      {/* <FaPercent size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
+    </>
+  )}
+  <p className="mb-0 ml-2 text-sm">
+    Minimum Order: ₹ {coupon.minimum_order_amount}
+  </p>
+
+  <p className="mb-0 ml-2 text-sm">
+  Voucher Code:  {coupon.voucher_code}
+  </p>
+
+</div>
+
+
+              <div>
+                {/* Radio button for selecting coupon */}
+                <input
+                  type="radio"
+                  id={`coupon-${coupon.voucher_id}`}
+                  name="coupon"
+                  checked={selectedCoupon === coupon.voucher_id} // Check if this coupon is selected
+                  onChange={() => handleRadioChange(coupon.voucher_id)} // Handle radio button change
+                  style={{ marginRight: "8px" , cursor:"pointer"}}
+                />
+           
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      )}
 
       {/* Apply Button */}
       <div>
         <button
           className="offer-apply-button"
-          disabled={!selectedCoupon} // Disable if no coupon is selected
+          style={{
+            padding: "10px 20px",
+            backgroundColor: selectedCoupon ? "#4CAF50" : "#ccc",
+            color: "white",
+            border: "none",
+            borderRadius: "5px",
+            cursor: selectedCoupon ? "pointer" : "not-allowed",
+            marginTop: "20px",
+            marginBottom: "20px",
+            width: "100%",
+          }}
+          disabled={!selectedCoupon}
+          onClick={handleApplyCoupen}
         >
           Apply
         </button>
       </div>
     </div>
+
+
+
+
+
+
+
+
 
 
 
