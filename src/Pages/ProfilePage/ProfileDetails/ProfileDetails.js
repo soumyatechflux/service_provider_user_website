@@ -9,6 +9,9 @@ import { Modal, Button } from "react-bootstrap";
 import AddAddressForm from "./../ProfileDetails/AddAddressForm/AddAddressForm"; // Import the new form component
 import EditAddressForm from "./EditAddressForm/EditAddressForm";
 import MessageModal from "../../MessageModal/MessageModal";
+import LocationModal from "./LocationModal";
+import { LoadScript } from "@react-google-maps/api";
+
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState(null);
@@ -251,6 +254,95 @@ const ProfileDetails = () => {
     setEditedProfile(profileDataResponse); // Reset editedProfile to initial data
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [modalShow, setModalShow] = useState(false);
+  const cpDelhiLocation = {
+    latitude: 28.6328,
+    longitude: 77.2190,
+    city: "Delhi",
+    district: "Central Delhi",
+    state: "Delhi",
+    country: "India",
+    postalCode: "110001",
+    formattedAddress: "Connaught Place, New Delhi, Delhi, 110001, India",
+  };
+
+
+
+
+
+
   if (loading) {
     return <Loader />;
   }
@@ -259,6 +351,9 @@ const ProfileDetails = () => {
     return <div>Error loading profile data.</div>;
   }
 
+
+
+  
   return (
     <>
       <div className="container nav-container profile-container">
@@ -475,6 +570,131 @@ const ProfileDetails = () => {
                 </div>
               </div>
             ))}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div className="container mt-5 mb-5">
+<div className="container mt-5 mb-5">
+      <Button onClick={() => setModalShow(true)}>Get Live Location</Button>
+<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+
+     <LocationModal
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        latitude={cpDelhiLocation.latitude}
+        longitude={cpDelhiLocation.longitude}
+        city={cpDelhiLocation.city}
+        district={cpDelhiLocation.district}
+        state={cpDelhiLocation.state}
+        country={cpDelhiLocation.country}
+        postalCode={cpDelhiLocation.postalCode}
+        formattedAddress={cpDelhiLocation.formattedAddress}
+      />
+
+      </LoadScript>
+    </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <a className="add-address" onClick={() => setIsAddingAddress(true)}>
               + Add New Address
