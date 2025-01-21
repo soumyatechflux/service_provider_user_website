@@ -4,17 +4,14 @@ import "./ProfileDetails.css";
 import Loader from "../../Loader/Loader";
 import axios from "axios";
 import { BsPencil, BsTrash, BsThreeDotsVertical } from "react-icons/bs";
-import { Dropdown } from "react-bootstrap";
 import { Modal, Button } from "react-bootstrap";
-import AddAddressForm from "./../ProfileDetails/AddAddressForm/AddAddressForm"; // Import the new form component
-import EditAddressForm from "./EditAddressForm/EditAddressForm";
 import MessageModal from "../../MessageModal/MessageModal";
 import LocationModal from "./LocationModal";
 import { LoadScript } from "@react-google-maps/api";
-
+import { toast } from "react-toastify";
 
 const ProfileDetails = () => {
-  const [profileDataResponse, setProfileDataResponse] = useState(null);
+  const [profileDataResponse, setProfileDataResponse] = useState({});
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState({});
@@ -35,7 +32,6 @@ const ProfileDetails = () => {
   const [message, setMessage] = useState("");
   const handleShow = () => setShow(true);
 
-  const [dropdownOpen, setDropdownOpen] = useState(null); // Track open dropdown
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
 
   const dropdownRefs = useRef([]);
@@ -69,53 +65,7 @@ const ProfileDetails = () => {
     dropdownRefs.current = {};
   }, [addresses]);
 
-  const toggleDropdown = (id) => {
-    setDropdownOpen((prev) => (prev === id ? null : id));
-  };
 
-  const [newAddress, setNewAddress] = useState({
-    houseNumber: "",
-    streetAddress: "",
-    streetAddressLine: "",
-    landmark: "",
-    city: "",
-    state: "",
-    pincode: "",
-    country: "",
-  });
-
-  const handleAddressChange = (field, value) => {
-    setNewAddress({ ...newAddress, [field]: value });
-  };
-
-  const addNewAddress = () => {
-    setAddresses([...addresses, newAddress]);
-    setNewAddress({
-      houseNumber: "",
-      streetAddress: "",
-      streetAddressLine: "",
-      landmark: "",
-      city: "",
-      state: "",
-      pincode: "",
-      country: "",
-    });
-    setIsAddingAddress(false);
-  };
-
-  const cancelAddAddress = () => {
-    setNewAddress({
-      houseNumber: "",
-      streetAddress: "",
-      streetAddressLine: "",
-      landmark: "",
-      city: "",
-      state: "",
-      pincode: "",
-      country: "",
-    });
-    setIsAddingAddress(false);
-  };
 
   // Fetch profile data
   const fetchProfile = async () => {
@@ -129,7 +79,7 @@ const ProfileDetails = () => {
         setProfileDataResponse(response?.data?.data);
         const data = response?.data?.data;
         setAvatar(data.image || data.name.charAt(0).toUpperCase());
-        setName(data.name);
+        setName(data?.name);
         setPhone(data.mobile);
         setEmail(data.email);
         setAddresses(data?.address);
@@ -156,8 +106,8 @@ const ProfileDetails = () => {
 
       if (response?.status && response?.data?.success) {
         setIsDeletingAddress(false); // Close the modal
-        // Optionally refresh the address list or notify the user
-        console.log("Address deleted successfully");
+
+        toast.success("Address deleted successfully");
         fetchProfile();
       }
     } catch (err) {
@@ -255,109 +205,96 @@ const ProfileDetails = () => {
   };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const [modalShow, setModalShow] = useState(false);
-  const cpDelhiLocation = {
-    latitude: 28.6328,
-    longitude: 77.2190,
-    city: "Delhi",
-    district: "Central Delhi",
-    state: "Delhi",
-    country: "India",
-    postalCode: "110001",
-    formattedAddress: "Connaught Place, New Delhi, Delhi, 110001, India",
+  const [locationData, setLocationData] = useState({
+    latitude: "",
+    longitude: "",
+    city: "",
+    district: "",
+    state: "",
+    country: "",
+    postalCode: "",
+    formattedAddress: "",
+    landmark: "",
+    streetAddressLine2: "",
+  });
+
+  const fetchDefaultAddress = async (addressId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${addressId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.ok) {
+        const result = await response.json();
+  
+        if (result.success === true) {
+          const data = result.data; // Data fetched successfully
+  
+          setLocationData({
+            latitude: data?.latitude || "", 
+            longitude: data?.longitude || "", 
+            city: data?.city || "",
+            district: data?.district || "", 
+            state: data?.state || "", 
+            country: data?.country || "", 
+            postalCode: data?.postal_code || "", // Correcting the naming
+            formattedAddress: data?.formatted_address || "", // Correcting the naming
+            landmark: data?.landmark || "",
+            streetAddressLine2: data?.street_address_line2 || "", // Correcting the naming
+          });
+          setLoading(false);
+        } else {
+          setLoading(false);
+          // Show error message via toast
+          toast.error(`Failed to fetch address: ${result.message}`);
+        }
+      } else {
+        setLoading(false);
+        // Handle failed response status
+        toast.error("Error fetching address: " + response.statusText);
+      }
+    } catch (error) {
+      setLoading(false);
+      // Show error message via toast
+      toast.error(`Error fetching address: ${error.message}`);
+    }
   };
+  
 
 
 
 
+  // if (loading) {
+  //   return <Loader />;
+  // }
 
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (!profileDataResponse) {
-    return <div>Error loading profile data.</div>;
-  }
+  // if (!profileDataResponse) {
+  //   return <div>Error loading profile data.</div>;
+  // }
 
 
 
   
   return (
     <>
+
+{loading && Loader}
+
       <div className="container nav-container profile-container">
         <h1>Profile</h1>
+
+        {loading && (
+        <div className="loader-overlay">
+          <div className="spinner"></div>
+        </div>
+      )}
+
 
         <div className="profile-content">
           {/* Avatar Section */}
@@ -378,7 +315,7 @@ const ProfileDetails = () => {
                 />
               ) : (
                 <span className="avatar-placeholder">
-                  {profileDataResponse.name.charAt(0).toUpperCase()}
+                  {profileDataResponse?.name?.charAt(0).toUpperCase()}
                 </span>
               )}
 
@@ -416,7 +353,14 @@ const ProfileDetails = () => {
                     onChange={(e) => handleInputChange("name", e.target.value)}
                   />
                 ) : (
-                  <span>{profileDataResponse.name}</span>
+                  <>
+
+                  {profileDataResponse?.name && (
+                    <span>{profileDataResponse.name}</span>
+                  )}
+                  
+                  </>
+                  
                 )}
                 <button
                   className="edit-button"
@@ -446,15 +390,7 @@ const ProfileDetails = () => {
                 ) : (
                   <span>{profileDataResponse.mobile}</span>
                 )}
-                {/* <button
-                className="edit-button"
-                onClick={() => {
-                  setIsEditing(true);
-                  setEditingField("mobile");
-                }}
-              >
-                <Pencil size={16} />
-              </button> */}
+         
               </div>
             </div>
 
@@ -511,18 +447,18 @@ const ProfileDetails = () => {
             {addresses.map((address, index) => (
               <div key={address.id} className="mb-3">
                 <div className="d-flex align-items-center">
-                  <p className="flex-fill mb-0 address-p">
-                    <span className="serial-number me-2">{index + 1}.</span>
-                    {address.house && `${address.house}, `}
-                    {address.street_address && `${address.street_address}, `}
-                    {address.street_address_line2 &&
-                      `${address.street_address_line2}, `}
-                    {address.landmark && `${address.landmark}, `}
-                    {address.city && `${address.city}, `}
-                    {address.state && `${address.state} `}
-                    {address.postal_code && `${address.postal_code} `}
-                    {address.country && `${address.country}`}
-                  </p>
+                <p className="flex-fill mb-0 address-p">
+  <span className="serial-number me-2">{index + 1}.</span>
+  {address.landmark && `${address.landmark}, `}
+  {address.street_address_line2 && `${address.street_address_line2}, `}
+  {address.city && `${address.city}, `}
+  {address.state && `${address.state}, `}
+  {address.postal_code && `${address.postal_code},. `}
+  {address.country && `${address.country}`}
+  <br />
+
+</p>
+
                   <div
                     className="position-relative"
                     ref={(el) => {
@@ -547,13 +483,17 @@ const ProfileDetails = () => {
                         <button
                           className="custom-dropdown-item"
                           onClick={() => {
+                            fetchDefaultAddress(address?.address_id);
                             setAddressToEdit(address?.address_id);
                             setIsEditingAddress(true);
-                            setOpenDropdownIndex(null); // Close dropdown
+                            setOpenDropdownIndex(null);
+                       
                           }}
                         >
                           <BsPencil size={16} className="me-2" /> Edit
                         </button>
+
+
                         <button
                           className="custom-dropdown-item"
                           onClick={() => {
@@ -572,164 +512,66 @@ const ProfileDetails = () => {
             ))}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div className="container mt-5 mb-5">
-<div className="container mt-5 mb-5">
-      <Button onClick={() => setModalShow(true)}>Get Live Location</Button>
+            <div className="container mt-5 mb-5">
+      <Button onClick={() => setIsAddingAddress(true)} > + Add New Address</Button>
 <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
-
-     <LocationModal
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        latitude={cpDelhiLocation.latitude}
-        longitude={cpDelhiLocation.longitude}
-        city={cpDelhiLocation.city}
-        district={cpDelhiLocation.district}
-        state={cpDelhiLocation.state}
-        country={cpDelhiLocation.country}
-        postalCode={cpDelhiLocation.postalCode}
-        formattedAddress={cpDelhiLocation.formattedAddress}
+{isAddingAddress && (
+    <LocationModal
+        show={isAddingAddress}
+        onHide={() => {
+          setIsAddingAddress(false);
+          fetchProfile();
+        }}
+        
+        latitude=""
+        longitude=""
+        city=""
+        district=""
+        state=""
+        country=""
+        postalCode=""
+        formattedAddress=""
+        landmark=""
+        streetAddressLine2=""
+        addressToEditId={null} 
       />
+)}
+      </LoadScript>
+    </div>
+
+
+
+            {/* Modal for Editing Address */}
+
+            <div>
+
+<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+{isEditingAddress && (
+     <LocationModal
+        show={isEditingAddress}
+        onHide={() => {
+          setIsEditingAddress(false);
+          fetchProfile();
+        }}
+        latitude={Number(locationData.latitude)}
+        longitude={Number(locationData.longitude)}        
+        city={locationData.city}
+        district={locationData.district}
+        state={locationData.state}
+        country={locationData.country}
+        postalCode={locationData.postalCode}
+        formattedAddress={locationData.formattedAddress}
+        landmark={locationData.landmark}
+        streetAddressLine2={locationData.streetAddressLine2}
+        addressToEditId={addressToEdit}
+      />
+    )}
 
       </LoadScript>
     </div>
-    </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            <a className="add-address" onClick={() => setIsAddingAddress(true)}>
-              + Add New Address
-            </a>
-
-            {/* Modal for Adding New Address */}
-            <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
-              <Modal.Header closeButton>
-                <Modal.Title>Add New Address</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <AddAddressForm
-                  fetchProfile={fetchProfile}
-                  cancelAddAddress={cancelAddAddress}
-                />
-              </Modal.Body>
-            </Modal>
-
-            {/* Modal for Editing Address */}
-            <Modal
-              show={isEditingAddress}
-              onHide={() => setIsEditingAddress(false)}
-              centered
-            >
-              <Modal.Header closeButton>
-                <Modal.Title>Edit Address</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <EditAddressForm
-                  addressId={addressToEdit}
-                  closeModal={() => setIsEditingAddress(false)}
-                  refreshAddresses={fetchProfile} // A function to refresh the address list
-                />
-              </Modal.Body>
-            </Modal>
+         
 
             {/* Modal for Deleting Address */}
             <Modal
@@ -753,7 +595,7 @@ const ProfileDetails = () => {
                 <Button
                   variant="danger"
                   onClick={() => {
-                    handleDelete(addressToDelete); // Delete the selected address
+                    handleDelete(addressToDelete); 
                   }}
                 >
                   Delete

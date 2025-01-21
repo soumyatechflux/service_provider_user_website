@@ -24,6 +24,10 @@ import "react-toastify/dist/ReactToastify.css";
 import { ChevronRight, ChevronDown } from "react-feather";
 import { FaRupeeSign, FaPercent } from "react-icons/fa";
 
+import { LoadScript } from "@react-google-maps/api";
+import {  Button } from "react-bootstrap";
+import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
+
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -32,6 +36,8 @@ const BookingSection = () => {
   const navigate = useNavigate();
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
+
+
 
 
   const [menuItems, setMenuItems] = useState([]);
@@ -114,10 +120,10 @@ const BookingSection = () => {
         const data = response?.data?.data;
    
         setAddresses(data?.address);
+
         if (data?.address?.length > 0) {
           setSelectedLocation(data?.address[0]);
         }
-
 
       }
     } catch (err) {
@@ -503,6 +509,8 @@ const BookingSection = () => {
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isDropdownOpenTra, setIsDropdownOpenTra] = useState(false);
+
 
   // const handleCheckboxChange = (id) => {
   //   if (menu.includes(id)) {
@@ -512,16 +520,66 @@ const BookingSection = () => {
   //   }
   // };
 
-  const handleCheckboxChangeForDriver = (id) => {
-    // If the item is already selected, do nothing
-    if (menu.includes(id)) {
-      return;
-    }
+  // const handleCheckboxChangeForDriver = (id) => {
+  //   // If the item is already selected, do nothing
+  //   if (menu.includes(id)) {
+  //     return;
+  //   }
   
-    // Otherwise, set the selected item to the new id and close the dropdown
-    setMenu([id]); // This ensures only one item is selected
-    setIsDropdownOpen(false); // Close the dropdown after selection
+  //   // Otherwise, set the selected item to the new id and close the dropdown
+  //   setMenu([id]); // This ensures only one item is selected
+  //   setIsDropdownOpen(false); // Close the dropdown after selection
+  // };
+
+
+  const [selectedCarType, setSelectedCarType] = useState(""); // Renamed state
+
+  const carOptions = [
+    { id: 1, name: "SUV" },
+    { id: 2, name: "Sedan" },
+    { id: 3, name: "Hatchback" },
+    { id: 4, name: "Luxury" },
+  ];
+
+  // Handle checkbox change
+  const handleCheckboxChangeForDriver = (name) => {
+    setSelectedCarType(name);
+    setIsDropdownOpen(false);
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [selectedCarTransmissionType, setSelectedCarTransmissionType] = useState(""); // Renamed state
+
+  const carTransmissionOptions = [
+    { id: 1, name: "Manual" },
+    { id: 2, name: "Automatic" },
+  ];
+
+  // Handle checkbox change
+  const handleCheckboxChangeForDriverCarTransmission = (name) => {
+    setSelectedCarTransmissionType(name);
+    setIsDropdownOpenTra(false);
+  };
+
+
+
+
+
+
+
+
+
   
   const validateFieldsStepOne = (e) => {
     e.preventDefault();
@@ -540,6 +598,68 @@ const BookingSection = () => {
   
 
 
+
+  const [locationData, setLocationData] = useState({
+    latitude: "",
+    longitude: "",
+    city: "",
+    district: "",
+    state: "",
+    country: "",
+    postalCode: "",
+    formattedAddress: "",
+    landmark: "",
+    streetAddressLine2: "",
+  });
+
+  const fetchDefaultAddress = async (addressId) => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${addressId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+  
+      if (response.ok) {
+        const result = await response.json();
+  
+        if (result.success === true) {
+          const data = result.data; // Data fetched successfully
+  
+          setLocationData({
+            latitude: data?.latitude || "", 
+            longitude: data?.longitude || "", 
+            city: data?.city || "",
+            district: data?.district || "", 
+            state: data?.state || "", 
+            country: data?.country || "", 
+            postalCode: data?.postal_code || "", // Correcting the naming
+            formattedAddress: data?.formatted_address || "", // Correcting the naming
+            landmark: data?.landmark || "",
+            streetAddressLine2: data?.street_address_line2 || "", // Correcting the naming
+          });
+          setLoading(false);
+        } else {
+          setLoading(false);
+          // Show error message via toast
+          toast.error(`Failed to fetch address: ${result.message}`);
+        }
+      } else {
+        setLoading(false);
+        // Handle failed response status
+        toast.error("Error fetching address: " + response.statusText);
+      }
+    } catch (error) {
+      setLoading(false);
+      // Show error message via toast
+      toast.error(`Error fetching address: ${error.message}`);
+    }
+  };
+  
 
 
   const [callRazorPay, setCallRazorPay] = useState(false);
@@ -690,6 +810,95 @@ const BookingSection = () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  const [OptionsForNumberOFHoursForDriverArray, setOptionsForNumberOFHoursForDriverArray] = useState([]);
+  const [SelectedNumberOfHoursObjectForDriver, setSelectedNumberOfHoursObjectForDriver] = useState({ hours: 0, price: 0 });
+  
+  useEffect(() => {
+    if (basicDataByGet?.driver_time_durations?.length) {
+      setOptionsForNumberOFHoursForDriverArray(basicDataByGet?.driver_time_durations);
+      // Initialize with the first option's hours and price
+      const firstOption = basicDataByGet?.driver_time_durations[0];
+      setSelectedNumberOfHoursObjectForDriver({ hours: firstOption.hours, price: firstOption.price });
+    }
+  }, [basicDataByGet]);
+  
+  // Handle decrement
+  const handleDecrementHousForDriver = () => {
+    const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
+    );
+  
+    if (currentIndex > 0) {
+      const previousOption = OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
+      setSelectedNumberOfHoursObjectForDriver({ hours: previousOption.hours, price: previousOption.price });
+    } else {
+      // Show toast notification for min limit
+      toast.error("You have to select at least the minimum number of hours.");
+    }
+  };
+  
+  // Handle increment
+  const handleIncrementHousForDriver = () => {
+    const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
+    );
+  
+    if (currentIndex < OptionsForNumberOFHoursForDriverArray.length - 1) {
+      const nextOption = OptionsForNumberOFHoursForDriverArray[currentIndex + 1];
+      setSelectedNumberOfHoursObjectForDriver({ hours: nextOption.hours, price: nextOption.price });
+    } else {
+      // Show toast notification for max limit
+      toast.error("You've reached the maximum number of hours.");
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [OptionsForNumberOFSlotsForMonthlyGardnerArray, setOptionsForNumberOFSlotsForMonthlyGardnerArray] = useState([]);
   const [SelectedNumberOfSlotsObjectForMonthlyGardner, setSelectedNumberOfSlotsObjectForMonthlyGardner] = useState({ hours: 0, price: 0 });
   
@@ -762,7 +971,9 @@ const BookingSection = () => {
 
 
   useEffect(() => {
-    setdishesOptionsArray(basicDataByGet?.dishes);    
+    setdishesOptionsArray(basicDataByGet?.dishes);   
+
+
   }, [basicDataByGet]);
 
 
@@ -904,6 +1115,56 @@ const BookingSection = () => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+  const calculateDistance = (lat1, lon1, lat2, lon2) => {
+    const R = 6371; // Radius of the Earth in km
+    const toRad = (degree) => (degree * Math.PI) / 180; // Convert degree to radians
+  
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+  
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) *
+        Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  
+    const distanceInKm = R * c; // Distance in kilometers
+    const distanceInMeters = distanceInKm * 1000; // Distance in meters
+  
+    return { distanceInKm, distanceInMeters };
+  };
+
+
+  // Calculate the distance if both locations are provided
+  let distanceInKm = 0;
+  let distanceInMeters = 0;
+  
+  if (selectedLocationFromForDriver?.latitude && selectedLocationToForDriver?.latitude) {
+    const { distanceInKm: km, distanceInMeters: meters } = calculateDistance(
+      selectedLocationFromForDriver.latitude,
+      selectedLocationFromForDriver.longitude,
+      selectedLocationToForDriver.latitude,
+      selectedLocationToForDriver.longitude
+    );
+    distanceInKm = km;
+    distanceInMeters = meters;
+  }
+
+
+
   useEffect(() => {
 
     if (Array.isArray(basicDataByGet?.no_of_people) && people !== undefined) {
@@ -962,12 +1223,15 @@ useEffect(() => {
         }      else if(service?.id !== 8 && service?.id === 9) {
           setBasePrice(SelectedNumberOfSlotsObjectForMonthlyGardner?.price);
          } 
+         else if(service?.category_id === 2) {
+          setBasePrice(SelectedNumberOfHoursObjectForDriver?.price);
+         } 
       else {
         setBasePrice(totalPrice); 
       }
 
     }
-  }, [totalPrice, service,people,selectedMenuItemsForChefForParty,SelectedNumberOfHoursObjectForGardner,SelectedNumberOfSlotsObjectForMonthlyGardner]);
+  }, [totalPrice, service,people,selectedMenuItemsForChefForParty,SelectedNumberOfHoursObjectForGardner,SelectedNumberOfSlotsObjectForMonthlyGardner,SelectedNumberOfHoursObjectForDriver]);
 
 
 
@@ -1329,6 +1593,36 @@ useEffect(() => {
 
 
 
+{(service?.category_id === 2 ) && (
+               
+               <>
+ <div className="booking-form-group">
+    <label className="booking-form-label">Number of Hours</label>
+    <div className="booking-counter-container">
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleDecrementHousForDriver}
+      >
+        -
+      </button>
+      <span className="booking-counter-value">{SelectedNumberOfHoursObjectForDriver?.hours}</span>
+      <button
+        type="button"
+        className="booking-counter-button"
+        onClick={handleIncrementHousForDriver}
+      >
+        +
+      </button>
+    </div>
+  </div>
+
+</>
+)}
+
+
+
+
 
 
 
@@ -1454,14 +1748,11 @@ useEffect(() => {
 
 
 
-
-
                 <div
                   className="booking-form-group"
                   style={{ position: "relative" }}
                 >
                
-
                
                
                   {(service?.category_id === 1 ) && (service?.id !== 3) && (service?.id !== 8 || service?.id !== 9)&& (
@@ -1564,98 +1855,209 @@ useEffect(() => {
         
                
                
-{(service?.category_id === 2)&& (service?.id !== 3)   && (service?.id !== 8)&&(
+{(service?.category_id === 2)&&(
                
                <>
             
-               
-                  <label className="booking-form-label">
-                    Select Cars (Optional)
-                  </label>
+            <div>
+      <label className="booking-form-label">Select Cars Type (Optional)</label>
 
-            <div
-  className="dropdown-container"
-  style={{
-    display: "flex",
-    flexDirection: "column",
-    gap: "4px", // Reduce gap between elements
-  }}
->
-  <div
-    className="dropdown-input"
-    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-    style={{
-      cursor: "pointer",
-      padding: "8px",
-      fontSize: "16px",
-      border: "1px solid #ccc",
-      borderRadius: "4px",
-      display: "flex",
-      justifyContent: "space-between",
-      alignItems: "center",
-      width: "100%", // Full width for better alignment
-    }}
-  >
-    {menu.length > 0
-      ? `Selected: ${dishesOptionsArray
-          .filter((option) => menu.includes(option.id))
-          .map((option) => option.name)
-          .join(", ")}`
-      : "Select a service"}
-    <span>{isDropdownOpen ? "▲" : "▼"}</span>
-  </div>
-
-  {/* Dropdown options list */}
-  {isDropdownOpen && (
-    <div
-      className="dropdown-options"
-      style={{
-        position: "absolute",
-        top: "100%", // Place the dropdown directly below the input
-        left: 0,
-        right: 0,
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        backgroundColor: "white",
-        width: "100%", // Match the width of the input
-        maxHeight: "200px",
-        overflowY: "auto",
-        zIndex: 10,
-        padding: "0", // Remove padding to reduce space
-      }}
-    >
-      {dishesOptionsArray.map((option) => (
+      <div
+        className="dropdown-container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px", // Reduce gap between elements
+        }}
+      >
         <div
-          key={option.id}
-          className="dropdown-option"
+          className="dropdown-input"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           style={{
+            cursor: "pointer",
             padding: "8px",
-            display: "flex", // Align checkbox and label on the same line
-            alignItems: "center", // Center the checkbox and text vertically
-            gap: "8px", // Add space between checkbox and text
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%", // Full width for better alignment
           }}
         >
-          <input
-            type="checkbox"
-            className="menu-checkbox"
-            id={`service-${option.id}`}
-            value={option.id}
-            checked={menu.includes(option.id)}
-            onChange={() => handleCheckboxChangeForDriver(option.id)}
-            style={{
-              margin: 0, // Remove any margin around the checkbox
-              cursor: "pointer",
-            }}
-          />
-          <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
-            {option.name}{" "}
-          </label>
+          {selectedCarType.length > 0
+            ? `Selected: ${selectedCarType}`
+            : "Select a car type"}
+          <span>{isDropdownOpen ? "▲" : "▼"}</span>
         </div>
-      ))}
-    </div>
-  )}
-</div>
 
+        {/* Dropdown options list */}
+        {isDropdownOpen && (
+          <div
+            className="dropdown-options"
+            style={{
+              position: "absolute",
+              top: "100%", // Place the dropdown directly below the input
+              left: 0,
+              right: 0,
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              backgroundColor: "white",
+              width: "100%", // Match the width of the input
+              maxHeight: "200px",
+              overflowY: "auto",
+              zIndex: 10,
+              padding: "0", // Remove padding to reduce space
+            }}
+          >
+            {carOptions.map((option) => (
+              <div
+                key={option.id}
+                className="dropdown-option"
+                style={{
+                  padding: "8px",
+                  display: "flex", // Align checkbox and label on the same line
+                  alignItems: "center", // Center the checkbox and text vertically
+                  gap: "8px", // Add space between checkbox and text
+                }}
+              >
+              <input
+  type="radio"  // Change to radio to allow only one selection at a time
+  className="menu-checkbox"
+  id={`service-${option.name}`}
+  value={option.id}
+  checked={selectedCarType.includes(option.name)} // Checked if this option is in the array
+  onChange={() => handleCheckboxChangeForDriver(option.name)} // Update state to select only one
+  style={{
+    margin: 0, // Remove any margin around the checkbox
+    cursor: "pointer",
+  }}
+/>
+
+                <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
+                  {option.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+                  </>
+
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+               
+{(service?.category_id === 2)&&(
+               
+               <>
+            
+            <div style={{marginTop:"15px", marginBottom:"10px"}}>
+      <label className="booking-form-label">Select Transmission Type (Optional)</label>
+
+      <div
+        className="dropdown-container"
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "4px", // Reduce gap between elements
+        }}
+      >
+        <div
+          className="dropdown-input"
+          onClick={() => setIsDropdownOpenTra(!isDropdownOpenTra)}
+          style={{
+            cursor: "pointer",
+            padding: "8px",
+            fontSize: "16px",
+            border: "1px solid #ccc",
+            borderRadius: "4px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            width: "100%", // Full width for better alignment
+          }}
+        >
+          {selectedCarTransmissionType.length > 0
+            ? `Selected: ${selectedCarTransmissionType}`
+            : "Select a transmission type"}
+          <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
+        </div>
+
+        {/* Dropdown options list */}
+        {isDropdownOpenTra && (
+          <div
+            className="dropdown-options"
+            style={{
+              position: "absolute",
+              top: "100%", // Place the dropdown directly below the input
+              left: 0,
+              right: 0,
+              border: "1px solid #ccc",
+              borderRadius: "4px",
+              backgroundColor: "white",
+              width: "100%", // Match the width of the input
+              maxHeight: "200px",
+              overflowY: "auto",
+              zIndex: 10,
+              padding: "0", // Remove padding to reduce space
+            }}
+          >
+            {carTransmissionOptions.map((option) => (
+              <div
+                key={option.id}
+                className="dropdown-option"
+                style={{
+                  padding: "8px",
+                  display: "flex", // Align checkbox and label on the same line
+                  alignItems: "center", // Center the checkbox and text vertically
+                  gap: "8px", // Add space between checkbox and text
+                }}
+              >
+              <input
+  type="radio"  // Change to radio to allow only one selection at a time
+  className="menu-checkbox"
+  id={`service-${option.name}`}
+  value={option.id}
+  checked={selectedCarTransmissionType.includes(option.name)} // Checked if this option is in the array
+  onChange={() => handleCheckboxChangeForDriverCarTransmission(option.name)} // Update state to select only one
+  style={{
+    margin: 0, // Remove any margin around the checkbox
+    cursor: "pointer",
+  }}
+/>
+
+                <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
+                  {option.name}
+                </label>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
                   </>
 
 )}
@@ -1929,8 +2331,9 @@ className="address-section mt-0">
 
 
 
+
 {(service?.category_id === 1 || service?.category_id === 3 )&& (
-  <>
+  <>    <span>Select Address :</span>
        {addresses.map((address, index) => (
   <div key={address.address_id} className="mb-3" style={{border:"2px solid #D8D8D8", padding:"5px", borderRadius:"5px"}}>
     <div className="d-flex align-items-center">
@@ -1944,17 +2347,17 @@ className="address-section mt-0">
         className="me-2"
         style={{cursor:"pointer", width:"auto"}}
       />
-      <p className="flex-fill mb-0 address-p">
-        <span className="serial-number me-2">{index + 1}.</span>
-        {address.house}, {address.street_address}{" "}
-        {address.street_address_line2}, {address.landmark},{" "}
-        {address.city} - {address.state} {address.postal_code}{" "}
-        {address.country}
-      </p>
+          <p className="flex-fill mb-0 address-p">
+  <span className="serial-number me-2">{index + 1}.</span>
+  {address.landmark && `${address.landmark}, `}
+  {address.street_address_line2 && `${address.street_address_line2}, `}
+  {address.city && `${address.city}, `}
+  {address.state && `${address.state}, `}
+  {address.postal_code && `${address.postal_code},. `}
+  {address.country && `${address.country}`}
+  <br />
 
-
-      
-
+</p>
 
       <Dropdown className="custom-dropdown-container">
         <Dropdown.Toggle
@@ -1971,7 +2374,9 @@ className="address-section mt-0">
           className="custom-dropdown-item-booking"
             onClick={() => {
               setAddressToEdit(address?.address_id);
+              fetchDefaultAddress(address?.address_id);
               setIsEditingAddress(true);
+            
             }}
           >
            <span>Edit</span> 
@@ -2040,10 +2445,17 @@ className="address-section mt-0">
                   className="me-2"
                   style={{ cursor: "pointer", width: "auto" }}
                 />
-                <p className="flex-fill mb-0 address-p">
-                  <span className="serial-number me-2">{index + 1}.</span>
-                  {address.house}, {address.street_address} {address.street_address_line2}, {address.landmark}, {address.city} - {address.state} {address.postal_code} {address.country}
-                </p>
+                     <p className="flex-fill mb-0 address-p">
+  <span className="serial-number me-2">{index + 1}.</span>
+  {address.landmark && `${address.landmark}, `}
+  {address.street_address_line2 && `${address.street_address_line2}, `}
+  {address.city && `${address.city}, `}
+  {address.state && `${address.state}, `}
+  {address.postal_code && `${address.postal_code},. `}
+  {address.country && `${address.country}`}
+  <br />
+
+</p>
                 <Dropdown className="custom-dropdown-container">
                   <Dropdown.Toggle
                     as="span"
@@ -2058,6 +2470,7 @@ className="address-section mt-0">
                     className="custom-dropdown-item-booking"
                       onClick={() => {
                         setAddressToEdit(address?.address_id);
+                        fetchDefaultAddress(address?.address_id);
                         setIsEditingAddress(true);
                       }}
                     >
@@ -2093,10 +2506,17 @@ className="address-section mt-0">
                   className="me-2"
                   style={{ cursor: "pointer", width: "auto" }}
                 />
-                <p className="flex-fill mb-0 address-p">
-                  <span className="serial-number me-2">{index + 1}.</span>
-                  {address.house}, {address.street_address} {address.street_address_line2}, {address.landmark}, {address.city} - {address.state} {address.postal_code} {address.country}
-                </p>
+                    <p className="flex-fill mb-0 address-p">
+  <span className="serial-number me-2">{index + 1}.</span>
+  {address.landmark && `${address.landmark}, `}
+  {address.street_address_line2 && `${address.street_address_line2}, `}
+  {address.city && `${address.city}, `}
+  {address.state && `${address.state}, `}
+  {address.postal_code && `${address.postal_code},. `}
+  {address.country && `${address.country}`}
+  <br />
+
+</p>
                 <Dropdown className="custom-dropdown-container">
                   <Dropdown.Toggle
                     as="span"
@@ -2111,6 +2531,7 @@ className="address-section mt-0">
                     className="custom-dropdown-item-booking"
                       onClick={() => {
                         setAddressToEdit(address?.address_id);
+                        fetchDefaultAddress(address?.address_id);
                         setIsEditingAddress(true);
                       }}
                     >
@@ -2127,6 +2548,43 @@ className="address-section mt-0">
 
 
 
+    <div>
+      <p>
+        Distance between them is: {" "}
+        {
+        distanceInKm.toFixed(2)} km 
+        {/* ({distanceInMeters.toFixed(0)} meters) */}
+      </p>
+    </div>
+
+
+
+    <div className="container mt-3 mb-3">
+      <Button onClick={() => setIsAddingAddress(true)} > + Add New Address</Button>
+<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+
+    <LocationModal
+        show={isAddingAddress}
+        onHide={() => {
+          setIsAddingAddress(false);
+          fetchProfile();
+        }}
+        
+        latitude=""
+        longitude=""
+        city=""
+        district=""
+        state=""
+        country=""
+        postalCode=""
+        formattedAddress=""
+        landmark=""
+        streetAddressLine2=""
+        addressToEditId={null} 
+      />
+
+      </LoadScript>
+    </div>
 
 
 
@@ -2135,88 +2593,33 @@ className="address-section mt-0">
 
 
 
+  <div>
 
+<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+{isEditingAddress && (
+     <LocationModal
+        show={isEditingAddress}
+        onHide={() => {
+          setIsEditingAddress(false);
+          fetchProfile();
+        }}
+        latitude={Number(locationData.latitude)}
+        longitude={Number(locationData.longitude)}        
+        city={locationData.city}
+        district={locationData.district}
+        state={locationData.state}
+        country={locationData.country}
+        postalCode={locationData.postalCode}
+        formattedAddress={locationData.formattedAddress}
+        landmark={locationData.landmark}
+        streetAddressLine2={locationData.streetAddressLine2}
+        addressToEditId={addressToEdit}
+      />
+    )}
 
+      </LoadScript>
+    </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-          <a className="add-address" onClick={() => setIsAddingAddress(true)}>
-            + Add New Address
-          </a>
-
-          {/* Modal for Adding New Address */}
-          <Modal show={isAddingAddress} onHide={cancelAddAddress} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Add New Address</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <AddAddressForm
-                fetchProfile={fetchProfile}
-                cancelAddAddress={cancelAddAddress}
-              />
-            </Modal.Body>
-          </Modal>
-
-          {/* Modal for Editing Address */}
-          <Modal show={isEditingAddress} onHide={() => setIsEditingAddress(false)} centered>
-            <Modal.Header closeButton>
-              <Modal.Title>Edit Address</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <EditAddressForm
-                addressId={addressToEdit}
-                closeModal={() => setIsEditingAddress(false)}
-                refreshAddresses={fetchProfile} // A function to refresh the address list
-              />
-            </Modal.Body>
-          </Modal>
 
          
         </div>
