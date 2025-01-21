@@ -213,19 +213,19 @@ const BookingSection = () => {
           visit_address_id: selectedLocation?.address_id || "",
           address_from: service?.category_id === 2 ? selectedLocationFromForDriver?.address_id : "",
           address_to: service?.category_id === 2 ? selectedLocationToForDriver?.address_id : "",
-          car_type: "",
-          transmission_type: "",
           no_of_hours_booked: "",
-
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
           payment_mode: "",
           dishes: (service?.id === 1 || service?.id === 2) ? SelectedNamesOfDishes : [],
 
+          driver_time_duration: (service?.category_id === 2 ) ? SelectedNumberOfHoursObjectForDriver : {},
+
+          transmission_type: (service?.category_id === 2 ) ? selectedCarTransmissionType : "",
+          car_type: (service?.category_id === 2 ) ? selectedCarType : "",
 
           gardener_time_duration: (service?.id === 8 ) ? SelectedNumberOfHoursObjectForGardner : {},
-
           gardener_monthly_subscription: (service?.id === 9 ) ? SelectedNumberOfSlotsObjectForMonthlyGardner : {},
           gardener_visiting_slots: (service?.id === 9 ) ? selectedVisitDates : [],
           
@@ -510,26 +510,6 @@ const BookingSection = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDropdownOpenTra, setIsDropdownOpenTra] = useState(false);
-
-
-  // const handleCheckboxChange = (id) => {
-  //   if (menu.includes(id)) {
-  //     setMenu(menu.filter((item) => item !== id));
-  //   } else {
-  //     setMenu([...menu, id]);
-  //   }
-  // };
-
-  // const handleCheckboxChangeForDriver = (id) => {
-  //   // If the item is already selected, do nothing
-  //   if (menu.includes(id)) {
-  //     return;
-  //   }
-  
-  //   // Otherwise, set the selected item to the new id and close the dropdown
-  //   setMenu([id]); // This ensures only one item is selected
-  //   setIsDropdownOpen(false); // Close the dropdown after selection
-  // };
 
 
   const [selectedCarType, setSelectedCarType] = useState(""); // Renamed state
@@ -1854,20 +1834,19 @@ useEffect(() => {
 
         
                
-               
-{(service?.category_id === 2)&&(
-               
-               <>
-            
-            <div>
-      <label className="booking-form-label">Select Cars Type (Optional)</label>
 
+
+{service?.category_id === 2 && (
+  <>
+    {/* Car Type Dropdown */}
+    <div style={{ marginTop: "15px", marginBottom: "10px", position: "relative" }}>
+      <label className="booking-form-label">Select Cars Type (Optional)</label>
       <div
         className="dropdown-container"
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "4px", // Reduce gap between elements
+          gap: "4px",
         }}
       >
         <div
@@ -1882,7 +1861,7 @@ useEffect(() => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "100%", // Full width for better alignment
+            width: "100%",
           }}
         >
           {selectedCarType.length > 0
@@ -1891,23 +1870,20 @@ useEffect(() => {
           <span>{isDropdownOpen ? "▲" : "▼"}</span>
         </div>
 
-        {/* Dropdown options list */}
         {isDropdownOpen && (
           <div
             className="dropdown-options"
             style={{
               position: "absolute",
-              top: "100%", // Place the dropdown directly below the input
+              top: "100%",
               left: 0,
-              right: 0,
               border: "1px solid #ccc",
               borderRadius: "4px",
               backgroundColor: "white",
-              width: "100%", // Match the width of the input
+              width: "100%",
               maxHeight: "200px",
               overflowY: "auto",
               zIndex: 10,
-              padding: "0", // Remove padding to reduce space
             }}
           >
             {carOptions.map((option) => (
@@ -1916,24 +1892,23 @@ useEffect(() => {
                 className="dropdown-option"
                 style={{
                   padding: "8px",
-                  display: "flex", // Align checkbox and label on the same line
-                  alignItems: "center", // Center the checkbox and text vertically
-                  gap: "8px", // Add space between checkbox and text
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "8px",
                 }}
               >
-              <input
-  type="radio"  // Change to radio to allow only one selection at a time
-  className="menu-checkbox"
-  id={`service-${option.name}`}
-  value={option.id}
-  checked={selectedCarType.includes(option.name)} // Checked if this option is in the array
-  onChange={() => handleCheckboxChangeForDriver(option.name)} // Update state to select only one
-  style={{
-    margin: 0, // Remove any margin around the checkbox
-    cursor: "pointer",
-  }}
-/>
-
+                <input
+                  type="radio"
+                  className="menu-checkbox"
+                  id={`service-${option.name}`}
+                  value={option.id}
+                  checked={selectedCarType === option.name}
+                  onChange={() => handleCheckboxChangeForDriver(option.name)}
+                  style={{
+                    margin: 0,
+                    cursor: "pointer",
+                  }}
+                />
                 <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
                   {option.name}
                 </label>
@@ -1943,50 +1918,20 @@ useEffect(() => {
         )}
       </div>
     </div>
-                  </>
 
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-               
-{(service?.category_id === 2)&&(
-               
-               <>
-            
-            <div style={{marginTop:"15px", marginBottom:"10px"}}>
+    {/* Transmission Type Dropdown */}
+    <div style={{ marginTop: "15px", marginBottom: "10px", position: "relative" }}>
       <label className="booking-form-label">Select Transmission Type (Optional)</label>
-
       <div
-        className="dropdown-container"
+        className="dropdown-container-tra"
         style={{
           display: "flex",
           flexDirection: "column",
-          gap: "4px", // Reduce gap between elements
+          gap: "4px",
         }}
       >
         <div
-          className="dropdown-input"
+          className="dropdown-input-tra"
           onClick={() => setIsDropdownOpenTra(!isDropdownOpenTra)}
           style={{
             cursor: "pointer",
@@ -1997,7 +1942,7 @@ useEffect(() => {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            width: "100%", // Full width for better alignment
+            width: "100%",
           }}
         >
           {selectedCarTransmissionType.length > 0
@@ -2006,74 +1951,60 @@ useEffect(() => {
           <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
         </div>
 
-        {/* Dropdown options list */}
         {isDropdownOpenTra && (
-          <div
-            className="dropdown-options"
-            style={{
-              position: "absolute",
-              top: "100%", // Place the dropdown directly below the input
-              left: 0,
-              right: 0,
-              border: "1px solid #ccc",
-              borderRadius: "4px",
-              backgroundColor: "white",
-              width: "100%", // Match the width of the input
-              maxHeight: "200px",
-              overflowY: "auto",
-              zIndex: 10,
-              padding: "0", // Remove padding to reduce space
-            }}
-          >
-            {carTransmissionOptions.map((option) => (
-              <div
-                key={option.id}
-                className="dropdown-option"
-                style={{
-                  padding: "8px",
-                  display: "flex", // Align checkbox and label on the same line
-                  alignItems: "center", // Center the checkbox and text vertically
-                  gap: "8px", // Add space between checkbox and text
-                }}
-              >
-              <input
-  type="radio"  // Change to radio to allow only one selection at a time
-  className="menu-checkbox"
-  id={`service-${option.name}`}
-  value={option.id}
-  checked={selectedCarTransmissionType.includes(option.name)} // Checked if this option is in the array
-  onChange={() => handleCheckboxChangeForDriverCarTransmission(option.name)} // Update state to select only one
-  style={{
-    margin: 0, // Remove any margin around the checkbox
-    cursor: "pointer",
-  }}
-/>
-
-                <label htmlFor={`service-${option.id}`} style={{ margin: 0 }}>
-                  {option.name}
-                </label>
-              </div>
-            ))}
-          </div>
-        )}
+  <div
+    className="dropdown-options-tra"
+    style={{
+      position: "absolute",
+      top: "100%",
+      left: 0,
+      border: "1px solid #ccc",
+      borderRadius: "4px",
+      backgroundColor: "white",
+      width: "100%",
+      maxHeight: "200px",
+      overflowY: "auto",
+      zIndex: 10,
+      textAlign: "left", // Ensure text starts from the left
+    }}
+  >
+    {carTransmissionOptions.map((option) => (
+      <div
+        key={option.id}
+        className="dropdown-option-tra"
+        style={{
+          padding: "8px",
+          display: "flex",
+          alignItems: "center",
+          gap: "8px",
+          justifyContent: "flex-start", // Align items to the left
+        }}
+      >
+        <input
+          type="radio"
+          className="menu-checkbox-tra"
+          id={`tra-service-${option.name}`}
+          value={option.id}
+          checked={selectedCarTransmissionType === option.name}
+          onChange={() => handleCheckboxChangeForDriverCarTransmission(option.name)}
+          style={{
+            margin: 0,
+            cursor: "pointer",
+          }}
+        />
+        <label htmlFor={`tra-service-${option.id}`} style={{ margin: 0 }}>
+          {option.name}
+        </label>
       </div>
-    </div>
-                  </>
-
+    ))}
+  </div>
 )}
 
-
-
-
-
-
-
-
-
-
-
-
-
+        
+      </div>
+    </div>
+  </>
+)}
 
 
 
@@ -2825,10 +2756,7 @@ className="address-section mt-0">
                 </div>
                 <div>
                 <p className="flex-fill mb-0 address-p">
-      {selectedLocationFromForDriver?.house}, {selectedLocationFromForDriver?.street_address}{" "}
-      {selectedLocationFromForDriver?.street_address_line2}, {selectedLocationFromForDriver?.landmark}, {" "}
-      {selectedLocationFromForDriver?.city} - {selectedLocationFromForDriver?.state} {selectedLocationFromForDriver?.postal_code}{" "}
-      {selectedLocationFromForDriver?.country}
+                {DataForPricesAppliedGet?.address_from}
     </p>
                   </div>
               </div>
@@ -2846,10 +2774,7 @@ className="address-section mt-0">
                 </div>
                 <div>
                 <p className="flex-fill mb-0 address-p">
-                {selectedLocationToForDriver?.house}, {selectedLocationToForDriver?.street_address}{" "}
-      {selectedLocationToForDriver?.street_address_line2}, {selectedLocationToForDriver?.landmark}, {" "}
-      {selectedLocationToForDriver?.city} - {selectedLocationToForDriver?.state} {selectedLocationToForDriver?.postal_code}{" "}
-      {selectedLocationToForDriver?.country}
+                {DataForPricesAppliedGet?.address_to}
     </p>
                   </div>
               </div>
@@ -2885,24 +2810,18 @@ className="address-section mt-0">
 
 
 
-
-
-
-
-
-
-
-
-
 <div className="booking-detail-card">
   <div>
-    <strong>{service.id === 8 ? 'Number of Hours :' : 'Number of People :'}</strong>
+    <strong>{(service.id === 8 || service.category_id === 2) ? 'Number of Hours :' : 'Number of People :'}</strong>
   </div>
   <div>
-    {service.id === 8 
-      ? SelectedNumberOfHoursObjectForGardner?.hours 
-      : DataForPricesAppliedGet?.people_count}
-  </div>
+  {service.id === 8 
+    ? SelectedNumberOfHoursObjectForGardner?.hours 
+    : service.category_id === 2
+    ? SelectedNumberOfHoursObjectForDriver?.hours 
+    : DataForPricesAppliedGet?.people_count}
+</div>
+
 </div>
 
           
