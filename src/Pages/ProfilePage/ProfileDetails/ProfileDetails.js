@@ -9,6 +9,7 @@ import MessageModal from "../../MessageModal/MessageModal";
 import LocationModal from "./LocationModal";
 import { LoadScript } from "@react-google-maps/api";
 import { toast } from "react-toastify";
+import { useJsApiLoader } from "@react-google-maps/api";
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState({});
@@ -279,6 +280,14 @@ const ProfileDetails = () => {
   // }
 
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  });
+
+  // If the script is not loaded, return null or a loader.
+  if (!isLoaded) {
+    return null; // Or show a custom loader component.
+  }
 
   
   return (
@@ -514,7 +523,7 @@ const ProfileDetails = () => {
 
             <div className="container mt-5 mb-5">
       <Button onClick={() => setIsAddingAddress(true)} > + Add New Address</Button>
-<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+{/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
 {isAddingAddress && (
     <LocationModal
         show={isAddingAddress}
@@ -536,7 +545,29 @@ const ProfileDetails = () => {
         addressToEditId={null} 
       />
 )}
-      </LoadScript>
+      </LoadScript> */}
+
+<LocationModal
+        show={isAddingAddress}
+        onHide={() => {
+          setIsAddingAddress(false);
+          fetchProfile();
+        }}
+        
+        latitude=""
+        longitude=""
+        city=""
+        district=""
+        state=""
+        country=""
+        postalCode=""
+        formattedAddress=""
+        landmark=""
+        streetAddressLine2=""
+        addressToEditId={null} 
+      />
+
+
     </div>
 
 
@@ -545,7 +576,7 @@ const ProfileDetails = () => {
 
             <div>
 
-<LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+{/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
 {isEditingAddress && (
      <LocationModal
         show={isEditingAddress}
@@ -567,7 +598,29 @@ const ProfileDetails = () => {
       />
     )}
 
-      </LoadScript>
+      </LoadScript> */}
+
+
+
+<LocationModal
+        show={isEditingAddress}
+        onHide={() => {
+          setIsEditingAddress(false);
+          fetchProfile();
+        }}
+        latitude={Number(locationData.latitude)}
+        longitude={Number(locationData.longitude)}        
+        city={locationData.city}
+        district={locationData.district}
+        state={locationData.state}
+        country={locationData.country}
+        postalCode={locationData.postalCode}
+        formattedAddress={locationData.formattedAddress}
+        landmark={locationData.landmark}
+        streetAddressLine2={locationData.streetAddressLine2}
+        addressToEditId={addressToEdit}
+      />
+      
     </div>
 
 
