@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BookingSection.css";
-import { ChevronLeft, Loader, MapPin, Voicemail } from "lucide-react";
+import { ChevronLeft, MapPin, Voicemail } from "lucide-react";
 import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
 import "react-clock/dist/Clock.css";
@@ -27,6 +27,7 @@ import { useJsApiLoader } from "@react-google-maps/api";
 import { LoadScript } from "@react-google-maps/api";
 import { Button } from "react-bootstrap";
 import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
+import Loader from "../../Loader/Loader";
 
 const BookingSection = () => {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
@@ -821,18 +822,6 @@ const BookingSection = () => {
     return tempElement.textContent || tempElement.innerText;
   };
 
-  const cancellationPolicy = htmlToText(
-    basicDataByGet?.sub_category?.cancellation_policy
-  );
-
-  const additionalDetails = htmlToText(
-    basicDataByGet?.sub_category?.booking_details
-  );
-
-  const bookingSummery = htmlToText(
-    basicDataByGet?.sub_category?.booking_summary
-  );
-
   useEffect(() => {
     setdishesOptionsArray(basicDataByGet?.dishes);
   }, [basicDataByGet]);
@@ -1186,9 +1175,41 @@ const BookingSection = () => {
     }
   };
 
+  const [showMoreCancellationPolicy, setShowMoreCancellationPolicy] = useState(false);
+  const [showMoreBookingSummary, setShowMoreBookingSummary] = useState(false);
+  const [showMoreAdditionalDetails, setShowMoreAdditionalDetails] = useState(false);
 
+  const toggleVisibility = (type) => {
+    console.log("Clicked", type);
+    if (type === "cancellation") {
+      setShowMoreCancellationPolicy(!showMoreCancellationPolicy);
+    } else if (type === "booking") {
+      setShowMoreBookingSummary(!showMoreBookingSummary);
+    } else if (type === "additional") {
+      setShowMoreAdditionalDetails(!showMoreAdditionalDetails);
+    }
+  };
 
+  
 
+  // Function to limit text to a specific number of words
+  const limitTextByWords = (text, wordLimit) => {
+    if (!text) return "";
+    const words = text.split(" "); // Split by spaces to get words
+    return words.slice(0, wordLimit).join(" "); // Limit the number of words and join them back
+  };
+
+  const cancellationPolicy = htmlToText(
+    basicDataByGet?.sub_category?.cancellation_policy || ""
+  );
+  const additionalDetails = htmlToText(
+    basicDataByGet?.sub_category?.booking_details || ""
+  );
+  const bookingSummery = htmlToText(
+    basicDataByGet?.sub_category?.booking_summary || ""
+  );
+
+  const wordLimit = 30; // Specify the number of words to display
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
@@ -1198,7 +1219,6 @@ const BookingSection = () => {
   if (!isLoaded) {
     return null; // Or show a custom loader component.
   }
-
 
   return (
     <>
@@ -1769,6 +1789,7 @@ const BookingSection = () => {
                                     style={{
                                       margin: 0,
                                       cursor: "pointer",
+                                      width: "4%"
                                     }}
                                   />
                                   <label
@@ -1864,21 +1885,88 @@ const BookingSection = () => {
                 />
               </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <div>
                 <div className="additional-details">
                   <h3>Additional Details</h3>
-                  <div className="details-item">{additionalDetails}</div>
+                  <div className="details-item">
+                  {showMoreAdditionalDetails
+  ? additionalDetails
+  : limitTextByWords(additionalDetails || "", wordLimit)}
+                    <a
+                      onClick={() => toggleVisibility("additional")}
+                      className="view-more-btn"
+                    >
+                      {showMoreAdditionalDetails ? "View Less" : "View More"}
+                    </a>
+                  </div>
                 </div>
 
                 <div className="additional-details">
                   <h3>Booking Summary</h3>
-                  <div className="details-item">{bookingSummery}</div>
+                  <div className="details-item">
+                  {showMoreBookingSummary
+  ? bookingSummery
+  : limitTextByWords(bookingSummery || "", wordLimit)}
+                    <a
+                      onClick={() => toggleVisibility("booking")}
+                      className="view-more-btn"
+                    >
+                      {showMoreBookingSummary ? "View Less" : "View More"}
+                    </a>
+                  </div>
                 </div>
 
                 <div className="cancellation-policy">
                   <h3>Cancellation Policy</h3>
                   <div className="cancellation-policy-div">
-                    <p>{cancellationPolicy}</p>
+                  {showMoreCancellationPolicy
+  ? cancellationPolicy
+  : limitTextByWords(cancellationPolicy || "", wordLimit)}
+                    <br/>
+
+                    <a
+                      onClick={() => toggleVisibility("cancellation")}
+                      className="view-more-btn"
+                    >
+                      {showMoreCancellationPolicy ? "View Less" : "View More"}
+                    </a>
+                    <br/>
                     <Link
                       to="/cancellation-policy"
                       className="read-policy-button"
@@ -1889,6 +1977,43 @@ const BookingSection = () => {
                   </div>
                 </div>
               </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              
 
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <tbody>
@@ -2172,9 +2297,9 @@ const BookingSection = () => {
                           </div>
                         </div>
                       ))}
-                
-                  <hr />
-             
+
+                      <hr />
+
                       <span>Select Address To:</span>
                       {addresses.map((address, index) => (
                         <div
@@ -2243,31 +2368,24 @@ const BookingSection = () => {
                             </Dropdown>
                           </div>
                         </div>
-
                       ))}
 
-                      
-<>
-<div>
-<p>
-  Distance between them is: {distanceInKm.toFixed(2)} km
-  {/* ({distanceInMeters.toFixed(0)} meters) */}
-</p>
-</div>
-</>
-
+                      <>
+                        <div>
+                          <p>
+                            Distance between them is: {distanceInKm.toFixed(2)}{" "}
+                            km
+                            {/* ({distanceInMeters.toFixed(0)} meters) */}
+                          </p>
+                        </div>
+                      </>
                     </>
-
-
-
-
-
                   )}
                 </>
 
-
                 <div className="container mt-3 mb-3">
-                  <Button onClick={() => setIsAddingAddress(true)}>
+                  <Button onClick={() => setIsAddingAddress(true)}
+                    className="btn btn-primary nav-buttons">
                     {" "}
                     + Add New Address
                   </Button>
@@ -2295,34 +2413,25 @@ const BookingSection = () => {
                     />
                   </LoadScript> */}
 
-<LocationModal
-      show={isAddingAddress}
-      onHide={() => {
-        setIsAddingAddress(false);
-        fetchProfile();
-      }}
-      latitude=""
-      longitude=""
-      city=""
-      district=""
-      state=""
-      country=""
-      postalCode=""
-      formattedAddress=""
-      landmark=""
-      streetAddressLine2=""
-      addressToEditId={null}
-    />
+                  <LocationModal
+                    show={isAddingAddress}
+                    onHide={() => {
+                      setIsAddingAddress(false);
+                      fetchProfile();
+                    }}
+                    latitude=""
+                    longitude=""
+                    city=""
+                    district=""
+                    state=""
+                    country=""
+                    postalCode=""
+                    formattedAddress=""
+                    landmark=""
+                    streetAddressLine2=""
+                    addressToEditId={null}
+                  />
                 </div>
-
-
-
-
-
-
-
-
-
 
                 <div>
                   {/* <LoadScript
@@ -2350,33 +2459,25 @@ const BookingSection = () => {
                 
                   </LoadScript> */}
 
-
-
-<LocationModal
-                        show={isEditingAddress}
-                        onHide={() => {
-                          setIsEditingAddress(false);
-                          fetchProfile();
-                        }}
-                        latitude={Number(locationData.latitude)}
-                        longitude={Number(locationData.longitude)}
-                        city={locationData.city}
-                        district={locationData.district}
-                        state={locationData.state}
-                        country={locationData.country}
-                        postalCode={locationData.postalCode}
-                        formattedAddress={locationData.formattedAddress}
-                        landmark={locationData.landmark}
-                        streetAddressLine2={locationData.streetAddressLine2}
-                        addressToEditId={addressToEdit}
-                      />
-                      
+                  <LocationModal
+                    show={isEditingAddress}
+                    onHide={() => {
+                      setIsEditingAddress(false);
+                      fetchProfile();
+                    }}
+                    latitude={Number(locationData.latitude)}
+                    longitude={Number(locationData.longitude)}
+                    city={locationData.city}
+                    district={locationData.district}
+                    state={locationData.state}
+                    country={locationData.country}
+                    postalCode={locationData.postalCode}
+                    formattedAddress={locationData.formattedAddress}
+                    landmark={locationData.landmark}
+                    streetAddressLine2={locationData.streetAddressLine2}
+                    addressToEditId={addressToEdit}
+                  />
                 </div>
-
-
-
-
-
               </div>
 
               {/* This button now sets the step to 5 */}
@@ -2951,7 +3052,7 @@ const BookingSection = () => {
               <p
                 className="success-message"
                 style={{
-                  marginBottom: "200px",
+                  // marginBottom: "200px",
                   textAlign: "center",
                   fontWeight: "bold",
                 }}
@@ -2985,11 +3086,6 @@ const BookingSection = () => {
             alt="Chef illustration"
             className="booking-illustration"
           />
-          <h4 style={{ marginTop: "10px" }}>
-            Description :
-            <br />
-            {basicDataByGet?.sub_category?.description}
-          </h4>
         </div>
       </div>
     </>

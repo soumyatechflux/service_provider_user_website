@@ -522,7 +522,11 @@ const ProfileDetails = () => {
 
 
             <div className="container mt-5 mb-5">
-      <Button onClick={() => setIsAddingAddress(true)} > + Add New Address</Button>
+      <Button onClick={() => setIsAddingAddress(true)}
+                          className="btn btn-primary nav-buttons">
+                          {" "}
+                          + Add New Address
+                        </Button>
 {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
 {isAddingAddress && (
     <LocationModal

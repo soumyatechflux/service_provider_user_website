@@ -98,7 +98,7 @@
 .booking-booking-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 150px;
+  gap: 120px;
   margin: 0 auto;
   padding: 2rem;
   
@@ -174,7 +174,7 @@
 /* Booking Form */
 .booking-booking-form {
   flex: 1;
-  max-width: 500px;
+  /* max-width: 500px; */
   margin: 20px 0px;
   padding: 1.5rem;
   border-radius: 7px;
@@ -193,6 +193,7 @@
   display: flex;
   flex-direction: column;
   justify-content: end;
+  margin-bottom: 40px;
 }
 
 /* Booking Form Header */
@@ -424,7 +425,7 @@
 }
 
 .booking-illustration {
-  width: 425px;
+  width: 100%;
   height: 425px;
 }
 
@@ -484,13 +485,39 @@
   color: #555;
 }
 
+.view-more-btn {
+  color: #6c63ff;
+  padding: 8px 0px;         /* Padding for spacing */
+  font-size: 14px;           /* Font size */
+  /* font-weight: bold;  */
+  border: none;              /* Remove border */
+  text-decoration: none;
+  border-radius: 25px;       /* Rounded corners */
+  cursor: pointer;          /* Pointer cursor on hover */
+}
+
+.view-more-btn:hover {
+
+  color: #5a52e1;
+
+}
+
+.view-more-btn:focus {
+  outline: none;             /* Remove outline on focus */
+}
+
+.view-more-btn:disabled {
+  cursor: not-allowed;       /* Change cursor when disabled */
+  opacity: 0.6;               /* Make it slightly transparent */
+}
+
 .read-policy-button {
   color: black;
   text-decoration: none !important;
   font-size: 14px;
   cursor: pointer;
   position: relative;
-  top: -14px;
+  /* top: -14px; */
 }
 .arrow_for_cancellation {
   font-weight: 100;
@@ -1283,7 +1310,13 @@
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); /* Add shadow */
 }
 
-@media screen and (max-width: 768px) {
+
+
+/* @media screen and (min-width: 810px) and (max-width: 768px) {} */
+
+
+
+@media screen and (max-width: 995px) {
   /* For tablets and smaller devices */
   .booking-booking-form,
   .location-container,
@@ -1342,6 +1375,7 @@
   }
   .booking-booking-container {
     gap: 50px;
+    flex-direction: column;
   }
 }
 
@@ -1378,7 +1412,7 @@
   }
 
   .booking-illustration {
-    width: 250px; /* Further reduced size */
+    width: 100%; 
     height: 250px;
   }
 
