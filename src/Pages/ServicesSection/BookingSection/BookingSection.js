@@ -30,6 +30,9 @@ import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
 import Loader from "../../Loader/Loader";
 
 const BookingSection = () => {
+
+  const [errorMessage, setErrorMessage] = useState("");
+  
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
@@ -76,6 +79,8 @@ const BookingSection = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
+
+  
 
   const cancelAddAddress = () => {
     setNewAddress({
@@ -1516,7 +1521,7 @@ const BookingSection = () => {
                           Select Dishes (Optional)
                         </label>
 
-                        <div
+                        <div ref={dropdownRef}
                           className="dropdown-container"
                           style={{
                             display: "flex",
@@ -1524,6 +1529,17 @@ const BookingSection = () => {
                             gap: "4px",
                           }}
                         >
+
+
+
+
+
+
+
+
+
+
+
                           <div
                             className="dropdown-input"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -1547,6 +1563,23 @@ const BookingSection = () => {
                               : "Select a service"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                           {isDropdownOpen && (
                             <div
@@ -1608,7 +1641,7 @@ const BookingSection = () => {
                   {service?.category_id === 2 && (
                     <>
                       {/* Car Type Dropdown */}
-                      <div
+                      <div ref={dropdownRef}
                         style={{
                           marginTop: "15px",
                           marginBottom: "10px",
@@ -1618,17 +1651,20 @@ const BookingSection = () => {
                         <label className="booking-form-label">
                           Select Cars Type (Optional)
                         </label>
-                        <div
+                        <div 
                           className="dropdown-container"
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "4px",
                           }}
-                        >
-                          <div
+                        > 
+                          <div ref={dropdownRef}
                             className="dropdown-input"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            onClick={() => {
+                              setIsDropdownOpen(!isDropdownOpen);
+                              setIsDropdownOpenTra(false);
+                            }}                            
                             style={{
                               cursor: "pointer",
                               padding: "8px",
@@ -1702,7 +1738,7 @@ const BookingSection = () => {
                       </div>
 
                       {/* Transmission Type Dropdown */}
-                      <div
+                      <div 
                         style={{
                           marginTop: "15px",
                           marginBottom: "10px",
@@ -1712,7 +1748,7 @@ const BookingSection = () => {
                         <label className="booking-form-label">
                           Select Transmission Type (Optional)
                         </label>
-                        <div
+                        <div 
                           className="dropdown-container-tra"
                           style={{
                             display: "flex",
@@ -1722,8 +1758,11 @@ const BookingSection = () => {
                         >
                           <div
                             className="dropdown-input-tra"
-                            onClick={() =>
+                            onClick={() =>{
+
                               setIsDropdownOpenTra(!isDropdownOpenTra)
+                              setIsDropdownOpen(false)
+                            }
                             }
                             style={{
                               cursor: "pointer",
@@ -1928,12 +1967,15 @@ const BookingSection = () => {
                   {showMoreAdditionalDetails
   ? additionalDetails
   : limitTextByWords(additionalDetails || "", wordLimit)}
-                    <a
+  <div>
+  <a
                       onClick={() => toggleVisibility("additional")}
                       className="view-more-btn"
                     >
                       {showMoreAdditionalDetails ? "View Less" : "View More"}
                     </a>
+  </div>
+                    
                   </div>
                 </div>
 
@@ -1943,12 +1985,15 @@ const BookingSection = () => {
                   {showMoreBookingSummary
   ? bookingSummery
   : limitTextByWords(bookingSummery || "", wordLimit)}
-                    <a
+  <div>
+  <a
                       onClick={() => toggleVisibility("booking")}
                       className="view-more-btn"
                     >
                       {showMoreBookingSummary ? "View Less" : "View More"}
                     </a>
+  </div>
+                    
                   </div>
                 </div>
 
@@ -1959,13 +2004,15 @@ const BookingSection = () => {
   ? cancellationPolicy
   : limitTextByWords(cancellationPolicy || "", wordLimit)}
                     <br/>
-
+                    <div>
                     <a
                       onClick={() => toggleVisibility("cancellation")}
                       className="view-more-btn"
                     >
                       {showMoreCancellationPolicy ? "View Less" : "View More"}
                     </a>
+                    </div>
+                    
                     <br/>
                     <Link
                       to="/cancellation-policy"
@@ -2225,163 +2272,181 @@ const BookingSection = () => {
                   </>
                 )}
 
-                <>
-                  {service?.category_id === 2 && (
-                    <>
-                      <span>Select Address From:</span>
-                      {addresses.map((address, index) => (
-                        <div
-                          key={address.address_id}
-                          className="mb-3"
-                          style={{
-                            border: "2px solid #D8D8D8",
-                            padding: "5px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <div className="d-flex align-items-center">
-                            {/* Radio button for selecting address */}
-                            <input
-                              type="radio"
-                              name="address-from"
-                              id={`address-from-${address.address_id}`}
-                              checked={
-                                selectedLocationFromForDriver?.address_id ===
-                                address?.address_id
-                              }
-                              onChange={() =>
-                                setSelectedLocationFromForDriver(address)
-                              }
-                              className="me-2"
-                              style={{ cursor: "pointer", width: "auto" }}
-                            />
-                            <p className="flex-fill mb-0 address-p">
-                              <span className="serial-number me-2">
-                                {index + 1}.
-                              </span>
-                              {address.landmark && `${address.landmark}, `}
-                              {address.street_address_line2 &&
-                                `${address.street_address_line2}, `}
-                              {address.city && `${address.city}, `}
-                              {address.state && `${address.state}, `}
-                              {address.postal_code &&
-                                `${address.postal_code},. `}
-                              {address.country && `${address.country}`}
-                              <br />
-                            </p>
-                            <Dropdown className="custom-dropdown-container">
-                              <Dropdown.Toggle
-                                as="span"
-                                id="dropdown-custom-components"
-                                className="custom-dropdown-toggle"
-                                bsPrefix="custom-toggle"
-                              >
-                                <BsThreeDotsVertical
-                                  size={18}
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu className="custom-dropdown-menu-booking">
-                                <Dropdown.Item
-                                  className="custom-dropdown-item-booking"
-                                  onClick={() => {
-                                    setAddressToEdit(address?.address_id);
-                                    fetchDefaultAddress(address?.address_id);
-                                    setIsEditingAddress(true);
-                                  }}
-                                >
-                                  Edit
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </div>
-                        </div>
-                      ))}
+<>
+    {service?.category_id === 2 && (
+      <>
+        <span>Select Address From:</span>
+        {addresses.map((address, index) => (
+          <div
+            key={address.address_id}
+            className="mb-3"
+            style={{
+              border: "2px solid #D8D8D8",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          >
+            <div className="d-flex align-items-center">
+              {/* Radio button for selecting address */}
+              <input
+                type="radio"
+                name="address-from"
+                id={`address-from-${address.address_id}`}
+                checked={
+                  selectedLocationFromForDriver?.address_id ===
+                  address?.address_id
+                }
+                onChange={() => {
+                  setSelectedLocationFromForDriver(address);
+                  // Validate if both selected addresses are the same
+                  if (
+                    selectedLocationToForDriver?.address_id ===
+                    address?.address_id
+                  ) {
+                    setErrorMessage("From and To addresses cannot be the same.");
+                  } else {
+                    setErrorMessage(""); // Clear error message if valid
+                  }
+                }}
+                className="me-2"
+                style={{ cursor: "pointer", width: "auto" }}
+              />
+              <p className="flex-fill mb-0 address-p">
+                <span className="serial-number me-2">{index + 1}.</span>
+                {address.landmark && `${address.landmark}, `}
+                {address.street_address_line2 &&
+                  `${address.street_address_line2}, `}
+                {address.city && `${address.city}, `}
+                {address.state && `${address.state}, `}
+                {address.postal_code && `${address.postal_code}, `}
+                {address.country && `${address.country}`}
+                <br />
+              </p>
+              <Dropdown className="custom-dropdown-container">
+                <Dropdown.Toggle
+                  as="span"
+                  id="dropdown-custom-components"
+                  className="custom-dropdown-toggle"
+                  bsPrefix="custom-toggle"
+                >
+                  <BsThreeDotsVertical
+                    size={18}
+                    style={{ cursor: "pointer" }}
+                  />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="custom-dropdown-menu-booking">
+                  <Dropdown.Item
+                    className="custom-dropdown-item-booking"
+                    onClick={() => {
+                      setAddressToEdit(address?.address_id);
+                      fetchDefaultAddress(address?.address_id);
+                      setIsEditingAddress(true);
+                    }}
+                  >
+                    Edit
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        ))}
 
-                      <hr />
+        <hr />
 
-                      <span>Select Address To:</span>
-                      {addresses.map((address, index) => (
-                        <div
-                          key={address.address_id}
-                          className="mb-3"
-                          style={{
-                            border: "2px solid #D8D8D8",
-                            padding: "5px",
-                            borderRadius: "5px",
-                          }}
-                        >
-                          <div className="d-flex align-items-center">
-                            {/* Radio button for selecting address */}
-                            <input
-                              type="radio"
-                              name="address-to"
-                              id={`address-to-${address.address_id}`}
-                              checked={
-                                selectedLocationToForDriver?.address_id ===
-                                address?.address_id
-                              }
-                              onChange={() =>
-                                setSelectedLocationToForDriver(address)
-                              }
-                              className="me-2"
-                              style={{ cursor: "pointer", width: "auto" }}
-                            />
-                            <p className="flex-fill mb-0 address-p">
-                              <span className="serial-number me-2">
-                                {index + 1}.
-                              </span>
-                              {address.landmark && `${address.landmark}, `}
-                              {address.street_address_line2 &&
-                                `${address.street_address_line2}, `}
-                              {address.city && `${address.city}, `}
-                              {address.state && `${address.state}, `}
-                              {address.postal_code &&
-                                `${address.postal_code},. `}
-                              {address.country && `${address.country}`}
-                              <br />
-                            </p>
-                            <Dropdown className="custom-dropdown-container">
-                              <Dropdown.Toggle
-                                as="span"
-                                id="dropdown-custom-components"
-                                className="custom-dropdown-toggle"
-                                bsPrefix="custom-toggle"
-                              >
-                                <BsThreeDotsVertical
-                                  size={18}
-                                  style={{ cursor: "pointer" }}
-                                />
-                              </Dropdown.Toggle>
-                              <Dropdown.Menu className="custom-dropdown-menu-booking">
-                                <Dropdown.Item
-                                  className="custom-dropdown-item-booking"
-                                  onClick={() => {
-                                    setAddressToEdit(address?.address_id);
-                                    fetchDefaultAddress(address?.address_id);
-                                    setIsEditingAddress(true);
-                                  }}
-                                >
-                                  Edit
-                                </Dropdown.Item>
-                              </Dropdown.Menu>
-                            </Dropdown>
-                          </div>
-                        </div>
-                      ))}
+        <span>Select Address To:</span>
+        {addresses.map((address, index) => (
+          <div
+            key={address.address_id}
+            className="mb-3"
+            style={{
+              border: "2px solid #D8D8D8",
+              padding: "5px",
+              borderRadius: "5px",
+            }}
+          >
+            <div className="d-flex align-items-center">
+              {/* Radio button for selecting address */}
+              <input
+                type="radio"
+                name="address-to"
+                id={`address-to-${address.address_id}`}
+                checked={
+                  selectedLocationToForDriver?.address_id ===
+                  address?.address_id
+                }
+                onChange={() => {
+                  setSelectedLocationToForDriver(address);
+                  // Validate if both selected addresses are the same
+                  if (
+                    selectedLocationFromForDriver?.address_id ===
+                    address?.address_id
+                  ) {
+                    setErrorMessage("From and To addresses cannot be the same.");
+                  } else {
+                    setErrorMessage(""); // Clear error message if valid
+                  }
+                }}
+                className="me-2"
+                style={{ cursor: "pointer", width: "auto" }}
+              />
+              <p className="flex-fill mb-0 address-p">
+                <span className="serial-number me-2">{index + 1}.</span>
+                {address.landmark && `${address.landmark}, `}
+                {address.street_address_line2 &&
+                  `${address.street_address_line2}, `}
+                {address.city && `${address.city}, `}
+                {address.state && `${address.state}, `}
+                {address.postal_code && `${address.postal_code}, `}
+                {address.country && `${address.country}`}
+                <br />
+              </p>
+              <Dropdown className="custom-dropdown-container">
+                <Dropdown.Toggle
+                  as="span"
+                  id="dropdown-custom-components"
+                  className="custom-dropdown-toggle"
+                  bsPrefix="custom-toggle"
+                >
+                  <BsThreeDotsVertical
+                    size={18}
+                    style={{ cursor: "pointer" }}
+                  />
+                </Dropdown.Toggle>
+                <Dropdown.Menu className="custom-dropdown-menu-booking">
+                  <Dropdown.Item
+                    className="custom-dropdown-item-booking"
+                    onClick={() => {
+                      setAddressToEdit(address?.address_id);
+                      fetchDefaultAddress(address?.address_id);
+                      setIsEditingAddress(true);
+                    }}
+                  >
+                    Edit
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
+            </div>
+          </div>
+        ))}
 
-                      <>
-                        <div>
-                          <p>
-                            Distance between them is: {distanceInKm.toFixed(2)}{" "}
-                            km
-                            {/* ({distanceInMeters.toFixed(0)} meters) */}
-                          </p>
-                        </div>
-                      </>
-                    </>
-                  )}
-                </>
+        {/* Display error message */}
+        {errorMessage && (
+          <div className="text-danger mb-3">
+            <strong>{errorMessage}</strong>
+          </div>
+        )}
+
+        <>
+          <div>
+            <p>
+              Distance between them is: {distanceInKm.toFixed(2)} km
+              {/* ({distanceInMeters.toFixed(0)} meters) */}
+            </p>
+          </div>
+        </>
+      </>
+    )}
+  </>
 
                 <div className="container mt-3 mb-3">
                   <Button onClick={() => setIsAddingAddress(true)}
@@ -2493,6 +2558,29 @@ const BookingSection = () => {
               >
                 Confirm Address
               </button>
+
+{/* <button
+  className={`confirm-address-button ${
+    selectedLocationFromForDriver?.address_id ===
+    selectedLocationToForDriver?.address_id
+      ? "disabled"
+      : ""
+  }`}
+  onClick={() => {
+    if (
+      selectedLocationFromForDriver?.address_id ===
+      selectedLocationToForDriver?.address_id
+    ) {
+      setMessage("From and To addresses cannot be the same."); // Show error message
+    } else {
+      handleConfirmAddress(); // Proceed with normal behavior
+    }
+  }}
+>
+  Confirm Address
+</button> */}
+
+
             </div>
           </div>
         )}
