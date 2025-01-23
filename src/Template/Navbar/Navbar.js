@@ -97,7 +97,10 @@ const Navbar = () => {
             closeAllDropdowns();
           }}
         >
-          <span className="logo">Servyo</span>
+          <img
+            src="/LOGO_SP.png"
+            style={{ width: "190px", height: "60px" }}
+          ></img>
         </Link>
 
         {/* Mobile Toggle Button */}
@@ -198,9 +201,9 @@ const Navbar = () => {
           {/* Right Side Items */}
           <div className="navbar-nav right-items">
             {/* Location Dropdown */}
-            <div className="nav-item dropdown location-dropdown">
+            <div className="nav-item dropdown location-dropdown position-relative">
               <a
-                className="nav-link dropdown-toggle location-drop"
+                className="nav-link dropdown-toggle location-drop d-flex justify-content-between align-items-center"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
@@ -209,35 +212,27 @@ const Navbar = () => {
                   );
                 }}
               >
-                <div>
-                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                <div className="d-flex align-items-center">
+                  <i className="bi bi-geo-alt-fill me-1"></i>
                   <span style={{ color: "#999999", fontSize: "16px" }}>
-                    {selectedLocation || "Select Location"}
+                    Delhi
                   </span>
-                  <ChevronDown
-                    className="ms-1"
-                    style={{
-                      transition: "transform 0.3s",
-                      transform:
-                        activeDropdown === "location"
-                          ? "rotate(180deg)"
-                          : "rotate(0deg)",
-                    }}
-                  />
                 </div>
+                <ChevronDown
+                  className="ms-1"
+                  style={{
+                    transition: "transform 0.3s",
+                    transform:
+                      activeDropdown === "location"
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                  }}
+                />
               </a>
               {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
                   {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
-                    <a
-                      key={city}
-                      className="dropdown-item"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLocationChange(city);
-                      }}
-                    >
+                    <a key={city} className="dropdown-item disabled" href="#">
                       {city}
                     </a>
                   ))}
@@ -258,6 +253,7 @@ const Navbar = () => {
             {/* User Profile Dropdown */}
             <div className="nav-item dropdown">
               <a
+                style={{ marginRight: "8px" }}
                 className="nav-link"
                 href="#"
                 onClick={(e) => {
@@ -267,7 +263,8 @@ const Navbar = () => {
                   );
                 }}
               >
-                <User className="user-icon-navbar" />
+                {/* <User  /> */}
+                <img src="/profile_icon.svg" className="user-icon-navbar" />
               </a>
               {activeDropdown === "profile" && (
                 <div className="custom-dropdown-menu">
@@ -329,7 +326,7 @@ const Navbar = () => {
 
           {/* Mobile Navigation Items */}
           <ul className="navbar-nav">
-          <div className="nav-item dropdown">
+            <div className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
                 href="#"
@@ -462,7 +459,7 @@ const Navbar = () => {
             {/* Mobile Location Dropdown */}
             <div className="nav-item dropdown location-dropdown">
               <a
-                className="nav-link dropdown-toggle location-drop"
+                className="nav-link dropdown-toggle location-drop d-flex justify-content-between align-items-center"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();
@@ -471,38 +468,28 @@ const Navbar = () => {
                   );
                 }}
               >
-                <div>
-                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                <div className="d-flex align-items-center">
+                  <i className="bi bi-geo-alt-fill me-1"></i>
                   <span style={{ color: "#999999", fontSize: "16px" }}>
-                    {selectedLocation || "Select Location"}
+                    Delhi
                   </span>
-                  <ChevronDown
-                    className="ms-1"
-                    style={{
-                      transition: "transform 0.3s",
-                      transform:
-                        activeDropdown === "location"
-                          ? "rotate(180deg)"
-                          : "rotate(0deg)",
-                    }}
-                  />
                 </div>
+                <ChevronDown
+                  className="ms-1"
+                  style={{
+                    transition: "transform 0.3s",
+                    transform:
+                      activeDropdown === "location"
+                        ? "rotate(180deg)"
+                        : "rotate(0deg)",
+                  }}
+                />
               </a>
               {activeDropdown === "location" && (
                 <div className="dropdown-menu show dropdown-menu-w">
-                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
-                    <a
-                      key={city}
-                      className="dropdown-item"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLocationChange(city);
-                      }}
-                    >
-                      {city}
-                    </a>
-                  ))}
+                  <a className="dropdown-item disabled" href="#">
+                    Delhi
+                  </a>
                 </div>
               )}
             </div>
@@ -515,7 +502,6 @@ const Navbar = () => {
             >
               Download App
             </button>
-            
           </ul>
         </div>
 

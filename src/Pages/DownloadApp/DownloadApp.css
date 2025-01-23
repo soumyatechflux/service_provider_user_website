@@ -113,9 +113,10 @@ p .download-text {
   .download-text {
     padding: 20px;
     margin-bottom: 0px !important;
-    color: #000000 !important;
+    color: #fff !important;
   }
   .download-title {
+    margin-top: 25px;
     margin-bottom: 0 !important;
     font-weight: 700 !important;
     font-size: 36px !important;

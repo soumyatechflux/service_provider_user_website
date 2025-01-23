@@ -196,7 +196,7 @@ const UpcomingTab = () => {
           bookings.map((booking, index) => (
             <div key={index} className="booking-item">
               {openBookingIndex === index ? (
-                <div className="booking-details mt-3">
+                <div className="booking-details mt-3 mb-3">
                   <div className="column1">
                     <div className="details-header">
                       <h2 className="details-head">
@@ -215,52 +215,55 @@ const UpcomingTab = () => {
                     </div>
                     <div className="provider-section">
                       <h3 className="heading-text">Service Provider</h3>
-                      <div className="provider-info">
-                        <div className="provider-avatar">
-                          <img
-                            src={
-                              bookingsIdWise?.partner?.image ||
-                              "/dummy-image.jpg"
-                            }
-                            alt="image"
-                            style={{
-                              height: "60px",
-                              width: "70px",
-                              borderRadius: "50%",
-                            }}
-                          />
-                        </div>
-                        <div className="provider-details">
-                          <h4 className="provider-name">
-                            <p>
-                              {bookingsIdWise?.partner?.name
-                                ? bookingsIdWise?.partner?.name
-                                : "No Partner Accepted"}
-                            </p>
-                          </h4>
-                          <p className="provider-role">
-                            {bookingsIdWise?.category?.category_name}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="rating-profile mt-2">
-                        <div>
-                          <Star className="star-icon mr-1" />
-                          <span>
-                            <span style={{ fontWeight: "bold" }}>
-                              {bookingsIdWise?.partner?.rating}/5
-                            </span>{" "}
-                            Rating
-                          </span>
-                        </div>
-                        <div>
-                          <Trophy className="clock-icon mr-1" />
-                          <span className="">
-                            {bookingsIdWise?.partner?.years_of_experience} yrs
-                            of exp.
-                          </span>
-                        </div>
-                      </div>
+                      {bookingsIdWise?.partner?.name && (
+                        <>
+                          <div className="provider-info">
+                            <div className="provider-avatar">
+                              <img
+                                src={
+                                  bookingsIdWise?.partner?.image ||
+                                  "/dummy-image.jpg"
+                                }
+                                alt="image"
+                                style={{
+                                  height: "60px",
+                                  width: "70px",
+                                  borderRadius: "50%",
+                                }}
+                              />
+                            </div>
+                            <div className="provider-details">
+                              <h4 className="provider-name">
+                                <p>{bookingsIdWise?.partner?.name}</p>
+                              </h4>
+                              <p className="provider-role">
+                                {bookingsIdWise?.category?.category_name}
+                              </p>
+                            </div>
+                          </div>
+                          <div className="rating-profile mt-2">
+                            <div>
+                              <Star className="star-icon mr-1" />
+                              <span>
+                                <span style={{ fontWeight: "bold" }}>
+                                  {bookingsIdWise?.partner?.rating}/5
+                                </span>{" "}
+                                Rating
+                              </span>
+                            </div>
+                            <div>
+                              <Trophy className="clock-icon mr-1" />
+                              <span className="">
+                                {bookingsIdWise?.partner?.years_of_experience}{" "}
+                                yrs of exp.
+                              </span>
+                            </div>
+                          </div>
+                        </>
+                      )}
+                      {!bookingsIdWise?.partner?.name && (
+                        <p>No Partner Accepted</p>
+                      )}
                     </div>
                     <div className="details-actions">
                       <button

@@ -43,7 +43,7 @@ const AboutUsInfo = () => {
   }
 
   return (
-    <div className="container nav-container about-us-container">
+    <div className="nav-container about-us-container">
       <div className="image-flex-wrapper">
         {/* Top Row */}
         <div className="image-flex-wrapper-top">
@@ -68,7 +68,7 @@ const AboutUsInfo = () => {
 
       <div className="text-section">
         <h1 className="title">{aboutData.title}</h1>
-        <h3 className="subtitle">{aboutData.subtitle}</h3>
+        <h3 className="subtitle">{aboutData.sub_title}</h3>
         <p className="description">{aboutData.description1}</p>
         <p className="description">{aboutData.description2}</p>
       </div>

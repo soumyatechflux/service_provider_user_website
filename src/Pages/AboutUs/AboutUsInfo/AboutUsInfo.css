@@ -1,8 +1,8 @@
 /* Main Container */
 .about-us-container {
   display: flex;
-  gap: 90px !important;
-  padding: 40px 0;  
+  gap: 80px !important;
+  padding: 40px 85px;  
   justify-content: space-between;
   align-items: center;
   flex-wrap: nowrap !important; /* Ensures wrapping on smaller screens */
