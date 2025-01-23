@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Star, Clock, User, Trophy, ChefHat } from "lucide-react";
+import { Star, Clock, User, Trophy } from "lucide-react";
+import { ChefHat, Car, Leaf } from "lucide-react"; // Import appropriate icons
 import "./UpcomingTab.css";
 import { useNavigate } from "react-router-dom";
 import CancellationModal from "../../CancelBooking/CancellationModal/CancellationModal";
@@ -129,7 +130,6 @@ const UpcomingTab = () => {
 
       if (response?.status === 200 && response?.data?.success) {
         setCurrentModal("success");
-       
       } else {
         // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");
@@ -179,6 +179,12 @@ const UpcomingTab = () => {
     });
   };
 
+  const categoryIcons = {
+    1: ChefHat,
+    2: Car,
+    3: Leaf,
+  };
+
   return (
     <>
       <div className="booking-container">
@@ -198,8 +204,10 @@ const UpcomingTab = () => {
                         {formatTime(bookingsIdWise?.visit_time)}
                       </h2>
                       <div className="service-image image-flex">
-                        <img src="./../ServicesSection/demoCancel.jpg" 
-                        style={{marginBottom:"15px"}}/>
+                        <img
+                          src="./../ServicesSection/demoCancel.jpg"
+                          style={{ marginBottom: "15px" }}
+                        />
                         <h2 className="heading-text">
                           {bookingsIdWise?.sub_category?.sub_category_name}
                         </h2>
@@ -259,14 +267,15 @@ const UpcomingTab = () => {
                         className="btn-cancel"
                         onClick={() => handleCancelClick(booking?.booking_id)}
                         disabled={booking?.booking_status === "cancelled"}
-                      style={{
-                        cursor:
-                          booking?.booking_status === "cancelled"
-                            ? "not-allowed"
-                            : "pointer",
-                        opacity:
-                          booking?.booking_status === "cancelled" ? 0.5 : 1,
-                      }}>
+                        style={{
+                          cursor:
+                            booking?.booking_status === "cancelled"
+                              ? "not-allowed"
+                              : "pointer",
+                          opacity:
+                            booking?.booking_status === "cancelled" ? 0.5 : 1,
+                        }}
+                      >
                         Cancel
                       </button>
                       <button
@@ -275,14 +284,14 @@ const UpcomingTab = () => {
                           handleModifyButton(booking?.booking_id);
                         }}
                         disabled={booking?.booking_status === "cancelled"}
-                      style={{
-                        cursor:
-                          booking?.booking_status === "cancelled"
-                            ? "not-allowed"
-                            : "pointer",
-                        opacity:
-                          booking?.booking_status === "cancelled" ? 0.5 : 1,
-                      }}
+                        style={{
+                          cursor:
+                            booking?.booking_status === "cancelled"
+                              ? "not-allowed"
+                              : "pointer",
+                          opacity:
+                            booking?.booking_status === "cancelled" ? 0.5 : 1,
+                        }}
                       >
                         Modify
                       </button>
@@ -305,17 +314,44 @@ const UpcomingTab = () => {
                         </p>
                       </div>
                       <div className="info-group">
-                        <h4 className="booking-subtitle">Number of People</h4>
+                        <h4 className="booking-subtitle">
+                          {bookingsIdWise?.category_id === 2 ||
+                          bookingsIdWise?.category_id === 3
+                            ? "Number Of Hours Booked"
+                            : "Number of People"}
+                        </h4>
                         <p className="booking-info-text">
-                          {bookingsIdWise?.number_of_people}
+                          {bookingsIdWise?.category_id === 2 ||
+                          bookingsIdWise?.category_id === 3
+                            ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.people_count}
                         </p>
                       </div>
+
                       <div className="info-group">
-                        <h4 className="booking-subtitle">Menu and Dishes</h4>
+                        {bookingsIdWise?.category_id !== 3 && (
+                          <h4 className="booking-subtitle">
+                            {bookingsIdWise?.category_id === 2
+                              ? "Car Type"
+                              : "Menu and Dishes"}
+                          </h4>
+                        )}
+
                         <p className="booking-info-text">
-                          {bookingsIdWise?.menu_and_services}
+                          {bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
+                            : bookingsIdWise?.sub_category_id === 3
+                            ? bookingsIdWise?.menu?.map((item, index) => (
+                                <span key={index}>
+                                  {item.name}
+                                  {index !== bookingsIdWise.menu.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))
+                            : bookingsIdWise?.dishes}
                         </p>
                       </div>
+
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
@@ -338,21 +374,52 @@ const UpcomingTab = () => {
                     <h3 className="heading-text mb-4">Billing Details</h3>
                     <div className="billing-info">
                       <div className="billing-row">
-                        <span className="billing-subtitle">Total</span>
+                        <span className="billing-subtitle">Base Price</span>
                         <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.price}
+                          ₹{bookingsIdWise?.actual_price}
                         </span>
                       </div>
                       <div className="billing-row discount">
                         <span className="billing-subtitle">Discount</span>
                         <span className="billing-subtitle">
-                          -₹{bookingsIdWise?.discount}
+                          -₹{bookingsIdWise?.discount_amount}
                         </span>
                       </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Total</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.price}
+                        </span>
+                      </div>
+
+                      {/* <div className="billing-row ">
+                        <span className="billing-subtitle">Menu Price</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.menu_amount || 0}
+                        </span>
+                      </div> */}
                       <div className="billing-row">
                         <span className="billing-subtitle">GST</span>
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.gst_amount}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Secure Fee</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.secure_fee}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Platform Fee</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.platform_fee}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Night Charges</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.night_charge}
                         </span>
                       </div>
                       <div className="billing-row total">
@@ -383,7 +450,11 @@ const UpcomingTab = () => {
                 <div className="booking-summary mt-3 mb-3">
                   <div className="summary-header">
                     <div className="service-info">
-                      <ChefHat className="user-icon" />
+                      {booking?.category_id &&
+                        React.createElement(
+                          categoryIcons[booking.category_id],
+                          { className: "user-icon" }
+                        )}
                       <h2 className="profile-heading">
                         {booking?.sub_category_name}
                       </h2>

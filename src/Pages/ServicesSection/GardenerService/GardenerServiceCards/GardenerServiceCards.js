@@ -125,12 +125,7 @@ const GardenerServiceCards = () => {
 
                     {/* Checklist Section */}
                     <ul className="checklist">
-                      {[
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                      ].map((item, idx) => (
+                      {service?.bullet_points?.map((item, idx) => (
                         <li key={idx}>
                           <div className="circle-icon">
                             <span className="check-icon">✔</span>
@@ -150,7 +145,7 @@ const GardenerServiceCards = () => {
                     </div>
 
                     <div className="price-section mt-2">
-                      <div className="price">
+                      {/* <div className="price">
                         Starting from
                         <div className="amount">
                           <span className="currency">₹</span>
@@ -159,7 +154,7 @@ const GardenerServiceCards = () => {
                             /{service?.number_of_people}
                           </span>
                         </div>
-                      </div>
+                      </div> */}
                       <div>
                         <button
                           className="book-now"

@@ -1,17 +1,55 @@
 import React, { useState } from "react";
 import { Star } from "lucide-react";
 import "./ReviewModal.css";
+import axios from "axios";
 
-const ReviewModal = ({ isOpen, onClose }) => {
+const ReviewModal = ({ isOpen, onClose, partnerId }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // onSubmit({ rating, review });
-    setRating(0);
-    setReview("");
-    onClose();
+
+    if (!rating || !review) {
+      setError("Please provide both a rating and a review.");
+      return;
+    }
+
+    try {
+      setError(null); // Clear any previous errors
+      setSuccessMessage(""); // Clear any previous success messages
+      setIsSubmitting(true); // Disable the submit button while submitting
+
+      const token = sessionStorage.getItem("ServiceProviderUserToken");
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
+        {
+          partner_id: partnerId,
+          rating,
+          review,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200 && response.data.success) {
+        setSuccessMessage("Your review has been submitted successfully!");
+        setRating(0);
+        setReview("");
+        setIsSubmitted(true); // Mark as submitted
+      } else {
+        setError("Failed to submit your review. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error);
+      setError("An error occurred while submitting your review.");
+    } finally {
+      setIsSubmitting(false); // Re-enable the submit button
+    }
   };
 
   return (
@@ -38,10 +76,11 @@ const ReviewModal = ({ isOpen, onClose }) => {
                   type="button"
                   onClick={() => setRating(star)}
                   className="review-star-button"
+                  disabled={isSubmitted} // Disable buttons after successful submission
                 >
                   <Star
-                    fill={star <= rating ? "#ffc107" : "none"} // Fill the star if it's selected
-                    stroke={star <= rating ? "#ffc107" : "#ccc"} // Adjust stroke to match filled color
+                    fill={star <= rating ? "#ffc107" : "none"}
+                    stroke={star <= rating ? "#ffc107" : "#ccc"}
                     className="review-star"
                     size={24}
                   />
@@ -58,19 +97,21 @@ const ReviewModal = ({ isOpen, onClose }) => {
               onChange={(e) => setReview(e.target.value)}
               placeholder="Share your experience..."
               rows="4"
+              disabled={isSubmitted} // Disable textarea after successful submission
             />
           </div>
 
+          {error && <div className="review-error">{error}</div>}
+          {successMessage && <div className="review-success">{successMessage}</div>}
+
           <div className="review-modal-actions">
+            
             <button
-              type="button"
-              onClick={onClose}
-              className="review-modal-cancel"
+              type="submit"
+              className="review-modal-submit"
+              disabled={isSubmitting || isSubmitted} // Disable submit button during submission or after success
             >
-              Cancel
-            </button>
-            <button type="submit" className="review-modal-submit">
-              Submit Review
+              {isSubmitted ? "Submitted" : isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>
         </form>

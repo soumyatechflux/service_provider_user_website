@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Star, Clock, User, Trophy, ChefHat } from "lucide-react";
+import { Star, Clock, User, Trophy, ChefHat, Car, Leaf } from "lucide-react";
 import "./PreviousTab.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -99,6 +99,11 @@ function PreviousTab() {
       hour12: true,
     });
   };
+  const categoryIcons = {
+    1: ChefHat,
+    2: Car,
+    3: Leaf,
+  };
 
   return (
     <div className="booking-container">
@@ -120,8 +125,10 @@ function PreviousTab() {
                     </h2>
 
                     <div className="service-image image-flex">
-                    <img src="./../ServicesSection/demoCancel.jpg" 
-                        style={{marginBottom:"15px"}}/>
+                      <img
+                        src="./../ServicesSection/demoCancel.jpg"
+                        style={{ marginBottom: "15px" }}
+                      />
                       <h3 className="heading-text">
                         {bookingsIdWise?.sub_category?.sub_category_name}
                       </h3>
@@ -181,23 +188,43 @@ function PreviousTab() {
                       </p>
                     </div>
                     <div className="info-group">
-                      <h4 className="booking-subtitle">Address</h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.address_from}
-                      </p>
-                    </div>
+                        <h4 className="booking-subtitle">
+                          {bookingsIdWise?.category_id === 2 ||
+                          bookingsIdWise?.category_id === 3
+                            ? "Number Of Hours Booked"
+                            : "Number of People"}
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.category_id === 2 ||
+                          bookingsIdWise?.category_id === 3
+                            ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.people_count}
+                        </p>
+                      </div>
                     <div className="info-group">
-                      <h4 className="booking-subtitle">Number of People</h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.number_of_people}
-                      </p>
-                    </div>
-                    <div className="info-group">
-                      <h4 className="booking-subtitle">Menu and Dishes</h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.instructions}
-                      </p>
-                    </div>
+                        {bookingsIdWise?.category_id !== 3 && (
+                          <h4 className="booking-subtitle">
+                            {bookingsIdWise?.category_id === 2
+                              ? "Car Type"
+                              : "Menu and Dishes"}
+                          </h4>
+                        )}
+
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
+                            : bookingsIdWise?.sub_category_id === 3
+                            ? bookingsIdWise?.menu?.map((item, index) => (
+                                <span key={index}>
+                                  {item.name}
+                                  {index !== bookingsIdWise.menu.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))
+                            : bookingsIdWise?.dishes}
+                        </p>
+                      </div>
+
                     <div className="info-group">
                       <h4 className="booking-subtitle">Date & Time</h4>
 
@@ -218,43 +245,73 @@ function PreviousTab() {
                   </div>
                 </div>
                 <div className="column3">
-                  <h3 className="heading-text mb-4">Billing Details</h3>
-                  <div className="billing-info">
+                    <h3 className="heading-text mb-4">Billing Details</h3>
+                    <div className="billing-info">
                     <div className="billing-row">
-                      <span className="billing-subtitle">Total</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.price}
-                      </span>
+                        <span className="billing-subtitle">Base Price</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.actual_price}
+                        </span>
+                      </div>
+                      <div className="billing-row discount">
+                        <span className="billing-subtitle">Discount</span>
+                        <span className="billing-subtitle">
+                          -₹{bookingsIdWise?.discount_amount}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Total</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.price}
+                        </span>
+                      </div>
+                      
+                      {/* <div className="billing-row ">
+                        <span className="billing-subtitle">Menu Price</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.menu_amount || 0}
+                        </span>
+                      </div> */}
+                      <div className="billing-row">
+                        <span className="billing-subtitle">GST</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.gst_amount}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Secure Fee</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.secure_fee}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Platform Fee</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.platform_fee}
+                        </span>
+                      </div>
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Night Charges</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.night_charge}
+                        </span>
+                      </div>
+                      <div className="billing-row total">
+                        <span className="billing-subtitle text-bold">
+                          Grand Total
+                        </span>
+                        <span className="final-amount">
+                          ₹{bookingsIdWise?.billing_amount}
+                        </span>
+                      </div>
+                      <div className="payment-mode">
+                        <span className="billing-subtitle">Payment mode</span>
+                        <span className="billing-subtitle">
+                          {bookingsIdWise?.payment_mode}
+                        </span>
+                      </div>
                     </div>
-                    <div className="billing-row discount">
-                      <span className="billing-subtitle">Discount</span>
-                      <span className="billing-subtitle">
-                        -₹{bookingsIdWise?.discount}
-                      </span>
-                    </div>
-                    <div className="billing-row">
-                      <span className="billing-subtitle">GST</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.gst_amount}
-                      </span>
-                    </div>
-                    <div className="billing-row total">
-                      <span className="billing-subtitle text-bold">
-                        Grand Total
-                      </span>
-                      <span className="final-amount">
-                        ₹{bookingsIdWise?.billing_amount}
-                      </span>
-                    </div>
-                    <div className="payment-mode">
-                      <span className="billing-subtitle">Payment mode</span>
-                      <span className="billing-subtitle">
-                        {bookingsIdWise?.payment_mode}
-                      </span>
-                    </div>
-                  </div>
-                  
-                  {bookingsIdWise?.booking_status === "completed" ? (
+                    {bookingsIdWise?.booking_status === "completed" ? (
                     <button
                       className="rating-button"
                       onClick={handleRatingButtonClick}
@@ -266,10 +323,9 @@ function PreviousTab() {
                       Rating Unavailable
                     </button>
                   )}
-                </div>
+                  </div>
                 <button
                   className="btn-view-less"
-                  
                   onClick={() => setOpenBookingIndex(null)}
                 >
                   View less
@@ -280,7 +336,10 @@ function PreviousTab() {
               <div className="booking-summary mt-3 mb-3">
                 <div className="summary-header">
                   <div className="service-info">
-                    <ChefHat className="user-icon" />
+                    {booking?.category_id &&
+                      React.createElement(categoryIcons[booking.category_id], {
+                        className: "user-icon",
+                      })}
                     <h2 className="profile-heading">
                       {booking?.sub_category_name}
                     </h2>
@@ -346,9 +405,11 @@ function PreviousTab() {
         ))
       )}
       <ReviewModal
-        isOpen={isRatingModalOpen}
-        onClose={handleCloseRatingModal}
-      />
+  isOpen={isRatingModalOpen}
+  onClose={handleCloseRatingModal}
+  partnerId={bookingsIdWise?.partner?.id} 
+/>
+
     </div>
   );
 }

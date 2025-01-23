@@ -130,20 +130,16 @@ const CookServiceCards = () => {
 
                     {/* Checklist Section */}
                     <ul className="checklist">
-                      {[
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                        "Lorem ipsum",
-                      ].map((item, idx) => (
-                        <li key={idx}>
-                          <div className="circle-icon">
-                            <span className="check-icon">✔</span>
-                          </div>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
+  {service?.bullet_points?.map((item, idx) => (
+    <li key={idx}>
+      <div className="circle-icon">
+        <span className="check-icon">✔</span>
+      </div>
+      {item}
+    </li>
+  ))}
+</ul>
+
 
                     <div className="mt-3">
                       <a
@@ -154,7 +150,7 @@ const CookServiceCards = () => {
                       </a>
                     </div>
                     <div className="price-section mt-2 mb-0">
-                      <div className="price">
+                      {/* <div className="price">
                         Starting from
                         <div className="amount">
                           <span className="currency">₹</span>
@@ -163,7 +159,7 @@ const CookServiceCards = () => {
                             /{service?.number_of_people}
                           </span>
                         </div>
-                      </div>
+                      </div> */}
                       <div>
                         <button
                           className="book-now"
