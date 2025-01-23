@@ -3068,7 +3068,7 @@ const BookingSection = () => {
                     event.target.disabled = true;
                     setMakeDisable(true);
                   }}
-                  disabled={makeDisable}
+                  // disabled={makeDisable}
                 >
                   <div className="payment-option">
                     <div className="payment-icon">
