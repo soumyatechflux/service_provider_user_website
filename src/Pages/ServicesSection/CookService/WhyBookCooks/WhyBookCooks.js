@@ -93,7 +93,7 @@ const WhyBookCooks = () => {
               />
           </div>
           <div className="nav-container container">
-              <h2 className="section-title">Why Book Cooks From Us</h2>
+              <h2 className="section-title ">Why Book Cooks From Us</h2>
               <div className="features-container">
                   <div className="central-image-container">
                       <img

@@ -39,20 +39,33 @@
   font-size: 22px;
   font-weight: 500;
   line-height: 40px;
-  letter-spacing: -0.01em;
+  /* letter-spacing: -0.01em; */
   text-align: center;
-  margin: 20px;
+  margin: 20px 54px;
   color: #666;
 }
 /* Default styling for the icon */
-.responsive-icon {
-  font-size: 54px; /* Default font size */
+.responsive-image {
+  width: 54px; /* Adjust the size as needed */
+  height: 54px; /* Maintain aspect ratio */
+  object-fit: contain; /* Ensures the image fits within the container */
+}
+@media (max-width: 1025px) {
+  .why-choose-us-text{
+    margin: 20px;
+  }
 }
 
 /* Medium screens (tablets) */
 @media (max-width: 768px) {
-  .responsive-icon {
-    font-size: 42px; /* Smaller font size for tablets */
+  .responsive-image {
+    width: 30px; /* Adjust the size as needed */
+    height: 30px; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensures the image fits within the container */
+  }
+
+  .why-choose-us-text{
+    margin: 20px;
   }
 }
 /* Responsive styles */
@@ -77,6 +90,11 @@
   }
   .responsive-icon {
     font-size: 32px; /* Even smaller font size for mobile */
+  }
+  .responsive-image {
+    width: 35px; /* Adjust the size as needed */
+    height: 35px; /* Maintain aspect ratio */
+    object-fit: contain; /* Ensures the image fits within the container */
   }
   .why-choose-us-title{
     font-size: 34px;

@@ -66,11 +66,12 @@ const Testimonials = () => {
         key={index}
         className={`star ${index < rating ? 'filled' : ''}`}
         size={24}
-        fill={index < rating ? "#ffd700" : "none"} // Fully filled for 'filled' class
-        stroke={index < rating ? "none" : "#e0e0e0"} // Stroke for unfilled stars
+        fill={index < rating ? "#f88600" : "none"} // Fully filled for 'filled' class
+        stroke={index < rating ? "#f88600" : "#e0e0e0"} // Stroke color for unfilled stars
       />
     ));
   };
+  
 
   const currentTestimonial = testimonials[currentIndex];
   const words = currentTestimonial.text.split(' '); 

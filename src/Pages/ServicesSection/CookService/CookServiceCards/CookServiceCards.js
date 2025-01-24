@@ -85,27 +85,29 @@ const CookServiceCards = () => {
   return (
     <>
       <div className="container-bg-color">
-        <div className="nav-container container cook-services mt-4 pb-4">
+        <div className="nav-container container cook-services pt-4">
           <div>
-            <h2 className="section-title">Cook Services</h2>
-            <div className="service-cards-wrapper">
+            {/* <h2 className="section-title">Cook Services</h2> */}
+            <div className="service-cards-wrapper pt-4">
               {slides.map((service, index) => (
                 <div key={index} className="service-card">
                   <img
                     src={service?.image}
                     alt={service?.sub_category_name}
                     className="card-image"
-                    style={{ height: "200px", width: "300px" }}
                   />
                   <div className="card-content">
                     <h3>{service?.sub_category_name}</h3>
                     <div className="rating-cook">
                       <span className="stars">
-                        {"★".repeat(Math.floor(service?.rating))}
-                        {"☆".repeat(5 - Math.floor(service?.rating))}
+                        {"★"}{" "}
+                        <span style={{ color: "#666666" }}>
+                          {service?.rating?.toFixed(1) || "0.0"}
+                        </span>
                       </span>
+
                       <span className="reviews">
-                        ({service?.reviews} reviews)
+                        ({service?.reviews}273 reviews)
                       </span>
                     </div>
 
@@ -130,16 +132,15 @@ const CookServiceCards = () => {
 
                     {/* Checklist Section */}
                     <ul className="checklist">
-  {service?.bullet_points?.map((item, idx) => (
-    <li key={idx}>
-      <div className="circle-icon">
-        <span className="check-icon">✔</span>
-      </div>
-      {item}
-    </li>
-  ))}
-</ul>
-
+                      {service?.bullet_points?.map((item, idx) => (
+                        <li key={idx}>
+                          <div className="circle-icon">
+                            <span className="check-icon">✔</span>
+                          </div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
 
                     <div className="mt-3">
                       <a

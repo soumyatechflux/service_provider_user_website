@@ -19,7 +19,7 @@ const DownloadApp = () => {
                 >
                   Download The App
                 </h2>
-                <p className="download-text" style={{ color: "white" }}>
+                <p className="download-text" style={{ color: "white", fontWeight:"700" }}>
                 Download the Servyo app on Android & iOS. Get access to all our services on your fingertips for a smooth and hassle-free experience
                 </p>
                 <div className="store-buttons">
@@ -53,7 +53,7 @@ const DownloadApp = () => {
 
             <div className="col-lg-6 ">
               <div className="img-phone">
-                <img src="/DownloadApp/test.png" alt="Phone Display" />
+                <img src="/DownloadApp/downloadApp.png" alt="Phone Display" />
               </div>
             </div>
           </div>

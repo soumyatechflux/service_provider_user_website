@@ -30,6 +30,7 @@
   position: relative;
   z-index: 1;
   justify-content: flex-start !important;
+  align-items: center;
 }
 
 .star {
@@ -38,7 +39,13 @@
 }
 
 .star.filled {
-  color: #f88600 !important; /* Gold color for filled stars */
+  fill: #f88600; /* Color for filled stars */
+  stroke: #f88600; /* Border color for filled stars */
+}
+
+.star:not(.filled) {
+  fill: none; /* Empty inside */
+  stroke: #e0e0e0; /* Gray border for unfilled stars */
 }
 
 /* Text Content */
@@ -50,7 +57,7 @@
 }
 
 .testimonial-header h2 {
-  font-size: 32px;
+  font-size: 36px;
   font-weight: bold;
   margin: 0;
 }

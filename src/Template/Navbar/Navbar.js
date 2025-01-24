@@ -99,7 +99,8 @@ const Navbar = () => {
         >
           <img
             src="/LOGO_SP.png"
-            style={{ width: "190px", height: "60px" }}
+            className="LOGO_SP"
+            // style={{ width: "190px", height: "60px" }}
           ></img>
         </Link>
 
@@ -231,7 +232,7 @@ const Navbar = () => {
               </a>
               {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
-                  {["Delhi",].map((city) => (
+                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
                     <a key={city} className="dropdown-item disabled" href="#">
                       {city}
                     </a>
@@ -253,8 +254,8 @@ const Navbar = () => {
             {/* User Profile Dropdown */}
             <div className="nav-item dropdown">
               <a
-                style={{ marginRight: "8px" }}
-                className="nav-link"
+                style={{ padding: "0px" }}
+                className="profile-icon-navbar"
                 href="#"
                 onClick={(e) => {
                   e.preventDefault();

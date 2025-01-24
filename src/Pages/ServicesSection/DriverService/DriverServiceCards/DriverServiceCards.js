@@ -82,10 +82,10 @@ const DriverServiceCards = () => {
   return (
     <>
       <div className="container-bg-color">
-        <div className="nav-container container cook-services mt-4 pb-4">
+        <div className="nav-container container cook-services pt-4">
           <div className="container">
-            <h2 className="section-title">Driver Services</h2>
-            <div className="service-cards-wrapper">
+            {/* <h2 className="section-title">Driver Services</h2> */}
+            <div className="service-cards-wrapper pt-4 pb-5">
               {slides.map((service, index) => (
                 <div key={index} className="service-card">
                   <img
@@ -97,11 +97,13 @@ const DriverServiceCards = () => {
                     <h3>{service?.sub_category_name}</h3>
                     <div className="rating-cook">
                       <span className="stars">
-                        {"★".repeat(Math.floor(service?.rating))}
-                        {"☆".repeat(5 - Math.floor(service?.rating))}
+                        {"★"}{" "}
+                        <span style={{ color: "#666666" }}>
+                          {service?.rating?.toFixed(1) || "0.0"}
+                        </span>
                       </span>
                       <span className="reviews">
-                        ({service?.reviews} reviews)
+                        ({service?.reviews}273 reviews)
                       </span>
                     </div>
 
@@ -124,15 +126,15 @@ const DriverServiceCards = () => {
                     )}
                     {/* Checklist Section */}
                     <ul className="checklist">
-  {service?.bullet_points?.map((item, idx) => (
-    <li key={idx}>
-      <div className="circle-icon">
-        <span className="check-icon">✔</span>
-      </div>
-      {item}
-    </li>
-  ))}
-</ul>
+                      {service?.bullet_points?.map((item, idx) => (
+                        <li key={idx}>
+                          <div className="circle-icon">
+                            <span className="check-icon">✔</span>
+                          </div>
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
 
                     <div className="mt-3">
                       <a
@@ -143,7 +145,7 @@ const DriverServiceCards = () => {
                       </a>
                     </div>
 
-                    <div className="price-section mt-2">
+                    <div className="price-section mt-2 mb-0">
                       {/* <div className="price">
                         Starting from
                         <div className="amount">

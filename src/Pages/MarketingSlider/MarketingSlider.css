@@ -28,12 +28,13 @@
     left: 50%;
     top: 40%; /* Center text vertically */
     transform: translateX(-50%);
-    font-size: 48px;
+    font-size: 50px;
     font-weight: 500;
     color: white;
     /* text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8); */
     z-index: 10; /* Ensure text appears above image */
   }
+  
   
   /* Responsive Adjustments */
   @media (max-width: 768px) {

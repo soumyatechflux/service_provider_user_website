@@ -9,8 +9,12 @@ const Footer = () => {
     <footer className="footer">
       <div className=" footer-container">
         {/* Branding */}
-        <div className="container nav-container footer-brand ">
-          <h2 className="text-left">Servyo</h2>
+        <div className="container nav-container footer-brand mb-3">
+        <img
+            src="/LOGO_SP2.png"
+            className="Footer-logo"
+            // style={{ width: "186px", height: "54px" }}
+          ></img>
         </div>
 
         {/* Footer Columns */}
@@ -101,7 +105,7 @@ const Footer = () => {
               >
                 <img
                   className="store-img"
-                  src="/Footer/AppStore.png"
+                  src="/Footer/apple.png"
                   alt="App Store"
                 />
               </a>
@@ -111,7 +115,7 @@ const Footer = () => {
               >
                 <img
                   className="store-img"
-                  src="/Footer/GooglePlayStore.png"
+                  src="/Footer/google.png"
                   alt="Google Play"
                 />
               </a>
