@@ -231,7 +231,7 @@ const Navbar = () => {
               </a>
               {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
-                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
+                  {["Delhi",].map((city) => (
                     <a key={city} className="dropdown-item disabled" href="#">
                       {city}
                     </a>

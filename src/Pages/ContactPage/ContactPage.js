@@ -302,7 +302,7 @@ function ContactPage() {
                     </a>
                     {activeDropdown === "location" && (
                       <div className="dropdown-menu show">
-                        {["Delhi", "Mumbai", "Bangalore", "Chennai"].map(
+                        {["Delhi",].map(
                           (city) => (
                             <a
                               key={city}

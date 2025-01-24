@@ -3065,7 +3065,7 @@ const BookingSection = () => {
                   onClick={(event) => {
                     handlePayment("online");
                     setCallRazorPay(true);
-                    event.target.disabled = true;
+                    // event.target.disabled = true;
                     setMakeDisable(true);
                   }}
                   // disabled={makeDisable}
@@ -3087,10 +3087,10 @@ const BookingSection = () => {
                   onClick={(event) => {
                     handlePayment("cod");
                     setCallRazorPay(false);
-                    event.target.disabled = true;
+                    // event.target.disabled = true;
                     setMakeDisable(true);
                   }}
-                  disabled={makeDisable}
+                  // disabled={makeDisable}
                 >
                   <div className="payment-option">
                     <div className="payment-icon">

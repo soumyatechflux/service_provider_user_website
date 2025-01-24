@@ -10,6 +10,9 @@ import Loader from "./../../../Loader/Loader";
 import axios from "axios";
 import ModifyBooking from "../../ModifyBooking/ModifyBooking";
 import MessageModal from "../../../MessageModal/MessageModal";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -26,11 +29,14 @@ const UpcomingTab = () => {
 
   const navigate = useNavigate();
 
+
+  const [ActiveBookingData, setActiveBookingData] = useState({});
+
   const [currentModal, setCurrentModal] = useState(null);
   const [cancelId, setCancelId] = useState(null);
 
   const handleCancelClick = (id) => {
-    console.log("iddd", id);
+    // console.log("iddd", id);
     setCancelId(id);
     setCurrentModal("cancellation");
   };
@@ -87,10 +93,10 @@ const UpcomingTab = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      console.log("Upcomming Booking response", response);
-      console.log(response.status);
+      // console.log("Upcomming Booking response", response);
+      // console.log(response.status);
       if (response.status === 200 && response.data.success === true) {
-        console.log("All Upcommings", response.data.data);
+        // console.log("All Upcommings", response.data.data);
         setBookings(response.data.data || []); // Assuming the response contains a `bookings` field
       }
     } catch (error) {
@@ -144,6 +150,108 @@ const UpcomingTab = () => {
       // alert(error.response?.data?.message || "Failed to cancel booking.");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  const [callRazorPay, setCallRazorPay] = useState(false);
+  const [BookingData, setBookingData] = useState();
+  
+  const handlePayment = async (mod,ID) => {
+    setLoading(true);
+
+    try {
+      const body = {
+        booking: {
+          booking_id: ID,
+          payment_mode: mod,
+        },
+      };
+
+      setLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/book_service`,
+
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLoading(false);
+
+      if (response.status === 200) {
+        // toast.success(response?.data?.message || "Successful!");
+
+        if (response?.data?.order) {
+          setBookingData(response?.data?.order);
+          setCallRazorPay(true);
+          console.log("sdjnkc6754dsgvhfrtynsdcbj")
+        } else {
+          setBookingData();
+          setCallRazorPay(false);
+        }
+
+      } else {
+        toast.error(response.data.error_msg || "Please try again.");
+        // setModalMessage(response.data.error_msg || "Please try again.");
+        // setShowModal(true);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again later.");
+      // setModalMessage("An error occurred. Please try again later.");
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const passDataToNext = (reason) => {
     setSelectedReason(reason);
@@ -373,9 +481,10 @@ const UpcomingTab = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className="column3">
                     <h3 className="heading-text mb-4">Billing Details</h3>
-                    <div className="billing-info">
+                    <div className="billing-info mb-3">
                       <div className="billing-row">
                         <span className="billing-subtitle">Base Price</span>
                         <span className="billing-subtitle">
@@ -439,10 +548,60 @@ const UpcomingTab = () => {
                           {bookingsIdWise?.payment_mode}
                         </span>
                       </div>
+
+
+
+
+
+{bookingsIdWise?.payment_mode !== "online" && (
+<>
+                      <button
+                  className="payment-option-button mt-2 mb-2"
+                  onClick={() => {
+                    handlePayment("online", booking?.booking_id);
+                    // setCallRazorPay(true); 
+                  }}
+                  
+                  disabled={bookingsIdWise?.payment_mode === "online"}
+                >
+                  <div className="payment-option">
+                    <div className="payment-icon">
+                      <img src="/atm-card.png" alt="Card Icon" />
+                    </div>
+                    <div className="payment-details">
+                      <h3>Pay using UPI, Cards</h3>
+                      <p>Experience cashless bookings</p>
+                    </div>
+                    <div className="payment-arrow">→</div>
+                  </div>
+                </button>
+                </>
+)}
+
+
+
+
+{callRazorPay && BookingData && (
+  <>
+  {/* {console.log("CallingGatewaydvnkegrfhyubjvdf")} */}
+          <RazorpayPayment
+            BookingData={BookingData}
+            callRazorPay={callRazorPay}
+            handleConfirmBooking={() => {
+              fetchUpcommingBookings();
+              handleViewMore(ActiveBookingData?.booking_id); 
+            }}
+            
+          />
+          </>
+
+        )}
+
+
                     </div>
                   </div>
                   <button
-                    className="btn-view-less"
+                    className="btn-view-less mt-5"
                     onClick={() => setOpenBookingIndex(null)}
                   >
                     View less
@@ -523,6 +682,7 @@ const UpcomingTab = () => {
                       onClick={() => {
                         handleViewMore(booking?.booking_id);
                         setOpenBookingIndex(index);
+                        setActiveBookingData(booking);
                       }}
                     >
                       View details
@@ -565,6 +725,8 @@ const UpcomingTab = () => {
               handleShow={handleShow}
               message={message}
             />
+
+
           </>
         )}
       </div>
