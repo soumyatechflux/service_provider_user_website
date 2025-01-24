@@ -13,6 +13,7 @@ import MessageModal from "../../../MessageModal/MessageModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
+import { useLocation } from 'react-router-dom';
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -74,14 +75,30 @@ const UpcomingTab = () => {
     }
   };
 
-  // Monitor state update
-  useEffect(() => {
-    console.log("Updated bookingsIdWise:", bookingsIdWise);
-  }, [bookingsIdWise]);
 
-  const handleModifyButton = (id) => {
-    navigate("/modify-booking", { state: { bookingsIdWise, id } });
+  const location = useLocation();
+
+  const handleModifyButton = (booking) => {
+
+    const serviceObject = {
+      id: booking?.sub_category_id,
+      category_id: booking?.category_id,
+      booking_id:booking?.booking_id,
+    };
+  
+    // Navigate and pass serviceObject as state
+    navigate("/modify-booking", { state: { service: serviceObject } });
   };
+
+
+
+
+
+
+
+
+
+
 
   const fetchUpcommingBookings = async () => {
     try {
@@ -392,7 +409,8 @@ const UpcomingTab = () => {
                       <button
                         className="btn-modify-upcoming"
                         onClick={() => {
-                          handleModifyButton(booking?.booking_id);
+                          handleModifyButton(booking);
+                      
                         }}
                         disabled={booking?.booking_status === "cancelled"}
                         style={{
@@ -664,7 +682,11 @@ const UpcomingTab = () => {
                   <div className="summary-actions">
                     <button
                       className="btn-modify"
-                      onClick={() => handleModifyButton(booking?.booking_id)}
+                      onClick={() => {
+                        handleModifyButton(booking);
+                    
+                      }}
+                      
                       disabled={booking?.booking_status === "cancelled"}
                       style={{
                         cursor:
@@ -715,10 +737,14 @@ const UpcomingTab = () => {
               isOpen={currentModal === "success"}
               onClose={handleCloseModal}
             />
-            <ModifyBooking
-              bookingsIdWise={bookingsIdWise}
-              fetchUpcommingBookings={fetchUpcommingBookings}
-            />
+
+
+        <ModifyBooking
+          fetchUpcommingBookings={fetchUpcommingBookings}
+        />
+
+
+
             <MessageModal
               show={show}
               handleClose={handleClose}

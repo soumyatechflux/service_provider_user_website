@@ -2808,6 +2808,8 @@ const BookingSection = () => {
 
                 {/* Dropdown Options (Coupons) */}
                 {isCouponsVisible && (
+
+                  
                   <div
                     className="coupon-dropdown"
                     style={{
