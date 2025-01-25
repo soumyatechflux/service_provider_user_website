@@ -134,7 +134,8 @@ const JoinAsPartnerForm = () => {
     <div className="container nav-container join-partner-container">
       <div className="join-partner-section">
         <h2 className="join-partner-title mb-1" >Get In Touch</h2>
-        <p>Are you looking for work? Join us to get new bookings and earn more. Download the Servyo app on your mobile phone or fill your whatsapp number below and we will contact you. 
+        <p>
+        Please provide the following details to get in touch with us. For any booking related queries or complaints, please visit the help centre.
         </p>
         <form onSubmit={handleSubmit}>
           <div className="join-partner-form-group">
@@ -182,43 +183,39 @@ const JoinAsPartnerForm = () => {
           </div>
 
           <div className="join-partner-form-group">
-            <div className="nav-item dropdown location-dropdown">
-              <a
-                className="nav-link dropdown-toggle location-drop"
-                href="#"
-                style={{ width: "auto", marginRight: "0px" }}
-                onClick={(e) => {
-                  e.preventDefault();
-                  setActiveDropdown(
-                    activeDropdown === "location" ? null : "location"
-                  );
-                }}
-              >
-                <div style={{ gap: "10px" }}>
-                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-                  <span style={{ color: "#999999", fontSize: "16px" }}>
-                  {selectedLocation || "Select Location"}
-                  </span>
-                </div>
-              </a>
-              {activeDropdown === "location" && (
-                <div className="dropdown-menu show">
-                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
-                    <a
-                      key={city}
-                      className="dropdown-item"
-                      href="#"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLocationChange(city);
-                      }}
-                    >
-                      {city}
-                    </a>
-                  ))}
-                </div>
-              )}
-            </div>
+          <div className="nav-item dropdown location-dropdown">
+  <a
+    className="nav-link dropdown-toggle location-drop"
+    href="#"
+    style={{ width: "auto", marginRight: "0px" }}
+    onClick={(e) => {
+      e.preventDefault();
+      setActiveDropdown(activeDropdown === "location" ? null : "location");
+    }}
+  >
+    <div style={{ gap: "10px" }}>
+      <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+      <span style={{ color: "#999999", fontSize: "16px" }}>
+        {selectedLocation || "Delhi-NCR"} {/* Default location is Delhi */}
+      </span>
+    </div>
+  </a>
+  {/* {activeDropdown === "location" && (
+    <div className="dropdown-menu show">
+      <a
+        className="dropdown-item"
+        href="#"
+        onClick={(e) => {
+          e.preventDefault();
+          handleLocationChange("Delhi"); // Only Delhi is selectable
+        }}
+      >
+        Delhi
+      </a>
+    </div>
+  )} */}
+</div>
+
             {errors.city && <p className="error-text">{errors.city}</p>}
           </div>
 
@@ -259,7 +256,9 @@ const JoinAsPartnerForm = () => {
       <div className="join-partner-section2">
         <div className="join-partner-text-center">
           <h2 className="join-partner-title">Join As A Partner</h2>
-          <p>Download Our Partner App</p>
+          <p >Are you looking for work? Join us to get new bookings and earn more. Download the Servyo app on your mobile phone or fill your whatsapp number below and we will contact you. 
+        </p>
+          <p className="mb-1">Download Our Partner App</p>
           <div>
             <button className="join-partner-button-download">
               Download App

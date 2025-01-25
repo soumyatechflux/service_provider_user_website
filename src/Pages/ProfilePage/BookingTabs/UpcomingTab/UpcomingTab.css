@@ -115,6 +115,7 @@
   /* Detailed View Styles */
   .booking-details {
     display: flex;
+    min-height: 540px;
     justify-content: space-between;
     /* flex-wrap: wrap; */
     flex-grow: unset;

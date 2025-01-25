@@ -13,19 +13,19 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (!rating || !review) {
       setError("Please provide both a rating and a review.");
       return;
     }
-
+  
     try {
       setError(null); // Clear any previous errors
       setSuccessMessage(""); // Clear any previous success messages
       setIsSubmitting(true); // Disable the submit button while submitting
-
+  
       const token = sessionStorage.getItem("ServiceProviderUserToken");
-
+  
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
         {
@@ -35,12 +35,17 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-
+  
       if (response.status === 200 && response.data.success) {
         setSuccessMessage("Your review has been submitted successfully!");
         setRating(0);
         setReview("");
         setIsSubmitted(true); // Mark as submitted
+  
+        // Automatically close the modal after a short delay
+        setTimeout(() => {
+          onClose(); // Close the modal
+        }, 500); // Adjust the delay (in milliseconds) as needed
       } else {
         setError("Failed to submit your review. Please try again.");
       }
@@ -51,6 +56,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
       setIsSubmitting(false); // Re-enable the submit button
     }
   };
+  
 
   return (
     <div

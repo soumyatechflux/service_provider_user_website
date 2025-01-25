@@ -73,7 +73,7 @@ const handleViewMore = async () => {
 
 useEffect(() => {
   handleViewMore();
-}, []);
+}, [service]);
 
 
 
@@ -206,80 +206,63 @@ useEffect(() => {
     fetchBasicDataFun();
   }, []);
 
+
+
+
+
+
+
+
+
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
+
+
   const FunctionDataForPricesApplied = async () => {
+    console.log("FunctionDataForPricesApplied called",true);
     setLoading(true);
-
-    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
-      (coupon) => coupon.voucher_id === selectedCoupon
-    );
-
-    const voucherCode = selectedCouponObject
-      ? selectedCouponObject.voucher_code
-      : null;
-
+  
     try {
       const body = {
         booking: {
+          booking_id: service?.booking_id || "",
           category_id: service?.category_id || "",
           sub_category_id: service?.id || "",
-
-          visit_date:
-            service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
-
-          visit_time: selectedTime,
-          visit_address_id: selectedLocation?.address_id || "",
-          address_from:
-            service?.category_id === 2
-              ? selectedLocationFromForDriver?.address_id
-              : "",
-          address_to:
-            service?.category_id === 2
-              ? selectedLocationToForDriver?.address_id
-              : "",
-          no_of_hours_booked: "",
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
-          payment_mode: "",
-          dishes:
-            service?.id === 1 || service?.id === 2 ? SelectedNamesOfDishes : [],
-
-          driver_time_duration:
-            service?.category_id === 2
-              ? SelectedNumberOfHoursObjectForDriver
-              : {},
-
-          transmission_type:
-            service?.category_id === 2 ? selectedCarTransmissionType : "",
-          car_type: service?.category_id === 2 ? selectedCarType : "",
-
-          gardener_time_duration:
-            service?.id === 8 ? SelectedNumberOfHoursObjectForGardner : {},
-          gardener_monthly_subscription:
-            service?.id === 9
-              ? SelectedNumberOfSlotsObjectForMonthlyGardner
-              : {},
-          gardener_visiting_slots: service?.id === 9 ? selectedVisitDates : [],
-
-          voucher_code: voucherCode ? voucherCode : "",
-
-          // menu: service?.id === 3 ? selectedMenuItemsForChefForParty : [],
-          menu:
-            service?.id === 3
-              ? selectedMenuItemsForChefForParty
-                  .filter((item) => item.quantity > 0)
-                  .map((item) => ({
-                    ...item,
-                    price: parseFloat(item.price),
-                  }))
+          dishes: 
+            service?.id === 1 || service?.id === 2 
+              ? SelectedNamesOfDishes || [] 
               : [],
+          driver_time_duration: 
+            service?.category_id === 2 
+              ? SelectedNumberOfHoursObjectForDriver || {} 
+              : {},
+          transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
+          car_type: service?.category_id === 2 ? selectedCarType || "" : "",
+          gardener_time_duration: 
+            service?.id === 8 
+              ? SelectedNumberOfHoursObjectForGardner || {} 
+              : {},
+          gardener_monthly_subscription: 
+            service?.id === 9 
+              ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
+              : {},
+          gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
+          menu: service?.id === 3 
+            ? (selectedMenuItemsForChefForParty || [])
+                .filter((item) => item.quantity > 0)
+                .map((item) => ({
+                  ...item,
+                  price: parseFloat(item.price),
+                }))
+            : [],
         },
       };
-
+  
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_pricing`,
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_pricisdhjkllfhfjkhwaehfjahwjng`,
         body,
         {
           headers: {
@@ -288,11 +271,10 @@ useEffect(() => {
           },
         }
       );
-
-      if (response.data.success) {
+  
+      if (response?.data?.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        setStep(5);
-        // window.scrollTo({ top: 0, behavior: "smooth" });
+        setStep(2);
       } else {
         setDataForPricesAppliedGet({});
       }
@@ -308,18 +290,11 @@ useEffect(() => {
     }
   };
 
-  const [selectedCoupon, setSelectedCoupon] = useState(null); // State to hold the selected coupon
-  const [isCouponsVisible, setIsCouponsVisible] = useState(false); // State to toggle coupon menu visibility
+  
 
-  // Function to handle radio button change
-  const handleRadioChange = (voucherId) => {
-    setSelectedCoupon(voucherId); // Update the selected coupon when a radio button is clicked
-  };
 
-  // Handle visibility of coupons dropdown
-  const handleCouponsVisibility = () => {
-    setIsCouponsVisible((prevState) => !prevState);
-  };
+
+ 
 
   const [step, setStep] = useState(1); 
 
@@ -334,6 +309,9 @@ useEffect(() => {
     if (DefaultDataOfBooking) {
       
       setBookingForGuestName(DefaultDataOfBooking?.guest_name);
+      setSpecialRequests(DefaultDataOfBooking?.instructions);
+
+      
 
     }
   }, [DefaultDataOfBooking]);
@@ -363,84 +341,6 @@ useEffect(() => {
     setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
   };
 
-  const handleDateChange = (newDate) => {
-    const delhiDate = new Date(
-      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    );
-
-    setSelectedDate(delhiDate);
-
-    const isToday = delhiDate.toDateString() === new Date().toDateString();
-
-    if (isToday) {
-      updateMinTime(new Date()); // Update minTime to current time for today
-    } else {
-      setMinTime("00:00"); // Reset minTime for future dates
-    }
-
-    setSelectedTime(""); // Clear the time selection
-  };
-
-  // Generate 15-minute intervals for the entire day
-  const generateTimeIntervals = () => {
-    const intervals = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const time = `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`;
-        intervals.push(time);
-      }
-    }
-    return intervals;
-  };
-
-  const timeOptions = generateTimeIntervals();
-
-  const getCurrentTimeInHHMM = () => {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
-
-  const filterTimeOptions = () => {
-    const currentDate = new Date();
-    const today = currentDate.toDateString();
-    const currentTime = getCurrentTimeInHHMM();
-
-    // Extract service start and end times
-    const serviceStartTime =
-      basicDataByGet?.sub_category?.service_start_time || "00:00:00";
-    const serviceEndTime =
-      basicDataByGet?.sub_category?.service_end_time || "23:59:59";
-
-    // Convert service times to HH:MM format
-    const startTime = serviceStartTime.slice(0, 5); // "00:00:00" -> "00:00"
-    const endTime = serviceEndTime.slice(0, 5); // "19:30:00" -> "19:30"
-
-    // Filter time options
-    return timeOptions.filter((time) => {
-      const isWithinServiceHours = time >= startTime && time <= endTime;
-
-      if (selectedDate.toDateString() === today) {
-        return time >= currentTime && isWithinServiceHours;
-      }
-
-      return isWithinServiceHours;
-    });
-  };
-
-  const filteredTimeOptions = filterTimeOptions();
-
-  const convertTo12HourFormat = (time) => {
-    if (!time) return "Not Available";
-    const [hours, minutes] = time.split(":");
-    const hourInt = parseInt(hours, 10);
-    const ampm = hourInt >= 12 ? "PM" : "AM";
-    const formattedHour = hourInt % 12 || 12; // Convert 0 to 12 for 12-hour format
-    return `${formattedHour}:${minutes} ${ampm}`;
-  };
 
   const [people, setPeople] = useState(1);
 
@@ -605,13 +505,7 @@ useEffect(() => {
   const handlePayment = async (mod) => {
     setLoading(true);
 
-    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
-      (coupon) => coupon.voucher_id === selectedCoupon
-    );
 
-    const voucherCode = selectedCouponObject
-      ? selectedCouponObject.voucher_code
-      : null;
 
     try {
       const body = {
@@ -620,7 +514,7 @@ useEffect(() => {
             ? DataForPricesAppliedGet.booking_id
             : "",
           payment_mode: mod,
-          voucher_code: voucherCode ? voucherCode : "",
+
         },
       };
 
@@ -667,13 +561,6 @@ useEffect(() => {
       // toast.error("An error occurred. Please try again later.");
       // setModalMessage("An error occurred. Please try again later.");
     }
-  };
-
-  const handleConfirmAddress = () => {
-    FunctionDataForPricesApplied();
-
-    // setStep(5);
-    // window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const [
@@ -876,11 +763,6 @@ useEffect(() => {
     basicDataByGet?.no_of_people[basicDataByGet?.no_of_people.length - 1]
       ?.people_count;
 
-  const htmlToText = (htmlString) => {
-    const tempElement = document.createElement("div");
-    tempElement.innerHTML = htmlString;
-    return tempElement.textContent || tempElement.innerText;
-  };
 
   useEffect(() => {
     setdishesOptionsArray(basicDataByGet?.dishes);
@@ -950,35 +832,110 @@ useEffect(() => {
   };
 
   // Calculate the total price for each item
-  const calculateTotalForMenuItemForChefForParty = (price, quantity) =>
-    price * quantity;
+  const calculateTotalForMenuItemForChefForParty = (price, quantity) => price * quantity;
 
-  const dishesOptionsArrayOri = basicDataByGet?.dishes.map((dish) => ({
-    id: dish?.dish_id,
-    name: dish?.dish_name || "Unnamed Dish",
-  }));
 
-  const handleCheckboxChange = (id) => {
-    if (menu.includes(id)) {
-      setMenu(menu.filter((item) => item !== id));
-    } else {
-      setMenu([...menu, id]);
-    }
-  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+const [dishesOptionsArrayOri, setDishesOptionsArrayOri] = useState([]);
+
+// Set dishesOptionsArrayOri in useEffect
+useEffect(() => {
+  if (basicDataByGet?.dishes) {
+    const options = basicDataByGet.dishes.map((dish) => ({
+      id: String(dish?.dish_id), // Ensure IDs are strings
+      name: dish?.dish_name || "Unnamed Dish",
+    }));
+    setDishesOptionsArrayOri(options); // Update state
+  } else {
+    setDishesOptionsArrayOri([]); // Set an empty array if dishes are undefined
+  }
+}, [basicDataByGet]); // Re-run when basicDataByGet changes
+
+const handleCheckboxChange = (id) => {
+  // console.log("Checkbox Toggled:", id);
+  // console.log("Current Menu:", menu);
+
+  if (menu.includes(id)) {
+    setMenu((prevMenu) => prevMenu.filter((item) => item !== id));
+  } else {
+    setMenu((prevMenu) => [...prevMenu, id]);
+  }
+};
+
+
   useEffect(() => {
-    if (DefaultDataOfBooking?.dishes) {
-      // Split the "dishes" string and trim spaces
-      const dishNames = DefaultDataOfBooking.dishes.split(",").map((dish) => dish.trim());
+    if (dishesOptionsArrayOri && dishesOptionsArrayOri.length > 0) {
+      const selectedOptions = dishesOptionsArrayOri.filter((option) =>
+        menu.includes(option?.id)
+      );
+      setSelectedNamesOfDishes(selectedOptions.map((option) => option.name));
+    } else {
+      setSelectedNamesOfDishes([]);
+    }
+  }, [menu, dishesOptionsArrayOri]);
 
-      // Find IDs of the dishes by their names
-      const selectedIds = dishesOptionsArrayOri
-        .filter((option) => dishNames.includes(option.name))
-        .map((option) => option.id);
 
-      // Set the selected menu IDs
-      setMenu(selectedIds);
+  useEffect(() => {
+    if (DefaultDataOfBooking?.dishes && dishesOptionsArrayOri.length > 0) {
+      // Map dish names from DefaultDataOfBooking to corresponding IDs
+      const defaultSelectedIds = DefaultDataOfBooking.dishes
+        .map((dishName) =>
+          dishesOptionsArrayOri.find((option) => option.name === dishName)?.id
+        )
+        .filter((id) => id !== undefined); // Filter out undefined IDs
+  
+      // console.log("Default Selected IDs:", defaultSelectedIds);
+  
+      // Update the menu state with the default selected IDs
+      setMenu(defaultSelectedIds);
+  
+      // Set the names of the selected dishes based on the selected IDs
+      const selectedDishNames = dishesOptionsArrayOri
+        .filter((option) => defaultSelectedIds.includes(option.id))
+        .map((option) => option.name);
+  
+      setSelectedNamesOfDishes(selectedDishNames);
     }
   }, [DefaultDataOfBooking, dishesOptionsArrayOri]);
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   useEffect(() => {
@@ -1078,7 +1035,7 @@ useEffect(() => {
         setTotalPrice(selectedEntry.base_price);
         setApproxTime(selectedEntry.aprox_time);
       } else {
-        console.log("No matching entry found for people:", people);
+        // console.log("No matching entry found for people:", people);
       }
     }
   }, [people, basicDataByGet?.no_of_people]);
@@ -1198,93 +1155,7 @@ useEffect(() => {
     return `${hour}:${minutes} ${amPm}`;
   };
 
-  const handleApplyCoupen = async () => {
-    // setIsCouponsVisible(false);
-    setLoading(true);
 
-    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
-      (coupon) => coupon.voucher_id === selectedCoupon
-    );
-
-    const voucherCode = selectedCouponObject
-      ? selectedCouponObject.voucher_code
-      : null;
-
-    try {
-      const body = {
-        booking_id: DataForPricesAppliedGet
-          ? DataForPricesAppliedGet.booking_id
-          : "",
-        voucher_code: voucherCode ? voucherCode : "",
-      };
-
-      setLoading(true);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/discount/verify`,
-
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setLoading(false);
-
-      if (response.data.success) {
-        setDataForPricesAppliedGet(response?.data?.data);
-        toast.success(response?.data?.message || "Coupen id Valid.");
-        setIsCouponsVisible(false);
-      } else {
-        toast.error(
-          response?.data?.message || "Coupen id In-Valid at this time."
-        );
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error("Error:", error);
-      toast.error("An error occurred. Please try again later.");
-    }
-  };
-
-  const [showMoreCancellationPolicy, setShowMoreCancellationPolicy] = useState(false);
-  const [showMoreBookingSummary, setShowMoreBookingSummary] = useState(false);
-  const [showMoreAdditionalDetails, setShowMoreAdditionalDetails] = useState(false);
-
-  const toggleVisibility = (type) => {
-    console.log("Clicked", type);
-    if (type === "cancellation") {
-      setShowMoreCancellationPolicy(!showMoreCancellationPolicy);
-    } else if (type === "booking") {
-      setShowMoreBookingSummary(!showMoreBookingSummary);
-    } else if (type === "additional") {
-      setShowMoreAdditionalDetails(!showMoreAdditionalDetails);
-    }
-  };
-
-  
-
-  // Function to limit text to a specific number of words
-  const limitTextByWords = (text, wordLimit) => {
-    if (!text) return "";
-    const words = text.split(" "); // Split by spaces to get words
-    return words.slice(0, wordLimit).join(" "); // Limit the number of words and join them back
-  };
-
-  const cancellationPolicy = htmlToText(
-    basicDataByGet?.sub_category?.cancellation_policy || ""
-  );
-  const additionalDetails = htmlToText(
-    basicDataByGet?.sub_category?.booking_details || ""
-  );
-  const bookingSummery = htmlToText(
-    basicDataByGet?.sub_category?.booking_summary || ""
-  );
-
-  const wordLimit = 30; // Specify the number of words to display
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
@@ -1317,10 +1188,13 @@ useEffect(() => {
               <h1 className="booking-form-title">Modify Booking :</h1>
             </div>
 
-            <form>
+            <form  onSubmit={(e) => {
+    e.preventDefault();
+    // FunctionDataForPricesApplied();
+  }} >
               <div className="booking-form-group">
                 <label className="booking-form-label" htmlFor="guestName">
-                  Enter Booking Guest Name
+             Guest Name
                 </label>
                 <input
                   type="text"
@@ -1335,16 +1209,17 @@ useEffect(() => {
               {service?.id !== 9 && (
                 <>
                   <div>
-                    {/* Date Picker */}
-                    <div className="booking-form-group flex-fill">
-                      <label
-                        className="booking-form-label"
-                        htmlFor="date-input"
-                      >
-                        Select Visit Date & Time
-                      </label>
-                      {DefaultDataOfBooking?.booking_date_time}
-                    </div>
+                    <div className="booking-form-group flex-fill" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+  <label
+    className="booking-form-label"
+    htmlFor="date-input"
+    style={{ margin: 0 }}
+  >
+    Visit Date & Time:
+  </label>
+  <span>{DefaultDataOfBooking?.booking_date_time}</span>
+</div>
+
 
              
                   </div>
@@ -1559,99 +1434,98 @@ useEffect(() => {
                           Select Dishes (Optional)
                         </label>
 
-                        <div ref={dropdownRef}
-                          className="dropdown-container"
-                          style={{
-                            display: "flex",
-                            flexDirection: "column",
-                            gap: "4px",
-                          }}
-                        >
-
-                          <div
-                            className="dropdown-input"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                            style={{
-                              cursor: "pointer",
-                              padding: "8px",
-                              fontSize: "16px",
-                              border: "1px solid #ccc",
-                              borderRadius: "4px",
-                              display: "flex",
-                              justifyContent: "space-between",
-                              alignItems: "center",
-                              width: "100%",
-                            }}
-                          >
-                            {menu.length > 0
-                              ? `Selected: ${dishesOptionsArrayOri
-                                  .filter((option) => menu.includes(option.id))
-                                  .map((option) => option.name)
-                                  .join(", ")}`
-                              : "Select a service"}
-                            <span>{isDropdownOpen ? "▲" : "▼"}</span>
-                          </div>
-
-
-                          {isDropdownOpen && (
-                            <div
-                              className="dropdown-options"
-                              style={{
-                                position: "absolute",
-                                top: "100%",
-                                left: 0,
-                                right: 0,
-                                border: "1px solid #ccc",
-                                borderRadius: "4px",
-                                backgroundColor: "white",
-                                width: "100%",
-                                maxHeight: "200px",
-                                overflowY: "auto",
-                                zIndex: 10,
-                                padding: "0",
-                              }}
-                            >
-                              {dishesOptionsArrayOri.map((option) => (
-                                <div
-                                  key={option.id}
-                                  className="dropdown-option"
-                                  style={{
-                                    padding: "8px",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    gap: "8px",
-                                  }}
-                                >
-                                  <input
-                                    type="checkbox"
-                                    className="menu-checkbox"
-                                    id={`service-${option.id}`}
-                                    value={option.id}
-                                    checked={menu.includes(option.id)}
-                                    onChange={() =>
-                                      handleCheckboxChange(option.id)
-                                    }
-                                    style={{
-                                      margin: 0,
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                  <label
-                                    htmlFor={`service-${option.id}`}
-                                    style={{ margin: 0 }}
-                                  >
-                                    {option.name}
-                                  </label>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+             
 
 
 
 
 
 
+                        <div
+    ref={dropdownRef}
+    className="dropdown-container"
+    style={{
+      display: "flex",
+      flexDirection: "column",
+      gap: "4px",
+    }}
+  >
+    <div
+      className="dropdown-input"
+      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+      style={{
+        cursor: "pointer",
+        padding: "8px",
+        fontSize: "16px",
+        border: "1px solid #ccc",
+        borderRadius: "4px",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        width: "100%",
+      }}
+    >
+      {menu.length > 0
+        ? `Selected: ${dishesOptionsArrayOri
+            .filter((option) => menu.includes(option.id))
+            .map((option) => option.name)
+            .join(", ")}`
+        : "Select a service"}
+      <span>{isDropdownOpen ? "▲" : "▼"}</span>
+    </div>
+
+    {isDropdownOpen && (
+      <div
+        className="dropdown-options"
+        style={{
+          position: "absolute",
+          top: "100%",
+          left: 0,
+          right: 0,
+          border: "1px solid #ccc",
+          borderRadius: "4px",
+          backgroundColor: "white",
+          width: "100%",
+          maxHeight: "200px",
+          overflowY: "auto",
+          zIndex: 10,
+          padding: "0",
+        }}
+      >
+        {dishesOptionsArrayOri.map((option) => (
+          <div
+            key={option.id}
+            className="dropdown-option"
+            style={{
+              padding: "8px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+            }}
+          >
+            <input
+              type="checkbox"
+              className="menu-checkbox"
+              id={`service-${option.id}`}
+              value={option.id}
+              checked={menu.includes(option.id)} // Properly compare IDs
+              onChange={() => handleCheckboxChange(option.id)} // Toggle selection
+              style={{
+                margin: 0,
+                cursor: "pointer",
+              }}
+            />
+            <label
+              htmlFor={`service-${option.id}`}
+              style={{ margin: 0 }}
+            >
+              {option.name}
+            </label>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
 
 
 
@@ -1659,7 +1533,13 @@ useEffect(() => {
 
 
 
-                        </div>
+
+
+
+
+
+
+
                       </>
                     )}
 
@@ -1950,241 +1830,6 @@ useEffect(() => {
               </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              <div>
-                <div className="additional-details">
-                  <h3>Additional Details</h3>
-                  <div className="details-item">
-                  {showMoreAdditionalDetails
-  ? additionalDetails
-  : limitTextByWords(additionalDetails || "", wordLimit)}
-  <div>
-  <a
-                      onClick={() => toggleVisibility("additional")}
-                      className="view-more-btn"
-                    >
-                      {showMoreAdditionalDetails ? "View Less" : "View More"}
-                    </a>
-  </div>
-                    
-                  </div>
-                </div>
-
-                <div className="additional-details">
-                  <h3>Booking Summary</h3>
-                  <div className="details-item">
-                  {showMoreBookingSummary
-  ? bookingSummery
-  : limitTextByWords(bookingSummery || "", wordLimit)}
-  <div>
-  <a
-                      onClick={() => toggleVisibility("booking")}
-                      className="view-more-btn"
-                    >
-                      {showMoreBookingSummary ? "View Less" : "View More"}
-                    </a>
-  </div>
-                    
-                  </div>
-                </div>
-
-                <div className="cancellation-policy">
-                  <h3>Cancellation Policy</h3>
-                  <div className="cancellation-policy-div">
-                  {showMoreCancellationPolicy
-  ? cancellationPolicy
-  : limitTextByWords(cancellationPolicy || "", wordLimit)}
-                    <br/>
-                    <div>
-                    <a
-                      onClick={() => toggleVisibility("cancellation")}
-                      className="view-more-btn"
-                    >
-                      {showMoreCancellationPolicy ? "View Less" : "View More"}
-                    </a>
-                    </div>
-                    
-                    <br/>
-                    <Link
-                      to="/cancellation-policy"
-                      className="read-policy-button"
-                    >
-                      READ CANCELLATION POLICY
-                      <IoIosArrowForward className="arrow_for_cancellation" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-              
-
-              <table style={{ width: "100%", borderCollapse: "collapse" }}>
-                <tbody>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px",
-                        borderBottom: "1px solid #ddd",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Night Charge
-                    </td>
-                    <td
-                      style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
-                    >
-                      ₹{" "}
-                      {basicDataByGet?.sub_category?.night_charge ||
-                        "Not Available"}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px",
-                        borderBottom: "1px solid #ddd",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Night Charge Starts From
-                    </td>
-                    <td
-                      style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
-                    >
-                      {convertTo12HourFormat(
-                        basicDataByGet?.sub_category?.night_charge_start_time
-                      )}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px",
-                        borderBottom: "1px solid #ddd",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Night Charge Ends At
-                    </td>
-                    <td
-                      style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
-                    >
-                      {convertTo12HourFormat(
-                        basicDataByGet?.sub_category?.night_charge_end_time
-                      )}
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px",
-                        borderBottom: "1px solid #ddd",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Cancellation Facility will be Available Before
-                    </td>
-                    <td
-                      style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
-                    >
-                      {formatTime(
-                        basicDataByGet?.sub_category?.cancellation_time_before
-                      )}
-                    </td>
-                  </tr>
-
-                  <tr>
-                    <td
-                      style={{
-                        padding: "8px",
-                        borderBottom: "1px solid #ddd",
-                        fontWeight: "bold",
-                      }}
-                    >
-                      Free Cancellation will be Available Before
-                    </td>
-                    <td
-                      style={{ padding: "8px", borderBottom: "1px solid #ddd" }}
-                    >
-                      {formatTime(
-                        basicDataByGet?.sub_category
-                          ?.free_cancellation_time_before
-                      )}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-
               <div className="payable-amount-section">
                 <p className="payable-amount">
                   ₹ {basePrice} <br />
@@ -2192,10 +1837,14 @@ useEffect(() => {
                 </p>
 
                 <button
-                  type="submit"
+                  // type="submit"
                   className="continue-button"
                   // onClick={nextStep}
-                  onClick={validateFieldsStepOne}
+                  onClick={(e) => {
+                    e.preventDefault(); // Prevent page reload
+                    FunctionDataForPricesApplied();
+                  }}
+                  // onClick={validateFieldsStepOne}
                 >
                   Continue
                 </button>
@@ -2204,493 +1853,17 @@ useEffect(() => {
           </div>
         )}
 
+   
+
+
+    
+
         {step === 2 && (
-          <div className="location-container">
-            {loading && <Loader />}
-            <div className="location-content">
-              <div className="add-location-header">
-                <button className="back-button" onClick={prevStep}>
-                  ←
-                </button>
-                <MapPin size={20} />
-
-                <h2 className="header-title">Select Booking Location</h2>
-              </div>
-
-              <div
-                style={{
-                  overflowY: "auto",
-                  maxHeight: "450px",
-                }}
-                className="address-section mt-0"
-              >
-                {(service?.category_id === 1 || service?.category_id === 3) && (
-                  <>
-                    {" "}
-                    <span>Select Address :</span>
-                    {addresses.map((address, index) => (
-                      <div
-                        key={address.address_id}
-                        className="mb-3"
-                        style={{
-                          border: "2px solid #D8D8D8",
-                          padding: "5px",
-                          borderRadius: "5px",
-                        }}
-                      >
-                        <div className="d-flex align-items-center">
-                          {/* Radio button for selecting address */}
-                          <input
-                            type="radio"
-                            name="address"
-                            id={`address-${address.address_id}`}
-                            checked={
-                              selectedLocation?.address_id ===
-                              address?.address_id
-                            }
-                            onChange={() => setSelectedLocation(address)}
-                            className="me-2"
-                            style={{ cursor: "pointer", width: "auto" }}
-                          />
-                          <p className="flex-fill mb-0 address-p">
-                            <span className="serial-number me-2">
-                              {index + 1}.
-                            </span>
-                            {address.landmark && `${address.landmark}, `}
-                            {address.street_address_line2 &&
-                              `${address.street_address_line2}, `}
-                            {address.city && `${address.city}, `}
-                            {address.state && `${address.state}, `}
-                            {address.postal_code && `${address.postal_code},. `}
-                            {address.country && `${address.country}`}
-                            <br />
-                          </p>
-
-                          <Dropdown className="custom-dropdown-container">
-                            <Dropdown.Toggle
-                              as="span"
-                              id="dropdown-custom-components"
-                              className="custom-dropdown-toggle"
-                              bsPrefix="custom-toggle" // Disables Bootstrap’s caret icon
-                            >
-                              <BsThreeDotsVertical
-                                size={18}
-                                style={{ cursor: "pointer" }}
-                              />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu-booking">
-                              <Dropdown.Item
-                                className="custom-dropdown-item-booking"
-                                onClick={() => {
-                                  setAddressToEdit(address?.address_id);
-                                  fetchDefaultAddress(address?.address_id);
-                                  setIsEditingAddress(true);
-                                }}
-                              >
-                                <span>Edit</span>
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </div>
-                      </div>
-                    ))}
-                  </>
-                )}
-
-<>
-    {service?.category_id === 2 && (
-      <>
-        <span>Select Address From:</span>
-        {addresses.map((address, index) => (
-          <div
-            key={address.address_id}
-            className="mb-3"
-            style={{
-              border: "2px solid #D8D8D8",
-              padding: "5px",
-              borderRadius: "5px",
-            }}
-          >
-            <div className="d-flex align-items-center">
-              {/* Radio button for selecting address */}
-              <input
-                type="radio"
-                name="address-from"
-                id={`address-from-${address.address_id}`}
-                checked={
-                  selectedLocationFromForDriver?.address_id ===
-                  address?.address_id
-                }
-                onChange={() => {
-                  setSelectedLocationFromForDriver(address);
-                  // Validate if both selected addresses are the same
-                  if (
-                    selectedLocationToForDriver?.address_id ===
-                    address?.address_id
-                  ) {
-                    setErrorMessage("From and To addresses cannot be the same.");
-                  } else {
-                    setErrorMessage(""); // Clear error message if valid
-                  }
-                }}
-                className="me-2"
-                style={{ cursor: "pointer", width: "auto" }}
-              />
-              <p className="flex-fill mb-0 address-p">
-                <span className="serial-number me-2">{index + 1}.</span>
-                {address.landmark && `${address.landmark}, `}
-                {address.street_address_line2 &&
-                  `${address.street_address_line2}, `}
-                {address.city && `${address.city}, `}
-                {address.state && `${address.state}, `}
-                {address.postal_code && `${address.postal_code}, `}
-                {address.country && `${address.country}`}
-                <br />
-              </p>
-              <Dropdown className="custom-dropdown-container">
-                <Dropdown.Toggle
-                  as="span"
-                  id="dropdown-custom-components"
-                  className="custom-dropdown-toggle"
-                  bsPrefix="custom-toggle"
-                >
-                  <BsThreeDotsVertical
-                    size={18}
-                    style={{ cursor: "pointer" }}
-                  />
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="custom-dropdown-menu-booking">
-                  <Dropdown.Item
-                    className="custom-dropdown-item-booking"
-                    onClick={() => {
-                      setAddressToEdit(address?.address_id);
-                      fetchDefaultAddress(address?.address_id);
-                      setIsEditingAddress(true);
-                    }}
-                  >
-                    Edit
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </div>
-        ))}
-
-        <hr />
-
-        <span>Select Address To:</span>
-        {addresses.map((address, index) => (
-          <div
-            key={address.address_id}
-            className="mb-3"
-            style={{
-              border: "2px solid #D8D8D8",
-              padding: "5px",
-              borderRadius: "5px",
-            }}
-          >
-            <div className="d-flex align-items-center">
-              {/* Radio button for selecting address */}
-              <input
-                type="radio"
-                name="address-to"
-                id={`address-to-${address.address_id}`}
-                checked={
-                  selectedLocationToForDriver?.address_id ===
-                  address?.address_id
-                }
-                onChange={() => {
-                  setSelectedLocationToForDriver(address);
-                  // Validate if both selected addresses are the same
-                  if (
-                    selectedLocationFromForDriver?.address_id ===
-                    address?.address_id
-                  ) {
-                    setErrorMessage("From and To addresses cannot be the same.");
-                  } else {
-                    setErrorMessage(""); // Clear error message if valid
-                  }
-                }}
-                className="me-2"
-                style={{ cursor: "pointer", width: "auto" }}
-              />
-              <p className="flex-fill mb-0 address-p">
-                <span className="serial-number me-2">{index + 1}.</span>
-                {address.landmark && `${address.landmark}, `}
-                {address.street_address_line2 &&
-                  `${address.street_address_line2}, `}
-                {address.city && `${address.city}, `}
-                {address.state && `${address.state}, `}
-                {address.postal_code && `${address.postal_code}, `}
-                {address.country && `${address.country}`}
-                <br />
-              </p>
-              <Dropdown className="custom-dropdown-container">
-                <Dropdown.Toggle
-                  as="span"
-                  id="dropdown-custom-components"
-                  className="custom-dropdown-toggle"
-                  bsPrefix="custom-toggle"
-                >
-                  <BsThreeDotsVertical
-                    size={18}
-                    style={{ cursor: "pointer" }}
-                  />
-                </Dropdown.Toggle>
-                <Dropdown.Menu className="custom-dropdown-menu-booking">
-                  <Dropdown.Item
-                    className="custom-dropdown-item-booking"
-                    onClick={() => {
-                      setAddressToEdit(address?.address_id);
-                      fetchDefaultAddress(address?.address_id);
-                      setIsEditingAddress(true);
-                    }}
-                  >
-                    Edit
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            </div>
-          </div>
-        ))}
-
-        {/* Display error message */}
-        {errorMessage && (
-          <div className="text-danger mb-3">
-            <strong>{errorMessage}</strong>
-          </div>
-        )}
-
-        <>
-          <div>
-            <p>
-              Distance between them is: {distanceInKm.toFixed(2)} km
-              {/* ({distanceInMeters.toFixed(0)} meters) */}
-            </p>
-          </div>
-        </>
-      </>
-    )}
-  </>
-
-                <div className="container mt-3 mb-3">
-                  <Button onClick={() => setIsAddingAddress(true)}
-                    className="btn btn-primary nav-buttons">
-                    {" "}
-                    + Add New Address
-                  </Button>
-
-                  {/* <LoadScript
-                    googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
-                  >
-                    <LocationModal
-                      show={isAddingAddress}
-                      onHide={() => {
-                        setIsAddingAddress(false);
-                        fetchProfile();
-                      }}
-                      latitude=""
-                      longitude=""
-                      city=""
-                      district=""
-                      state=""
-                      country=""
-                      postalCode=""
-                      formattedAddress=""
-                      landmark=""
-                      streetAddressLine2=""
-                      addressToEditId={null}
-                    />
-                  </LoadScript> */}
-
-                  <LocationModal
-                    show={isAddingAddress}
-                    onHide={() => {
-                      setIsAddingAddress(false);
-                      fetchProfile();
-                    }}
-                    latitude=""
-                    longitude=""
-                    city=""
-                    district=""
-                    state=""
-                    country=""
-                    postalCode=""
-                    formattedAddress=""
-                    landmark=""
-                    streetAddressLine2=""
-                    addressToEditId={null}
-                  />
-                </div>
-
-                <div>
-                  {/* <LoadScript
-                    googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
-                  >
-                 
-                      <LocationModal
-                        show={isEditingAddress}
-                        onHide={() => {
-                          setIsEditingAddress(false);
-                          fetchProfile();
-                        }}
-                        latitude={Number(locationData.latitude)}
-                        longitude={Number(locationData.longitude)}
-                        city={locationData.city}
-                        district={locationData.district}
-                        state={locationData.state}
-                        country={locationData.country}
-                        postalCode={locationData.postalCode}
-                        formattedAddress={locationData.formattedAddress}
-                        landmark={locationData.landmark}
-                        streetAddressLine2={locationData.streetAddressLine2}
-                        addressToEditId={addressToEdit}
-                      />
-                
-                  </LoadScript> */}
-
-                  <LocationModal
-                    show={isEditingAddress}
-                    onHide={() => {
-                      setIsEditingAddress(false);
-                      fetchProfile();
-                    }}
-                    latitude={Number(locationData.latitude)}
-                    longitude={Number(locationData.longitude)}
-                    city={locationData.city}
-                    district={locationData.district}
-                    state={locationData.state}
-                    country={locationData.country}
-                    postalCode={locationData.postalCode}
-                    formattedAddress={locationData.formattedAddress}
-                    landmark={locationData.landmark}
-                    streetAddressLine2={locationData.streetAddressLine2}
-                    addressToEditId={addressToEdit}
-                  />
-                </div>
-              </div>
-
-              {/* This button now sets the step to 5 */}
-              <button
-                className="confirm-address-button"
-                // onClick={() => {
-                //   setStep(5);
-                //   window.scrollTo({ top: 0, behavior: "smooth" });
-                //   FunctionDataForPricesApplied();
-                // }}
-
-                onClick={handleConfirmAddress}
-              >
-                Confirm Address
-              </button>
-
-{/* <button
-  className={`confirm-address-button ${
-    selectedLocationFromForDriver?.address_id ===
-    selectedLocationToForDriver?.address_id
-      ? "disabled"
-      : ""
-  }`}
-  onClick={() => {
-    if (
-      selectedLocationFromForDriver?.address_id ===
-      selectedLocationToForDriver?.address_id
-    ) {
-      setMessage("From and To addresses cannot be the same."); // Show error message
-    } else {
-      handleConfirmAddress(); // Proceed with normal behavior
-    }
-  }}
->
-  Confirm Address
-</button> */}
-
-
-            </div>
-          </div>
-        )}
-
-        {step === 3 && (
-          <div className="add-location-container">
-            {loading && <Loader />}
-            <div className="add-location-content">
-              <div className="add-location-header">
-                <button className="back-button" onClick={prevStep}>
-                  ←
-                </button>
-                <h2 className="header-title">Confirm Booking Location</h2>
-              </div>
-
-              <div className="search-container">
-                <input
-                  ref={searchBoxRef}
-                  type="text"
-                  placeholder="Search your location"
-                  className="search-input"
-                />
-              </div>
-
-              <div className="map-container" ref={mapRef}></div>
-
-              <div className="location-selection">
-                <h3 className="selection-title">Selected Location</h3>
-                <div className="address-card">
-                  <div className="address-marker">📍</div>
-                  <div className="address-text">{selectedLocation.address}</div>
-                </div>
-                <button className="add-address-button" onClick={nextStep}>
-                  Confirm and Add Address
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {step === 4 && (
-          <div className="address-step-container">
-            {loading && <Loader />}
-            <div className="address-step-content">
-              <div className="address-step-header">
-                <button className="address-back-button" onClick={prevStep}>
-                  ←
-                </button>
-                <h2 className="address-header-title">
-                  Confirm Booking Location
-                </h2>
-              </div>
-
-              <div className="map-preview-container">
-                <div className="search-bar-container">
-                  <input
-                    type="text"
-                    placeholder="Search your location"
-                    className="search-bar-input"
-                  />
-                  <button className="search-bar-button">
-                    <svg
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    >
-                      <circle cx="11" cy="11" r="8" />
-                      <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {step === 5 && (
           <div className="booking-booking-form">
             {loading && <Loader />}
             <div className="booking-summary-header">
               <button
-                onClick={() => setStep(2)}
+                onClick={() => setStep(1)}
                 className="booking-summary-back-button"
               >
                 <ChevronLeft size={24} />
@@ -2800,148 +1973,17 @@ useEffect(() => {
               </div>
             </div>
 
-            <div className="booking-summary-offers">
-              <h3 className="booking-summary-label">Offers</h3>
 
-              <div>
-                {/* Menu Toggle Button */}
-                <button
-                  className="menu-toggle-button"
-                  onClick={handleCouponsVisibility}
-                  style={{
-                    padding: "10px 20px",
-                    backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50", // Change background color based on visibility
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center", // Center content horizontally
-                    width: "100%",
-                    textAlign: "center",
-                    margin: "0 auto", // Center the button horizontally within its container
-                  }}
-                >
-                  {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
-                  {isCouponsVisible ? (
-                    <ChevronDown size={16} style={{ marginLeft: "8px" }} />
-                  ) : (
-                    <ChevronRight size={16} style={{ marginLeft: "8px" }} />
-                  )}
-                </button>
-
-                {/* Dropdown Options (Coupons) */}
-                {isCouponsVisible && (
-
-                  
-                  <div
-                    className="coupon-dropdown"
-                    style={{
-                      marginTop: "10px",
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "8px",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                      padding: "10px",
-                      maxHeight: "300px",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {DataForPricesAppliedGet?.discount?.map((coupon) => (
-                      <div
-                        key={coupon.voucher_id}
-                        className="offers-card"
-                        style={{
-                          borderBottom: "1px solid #ddd",
-                          padding: "10px",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div>
-                          {/* Displaying discount type and value */}
-                          <strong>
-                            {coupon.discount_type === "fixed"
-                              ? "Fixed Discount"
-                              : "Percentage Discount"}
-                            :
-                          </strong>{" "}
-                          {/* Conditionally display rupee or percentage */}
-                          {coupon.discount_type === "fixed" ? (
-                            <>
-                              ₹ {coupon.discount_value}{" "}
-                              {/* <FaRupeeSign size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
-                            </>
-                          ) : (
-                            <>
-                              {coupon.discount_value} %{" "}
-                              {/* <FaPercent size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
-                            </>
-                          )}
-                          <p className="mb-0 ml-2 text-sm">
-                            Minimum Order: ₹ {coupon.minimum_order_amount}
-                          </p>
-                          <p className="mb-0 ml-2 text-sm">
-                            Voucher Code: {coupon.voucher_code}
-                          </p>
-                        </div>
-
-                        <div>
-                          {/* Radio button for selecting coupon */}
-                          <input
-                            type="radio"
-                            id={`coupon-${coupon.voucher_id}`}
-                            name="coupon"
-                            checked={selectedCoupon === coupon.voucher_id} // Check if this coupon is selected
-                            onChange={() =>
-                              handleRadioChange(coupon.voucher_id)
-                            } // Handle radio button change
-                            style={{ marginRight: "8px", cursor: "pointer" }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )}
-
-                {/* Apply Button */}
-                <div>
-                  <button
-                    className="offer-apply-button"
-                    style={{
-                      padding: "10px 20px",
-                      backgroundColor: selectedCoupon ? "#4CAF50" : "#ccc",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: selectedCoupon ? "pointer" : "not-allowed",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      width: "100%",
-                    }}
-                    disabled={!selectedCoupon}
-                    onClick={handleApplyCoupen}
-                  >
-                    Apply
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <h3 className="booking-summary-label">Fare Breakdown</h3>
+            <h3 className="booking-summary-label">Charges Breakdown</h3>
             <div className="fare-breakdown-section">
               <div className="fare-breakdown-card">
-                {/* <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Base Amount:</div>
-                  <div> ₹ {basePrice} </div>
-                </div> */}
+    
 
                 {service.category_id === 1 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
-                        Service Charges:
+              Service Charges:
                       </div>
                       <div>
                         {(() => {
@@ -3017,6 +2059,11 @@ useEffect(() => {
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>
 
+
+
+<hr />
+
+
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
                     <h5>Grand Total:</h5>
@@ -3024,35 +2071,39 @@ useEffect(() => {
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
                   </div>
-                </div>
-                <div className="fare-saving-message-div">
-                  <p className="fare-saving-message text-center">
-                    Hurray! You saved ₹{" "}
-                    {DataForPricesAppliedGet?.discount_amount} on the final bill
-                  </p>
-                </div>
+                </div> 
+
+
+          
+                <div className="fare-breakdown-div mt-1">
+                  <div className="fare-breakdown-title">
+                    <h5>Previous Amount:</h5>
+                  </div>
+                  <div>
+                    <h5>-₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                  </div>
+                </div> 
+             
+
+
+                <div className="fare-breakdown-div mt-1">
+                  <div className="fare-breakdown-title">
+                    <h5>Extra Amount To Be Paid:</h5>
+                  </div>
+                  <div>
+                    <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                  </div>
+                </div> 
+                
+             
               </div>
             </div>
-            {/* 
-            <div className="additional-details">
-              <h3>Additional Details</h3>
-              <div className="details-item">
-                <span className="mb-1">🌙 Night Surcharge Policy</span>
-                <span className="mb-1">
-                  ⏰ Timing: {additionalDetails.surchargeTiming}
-                </span>
-                <span className="mb-1">
-                  💵 Surcharge: {additionalDetails.surchargeRate}
-                </span>
-              </div>
-            </div>
-            
-            */}
+        
 
             <div className="booking-summary-footer ">
               <div className="estimated-fare">
                 <div>
-                  <h4>Estimated Fare</h4>
+                <h4>Estimated Extra Fare</h4>
                 </div>
                 <div>
                   <p>
@@ -3069,7 +2120,7 @@ useEffect(() => {
           </div>
         )}
 
-        {step === 6 && (
+        {step === 3 && (
           <div className="payment-section-container">
             {loading && <Loader />}
             <div className="payment-section-main-div">
@@ -3109,7 +2160,13 @@ useEffect(() => {
                   </div>
                 </button>
 
-                <button
+
+
+
+{DefaultDataOfBooking?.payment_mode === "cod" && (
+<>
+
+                <button     
                   className="payment-option-button"
                   onClick={(event) => {
                     handlePayment("cod");
@@ -3130,6 +2187,19 @@ useEffect(() => {
                     <div className="payment-arrow">→</div>
                   </div>
                 </button>
+
+
+</>
+                )}
+
+
+
+
+
+
+
+
+
               </div>
             </div>
           </div>
@@ -3143,7 +2213,7 @@ useEffect(() => {
           />
         )}
 
-        {step === 7 && (
+        {step === 4 && (
           <div className="success-container">
             {loading && <Loader />}
             <div className="success-content">
@@ -3197,8 +2267,8 @@ useEffect(() => {
             {basicDataByGet?.sub_category?.sub_category_name}
           </h2>
           <img
-            src={basicDataByGet?.sub_category?.image}
-            alt="Chef illustration"
+            src={basicDataByGet?.sub_category?.category_image}
+            alt="illustration"
             className="booking-illustration"
           />
         </div>

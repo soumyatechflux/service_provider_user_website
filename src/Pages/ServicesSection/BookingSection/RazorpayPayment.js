@@ -90,7 +90,7 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
               setMessage("Payment verification failed. Please try again.");
         setShow(true);
         handleShow(); // Show the modal
-              handleConfirmBooking();
+              // handleConfirmBooking();
 
             });
         },

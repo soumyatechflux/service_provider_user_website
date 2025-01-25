@@ -5,19 +5,19 @@ import "./WhyChooseUs.css"; // Custom CSS file for this section
 const WhyChooseUs = () => {
   const items = [
     {
-      image: "/WhyChooseUs/door.png", // Path to the image
+      image: "./WhyChooseUs/door.png", // Path to the image
       title: "One home, one-stop solution",
     },
     {
-      image: "/WhyChooseUs/icon.png", // Path to the image
+      image: "./WhyChooseUs/Icon.png", // Path to the image
       title: "Verified and trained",
     },
     {
-      image: "/WhyChooseUs/cal.png", // Path to the image
+      image: "./WhyChooseUs/cal.png", // Path to the image
       title: "Easy and prompt booking",
     },
     {
-      image: "/WhyChooseUs/gear.png", // Path to the image
+      image: "./WhyChooseUs/gear.png", // Path to the image
       title: "Customized to your needs",
     },
   ];

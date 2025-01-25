@@ -27,17 +27,16 @@ const UpcomingTab = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [ActiveBookingData, setActiveBookingData] = useState({});
+
 
   const navigate = useNavigate();
-
-
-  const [ActiveBookingData, setActiveBookingData] = useState({});
 
   const [currentModal, setCurrentModal] = useState(null);
   const [cancelId, setCancelId] = useState(null);
 
   const handleCancelClick = (id) => {
-    // console.log("iddd", id);
+    console.log("iddd", id);
     setCancelId(id);
     setCurrentModal("cancellation");
   };
@@ -75,6 +74,10 @@ const UpcomingTab = () => {
     }
   };
 
+  // Monitor state update
+  useEffect(() => {
+    console.log("Updated bookingsIdWise:", bookingsIdWise);
+  }, [bookingsIdWise]);
 
   const location = useLocation();
 
@@ -90,16 +93,6 @@ const UpcomingTab = () => {
     navigate("/modify-booking", { state: { service: serviceObject } });
   };
 
-
-
-
-
-
-
-
-
-
-
   const fetchUpcommingBookings = async () => {
     try {
       setLoading(true);
@@ -110,10 +103,10 @@ const UpcomingTab = () => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      // console.log("Upcomming Booking response", response);
-      // console.log(response.status);
+      console.log("Upcomming Booking response", response);
+      console.log(response.status);
       if (response.status === 200 && response.data.success === true) {
-        // console.log("All Upcommings", response.data.data);
+        console.log("All Upcommings", response.data.data);
         setBookings(response.data.data || []); // Assuming the response contains a `bookings` field
       }
     } catch (error) {
@@ -168,24 +161,15 @@ const UpcomingTab = () => {
     }
   };
 
+  const passDataToNext = (reason) => {
+    setSelectedReason(reason);
+  };
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
@@ -247,41 +231,6 @@ const UpcomingTab = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  const passDataToNext = (reason) => {
-    setSelectedReason(reason);
-  };
-
-  if (loading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-GB", {
@@ -310,6 +259,18 @@ const UpcomingTab = () => {
     3: Leaf,
   };
 
+
+
+  
+  if (loading) {
+    return <Loader />;
+  }
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+
   return (
     <>
       <div className="booking-container">
@@ -328,13 +289,47 @@ const UpcomingTab = () => {
                         {formatDate(bookingsIdWise?.visit_date)} at{" "}
                         {formatTime(bookingsIdWise?.visit_time)}
                       </h2>
-                      <div className="service-image image-flex">
+                      {/* <div className="service-image image-flex">
                         <img
                           src="./../ServicesSection/demoCancel.jpg"
                           style={{ marginBottom: "15px" }}
                         />
                         <h2 className="heading-text">
                           {bookingsIdWise?.sub_category?.sub_category_name}
+                        </h2>
+                      </div> */}
+
+                      <div className="service-image image-flex">
+                        <img
+                          src={
+                            {
+                              1: "./../ServicesSection/CookingSection/chef.png",
+                              2: "./../ServicesSection/CookingSection/chef-cooking-2.jpg",
+                              3: "./../ServicesSection/CookingSection/chef3.png",
+                              4: "./../ServicesSection/DriverServices/driverServices1.jpg",
+                              5: "./../ServicesSection/DriverServices/driverServices.jpg",
+                              6: "./../ServicesSection/DriverServices/driverServices3.jpg",
+                              7: "./../ServicesSection/DriverServices/driverServices2.jpg",
+                              8: "./../ServicesSection/GardenerServices/gardener3.jpg",
+                              9: "./../ServicesSection/GardenerServices/gardener2.jpg",
+                            }[bookingsIdWise?.sub_category_id] ||
+                            "./../ServicesSection/demoCancel.jpg" // Fallback image
+                          }
+                          alt={
+                            bookingsIdWise?.sub_category?.sub_category_name ||
+                            "Service Image"
+                          }
+                          style={{ marginBottom: "15px" }}
+                        />
+                        <h2 className="heading-text">
+                          {bookingsIdWise?.sub_category?.sub_category_name
+                            ?.split(" ")
+                            .map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() +
+                                word.slice(1).toLowerCase()
+                            )
+                            .join(" ")}
                         </h2>
                       </div>
                     </div>
@@ -499,10 +494,9 @@ const UpcomingTab = () => {
                       </div>
                     </div>
                   </div>
-
                   <div className="column3">
                     <h3 className="heading-text mb-4">Billing Details</h3>
-                    <div className="billing-info mb-3">
+                    <div className="billing-info">
                       <div className="billing-row">
                         <span className="billing-subtitle">Base Price</span>
                         <span className="billing-subtitle">
@@ -563,13 +557,17 @@ const UpcomingTab = () => {
                       <div className="payment-mode">
                         <span className="billing-subtitle">Payment mode</span>
                         <span className="billing-subtitle">
-                          {bookingsIdWise?.payment_mode}
+                          {bookingsIdWise?.payment_mode === "cod"
+                            ? "COD"
+                            : bookingsIdWise?.payment_mode === "online"
+                            ? "Online"
+                            : bookingsIdWise?.payment_mode}
                         </span>
                       </div>
 
 
 
-
+                      
 
 {bookingsIdWise?.payment_mode !== "online" && (
 <>
@@ -616,10 +614,11 @@ const UpcomingTab = () => {
         )}
 
 
+
                     </div>
                   </div>
                   <button
-                    className="btn-view-less mt-5"
+                    className="btn-view-less"
                     onClick={() => setOpenBookingIndex(null)}
                   >
                     View less
@@ -682,11 +681,7 @@ const UpcomingTab = () => {
                   <div className="summary-actions">
                     <button
                       className="btn-modify"
-                      onClick={() => {
-                        handleModifyButton(booking);
-                    
-                      }}
-                      
+                      onClick={() => handleModifyButton(booking?.booking_id)}
                       disabled={booking?.booking_status === "cancelled"}
                       style={{
                         cursor:
@@ -737,22 +732,16 @@ const UpcomingTab = () => {
               isOpen={currentModal === "success"}
               onClose={handleCloseModal}
             />
-
-
-        <ModifyBooking
+     
+     <ModifyBooking
           fetchUpcommingBookings={fetchUpcommingBookings}
         />
-
-
-
             <MessageModal
               show={show}
               handleClose={handleClose}
               handleShow={handleShow}
               message={message}
             />
-
-
           </>
         )}
       </div>

@@ -153,11 +153,11 @@ function ContactPage() {
         },
         {
           question: "Can I pay after the service is completed?",
-          answer:
-            "Yes, you can pay after your service is completed by cash.",
+          answer: "Yes, you can pay after your service is completed by cash.",
         },
         {
-          question: "Why am I not able to make online payments? / why was my payment declined?",
+          question:
+            "Why am I not able to make online payments? / why was my payment declined?",
           answer:
             "This can be due to various reasons which include: Incorrect information such as entering wrong card number, CVV, or UPI PIN; insufficient funds in your account; network issues that may prevent the payment from going through; card may have expired, in which case, you may need to update your card details. Please check the above before proceeding with online payment. If your issue is still unresolved, please fill out this form with a description of your concern. Our team will get back to you promptly.",
         },
@@ -167,7 +167,8 @@ function ContactPage() {
             "We use data encryption and secure payment gateways to protect your payment information. Please read our privacy policy for further details.",
         },
         {
-          question: "What if my payment has gone through but I didn’t receive a booking confirmation? ",
+          question:
+            "What if my payment has gone through but I didn’t receive a booking confirmation? ",
           answer:
             "If you haven’t received a confirmation but the payment has been processed from your bank, please fill out this form to contact customer support to resolve the discrepancy.",
         },
@@ -182,25 +183,30 @@ function ContactPage() {
       title: "C. Refund and cancellation FAQs",
       items: [
         {
-          question: "What is your cancellation policy? Are there any cancellation charges?",
+          question:
+            "What is your cancellation policy? Are there any cancellation charges?",
           answer:
             "Our cancellation policies vary by services, so please check the cancellation policy, deadlines and associated cancellation fees, when booking the service.",
         },
         {
           question: "How do I cancel my booking?",
-          answer: "You can simply cancel by clicking the cancel button at your booking page. You might be asked to select a reason for cancellation. A nominal fee might be applicable depending on how long before the service you cancel.",
+          answer:
+            "You can simply cancel by clicking the cancel button at your booking page. You might be asked to select a reason for cancellation. A nominal fee might be applicable depending on how long before the service you cancel.",
         },
         {
           question: "How long does it take to process a refund?",
-          answer: "Refunds are typically processed within 7-15 business days. If you haven't received your refund within the expected timeframe, please fill out this form with a description of your concern. Our team will get back to you promptly.",
+          answer:
+            "Refunds are typically processed within 7-15 business days. If you haven't received your refund within the expected timeframe, please fill out this form with a description of your concern. Our team will get back to you promptly.",
         },
         {
           question: "Can I modify my booking instead of canceling?",
-          answer: "Yes, please check your booking page to edit your booking details up to a certain time before your booking starts. If you can’t see the modify option, you may need to cancel the booking and make a new booking.",
+          answer:
+            "Yes, please check your booking page to edit your booking details up to a certain time before your booking starts. If you can’t see the modify option, you may need to cancel the booking and make a new booking.",
         },
         {
           question: "What happens if my booking is cancelled by the provider?",
-          answer: "In case our provider cancels your booking, we will try our best to assign the next available provider to your booking request.",
+          answer:
+            "In case our provider cancels your booking, we will try our best to assign the next available provider to your booking request.",
         },
       ],
     },
@@ -245,9 +251,7 @@ function ContactPage() {
             <div className="contact-form">
               <h2 className="contact-title mb-2">Get In Touch</h2>
               <p>
-                Please provide the following details to get in touch with us.
-                For any booking related queries or complaints, please visit the
-                help centre.{" "}
+              Please provide the following details to get in touch with us. Our assistance and frequently asked questions will provide you with an immediate solution{" "}
               </p>
               <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -296,29 +300,25 @@ function ContactPage() {
                       <div style={{ gap: "10px" }}>
                         <i className="bi bi-geo-alt-fill me-1"></i>{" "}
                         <span style={{ color: "#999999", fontSize: "16px" }}>
-                          {selectedLocation || "Select Location"}
+                          {selectedLocation || "Delhi-NCR"}{" "}
+                          {/* Default location is Delhi */}
                         </span>
                       </div>
                     </a>
-                    {activeDropdown === "location" && (
+                    {/* {activeDropdown === "location" && (
                       <div className="dropdown-menu show">
-                        {["Delhi", "Mumbai", "Bangalore", "Chennai"].map(
-                          (city) => (
-                            <a
-                              key={city}
-                              className="dropdown-item"
-                              href="#"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleLocationChange(city);
-                              }}
-                            >
-                              {city}
-                            </a>
-                          )
-                        )}
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLocationChange("Delhi"); // Only Delhi is selectable
+                          }}
+                        >
+                          Delhi
+                        </a>
                       </div>
-                    )}
+                    )} */}
                   </div>
                 </div>
 
@@ -354,7 +354,7 @@ function ContactPage() {
           <div className="faq-wrapper">
             <div className="faq-section">
               <h2>
-                <span className="back-arrow">‹</span>
+                <span className="back-arrow"></span>
                 How Can We Help You?
               </h2>
               {Object.entries(faqSections).map(([key, section]) => (
@@ -376,11 +376,9 @@ function ContactPage() {
                     {section.items.map((item, index) => (
                       <div key={index} className="faq-item-contact">
                         <p>
-                          <strong>Q:</strong> {item.question} <br/>
+                          <strong>Q:</strong> {item.question} <br />
                           <strong>Ans:</strong> {item.answer}
                         </p>
-                        
-                        
                       </div>
                     ))}
                   </div>

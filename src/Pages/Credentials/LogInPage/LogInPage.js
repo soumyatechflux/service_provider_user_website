@@ -79,11 +79,13 @@ const LogInPage = () => {
         }
         setStep("otp");
       } else {
-        setMessage(
-          response?.data?.message || "Failed to send OTP. Please try again."
-        );
+        if (response?.data?.message === "Customer not found") {
+          setMessage("User not found. Please sign up to create a new account.");
+        } else {
+          setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
+        }
         handleShow();
-      }
+      }      
     } catch (err) {
       setLoading(false);
       console.error("Error sending OTP:", err);

@@ -216,7 +216,7 @@ const Navbar = () => {
                 <div className="d-flex align-items-center">
                   <i className="bi bi-geo-alt-fill me-1"></i>
                   <span style={{ color: "#999999", fontSize: "16px" }}>
-                    Delhi
+                    Delhi-NCR
                   </span>
                 </div>
                 <ChevronDown
@@ -230,22 +230,25 @@ const Navbar = () => {
                   }}
                 />
               </a>
-              {activeDropdown === "location" && (
+              {/* {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
-                  {["Delhi", "Mumbai", "Bangalore", "Chennai"].map((city) => (
+                  {["Delhi"].map((city) => (
                     <a key={city} className="dropdown-item disabled" href="#">
                       {city}
                     </a>
                   ))}
                 </div>
-              )}
+              )} */}
             </div>
 
             {/* Download App Button */}
             <button
               className="btn btn-primary d-lg-inline-block nav-buttons"
               onClick={() => {
-                window.location.href = "https://play.google.com/store";
+                window.scrollTo({
+                  top: document.body.scrollHeight, // Scroll to the bottom of the page
+                  behavior: "smooth", // Smooth scrolling effect
+                });
               }}
             >
               Download App

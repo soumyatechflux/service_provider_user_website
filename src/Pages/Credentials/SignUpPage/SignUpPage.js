@@ -84,7 +84,7 @@ const SignUpPage = () => {
           console.log("OTP:", otp); // 9284
           setMessage(
             response.data.message ||
-              "OTP send successfully to your register monbile number."
+              "OTP send successfully to your register mobile number."
           );
           handleShow();
         } else {
@@ -93,11 +93,14 @@ const SignUpPage = () => {
         }
         setStep("otp");
       } else {
-        setMessage(
-          response?.data?.message || "Failed to send OTP. Please try again."
-        );
+        if (response?.data?.message === "Mobile number already exists") {
+          setMessage("User already exists. Please login to your account to continue.");
+        } else {
+          setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
+        }
         handleShow();
       }
+      
     } catch (err) {
       setLoading(false);
       console.error("Error sending OTP:", err);

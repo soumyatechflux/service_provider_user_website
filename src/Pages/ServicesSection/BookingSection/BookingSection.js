@@ -295,6 +295,20 @@ const BookingSection = () => {
     updateMinTime(new Date());
   }, []);
 
+
+  const formatTimeTo12Hour = (time) => {
+    const [hours, minutes] = time.split(':').map(Number);
+  
+    // Convert hours to 12-hour format
+    const adjustedHours = hours % 12 || 12; // If hours is 0 or 12, it should display 12 (AM/PM format)
+    const period = hours < 12 ? 'AM' : 'PM';
+  
+    // Return the formatted time
+    return `${adjustedHours}:${String(minutes).padStart(2, '0')} ${period}`;
+  };
+
+  
+  
   // Helper to get current time in HH:MM format in Asia/Kolkata timezone
   const getCurrentTimeInDelhi = () => {
     const now = new Date();
@@ -353,43 +367,107 @@ const BookingSection = () => {
     return `${hours}:${minutes}`;
   };
 
+
+
+  
+
+  
+  const [adjustedStartTime, setAdjustedStartTime] = useState(120);
+
+
+  useEffect(() => {
+
+    setAdjustedStartTime(120);
+
+  }, []);
+
+
+
   const filterTimeOptions = () => {
     const currentDate = new Date();
     const today = currentDate.toDateString();
     const currentTime = getCurrentTimeInHHMM();
-
+  
     // Extract service start and end times
     const serviceStartTime =
       basicDataByGet?.sub_category?.service_start_time || "00:00:00";
     const serviceEndTime =
       basicDataByGet?.sub_category?.service_end_time || "23:59:59";
-
+  
     // Convert service times to HH:MM format
-    const startTime = serviceStartTime.slice(0, 5); // "00:00:00" -> "00:00"
-    const endTime = serviceEndTime.slice(0, 5); // "19:30:00" -> "19:30"
-
+    const startTime = serviceStartTime.slice(0, 5); 
+    const endTime = serviceEndTime.slice(0, 5); 
+  
+    // Convert startTime to minutes
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const startTimeInMinutes = startHour * 60 + startMinute;
+  
+    // Add adjustedStartTime (in minutes) to the startTimeInMinutes
+    const adjustedStartTimeInMinutes = startTimeInMinutes + adjustedStartTime;
+  
+    // Convert the adjusted start time back to HH:MM format
+    const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
+    const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
+    const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
+  
     // Filter time options
     return timeOptions.filter((time) => {
-      const isWithinServiceHours = time >= startTime && time <= endTime;
-
+      const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
+  
       if (selectedDate.toDateString() === today) {
+        // Compare time to current time (for today, we only show times greater than or equal to current time)
         return time >= currentTime && isWithinServiceHours;
       }
-
+  
       return isWithinServiceHours;
     });
   };
+  
+  
+
+
+
+
+
+
+
+  // const filterTimeOptions = () => {
+  //   const currentDate = new Date();
+  //   const today = currentDate.toDateString();
+  //   const currentTime = getCurrentTimeInHHMM();
+
+  //   // Extract service start and end times
+  //   const serviceStartTime =
+  //     basicDataByGet?.sub_category?.service_start_time || "00:00:00";
+  //   const serviceEndTime =
+  //     basicDataByGet?.sub_category?.service_end_time || "23:59:59";
+
+  //   // Convert service times to HH:MM format
+  //   const startTime = serviceStartTime.slice(0, 5); // "00:00:00" -> "00:00"
+  //   const endTime = serviceEndTime.slice(0, 5); // "19:30:00" -> "19:30"
+
+  //   // Filter time options
+  //   return timeOptions.filter((time) => {
+  //     const isWithinServiceHours = time >= startTime && time <= endTime;
+
+  //     if (selectedDate.toDateString() === today) {
+  //       return time >= currentTime && isWithinServiceHours;
+  //     }
+
+  //     return isWithinServiceHours;
+  //   });
+  // };
+
+
+
+
+
+
+
 
   const filteredTimeOptions = filterTimeOptions();
 
-  const convertTo12HourFormat = (time) => {
-    if (!time) return "Not Available";
-    const [hours, minutes] = time.split(":");
-    const hourInt = parseInt(hours, 10);
-    const ampm = hourInt >= 12 ? "PM" : "AM";
-    const formattedHour = hourInt % 12 || 12; // Convert 0 to 12 for 12-hour format
-    return `${formattedHour}:${minutes} ${ampm}`;
-  };
+
 
   const [people, setPeople] = useState(1);
 
@@ -898,10 +976,20 @@ const BookingSection = () => {
   const calculateTotalForMenuItemForChefForParty = (price, quantity) =>
     price * quantity;
 
-  const dishesOptionsArrayOri = basicDataByGet?.dishes.map((dish) => ({
-    id: dish?.dish_id,
-    name: dish?.dish_name || "Unnamed Dish",
-  }));
+  const [dishesOptionsArrayOri, setDishesOptionsArrayOri] = useState([]);
+
+  // Set dishesOptionsArrayOri in useEffect
+  useEffect(() => {
+    if (basicDataByGet?.dishes) {
+      const options = basicDataByGet.dishes.map((dish) => ({
+        id: String(dish?.dish_id), // Ensure IDs are strings
+        name: dish?.dish_name || "Unnamed Dish",
+      }));
+      setDishesOptionsArrayOri(options); // Update state
+    } else {
+      setDishesOptionsArrayOri([]); // Set an empty array if dishes are undefined
+    }
+  }, [basicDataByGet]); // Re-run when basicDataByGet changes
 
   const handleCheckboxChange = (id) => {
     if (menu.includes(id)) {
@@ -1303,7 +1391,8 @@ const BookingSection = () => {
                           </option>
                           {filteredTimeOptions.map((time) => (
                             <option key={time} value={time}>
-                              {time}
+                              {/* {time} */}
+                              {formatTimeTo12Hour(time)}
                             </option>
                           ))}
                         </select>
@@ -1979,23 +2068,7 @@ const BookingSection = () => {
                   </div>
                 </div>
 
-                <div className="additional-details">
-                  <h3>Booking Summary</h3>
-                  <div className="details-item">
-                  {showMoreBookingSummary
-  ? bookingSummery
-  : limitTextByWords(bookingSummery || "", wordLimit)}
-  <div>
-  <a
-                      onClick={() => toggleVisibility("booking")}
-                      className="view-more-btn"
-                    >
-                      {showMoreBookingSummary ? "View Less" : "View More"}
-                    </a>
-  </div>
-                    
-                  </div>
-                </div>
+        
 
                 <div className="cancellation-policy">
                   <h3>Cancellation Policy</h3>
@@ -2060,7 +2133,7 @@ const BookingSection = () => {
 
 
 
-              
+{/*               
 
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <tbody>
@@ -2159,6 +2232,22 @@ const BookingSection = () => {
                   </tr>
                 </tbody>
               </table>
+              
+              
+              */}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
               <div className="payable-amount-section">
                 <p className="payable-amount">
@@ -2773,6 +2862,28 @@ const BookingSection = () => {
                 </div>{" "}
                 <div>{specialRequests || "None"}</div>
               </div>
+
+
+
+              <div className="additional-details">
+                  <h3>Booking Summary</h3>
+                  <div className="details-item">
+                  {showMoreBookingSummary
+  ? bookingSummery
+  : limitTextByWords(bookingSummery || "", wordLimit)}
+  <div>
+  <a
+                      onClick={() => toggleVisibility("booking")}
+                      className="view-more-btn"
+                    >
+                      {showMoreBookingSummary ? "View Less" : "View More"}
+                    </a>
+  </div>
+                    
+                  </div>
+                </div>
+
+
             </div>
 
             <div className="booking-summary-offers">
@@ -2877,34 +2988,63 @@ const BookingSection = () => {
                         </div>
                       </div>
                     ))}
+{selectedCoupon && (
+  <div style={{ display: "flex", width: "100%", gap: "10px" }}>
+    {/* Remove Coupon Button */}
+    <button
+      onClick={() => setSelectedCoupon(null)}
+      style={{
+        width: "50%", // Equal width
+        backgroundColor: "#FF5252", // Soft red for Remove
+        color: "#fff",
+        border: "none",
+        padding: "15px", // Larger padding for full-width buttons
+        borderRadius: "5px",
+        cursor: "pointer",
+        transition: "background-color 0.3s ease",
+      }}
+      onMouseEnter={(e) => (e.target.style.backgroundColor = "#E53935")} // Hover color
+      onMouseLeave={(e) => (e.target.style.backgroundColor = "#FF5252")} // Default color
+    >
+      Remove Coupon
+    </button>
+
+    {/* Apply Coupon Button */}
+    <button
+      className="offer-apply-button"
+      style={{
+        width: "50%", // Equal width
+        backgroundColor: "#4CAF50", // Green for Apply
+        color: "#fff",
+        border: "none",
+        padding: "15px", // Larger padding for full-width buttons
+        borderRadius: "5px",
+        cursor: "pointer",
+        transition: "background-color 0.3s ease",
+      }}
+      onMouseEnter={(e) => (e.target.style.backgroundColor = "#388E3C")} // Hover color
+      onMouseLeave={(e) => (e.target.style.backgroundColor = "#4CAF50")} // Default color
+      disabled={!selectedCoupon}
+      onClick={handleApplyCoupen}
+    >
+      Apply
+    </button>
+  </div>
+)}
+
+
+
+
+
+
                   </div>
                 )}
 
-                {/* Apply Button */}
-                <div>
-                  <button
-                    className="offer-apply-button"
-                    style={{
-                      padding: "10px 20px",
-                      backgroundColor: selectedCoupon ? "#4CAF50" : "#ccc",
-                      color: "white",
-                      border: "none",
-                      borderRadius: "5px",
-                      cursor: selectedCoupon ? "pointer" : "not-allowed",
-                      marginTop: "20px",
-                      marginBottom: "20px",
-                      width: "100%",
-                    }}
-                    disabled={!selectedCoupon}
-                    onClick={handleApplyCoupen}
-                  >
-                    Apply
-                  </button>
-                </div>
+           
               </div>
             </div>
 
-            <h3 className="booking-summary-label">Fare Breakdown</h3>
+            <h3 className="booking-summary-label">Charges Breakdown</h3>
             <div className="fare-breakdown-section">
               <div className="fare-breakdown-card">
                 {/* <div className="fare-breakdown-div">
@@ -3172,8 +3312,8 @@ const BookingSection = () => {
             {basicDataByGet?.sub_category?.sub_category_name}
           </h2>
           <img
-            src={basicDataByGet?.sub_category?.image}
-            alt="Chef illustration"
+            src={basicDataByGet?.sub_category?.category_image}
+            alt="illustration"
             className="booking-illustration"
           />
         </div>
