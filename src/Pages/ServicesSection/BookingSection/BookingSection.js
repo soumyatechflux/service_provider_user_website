@@ -629,16 +629,26 @@ const BookingSection = () => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
+
+  const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+    (coupon) => coupon.voucher_id === selectedCoupon
+  );
+
+  const voucherCode = selectedCouponObject
+    ? selectedCouponObject.voucher_code
+    : null;
+
+
   const handlePayment = async (mod) => {
     setLoading(true);
 
-    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
-      (coupon) => coupon.voucher_id === selectedCoupon
-    );
+    // const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+    //   (coupon) => coupon.voucher_id === selectedCoupon
+    // );
 
-    const voucherCode = selectedCouponObject
-      ? selectedCouponObject.voucher_code
-      : null;
+    // const voucherCode = selectedCouponObject
+    //   ? selectedCouponObject.voucher_code
+    //   : null;
 
     try {
       const body = {
@@ -1269,6 +1279,78 @@ const BookingSection = () => {
       toast.error("An error occurred. Please try again later.");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  const handleRemoveCoupen = async () => {
+    setLoading(true);
+
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+
+    const voucherCode = selectedCouponObject
+      ? selectedCouponObject.voucher_code
+      : null;
+
+    try {
+      const body = {
+        booking_id: DataForPricesAppliedGet
+          ? DataForPricesAppliedGet.booking_id
+          : "",
+        //  voucher_code: voucherCode ? voucherCode : "",
+         voucher_code: "",
+
+      };
+
+      setLoading(true);
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/discount/verify`,
+
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      setLoading(false);
+
+      if (response.data.success) {
+        setDataForPricesAppliedGet(response?.data?.data);
+        // toast.success(response?.data?.message || "Coupen id Valid.");
+        toast.success(
+          "Coupen removed succesfully"
+          );
+        setIsCouponsVisible(false);
+        // handleCouponsVisibility();
+      } else {
+        toast.error(
+          response?.data?.message || "Coupen id Invalid at this time."
+        );
+        setSelectedCoupon(null);
+      }
+    } catch (error) {
+      setLoading(false);
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again later.");
+    }
+  };
+
+  
 
   const [showMoreCancellationPolicy, setShowMoreCancellationPolicy] = useState(false);
   const [showMoreBookingSummary, setShowMoreBookingSummary] = useState(false);
@@ -2817,13 +2899,13 @@ const BookingSection = () => {
               <div className="booking-detail-card">
                 <div>
                   <strong>
-                    {service.id === 8 || service.category_id === 2 || service.category_id === 3
+                    {service.category_id === 2 || service.category_id === 3 
                       ? "Number of Hours :"
                       : "Number of People :"}
                   </strong>
                 </div>
                 <div>
-                  {service.id === 8
+                  {service.category_id === 3
                     ? SelectedNumberOfHoursObjectForGardner?.hours
                     : service.category_id === 2
                     ? SelectedNumberOfHoursObjectForDriver?.hours
@@ -2998,6 +3080,7 @@ const BookingSection = () => {
     {/* Remove Coupon Button */}
     <button
   onClick={() => {
+    handleRemoveCoupen();
     setSelectedCoupon(null);
     setIsCouponsVisible(false);
   }}
@@ -3138,6 +3221,10 @@ const BookingSection = () => {
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>
 
+
+      
+
+
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
                     <h5>Grand Total:</h5>
@@ -3151,6 +3238,20 @@ const BookingSection = () => {
                     Hurray! You saved ₹{" "}
                     {DataForPricesAppliedGet?.discount_amount} on the final bill
                   </p>
+
+
+
+                  {selectedCouponObject?.voucher_code && (
+  <p style={{color:"blue"}} className="fare-saving-message text-center">
+    Activated Coupon Code :{" "}
+    <span style={{ fontWeight: "bold", color: "blue" }}>
+      {selectedCouponObject?.voucher_code}
+    </span>
+  </p>
+)}
+
+
+
                 </div>
               </div>
             </div>

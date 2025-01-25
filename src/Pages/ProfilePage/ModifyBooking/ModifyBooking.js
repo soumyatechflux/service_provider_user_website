@@ -1921,16 +1921,16 @@ const handleCheckboxChange = (id) => {
                 </>
               )}
 
-              <div className="booking-detail-card">
+<div className="booking-detail-card">
                 <div>
                   <strong>
-                    {service.id === 8 || service.category_id === 2
+                    {service.category_id === 2 || service.category_id === 3 
                       ? "Number of Hours :"
                       : "Number of People :"}
                   </strong>
                 </div>
                 <div>
-                  {service.id === 8
+                  {service.category_id === 3
                     ? SelectedNumberOfHoursObjectForGardner?.hours
                     : service.category_id === 2
                     ? SelectedNumberOfHoursObjectForDriver?.hours
