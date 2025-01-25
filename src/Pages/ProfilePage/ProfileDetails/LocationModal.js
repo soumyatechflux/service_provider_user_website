@@ -372,14 +372,14 @@ const LocationModal = ({
                 Reset to Current Location
               </Button>
 
-              {/* <Form.Group controlId="latitude">
+              <Form.Group controlId="latitude">
                 <Form.Label>Latitude</Form.Label>
                 <Form.Control type="text" value={addressDetails.latitude} disabled />
               </Form.Group>
               <Form.Group controlId="longitude" className="mt-2">
                 <Form.Label>Longitude</Form.Label>
                 <Form.Control type="text" value={addressDetails.longitude} disabled />
-              </Form.Group> */}
+              </Form.Group>
 
 <Form.Group controlId="landmark" className="mt-2">
   <Form.Label>Landmark</Form.Label>

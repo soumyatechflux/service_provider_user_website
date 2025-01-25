@@ -2817,7 +2817,7 @@ const BookingSection = () => {
               <div className="booking-detail-card">
                 <div>
                   <strong>
-                    {service.id === 8 || service.category_id === 2
+                    {service.id === 8 || service.category_id === 2 || service.category_id === 3
                       ? "Number of Hours :"
                       : "Number of People :"}
                   </strong>
@@ -3036,7 +3036,7 @@ const BookingSection = () => {
       disabled={!selectedCoupon}
       onClick={handleApplyCoupen}
     >
-      Check Coupen Validation
+      Check Coupon Validation
     </button>
   </div>
 )}

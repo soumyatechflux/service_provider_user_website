@@ -19,6 +19,7 @@ const LogInPage = () => {
   const [countdown, setCountdown] = useState(30); // Countdown starts at 10 seconds
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
+  const [headerIcon, setHeaderIcon] = useState("");
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -36,6 +37,7 @@ const LogInPage = () => {
 
   const handleSendOtp = async () => {
     if (!validatePhoneNumber(phone)) {
+      
       setMessage("Enter a valid 10-digit phone number starting with 6-9.");
       handleShow();
       return;
