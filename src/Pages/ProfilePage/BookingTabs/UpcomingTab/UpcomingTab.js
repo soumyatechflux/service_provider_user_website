@@ -36,7 +36,7 @@ const UpcomingTab = () => {
   const [cancelId, setCancelId] = useState(null);
 
   const handleCancelClick = (id) => {
-    console.log("iddd", id);
+    // console.log("iddd", id);
     setCancelId(id);
     setCurrentModal("cancellation");
   };
@@ -121,8 +121,8 @@ const UpcomingTab = () => {
   }, []);
 
   const handleConfirmationNext = async () => {
-    console.log("...", selectedReason);
-
+    // console.log("...", selectedReason);
+setLoading(true);
     const cancelDetails = {
       booking: {
         booking_id: cancelId,
@@ -130,7 +130,7 @@ const UpcomingTab = () => {
       },
     };
 
-    console.log("Payload sent:", cancelDetails);
+    // console.log("Payload sent:", cancelDetails);
 
     try {
       const response = await axios.patch(
@@ -143,6 +143,7 @@ const UpcomingTab = () => {
           },
         }
       );
+      setLoading(true);
 
       if (response?.status === 200 && response?.data?.success) {
         setCurrentModal("success");
@@ -151,13 +152,20 @@ const UpcomingTab = () => {
         setMessage(response?.data?.message || "Failed to cancel booking!");
         setShow(true);
         handleShow(); // Show the modal
+setLoading(false);
+
       }
     } catch (error) {
+      setLoading(false);
       console.error(
+
         "Error during cancellation:",
         error.response?.data || error.message
+        
       );
       // alert(error.response?.data?.message || "Failed to cancel booking.");
+setLoading(false);
+
     }
   };
 
@@ -728,22 +736,24 @@ const UpcomingTab = () => {
               onConfirm={handleConfirmationNext}
               bookingId={bookingsIdWise}
             />
-            <SuccessModal
-              isOpen={currentModal === "success"}
-              onClose={handleCloseModal}
-            />
-     
-     <ModifyBooking
-          fetchUpcommingBookings={fetchUpcommingBookings}
-        />
-            <MessageModal
+    
+          </>
+        )}
+
+
+<MessageModal
               show={show}
               handleClose={handleClose}
               handleShow={handleShow}
               message={message}
             />
-          </>
-        )}
+
+
+<SuccessModal
+              isOpen={currentModal === "success"}
+              onClose={handleCloseModal}
+            />
+     
       </div>
     </>
   );

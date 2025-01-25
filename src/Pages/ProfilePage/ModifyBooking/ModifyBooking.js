@@ -31,15 +31,12 @@ import LocationModal from "../ProfileDetails/LocationModal";
 
 const ModifyBooking = () => {
 
-  const [errorMessage, setErrorMessage] = useState("");
   
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { service } = location.state || {}; 
-
-
 
 
 
@@ -60,8 +57,10 @@ const handleViewMore = async () => {
 
     if (response.status === 200 && response.data.success === true) {
 
-      setDefaultDataOfBooking(response.data.data);
+      setDefaultDataOfBooking(response?.data?.data);
 
+    } else{
+      setDefaultDataOfBooking({});
     }
     
   } catch (error) {
