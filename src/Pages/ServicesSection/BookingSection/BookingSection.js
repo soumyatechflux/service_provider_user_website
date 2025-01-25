@@ -1256,10 +1256,12 @@ const BookingSection = () => {
         setDataForPricesAppliedGet(response?.data?.data);
         toast.success(response?.data?.message || "Coupen id Valid.");
         setIsCouponsVisible(false);
+        // handleCouponsVisibility();
       } else {
         toast.error(
           response?.data?.message || "Coupen id In-Valid at this time."
         );
+        setSelectedCoupon(null);
       }
     } catch (error) {
       setLoading(false);
@@ -2895,7 +2897,7 @@ const BookingSection = () => {
                   className="menu-toggle-button"
                   onClick={handleCouponsVisibility}
                   style={{
-                    padding: "10px 20px",
+                    padding: "10px 10px",
                     backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50", // Change background color based on visibility
                     color: "white",
                     border: "none",
@@ -2988,26 +2990,33 @@ const BookingSection = () => {
                         </div>
                       </div>
                     ))}
+
+
+
 {selectedCoupon && (
   <div style={{ display: "flex", width: "100%", gap: "10px" }}>
     {/* Remove Coupon Button */}
     <button
-      onClick={() => setSelectedCoupon(null)}
-      style={{
-        width: "50%", // Equal width
-        backgroundColor: "#FF5252", // Soft red for Remove
-        color: "#fff",
-        border: "none",
-        padding: "15px", // Larger padding for full-width buttons
-        borderRadius: "5px",
-        cursor: "pointer",
-        transition: "background-color 0.3s ease",
-      }}
-      onMouseEnter={(e) => (e.target.style.backgroundColor = "#E53935")} // Hover color
-      onMouseLeave={(e) => (e.target.style.backgroundColor = "#FF5252")} // Default color
-    >
-      Remove Coupon
-    </button>
+  onClick={() => {
+    setSelectedCoupon(null);
+    setIsCouponsVisible(false);
+  }}
+  style={{
+    width: "50%", // Equal width
+    backgroundColor: "#F44336", // Bright red for Remove
+    color: "#FFFFFF", // White text
+    border: "none",
+    padding: "15px", // Larger padding
+    borderRadius: "5px",
+    cursor: "pointer",
+    transition: "background-color 0.3s ease", // Smooth transition
+  }}
+  onMouseEnter={(e) => (e.target.style.backgroundColor = "#B71C1C")} // Darker red hover
+  onMouseLeave={(e) => (e.target.style.backgroundColor = "#F44336")} // Default red
+>
+  Remove Coupon
+</button>
+
 
     {/* Apply Coupon Button */}
     <button
@@ -3027,7 +3036,7 @@ const BookingSection = () => {
       disabled={!selectedCoupon}
       onClick={handleApplyCoupen}
     >
-      Apply
+      Check Coupen Validation
     </button>
   </div>
 )}
@@ -3044,13 +3053,10 @@ const BookingSection = () => {
               </div>
             </div>
 
-            <h3 className="booking-summary-label">Charges Breakdown</h3>
+            <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
             <div className="fare-breakdown-section">
               <div className="fare-breakdown-card">
-                {/* <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Base Amount:</div>
-                  <div> ₹ {basePrice} </div>
-                </div> */}
+      
 
                 {service.category_id === 1 && (
                   <>
