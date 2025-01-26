@@ -76,9 +76,7 @@ useEffect(() => {
 
 
 
-useEffect(() => {
-  setBasePrice(DefaultDataOfBooking?.actual_price);
-}, [DefaultDataOfBooking]);
+
 
 
 
@@ -86,8 +84,41 @@ useEffect(() => {
 
   setSelectedCarType(DefaultDataOfBooking?.car_type);
   setSelectedCarTransmissionType(DefaultDataOfBooking?.transmission_type);
-
+  setBasePrice(DefaultDataOfBooking?.actual_price);
+  // setMonthlySubscriptionStartDate(DefaultDataOfBooking?.visit_date);
 }, [DefaultDataOfBooking]);
+
+
+useEffect(() => {
+  if (DefaultDataOfBooking?.visit_date) {
+    const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
+    setMonthlySubscriptionStartDate(visitDate);
+  }
+}, [DefaultDataOfBooking]);
+
+useEffect(() => {
+  if (DefaultDataOfBooking?.gardener_visiting_slots) {
+    try {
+      // Parse the JSON string
+      const parsedSlots = JSON.parse(DefaultDataOfBooking.gardener_visiting_slots);
+
+      // Convert dates to Date objects
+      const formattedSlots = parsedSlots.map((slot) => ({
+        ...slot,
+        date: slot.date ? new Date(slot.date).toISOString().split("T")[0] : null, // Ensure date is ISO formatted
+      }));
+
+      // Set the state with formatted slots
+      setSelectedVisitDates(formattedSlots);
+    } catch (error) {
+      console.error("Error parsing gardener_visiting_slots:", error);
+    }
+  }
+}, [DefaultDataOfBooking]);
+
+
+
+
 
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.menu) {
@@ -226,15 +257,17 @@ useEffect(() => {
 
 
   const FunctionDataForPricesApplied = async () => {
-    setStep(2);
     setLoading(true);
   
     try {
       const body = {
         booking: {
+          voucher_code: "",
+          modify:false,
+          payment_mode: DefaultDataOfBooking?.payment_mode,
           booking_id: service?.booking_id || "",
-          category_id: service?.category_id || "",
-          sub_category_id: service?.id || "",
+          // category_id: service?.category_id || "",
+          // sub_category_id: service?.id || "",
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
@@ -268,8 +301,8 @@ useEffect(() => {
         },
       };
   
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_pricisdhjkllfhfjkhwaehfjahwjng`,
+      const response = await axios.patch(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/update_booking`,
         body,
         {
           headers: {
@@ -429,20 +462,52 @@ useEffect(() => {
 
 
     try {
+ 
       const body = {
         booking: {
-          booking_id: DataForPricesAppliedGet
-            ? DataForPricesAppliedGet.booking_id
-            : "",
           payment_mode: mod,
-
+          voucher_code: "",
+          modify:true,
+          booking_id: service?.booking_id || "",
+          // category_id: service?.category_id || "",
+          // sub_category_id: service?.id || "",
+          number_of_people: SelectedObjectOfPeople || {},
+          guest_name: BookingForGuestName || "Guest",
+          instructions: specialRequests || "",
+          dishes: 
+            service?.id === 1 || service?.id === 2 
+              ? SelectedNamesOfDishes || [] 
+              : [],
+          driver_time_duration: 
+            service?.category_id === 2 
+              ? SelectedNumberOfHoursObjectForDriver || {} 
+              : {},
+          transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
+          car_type: service?.category_id === 2 ? selectedCarType || "" : "",
+          gardener_time_duration: 
+            service?.id === 8 
+              ? SelectedNumberOfHoursObjectForGardner || {} 
+              : {},
+          gardener_monthly_subscription: 
+            service?.id === 9 
+              ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
+              : {},
+          gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
+          menu: service?.id === 3 
+            ? (selectedMenuItemsForChefForParty || [])
+                .filter((item) => item.quantity > 0)
+                .map((item) => ({
+                  ...item,
+                  price: parseFloat(item.price),
+                }))
+            : [],
         },
       };
 
       setLoading(true);
 
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/book_service`,
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/update_booking`,
 
         body,
         {
@@ -779,42 +844,134 @@ const handleDecrementHousForDriver = () => {
     setSelectedNumberOfSlotsObjectForMonthlyGardner,
   ] = useState({ hours: 0, price: 0 });
 
+
+
+
+
+  // useEffect(() => {
+  //   if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
+  //     setOptionsForNumberOFSlotsForMonthlyGardnerArray(
+  //       basicDataByGet?.gardener_monthly_subscriptions
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = basicDataByGet?.gardener_monthly_subscriptions[0];
+  //     setSelectedNumberOfSlotsObjectForMonthlyGardner({
+  //       visit: firstOption.visit,
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [basicDataByGet]);
+
+
+
+
+
+
   useEffect(() => {
+    // Check if both basicDataByGet and DefaultDataOfBooking have subscriptions
     if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
-      setOptionsForNumberOFSlotsForMonthlyGardnerArray(
-        basicDataByGet?.gardener_monthly_subscriptions
-      );
-      // Initialize with the first option's hours and price
-      const firstOption = basicDataByGet?.gardener_monthly_subscriptions[0];
-      setSelectedNumberOfSlotsObjectForMonthlyGardner({
-        visit: firstOption.visit,
-        hours: firstOption.hours,
-        price: firstOption.price,
-      });
+      setOptionsForNumberOFSlotsForMonthlyGardnerArray(basicDataByGet?.gardener_monthly_subscriptions);
+  
+      // If DefaultDataOfBooking has a gardener_monthly_subscription, parse it
+      if (DefaultDataOfBooking?.gardener_monthly_subscription) {
+        const parsedSubscription = JSON.parse(DefaultDataOfBooking?.gardener_monthly_subscription);
+        setSelectedNumberOfSlotsObjectForMonthlyGardner({
+          visit: parsedSubscription.visit,
+          hours: parsedSubscription.hours,
+          price: parsedSubscription.price,
+        });
+      } else {
+        // Initialize with the first option's values from basicDataByGet
+        const firstOption = basicDataByGet?.gardener_monthly_subscriptions[0];
+        setSelectedNumberOfSlotsObjectForMonthlyGardner({
+          visit: firstOption.visit,
+          hours: firstOption.hours,
+          price: firstOption.price,
+        });
+      }
     }
-  }, [basicDataByGet]);
+  }, [basicDataByGet, DefaultDataOfBooking]); 
+  
+
+
+
+
+  // useEffect(() => {
+  //   if (DefaultDataOfBooking?.gardener_monthly_subscriptions?.length) {
+  //     setOptionsForNumberOFSlotsForMonthlyGardnerArray(
+  //       DefaultDataOfBooking?.gardener_monthly_subscriptions
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = DefaultDataOfBooking?.gardener_monthly_subscriptions[0];
+  //     setSelectedNumberOfSlotsObjectForMonthlyGardner({
+  //       visit: firstOption.visit,
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [DefaultDataOfBooking]);
+
+
+
+
+
+
+
+
+  // const handleDecrementVisitsForMonthlyGardner = () => {
+  //   const currentIndex =
+  //     OptionsForNumberOFSlotsForMonthlyGardnerArray.findIndex(
+  //       (option) =>
+  //         option.visit === SelectedNumberOfSlotsObjectForMonthlyGardner?.visit
+  //     );
+
+  //   if (currentIndex > 0) {
+  //     const previousOption =
+  //       OptionsForNumberOFSlotsForMonthlyGardnerArray[currentIndex - 1];
+  //     setSelectedNumberOfSlotsObjectForMonthlyGardner({
+  //       visit: previousOption.visit,
+  //       hours: previousOption.hours,
+  //       price: previousOption.price,
+  //     });
+  //   } else {
+  //     // Show toast notification for min limit
+  //     // toast.error("You have to select at least the minimum number of visit.");
+  //     toast.error("You cannot reduce the number of hours below the minimum while modifying.");
+  //   }
+  // };
+
+
 
   const handleDecrementVisitsForMonthlyGardner = () => {
-    const currentIndex =
-      OptionsForNumberOFSlotsForMonthlyGardnerArray.findIndex(
-        (option) =>
-          option.visit === SelectedNumberOfSlotsObjectForMonthlyGardner?.visit
-      );
-
+    const currentIndex = OptionsForNumberOFSlotsForMonthlyGardnerArray.findIndex(
+      (option) => option.visit === SelectedNumberOfSlotsObjectForMonthlyGardner?.visit
+    );
+  
+    // Get the default minimum visit value
+    const defaultVisit = JSON.parse(DefaultDataOfBooking?.gardener_monthly_subscription || "{}")?.visit;
+  
     if (currentIndex > 0) {
-      const previousOption =
-        OptionsForNumberOFSlotsForMonthlyGardnerArray[currentIndex - 1];
-      setSelectedNumberOfSlotsObjectForMonthlyGardner({
-        visit: previousOption.visit,
-        hours: previousOption.hours,
-        price: previousOption.price,
-      });
+      const previousOption = OptionsForNumberOFSlotsForMonthlyGardnerArray[currentIndex - 1];
+  
+      // Prevent decrementing below the default visit value
+      if (previousOption.visit >= defaultVisit) {
+        setSelectedNumberOfSlotsObjectForMonthlyGardner({
+          visit: previousOption.visit,
+          hours: previousOption.hours,
+          price: previousOption.price,
+        });
+      } else {
+        toast.error("You cannot reduce the number of visits below the minimum allowed.");
+      }
     } else {
-      // Show toast notification for min limit
-      // toast.error("You have to select at least the minimum number of visit.");
-      toast.error("You cannot reduce the number of hours below the minimum while modifying.");
+      // Notify user about the minimum visit limit
+      toast.error("You cannot reduce the number of visits below the minimum allowed.");
     }
   };
+
+  
+
 
   const handleIncrementVisitsForMonthlyGardner = () => {
     const currentIndex =
@@ -1372,8 +1529,8 @@ const handleCheckboxChange = (id) => {
               {service?.id === 9 && (
                 <>
                   <div>
-                    {/* Date Picker */}
-                    <div className="booking-form-group flex-fill">
+                 
+                    {/* <div className="booking-form-group flex-fill">
                       <label
                         className="booking-form-label"
                         htmlFor="date-input"
@@ -1388,7 +1545,7 @@ const handleCheckboxChange = (id) => {
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
-                    </div>
+                    </div> */}
 
                     <div className="booking-cooking-time">
                       Your Subscription Starts From: {/* <br /> */}
@@ -2235,6 +2392,17 @@ const handleCheckboxChange = (id) => {
                   </>
                 )}
 
+
+
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Actual Price Without Discount:</div>
+                  <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+                </div>
+
+
+            
+
+
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">GST:</div>
                   <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
@@ -2255,15 +2423,18 @@ const handleCheckboxChange = (id) => {
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Total Base Price:</div>
-                  <div>+₹ {DataForPricesAppliedGet?.price}</div>
-                </div>
 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Discount:</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Price After Discount:</div>
+                  <div>₹ {DataForPricesAppliedGet?.price}</div>
+                </div>
+           
+           
 
 
 
@@ -2275,7 +2446,7 @@ const handleCheckboxChange = (id) => {
                     <h5>Grand Total:</h5>
                   </div>
                   <div>
-                    <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                    <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>
                   </div>
                 </div> 
 
@@ -2286,7 +2457,7 @@ const handleCheckboxChange = (id) => {
                     <h5>Previous Amount:</h5>
                   </div>
                   <div>
-                    <h5>-₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                    <h5>-₹ {DataForPricesAppliedGet?.collected_amount}</h5>
                   </div>
                 </div> 
              
@@ -2294,7 +2465,7 @@ const handleCheckboxChange = (id) => {
 
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Extra Amount To Be Paid:</h5>
+                    <h5>Extra/Final Amount To Be Paid:</h5>
                   </div>
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>

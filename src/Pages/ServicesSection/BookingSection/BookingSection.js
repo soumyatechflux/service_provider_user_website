@@ -3309,6 +3309,16 @@ const BookingSection = () => {
                   </>
                 )}
 
+                
+
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Actual Price Without Discount:</div>
+                  <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+                </div>
+
+
+
+
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">GST:</div>
                   <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
@@ -3329,14 +3339,17 @@ const BookingSection = () => {
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Total Base Price:</div>
-                  <div>+₹ {DataForPricesAppliedGet?.price}</div>
-                </div>
 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Discount:</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
+                </div>
+
+
+           
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Price After Discount:</div>
+                  <div>₹ {DataForPricesAppliedGet?.price}</div>
                 </div>
 
 

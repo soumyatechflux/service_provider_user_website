@@ -527,29 +527,6 @@ const ProfileDetails = () => {
                           {" "}
                           + Add New Address
                         </Button>
-{/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
-{isAddingAddress && (
-    <LocationModal
-        show={isAddingAddress}
-        onHide={() => {
-          setIsAddingAddress(false);
-          fetchProfile();
-        }}
-        
-        latitude=""
-        longitude=""
-        city=""
-        district=""
-        state=""
-        country=""
-        postalCode=""
-        formattedAddress=""
-        landmark=""
-        streetAddressLine2=""
-        addressToEditId={null} 
-      />
-)}
-      </LoadScript> */}
 
 <LocationModal
         show={isAddingAddress}
@@ -566,7 +543,7 @@ const ProfileDetails = () => {
         country=""
         postalCode=""
         formattedAddress=""
-        landmark=""
+        landmark=""    
         streetAddressLine2=""
         addressToEditId={null} 
       />
