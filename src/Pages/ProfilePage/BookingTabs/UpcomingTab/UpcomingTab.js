@@ -74,10 +74,7 @@ const UpcomingTab = () => {
     }
   };
 
-  // Monitor state update
-  useEffect(() => {
-    console.log("Updated bookingsIdWise:", bookingsIdWise);
-  }, [bookingsIdWise]);
+
 
   const location = useLocation();
 
@@ -689,7 +686,10 @@ setLoading(false);
                   <div className="summary-actions">
                     <button
                       className="btn-modify"
-                      onClick={() => handleModifyButton(booking?.booking_id)}
+                      onClick={() => {
+                        handleModifyButton(booking);
+                    
+                      }}
                       disabled={booking?.booking_status === "cancelled"}
                       style={{
                         cursor:

@@ -1226,6 +1226,26 @@ const BookingSection = () => {
     return `${hour}:${minutes} ${amPm}`;
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleApplyCoupen = async () => {
     // setIsCouponsVisible(false);
     setLoading(true);
@@ -1335,8 +1355,8 @@ const BookingSection = () => {
         toast.success(
           "Coupen removed succesfully"
           );
-        setIsCouponsVisible(false);
-        // handleCouponsVisibility();
+        setIsCouponsVisible(true);
+        setSelectedCoupon(null);
       } else {
         toast.error(
           response?.data?.message || "Coupen id Invalid at this time."
@@ -1850,9 +1870,9 @@ const BookingSection = () => {
                               width: "100%",
                             }}
                           >
-                            {selectedCarType.length > 0
-                              ? `Selected: ${selectedCarType}`
-                              : "Select a car type"}
+                             {selectedCarType 
+  ? `Selected: ${selectedCarType}` 
+  : "Select a car type"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
 
@@ -1949,9 +1969,9 @@ const BookingSection = () => {
                               width: "100%",
                             }}
                           >
-                            {selectedCarTransmissionType.length > 0
-                              ? `Selected: ${selectedCarTransmissionType}`
-                              : "Select a transmission type"}
+                            {selectedCarTransmissionType 
+  ? `Selected: ${selectedCarTransmissionType}` 
+  : "Select a transmission type"}
                             <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
                           </div>
 
@@ -2896,10 +2916,13 @@ const BookingSection = () => {
                 </>
               )}
 
+
+{service.id !== 9 && (
+  <>
               <div className="booking-detail-card">
                 <div>
                   <strong>
-                    {service.category_id === 2 || service.category_id === 3 
+                    {((service.category_id === 2 || service.category_id === 3  )&& service.id !== 9 )
                       ? "Number of Hours :"
                       : "Number of People :"}
                   </strong>
@@ -2912,8 +2935,83 @@ const BookingSection = () => {
                     : DataForPricesAppliedGet?.people_count}
                 </div>
               </div>
+</>
+                  )}
+
+
+
+
+
+
+
+
+
+
+{service.id === 9 && (
+  <>
+    <div className="booking-detail-card">
+      <div>
+        <strong>
+          {service.id === 9 && "Number of Slots :"}
+        </strong>
+      </div>
+      <div>
+        {DataForPricesAppliedGet?.gardener_monthly_subscription
+          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.visit
+          : null}
+      </div>
+    </div>
+
+
+
+    <div className="booking-detail-card">
+  <div>
+    <strong>
+      {service.id === 9 && "Visiting Dates"}
+    </strong>
+  </div>
+  <div>
+    {DataForPricesAppliedGet?.gardener_visiting_slots
+      ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
+        <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+        {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
+        <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div>
+      </div>
+      
+        ))
+      : null}
+  </div>
+</div>
+
+    <div className="booking-detail-card">
+      <div>
+        <strong>
+          {service.id === 9 && "Number of Total Hours :"}
+        </strong>
+      </div>
+      <div>
+        {DataForPricesAppliedGet?.gardener_monthly_subscription
+          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.hours
+          : null}
+      </div>
+    </div>
+
+
+
+
+
+
+  </>
+)}
+
+
+
+
 
               <div className="booking-detail-card">
+
+                
+{service.id !== 9 && (
                 <div>
                   <strong>Date :</strong>{" "}
                   <div>
@@ -2922,6 +3020,7 @@ const BookingSection = () => {
                     ).toLocaleDateString("en-GB")}
                   </div>
                 </div>
+)}
 
                 {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
                   <>
@@ -2973,167 +3072,186 @@ const BookingSection = () => {
             <div className="booking-summary-offers">
               <h3 className="booking-summary-label">Offers</h3>
 
+
+
+
+
+
+
+
+
+
+
               <div>
-                {/* Menu Toggle Button */}
-                <button
-                  className="menu-toggle-button"
-                  onClick={handleCouponsVisibility}
-                  style={{
-                    padding: "10px 10px",
-                    backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50", // Change background color based on visibility
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: "pointer",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center", // Center content horizontally
-                    width: "100%",
-                    textAlign: "center",
-                    margin: "0 auto", // Center the button horizontally within its container
-                  }}
-                >
-                  {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
-                  {isCouponsVisible ? (
-                    <ChevronDown size={16} style={{ marginLeft: "8px" }} />
-                  ) : (
-                    <ChevronRight size={16} style={{ marginLeft: "8px" }} />
-                  )}
-                </button>
+  {/* Menu Toggle Button */}
+  <button
+    className="menu-toggle-button"
+    onClick={handleCouponsVisibility}
+    style={{
+      padding: "10px 10px",
+      backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50",
+      color: "white",
+      border: "none",
+      borderRadius: "5px",
+      cursor: "pointer",
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
+      width: "100%",
+      textAlign: "center",
+      margin: "0 auto",
+    }}
+  >
+    {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
+    {isCouponsVisible ? (
+      <ChevronDown size={16} style={{ marginLeft: "8px" }} />
+    ) : (
+      <ChevronRight size={16} style={{ marginLeft: "8px" }} />
+    )}
+  </button>
 
-                {/* Dropdown Options (Coupons) */}
-                {isCouponsVisible && (
-
-                  
-                  <div
-                    className="coupon-dropdown"
-                    style={{
-                      marginTop: "10px",
-                      backgroundColor: "#f9f9f9",
-                      borderRadius: "8px",
-                      boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-                      padding: "10px",
-                      maxHeight: "300px",
-                      overflowY: "auto",
-                    }}
-                  >
-                    {DataForPricesAppliedGet?.discount?.map((coupon) => (
-                      <div
-                        key={coupon.voucher_id}
-                        className="offers-card"
-                        style={{
-                          borderBottom: "1px solid #ddd",
-                          padding: "10px",
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <div>
-                          {/* Displaying discount type and value */}
-                          <strong>
-                            {coupon.discount_type === "fixed"
-                              ? "Fixed Discount"
-                              : "Percentage Discount"}
-                            :
-                          </strong>{" "}
-                          {/* Conditionally display rupee or percentage */}
-                          {coupon.discount_type === "fixed" ? (
-                            <>
-                              ₹ {coupon.discount_value}{" "}
-                              {/* <FaRupeeSign size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
-                            </>
-                          ) : (
-                            <>
-                              {coupon.discount_value} %{" "}
-                              {/* <FaPercent size={16} style={{ verticalAlign: "middle", marginLeft: "5px" }} /> */}
-                            </>
-                          )}
-                          <p className="mb-0 ml-2 text-sm">
-                            Minimum Order: ₹ {coupon.minimum_order_amount}
-                          </p>
-                          <p className="mb-0 ml-2 text-sm">
-                            Voucher Code: {coupon.voucher_code}
-                          </p>
-                        </div>
-
-                        <div>
-                          {/* Radio button for selecting coupon */}
-                          <input
-                            type="radio"
-                            id={`coupon-${coupon.voucher_id}`}
-                            name="coupon"
-                            checked={selectedCoupon === coupon.voucher_id} // Check if this coupon is selected
-                            onChange={() =>
-                              handleRadioChange(coupon.voucher_id)
-                            } // Handle radio button change
-                            style={{ marginRight: "8px", cursor: "pointer" }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-
-
-
-{selectedCoupon && (
-  <div style={{ display: "flex", width: "100%", gap: "10px" }}>
-    {/* Remove Coupon Button */}
-    <button
-  onClick={() => {
-    handleRemoveCoupen();
-    setSelectedCoupon(null);
-    setIsCouponsVisible(false);
-  }}
-  style={{
-    width: "50%", // Equal width
-    backgroundColor: "#F44336", // Bright red for Remove
-    color: "#FFFFFF", // White text
-    border: "none",
-    padding: "15px", // Larger padding
-    borderRadius: "5px",
-    cursor: "pointer",
-    transition: "background-color 0.3s ease", // Smooth transition
-  }}
-  onMouseEnter={(e) => (e.target.style.backgroundColor = "#B71C1C")} // Darker red hover
-  onMouseLeave={(e) => (e.target.style.backgroundColor = "#F44336")} // Default red
->
-  Remove Coupon
-</button>
-
-
-    {/* Apply Coupon Button */}
-    <button
-      className="offer-apply-button"
+  {/* Dropdown Options (Coupons) */}
+  {isCouponsVisible && (
+    <div
+      className="coupon-dropdown"
       style={{
-        width: "50%", // Equal width
-        backgroundColor: "#4CAF50", // Green for Apply
-        color: "#fff",
-        border: "none",
-        padding: "15px", // Larger padding for full-width buttons
-        borderRadius: "5px",
-        cursor: "pointer",
-        transition: "background-color 0.3s ease",
+        marginTop: "10px",
+        backgroundColor: "#f9f9f9",
+        borderRadius: "8px",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        padding: "10px",
+        maxHeight: "300px",
+        overflowY: "auto",
       }}
-      onMouseEnter={(e) => (e.target.style.backgroundColor = "#388E3C")} // Hover color
-      onMouseLeave={(e) => (e.target.style.backgroundColor = "#4CAF50")} // Default color
-      disabled={!selectedCoupon}
-      onClick={handleApplyCoupen}
     >
-      Check Coupon Validation
-    </button>
-  </div>
-)}
+{!DataForPricesAppliedGet?.discount || DataForPricesAppliedGet.discount.length === 0 ? (
+        // Message displayed if no coupons are available
+        <p style={{ textAlign: "center", color: "#FF5722", fontWeight: "bold" }}>
+          No coupons available.
+        </p>
+      ) : (
+        // Render coupons if available
+        DataForPricesAppliedGet?.discount?.map((coupon) => (
+          <div
+            key={coupon.voucher_id}
+            className="offers-card"
+            style={{
+              borderBottom: "1px solid #ddd",
+              padding: "10px",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <div>
+              <strong>
+                {coupon.discount_type === "fixed"
+                  ? "Fixed Discount"
+                  : "Percentage Discount"}
+                :
+              </strong>{" "}
+              {coupon.discount_type === "fixed" ? (
+                <>
+                  ₹ {coupon.discount_value}
+                </>
+              ) : (
+                <>
+                  {coupon.discount_value} %
+                </>
+              )}
+              <p className="mb-0 ml-2 text-sm">
+                Minimum Order: ₹ {coupon.minimum_order_amount}
+              </p>
+              <p className="mb-0 ml-2 text-sm">
+                Voucher Code: {coupon.voucher_code}
+              </p>
+            </div>
+
+            <div>
+              <input
+                type="radio"
+                id={`coupon-${coupon.voucher_id}`}
+                name="coupon"
+                checked={selectedCoupon === coupon.voucher_id}
+                onChange={() => handleRadioChange(coupon.voucher_id)}
+                style={{ marginRight: "8px", cursor: "pointer" }}
+              />
+            </div>
+          </div>
+        ))
+      )}
+
+      {selectedCoupon && (
+        <div style={{ display: "flex", width: "100%", gap: "10px" }}>
+          {/* Remove Coupon Button */}
+          <button
+            onClick={() => {
+              handleRemoveCoupen();
+              setSelectedCoupon(null);
+              setIsCouponsVisible(true);
+            }}
+            style={{
+              width: "50%",
+              backgroundColor: "#F44336",
+              color: "#FFFFFF",
+              border: "none",
+              padding: "15px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.target.style.backgroundColor = "#B71C1C")
+            }
+            onMouseLeave={(e) =>
+              (e.target.style.backgroundColor = "#F44336")
+            }
+          >
+            Remove Coupon
+          </button>
+
+          {/* Apply Coupon Button */}
+          <button
+            className="offer-apply-button"
+            style={{
+              width: "50%",
+              backgroundColor: "#4CAF50",
+              color: "#fff",
+              border: "none",
+              padding: "15px",
+              borderRadius: "5px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+            }}
+            onMouseEnter={(e) =>
+              (e.target.style.backgroundColor = "#388E3C")
+            }
+            onMouseLeave={(e) =>
+              (e.target.style.backgroundColor = "#4CAF50")
+            }
+            disabled={!selectedCoupon}
+            onClick={handleApplyCoupen}
+          >
+            Check Coupon Validation
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+</div>
 
 
 
 
 
 
-                  </div>
-                )}
 
-           
-              </div>
+
+
+
+
+
+
             </div>
 
             <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>

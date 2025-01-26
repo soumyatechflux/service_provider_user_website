@@ -76,6 +76,44 @@ useEffect(() => {
 
 
 
+useEffect(() => {
+  setBasePrice(DefaultDataOfBooking?.actual_price);
+}, [DefaultDataOfBooking]);
+
+
+
+useEffect(() => {
+
+  setSelectedCarType(DefaultDataOfBooking?.car_type);
+  setSelectedCarTransmissionType(DefaultDataOfBooking?.transmission_type);
+
+}, [DefaultDataOfBooking]);
+
+  // useEffect(() => {
+  //   if (DefaultDataOfBooking?.menu) {
+  //     const initialMenu = DefaultDataOfBooking?.menu.map((item, index) => ({
+  //       ...item,
+  //       quantity: index === 0 ? 1 : 0,
+  //     }));
+  //     setMenuItems(initialMenu);
+
+  //     const initialSelectedItems = DefaultDataOfBooking?.menu.map((item, index) => ({
+  //       name: item.name,
+  //       price: item.price,
+  //       quantity: index === 0 ? 1 : 0,
+  //     }));
+  //     setSelectedMenuItemsForChefForParty(initialSelectedItems);
+  //   }
+  // }, [DefaultDataOfBooking]);
+
+
+
+
+
+
+
+
+
 
 
 
@@ -94,17 +132,12 @@ useEffect(() => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
-  // const [selectedTime, setSelectedTime] = useState("");
-  const [showGrid, setShowGrid] = useState(false);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
-  const [isAddingAddress, setIsAddingAddress] = useState(false); // New state for address form
-  const [addressToEdit, setAddressToEdit] = useState(null); // Track the address being edited
-  const [isEditingAddress, setIsEditingAddress] = useState(false); // State for editing address modal
   const [makeDisable, setMakeDisable] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
+
 
   const [addresses, setAddresses] = useState([]);
 
@@ -125,32 +158,7 @@ useEffect(() => {
     };
   }, []);
 
-  
 
-  const cancelAddAddress = () => {
-    setNewAddress({
-      houseNumber: "",
-      streetAddress: "",
-      streetAddressLine: "",
-      landmark: "",
-      city: "",
-      state: "",
-      pincode: "",
-      country: "",
-    });
-    setIsAddingAddress(false);
-  };
-
-  const [newAddress, setNewAddress] = useState({
-    houseNumber: "",
-    streetAddress: "",
-    streetAddressLine: "",
-    landmark: "",
-    city: "",
-    state: "",
-    pincode: "",
-    country: "",
-  });
 
   // Fetch profile data
   const fetchProfile = async () => {
@@ -218,7 +226,7 @@ useEffect(() => {
 
 
   const FunctionDataForPricesApplied = async () => {
-    console.log("FunctionDataForPricesApplied called",true);
+    setStep(2);
     setLoading(true);
   
     try {
@@ -300,10 +308,6 @@ useEffect(() => {
 
   const [BookingForGuestName, setBookingForGuestName] = useState(DefaultDataOfBooking?.guest_name);
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
-  const [selectedTime, setSelectedTime] = useState("");
-
   useEffect(() => {
     if (DefaultDataOfBooking) {
       
@@ -348,7 +352,9 @@ useEffect(() => {
 
   const [totalPrice, setTotalPrice] = useState();
   const [approxTime, setApproxTime] = useState();
-  const [basePrice, setBasePrice] = useState(totalPrice);
+  const [basePrice, setBasePrice] = useState();
+
+
 
   const [specialRequests, setSpecialRequests] = useState();
 
@@ -369,13 +375,8 @@ useEffect(() => {
     }
   }, [addresses]);
 
-  const mapRef = useRef(null);
-  const searchBoxRef = useRef(null);
 
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    setStep(2); // Move to Step 2
-  };
+
 
   const nextStep = () => {
     setStep((prev) => prev + 1);
@@ -417,93 +418,14 @@ useEffect(() => {
     setIsDropdownOpenTra(false);
   };
 
-  const validateFieldsStepOne = (e) => {
-    e.preventDefault();
 
-    if (service.id !== 9) {
-      if (
-        BookingForGuestName === "" ||
-        selectedDate === "" ||
-        selectedTime === "" ||
-        people <= 0
-      ) {
-        setMessage("Please fill all required fields.");
-        setShow(true);
-        handleShow();
-        return;
-      }
-    }
 
-    nextStep();
-  };
-
-  const [locationData, setLocationData] = useState({
-    latitude: "",
-    longitude: "",
-    city: "",
-    district: "",
-    state: "",
-    country: "",
-    postalCode: "",
-    formattedAddress: "",
-    landmark: "",
-    streetAddressLine2: "",
-  });
-
-  const fetchDefaultAddress = async (addressId) => {
-    setLoading(true);
-    try {
-      const response = await fetch(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/address/${addressId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      if (response.ok) {
-        const result = await response.json();
-
-        if (result.success === true) {
-          const data = result.data; // Data fetched successfully
-
-          setLocationData({
-            latitude: data?.latitude || "",
-            longitude: data?.longitude || "",
-            city: data?.city || "",
-            district: data?.district || "",
-            state: data?.state || "",
-            country: data?.country || "",
-            postalCode: data?.postal_code || "", // Correcting the naming
-            formattedAddress: data?.formatted_address || "", // Correcting the naming
-            landmark: data?.landmark || "",
-            streetAddressLine2: data?.street_address_line2 || "", // Correcting the naming
-          });
-          setLoading(false);
-        } else {
-          setLoading(false);
-          // Show error message via toast
-          toast.error(`Failed to fetch address: ${result.message}`);
-        }
-      } else {
-        setLoading(false);
-        // Handle failed response status
-        toast.error("Error fetching address: " + response.statusText);
-      }
-    } catch (error) {
-      setLoading(false);
-      // Show error message via toast
-      toast.error(`Error fetching address: ${error.message}`);
-    }
-  };
 
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
   const handlePayment = async (mod) => {
     setLoading(true);
-
 
 
     try {
@@ -562,6 +484,14 @@ useEffect(() => {
     }
   };
 
+
+
+
+
+
+
+
+
   const [
     OptionsForNumberOFHoursForGardnerArray,
     setOptionsForNumberOFHoursForGardnerArray,
@@ -571,38 +501,125 @@ useEffect(() => {
     setSelectedNumberOfHoursObjectForGardner,
   ] = useState({ hours: 0, price: 0 });
 
+
+
+
+
+  // useEffect(() => {
+  //   if (basicDataByGet?.gardener_time_durations?.length) {
+  //     setOptionsForNumberOFHoursForGardnerArray(
+  //       basicDataByGet?.gardener_time_durations
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = basicDataByGet?.gardener_time_durations[0];
+  //     setSelectedNumberOfHoursObjectForGardner({
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [basicDataByGet]);
+
+
+
+
+
+
+
+  // useEffect(() => {
+  //   if (DefaultDataOfBooking?.gardener_time_durations?.length) {
+  //     setOptionsForNumberOFHoursForGardnerArray(
+  //       DefaultDataOfBooking?.gardener_time_durations
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = DefaultDataOfBooking?.gardener_time_durations[0];
+  //     setSelectedNumberOfHoursObjectForGardner({
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [DefaultDataOfBooking]);
+
+
+
+
+
   useEffect(() => {
+    // Check if gardener_time_durations exists in both sources
     if (basicDataByGet?.gardener_time_durations?.length) {
-      setOptionsForNumberOFHoursForGardnerArray(
-        basicDataByGet?.gardener_time_durations
-      );
-      // Initialize with the first option's hours and price
-      const firstOption = basicDataByGet?.gardener_time_durations[0];
-      setSelectedNumberOfHoursObjectForGardner({
-        hours: firstOption.hours,
-        price: firstOption.price,
-      });
+      setOptionsForNumberOFHoursForGardnerArray(basicDataByGet?.gardener_time_durations);
+  
+      // If DefaultDataOfBooking has a gardener_time_duration, parse it and merge with the options
+      if (DefaultDataOfBooking?.gardener_time_duration) {
+        const parsedDuration = JSON.parse(DefaultDataOfBooking?.gardener_time_duration);
+  
+        // Set the selected number of hours object with the parsed duration
+        setSelectedNumberOfHoursObjectForGardner({
+          hours: parsedDuration.hours,
+          price: parsedDuration.price,
+        });
+      } else {
+        // If no gardener_time_duration is found, initialize with the first option's hours and price
+        const firstOption = basicDataByGet?.gardener_time_durations[0];
+        setSelectedNumberOfHoursObjectForGardner({
+          hours: firstOption.hours,
+          price: firstOption.price,
+        });
+      }
     }
-  }, [basicDataByGet]);
+  }, [basicDataByGet, DefaultDataOfBooking]);
+  
+
+
+
+
+
+
+  // // Handle decrement
+  // const handleDecrementHousForGardner = () => {
+  //   const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
+  //     (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
+  //   );
+
+  //   if (currentIndex > 0) {
+  //     const previousOption =
+  //       OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
+  //     setSelectedNumberOfHoursObjectForGardner({
+  //       hours: previousOption.hours,
+  //       price: previousOption.price,
+  //     });
+  //   } else {
+  //     // Show toast notification for min limit
+  //     // toast.error("You have to select at least the minimum number of hours.");
+  //     toast.error("You cannot reduce the number of hours below the minimum while modifying.");
+  //   }
+  // };
+
+
 
   // Handle decrement
-  const handleDecrementHousForGardner = () => {
-    const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
-      (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
-    );
+const handleDecrementHousForGardner = () => {
+  // Parse the incoming value from DefaultDataOfBooking or a predefined min value (if available)
+  const incomingHours = JSON.parse(DefaultDataOfBooking?.gardener_time_duration)?.hours || 1; // Default min hours can be 1
 
-    if (currentIndex > 0) {
-      const previousOption =
-        OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
-      setSelectedNumberOfHoursObjectForGardner({
-        hours: previousOption.hours,
-        price: previousOption.price,
-      });
-    } else {
-      // Show toast notification for min limit
-      toast.error("You have to select at least the minimum number of hours.");
-    }
-  };
+  // Get the current index from the available options
+  const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
+    (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
+  );
+
+  // Check if decrementing is allowed (should not go below incomingHours)
+  if (currentIndex > 0 && SelectedNumberOfHoursObjectForGardner?.hours > incomingHours) {
+    const previousOption = OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
+    setSelectedNumberOfHoursObjectForGardner({
+      hours: previousOption.hours,
+      price: previousOption.price,
+    });
+  } else {
+    // Show a toast notification if decrementing below the incoming hours
+    toast.error(`You cannot reduce the number of hours below ${incomingHours} hours.`);
+  }
+};
+
+
 
   // Handle increment
   const handleIncrementHousForGardner = () => {
@@ -632,38 +649,107 @@ useEffect(() => {
     setSelectedNumberOfHoursObjectForDriver,
   ] = useState({ hours: 0, price: 0 });
 
+  // useEffect(() => {
+  //   if (basicDataByGet?.driver_time_durations?.length) {
+  //     setOptionsForNumberOFHoursForDriverArray(
+  //       basicDataByGet?.driver_time_durations
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = basicDataByGet?.driver_time_durations[0];
+  //     setSelectedNumberOfHoursObjectForDriver({
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [basicDataByGet]);
+
+
+  // useEffect(() => {
+  //   if (DefaultDataOfBooking?.driver_time_durations?.length) {
+  //     setOptionsForNumberOFHoursForDriverArray(
+  //       DefaultDataOfBooking?.driver_time_durations
+  //     );
+  //     // Initialize with the first option's hours and price
+  //     const firstOption = DefaultDataOfBooking?.driver_time_durations[0];
+  //     setSelectedNumberOfHoursObjectForDriver({
+  //       hours: firstOption.hours,
+  //       price: firstOption.price,
+  //     });
+  //   }
+  // }, [DefaultDataOfBooking]);
+
   useEffect(() => {
+    // Check if driver_time_durations exists in basicDataByGet
     if (basicDataByGet?.driver_time_durations?.length) {
-      setOptionsForNumberOFHoursForDriverArray(
-        basicDataByGet?.driver_time_durations
-      );
-      // Initialize with the first option's hours and price
-      const firstOption = basicDataByGet?.driver_time_durations[0];
-      setSelectedNumberOfHoursObjectForDriver({
-        hours: firstOption.hours,
-        price: firstOption.price,
-      });
+      setOptionsForNumberOFHoursForDriverArray(basicDataByGet?.driver_time_durations);
+  
+      // Check if DefaultDataOfBooking has a driver_time_duration and parse it
+      if (DefaultDataOfBooking?.driver_time_duration) {
+        const parsedDuration = JSON.parse(DefaultDataOfBooking?.driver_time_duration);
+  
+        // Set the selected number of hours object with the parsed duration
+        setSelectedNumberOfHoursObjectForDriver({
+          hours: parsedDuration.hours,
+          price: parsedDuration.price,
+        });
+      } else {
+        // If no driver_time_duration is found in DefaultDataOfBooking, initialize with the first option's hours and price from basicDataByGet
+        const firstOption = basicDataByGet?.driver_time_durations[0];
+        setSelectedNumberOfHoursObjectForDriver({
+          hours: firstOption.hours,
+          price: firstOption.price,
+        });
+      }
     }
-  }, [basicDataByGet]);
+  }, [basicDataByGet, DefaultDataOfBooking]);
+  
+
+
+  // // Handle decrement
+  // const handleDecrementHousForDriver = () => {
+  //   const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
+  //     (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
+  //   );
+
+  //   if (currentIndex > 0) {
+  //     const previousOption =
+  //       OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
+  //     setSelectedNumberOfHoursObjectForDriver({
+  //       hours: previousOption.hours,
+  //       price: previousOption.price,
+  //     });
+  //   } else {
+  //     // toast.error("You have to select at least the minimum number of hours.");
+  //     toast.error("You cannot reduce the number of hours below the minimum while modifying.");
+
+  //   }
+  // };
+
 
   // Handle decrement
-  const handleDecrementHousForDriver = () => {
-    const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
-      (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
-    );
+const handleDecrementHousForDriver = () => {
+  const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
+    (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
+  );
 
-    if (currentIndex > 0) {
-      const previousOption =
-        OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
-      setSelectedNumberOfHoursObjectForDriver({
-        hours: previousOption.hours,
-        price: previousOption.price,
-      });
-    } else {
-      // Show toast notification for min limit
-      toast.error("You have to select at least the minimum number of hours.");
-    }
-  };
+  // Get the incoming (minimum) hours value from DefaultDataOfBooking
+  const incomingHours = DefaultDataOfBooking?.driver_time_duration
+    ? JSON.parse(DefaultDataOfBooking?.driver_time_duration).hours
+    : 1; // Default to 1 hour if no incoming value is found
+
+  // Check if the current hours is greater than the minimum incoming hours
+  if (currentIndex > 0 && SelectedNumberOfHoursObjectForDriver?.hours > incomingHours) {
+    const previousOption = OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
+    setSelectedNumberOfHoursObjectForDriver({
+      hours: previousOption.hours,
+      price: previousOption.price,
+    });
+  } else {
+    // Prevent reducing below the incoming hours
+    toast.error(`You cannot reduce the number of hours below the minimum of ${incomingHours} hours.`);
+  }
+};
+
 
   // Handle increment
   const handleIncrementHousForDriver = () => {
@@ -725,7 +811,8 @@ useEffect(() => {
       });
     } else {
       // Show toast notification for min limit
-      toast.error("You have to select at least the minimum number of visit.");
+      // toast.error("You have to select at least the minimum number of visit.");
+      toast.error("You cannot reduce the number of hours below the minimum while modifying.");
     }
   };
 
@@ -767,24 +854,79 @@ useEffect(() => {
     setdishesOptionsArray(basicDataByGet?.dishes);
   }, [basicDataByGet]);
 
-  // Initialize the menu with default quantities
+
+
+
+  // useEffect(() => {
+  //   if (basicDataByGet?.menu) {
+  //     const initialMenu = basicDataByGet?.menu.map((item, index) => ({
+  //       ...item,
+  //       quantity: index === 0 ? 1 : 0,
+  //     }));
+  //     setMenuItems(initialMenu);
+
+  //     const initialSelectedItems = basicDataByGet?.menu.map((item, index) => ({
+  //       name: item.name,
+  //       price: item.price,
+  //       quantity: index === 0 ? 1 : 0,
+  //     }));
+  //     setSelectedMenuItemsForChefForParty(initialSelectedItems);
+  //   }
+  // }, [basicDataByGet]);
+
+
+
+
+
+  // useEffect(() => {
+  //   if (DefaultDataOfBooking?.menu) {
+
+  //     const initialMenu = DefaultDataOfBooking?.menu.map((item, index) => ({
+  //       ...item,
+  //       quantity: index === 0 ? 1 : 0,
+  //     }));
+  //     setMenuItems(initialMenu);
+
+  //     const initialSelectedItems = DefaultDataOfBooking?.menu.map((item, index) => ({
+  //       name: item.name,
+  //       price: item.price,
+  //       quantity: item.quantity,
+  //     }));
+  //     setSelectedMenuItemsForChefForParty(initialSelectedItems);
+  //   }
+  // }, [DefaultDataOfBooking]);
+
+
+
   useEffect(() => {
     if (basicDataByGet?.menu) {
-      const initialMenu = basicDataByGet?.menu.map((item, index) => ({
-        ...item,
-        quantity: index === 0 ? 1 : 0, // Set 1 for the first item, 0 for others
-      }));
-      setMenuItems(initialMenu);
-
-      // Initialize selectedMenuItemsForChefForParty based on the menu
-      const initialSelectedItems = basicDataByGet?.menu.map((item, index) => ({
+      // Create a map of selected menu items for quick lookup by name
+      const selectedMenuMap = new Map(
+        (DefaultDataOfBooking?.menu || []).map((item) => [item.name, item.quantity])
+      );
+  
+      // Merge both arrays into a single array
+      const mergedMenu = basicDataByGet.menu.map((item) => ({
         name: item.name,
-        price: item.price,
-        quantity: index === 0 ? 1 : 0, // Set 1 for the first item, 0 for others
+        price: parseFloat(item.price), // Ensure price is a number
+        quantity: selectedMenuMap.get(item.name) || 0, // Use selected quantity or default to 0
       }));
-      setSelectedMenuItemsForChefForParty(initialSelectedItems);
+  
+      // Update the state with the merged array for menu items
+      setMenuItems(mergedMenu);
+  
+      // Set the merged array in selected menu items for Chef for Party
+      setSelectedMenuItemsForChefForParty(mergedMenu);
     }
-  }, [basicDataByGet]);
+  }, [basicDataByGet, DefaultDataOfBooking]);
+  
+  
+  
+  
+  
+
+
+
 
   // Calculate the total quantity of all selected items
   const calculateTotalQuantityForChefForParty = () => {
@@ -980,7 +1122,9 @@ const handleCheckboxChange = (id) => {
     if (people > minPeople) {
       setPeople(people - 1);
     } else {
-      toast.error(`Minimum limit reached: ${minPeople} people`);
+      // toast.error(`Minimum limit reached: ${minPeople} people`);
+      toast.error("Cannot reduce below the minimum number of people for booking.");
+
     }
   };
 
@@ -1581,9 +1725,9 @@ const handleCheckboxChange = (id) => {
                               width: "100%",
                             }}
                           >
-                            {selectedCarType.length > 0
-                              ? `Selected: ${selectedCarType}`
-                              : "Select a car type"}
+                       {selectedCarType 
+  ? `Selected: ${selectedCarType}` 
+  : "Select a car type"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
 
@@ -1680,9 +1824,9 @@ const handleCheckboxChange = (id) => {
                               width: "100%",
                             }}
                           >
-                            {selectedCarTransmissionType.length > 0
-                              ? `Selected: ${selectedCarTransmissionType}`
-                              : "Select a transmission type"}
+                           {selectedCarTransmissionType 
+  ? `Selected: ${selectedCarTransmissionType}` 
+  : "Select a transmission type"}
                             <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
                           </div>
 
@@ -1780,12 +1924,28 @@ const handleCheckboxChange = (id) => {
                                       value={item.quantity}
                                       min={0}
                                       max={4}
-                                      onChange={(e) =>
-                                        handleQuantityChangeForMenuItemsForChefForParty(
-                                          index,
-                                          parseInt(e.target.value) || 0
-                                        )
-                                      }
+                                      // onChange={(e) =>
+                                      //   handleQuantityChangeForMenuItemsForChefForParty(
+                                      //     index,
+                                      //     parseInt(e.target.value) || 0
+                                      //   )
+                                      // }
+
+                                      onChange={(e) => {
+                                        // Check if the new quantity is less than the initial quantity
+                                        const newQuantity = parseInt(e.target.value) || 0;
+                              
+                                        if (newQuantity < item?.quantity) {
+                                          // Show toast notification if quantity is being reduced
+                                          toast.error("You cannot reduce the quantity below the initial selection.");
+                                          return; // Prevent the change
+                                        }
+                              
+                                        // Otherwise, update the quantity
+                                        handleQuantityChangeForMenuItemsForChefForParty(index, newQuantity);
+                                      }}
+
+
                                       style={{
                                         width: "50px",
                                         padding: "5px",
@@ -1920,24 +2080,70 @@ const handleCheckboxChange = (id) => {
                 </>
               )}
 
-<div className="booking-detail-card">
-                <div>
-                  <strong>
-                    {service.category_id === 2 || service.category_id === 3 
-                      ? "Number of Hours :"
-                      : "Number of People :"}
-                  </strong>
-                </div>
-                <div>
-                  {service.category_id === 3
-                    ? SelectedNumberOfHoursObjectForGardner?.hours
-                    : service.category_id === 2
-                    ? SelectedNumberOfHoursObjectForDriver?.hours
-                    : DataForPricesAppliedGet?.people_count}
-                </div>
-              </div>
+
+
+{service.id === 9 && (
+  <>
+    <div className="booking-detail-card">
+      <div>
+        <strong>
+          {service.id === 9 && "Number of Slots :"}
+        </strong>
+      </div>
+      <div>
+        {DataForPricesAppliedGet?.gardener_monthly_subscription
+          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.visit
+          : null}
+      </div>
+    </div>
+
+
+
+    <div className="booking-detail-card">
+  <div>
+    <strong>
+      {service.id === 9 && "Visiting Dates"}
+    </strong>
+  </div>
+  <div>
+    {DataForPricesAppliedGet?.gardener_visiting_slots
+      ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
+        <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+        {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
+        <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div>
+      </div>
+      
+        ))
+      : null}
+  </div>
+</div>
+
+    <div className="booking-detail-card">
+      <div>
+        <strong>
+          {service.id === 9 && "Number of Total Hours :"}
+        </strong>
+      </div>
+      <div>
+        {DataForPricesAppliedGet?.gardener_monthly_subscription
+          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.hours
+          : null}
+      </div>
+    </div>
+
+
+
+
+
+
+  </>
+)}
+
+
 
               <div className="booking-detail-card">
+                             
+{service.id !== 9 && (
                 <div>
                   <strong>Date :</strong>{" "}
                   <div>
@@ -1946,6 +2152,7 @@ const handleCheckboxChange = (id) => {
                     ).toLocaleDateString("en-GB")}
                   </div>
                 </div>
+)}
 
                 {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
                   <>
