@@ -471,7 +471,6 @@ const BookingSection = () => {
 
   const [people, setPeople] = useState(1);
 
-  // const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState({});
   const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState(null);
 
   const [totalPrice, setTotalPrice] = useState();
@@ -480,7 +479,6 @@ const BookingSection = () => {
 
   const [specialRequests, setSpecialRequests] = useState();
 
-  // step 3 constants
 
   const [selectedLocation, setSelectedLocation] = useState({});
 
@@ -491,19 +489,15 @@ const BookingSection = () => {
 
   useEffect(() => {
     if (addresses && addresses.length > 0) {
-      // setSelectedLocation(addresses[0]);
-      // setSelectedLocationFromForDriver(addresses[0]);
-      // setSelectedLocationToForDriver(addresses[0]);
+      setSelectedLocation(addresses[0]);
+      setSelectedLocationFromForDriver(addresses[0]);
+      setSelectedLocationToForDriver(addresses[0]);
     }
   }, [addresses]);
 
   const mapRef = useRef(null);
   const searchBoxRef = useRef(null);
 
-  const handleSubmitForm = (e) => {
-    e.preventDefault();
-    setStep(2); // Move to Step 2
-  };
 
   const nextStep = () => {
     setStep((prev) => prev + 1);
@@ -2355,7 +2349,12 @@ const BookingSection = () => {
         {step === 2 && (
           <div className="location-container">
             {loading && <Loader />}
+
+         
             <div className="location-content">
+
+        
+
               <div className="add-location-header">
                 <button className="back-button" onClick={prevStep}>
                   ←
@@ -2364,6 +2363,31 @@ const BookingSection = () => {
 
                 <h2 className="header-title">Select Booking Location</h2>
               </div>
+
+
+
+
+              <Button
+  onClick={() => setIsAddingAddress(true)}
+  className="btn btn-primary nav-buttons"
+  style={{
+    display: 'block',            // Makes the button a block element
+    marginLeft: 'auto',          // Centers the button horizontally
+    marginRight: 'auto',         // Centers the button horizontally
+    textAlign: 'center',         // Optional: Ensures the text inside the button is centered
+  }}
+>
+  + Add New Address
+</Button>
+
+
+
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
+  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
+  <span style={{ padding: '0 10px' }}>OR</span>
+  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
+</div>
+
 
               <div
                 style={{
@@ -2374,6 +2398,7 @@ const BookingSection = () => {
               >
                 {(service?.category_id === 1 || service?.category_id === 3) && (
                   <>
+             
                     {" "}
                     <span>Select Address :</span>
                     {addresses.map((address, index) => (
@@ -2442,6 +2467,7 @@ const BookingSection = () => {
                         </div>
                       </div>
                     ))}
+                  
                   </>
                 )}
 
@@ -2615,12 +2641,11 @@ const BookingSection = () => {
     )}
   </>
 
+
+
                 <div className="container mt-3 mb-3">
-                  <Button onClick={() => setIsAddingAddress(true)}
-                    className="btn btn-primary nav-buttons">
-                    {" "}
-                    + Add New Address
-                  </Button>
+            
+
 
                   {/* <LoadScript
                     googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
