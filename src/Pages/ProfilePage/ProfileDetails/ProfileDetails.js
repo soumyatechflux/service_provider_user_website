@@ -280,9 +280,16 @@ const ProfileDetails = () => {
   // }
 
 
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  // });
+
+
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    libraries: ["places"], // Add the Places library here
   });
+
 
   // If the script is not loaded, return null or a loader.
   if (!isLoaded) {
@@ -529,24 +536,23 @@ const ProfileDetails = () => {
                         </Button>
 
 <LocationModal
-        show={isAddingAddress}
-        onHide={() => {
-          setIsAddingAddress(false);
-          fetchProfile();
-        }}
-        
-        latitude=""
-        longitude=""
-        city=""
-        district=""
-        state=""
-        country=""
-        postalCode=""
-        formattedAddress=""
-        landmark=""    
-        streetAddressLine2=""
-        addressToEditId={null} 
-      />
+  show={isAddingAddress}
+  onHide={() => {
+    setIsAddingAddress(false);
+    fetchProfile();
+  }}
+  latitude=""
+  longitude=""
+  city=""
+  district=""
+  state=""
+  country=""
+  postalCode=""
+  formattedAddress=""
+  landmark=""
+  streetAddressLine2=""
+  addressToEditId={null}
+/>
 
 
     </div>

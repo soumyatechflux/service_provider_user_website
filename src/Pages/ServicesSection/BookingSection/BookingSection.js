@@ -1315,13 +1315,6 @@ const BookingSection = () => {
   const handleRemoveCoupen = async () => {
     setLoading(true);
 
-    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
-      (coupon) => coupon.voucher_id === selectedCoupon
-    );
-
-    const voucherCode = selectedCouponObject
-      ? selectedCouponObject.voucher_code
-      : null;
 
     try {
       const body = {

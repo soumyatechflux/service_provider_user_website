@@ -342,7 +342,6 @@ const LocationModal = ({
  
       {loading && <p style={{ textAlign: 'center', fontSize: '16px', color: '#007bff' }}>Loading...</p>}
 
-      {loading && Loader}
 
 
         {!loading && !mapLoading && location && (

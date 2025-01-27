@@ -507,7 +507,7 @@ useEffect(() => {
       setLoading(true);
 
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/update_booking`,
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/book_service`,
 
         body,
         {
