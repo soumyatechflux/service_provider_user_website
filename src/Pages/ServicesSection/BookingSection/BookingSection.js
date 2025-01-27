@@ -491,9 +491,9 @@ const BookingSection = () => {
 
   useEffect(() => {
     if (addresses && addresses.length > 0) {
-      setSelectedLocation(addresses[0]);
-      setSelectedLocationFromForDriver(addresses[0]);
-      setSelectedLocationToForDriver(addresses[0]);
+      // setSelectedLocation(addresses[0]);
+      // setSelectedLocationFromForDriver(addresses[0]);
+      // setSelectedLocationToForDriver(addresses[0]);
     }
   }, [addresses]);
 
@@ -553,7 +553,15 @@ const BookingSection = () => {
         BookingForGuestName === "" ||
         selectedDate === "" ||
         selectedTime === "" ||
-        people <= 0
+        people <= 0 
+
+        //  || !selectedLocation?.address_id || 
+
+        // (service?.category_id === 2 && (
+        //   !selectedLocationFromForDriver?.address_id ||
+        //   !selectedLocationToForDriver?.address_id
+        // ))
+
       ) {
         setMessage("Please fill all required fields.");
         setShow(true);
@@ -706,7 +714,21 @@ const BookingSection = () => {
     }
   };
 
-  const handleConfirmAddress = () => {
+  const handleConfirmAddress(e) = (e) => {
+    e.preventDefault();
+
+    // Check if required fields are missing
+    if (
+      !selectedLocation?.address_id ||  // Check if selectedLocation has address_id
+      (service?.category_id === 2 && (
+        !selectedLocationFromForDriver?.address_id ||  // Check if selectedLocationFromForDriver has address_id
+        !selectedLocationToForDriver?.address_id  // Check if selectedLocationToForDriver has address_id
+      ))
+    ) {
+      // Show error toast
+      toast.error("Please fill all required fields.");
+      return;
+    }
     FunctionDataForPricesApplied();
 
     // setStep(5);
@@ -1412,7 +1434,7 @@ const BookingSection = () => {
     });
   
 
-    
+
   // If the script is not loaded, return null or a loader.
   if (!isLoaded) {
     return null; // Or show a custom loader component.
