@@ -144,9 +144,11 @@ setLoading(true);
       setLoading(true);
 
       if (response?.data?.success) {
-        setCurrentModal("success");
+        // setCurrentModal("success");
+        setCurrentModal(null);
+
         setLoading(false);
-        // toast.success(response?.data?.message || "The booking has been successfully cancelled.");
+        toast.success(response?.data?.message || "The booking has been successfully cancelled.");
       } else {
         // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");
