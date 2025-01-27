@@ -14,8 +14,8 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
   
-    if (!rating || !review) {
-      setError("Please provide both a rating and a review.");
+    if (!rating) {
+      setError("Please provide rating.");
       return;
     }
   
