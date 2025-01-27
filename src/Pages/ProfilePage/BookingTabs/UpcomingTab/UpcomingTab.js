@@ -417,7 +417,7 @@ setLoading(false);
                           handleModifyButton(booking);
                       
                         }}
-                        disabled={booking?.booking_status === "cancelled"}
+                        disabled={ booking?.booking_status !== "upcoming"}
                         style={{
                           cursor:
                             booking?.booking_status === "cancelled"
@@ -695,7 +695,7 @@ setLoading(false);
                         handleModifyButton(booking);
                     
                       }}
-                      disabled={booking?.booking_status === "cancelled"}
+                      disabled={ booking?.booking_status !== "upcoming"}
                       style={{
                         cursor:
                           booking?.booking_status === "cancelled"
