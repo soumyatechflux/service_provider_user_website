@@ -714,7 +714,7 @@ const BookingSection = () => {
     }
   };
 
-  const handleConfirmAddress(e) = (e) => {
+  const handleConfirmAddress= (e) => {
     e.preventDefault();
 
     // Check if required fields are missing
