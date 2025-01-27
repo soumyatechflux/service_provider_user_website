@@ -48,6 +48,7 @@ const UpcomingTab = () => {
   const handleCloseModal = () => {
     setCurrentModal(null);
     setCancelId(null);
+    fetchUpcommingBookings();
   };
 
   const handleViewMore = async (id) => {
@@ -142,8 +143,10 @@ setLoading(true);
       );
       setLoading(true);
 
-      if (response?.status === 200 && response?.data?.success) {
+      if (response?.data?.success) {
         setCurrentModal("success");
+        setLoading(false);
+        // toast.success(response?.data?.message || "The booking has been successfully cancelled.");
       } else {
         // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");

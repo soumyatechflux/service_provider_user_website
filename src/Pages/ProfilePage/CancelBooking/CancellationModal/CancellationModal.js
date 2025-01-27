@@ -72,6 +72,7 @@ const CancellationModal = ({ isOpen, onClose, onNext, booking,onConfirm}) => {
                       value={reason}
                       onChange={() => handleReasonSelect(reason)}
                       checked={selectedReason === reason}
+                      style={{cursor:"pointer"}}
                     />
                     <label
                       className="form-check-label"

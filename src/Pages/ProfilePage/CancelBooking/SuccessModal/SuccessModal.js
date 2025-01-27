@@ -5,8 +5,8 @@ const SuccessModal = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleCloseAndNavigate = () => {
-    onClose(); // Call the onClose function to close the modal
-    window.location.reload(); // Refresh the page after navigation
+    onClose(); 
+    // window.location.reload();
   };
     return (
         <div className={`modal ${isOpen ? 'show' : ''}`} style={{ display: isOpen ? 'block' : 'none' }}>

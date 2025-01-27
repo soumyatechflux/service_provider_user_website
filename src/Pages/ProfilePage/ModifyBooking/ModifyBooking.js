@@ -1457,10 +1457,17 @@ const handleCheckboxChange = (id) => {
 
 
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  // });
 
+
+    const { isLoaded } = useJsApiLoader({
+      googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+      libraries: ["places"], // Add the Places library here
+    });
+  
+    
   // If the script is not loaded, return null or a loader.
   if (!isLoaded) {
     return null; // Or show a custom loader component.

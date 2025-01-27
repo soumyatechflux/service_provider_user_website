@@ -6,10 +6,10 @@ import axios from "axios";
 import { BsPencil, BsTrash, BsThreeDotsVertical } from "react-icons/bs";
 import { Modal, Button } from "react-bootstrap";
 import MessageModal from "../../MessageModal/MessageModal";
-import LocationModal from "./LocationModal";
-import { LoadScript } from "@react-google-maps/api";
 import { toast } from "react-toastify";
 import { useJsApiLoader } from "@react-google-maps/api";
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import LocationModal from "./LocationModal";
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState({});
@@ -271,23 +271,30 @@ const ProfileDetails = () => {
 
 
 
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
-  });
-
-
   // const { isLoaded } = useJsApiLoader({
-  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
-  //   libraries: ["places"], // Add the Places library here
+  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
   // });
 
 
-  // If the script is not loaded, return null or a loader.
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    libraries: ["places"], // Add the Places library here
+  });
+
+
+
   if (!isLoaded) {
     return null; // Or show a custom loader component.
   }
 
   
+
+
+
+
+
+
+
   return (
     <>
 
@@ -525,8 +532,7 @@ const ProfileDetails = () => {
                           {" "}
                           + Add New Address
                         </Button>
-
-<LocationModal
+ <LocationModal
   show={isAddingAddress}
   onHide={() => {
     setIsAddingAddress(false);
@@ -543,7 +549,23 @@ const ProfileDetails = () => {
   landmark=""
   streetAddressLine2=""
   addressToEditId={null}
-/>
+/> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     </div>
