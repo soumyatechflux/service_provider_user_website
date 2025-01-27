@@ -3258,7 +3258,7 @@ const BookingSection = () => {
               <div className="fare-breakdown-card">
       
 
-                {service.category_id === 1 && (
+                {/* {service.category_id === 1 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -3275,9 +3275,9 @@ const BookingSection = () => {
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
 
-                {service.id === 8 && (
+                {/* {service.id === 8 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -3295,9 +3295,9 @@ const BookingSection = () => {
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
 
-                {service.category_id === 1 && (
+                {/* {service.category_id === 1 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -3306,7 +3306,7 @@ const BookingSection = () => {
                       <div>+₹ {DataForPricesAppliedGet?.menu_amount}</div>
                     </div>
                   </>
-                )}
+                )} */}
 
                 
 
