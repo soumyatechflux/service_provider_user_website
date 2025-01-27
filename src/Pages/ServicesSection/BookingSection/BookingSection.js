@@ -555,12 +555,6 @@ const BookingSection = () => {
         selectedTime === "" ||
         people <= 0 
 
-        //  || !selectedLocation?.address_id || 
-
-        // (service?.category_id === 2 && (
-        //   !selectedLocationFromForDriver?.address_id ||
-        //   !selectedLocationToForDriver?.address_id
-        // ))
 
       ) {
         setMessage("Please fill all required fields.");
@@ -1078,45 +1072,8 @@ const BookingSection = () => {
     }
   };
 
-  const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radius of the Earth in km
-    const toRad = (degree) => (degree * Math.PI) / 180; // Convert degree to radians
 
-    const dLat = toRad(lat2 - lat1);
-    const dLon = toRad(lon2 - lon1);
 
-    const a =
-      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-      Math.cos(toRad(lat1)) *
-        Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
-
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-    const distanceInKm = R * c; // Distance in kilometers
-    const distanceInMeters = distanceInKm * 1000; // Distance in meters
-
-    return { distanceInKm, distanceInMeters };
-  };
-
-  // Calculate the distance if both locations are provided
-  let distanceInKm = 0;
-  let distanceInMeters = 0;
-
-  if (
-    selectedLocationFromForDriver?.latitude &&
-    selectedLocationToForDriver?.latitude
-  ) {
-    const { distanceInKm: km, distanceInMeters: meters } = calculateDistance(
-      selectedLocationFromForDriver.latitude,
-      selectedLocationFromForDriver.longitude,
-      selectedLocationToForDriver.latitude,
-      selectedLocationToForDriver.longitude
-    );
-    distanceInKm = km;
-    distanceInMeters = meters;
-  }
 
   useEffect(() => {
     if (Array.isArray(basicDataByGet?.no_of_people) && people !== undefined) {
@@ -2645,7 +2602,6 @@ const BookingSection = () => {
           </div>
         ))}
 
-        {/* Display error message */}
         {errorMessage && (
           <div className="text-danger mb-3">
             <strong>{errorMessage}</strong>
@@ -2653,12 +2609,7 @@ const BookingSection = () => {
         )}
 
         <>
-          <div>
-            <p>
-              Distance between them is: {distanceInKm.toFixed(2)} km
-              {/* ({distanceInMeters.toFixed(0)} meters) */}
-            </p>
-          </div>
+       
         </>
       </>
     )}
