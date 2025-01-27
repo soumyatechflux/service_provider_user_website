@@ -471,36 +471,36 @@ useEffect(() => {
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
           // sub_category_id: service?.id || "",
-          number_of_people: SelectedObjectOfPeople || {},
-          guest_name: BookingForGuestName || "Guest",
-          instructions: specialRequests || "",
-          dishes: 
-            service?.id === 1 || service?.id === 2 
-              ? SelectedNamesOfDishes || [] 
-              : [],
-          driver_time_duration: 
-            service?.category_id === 2 
-              ? SelectedNumberOfHoursObjectForDriver || {} 
-              : {},
-          transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
-          car_type: service?.category_id === 2 ? selectedCarType || "" : "",
-          gardener_time_duration: 
-            service?.id === 8 
-              ? SelectedNumberOfHoursObjectForGardner || {} 
-              : {},
-          gardener_monthly_subscription: 
-            service?.id === 9 
-              ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
-              : {},
-          gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
-          menu: service?.id === 3 
-            ? (selectedMenuItemsForChefForParty || [])
-                .filter((item) => item.quantity > 0)
-                .map((item) => ({
-                  ...item,
-                  price: parseFloat(item.price),
-                }))
-            : [],
+          // number_of_people: SelectedObjectOfPeople || {},
+          // guest_name: BookingForGuestName || "Guest",
+          // instructions: specialRequests || "",
+          // dishes: 
+          //   service?.id === 1 || service?.id === 2 
+          //     ? SelectedNamesOfDishes || [] 
+          //     : [],
+          // driver_time_duration: 
+          //   service?.category_id === 2 
+          //     ? SelectedNumberOfHoursObjectForDriver || {} 
+          //     : {},
+          // transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
+          // car_type: service?.category_id === 2 ? selectedCarType || "" : "",
+          // gardener_time_duration: 
+          //   service?.id === 8 
+          //     ? SelectedNumberOfHoursObjectForGardner || {} 
+          //     : {},
+          // gardener_monthly_subscription: 
+          //   service?.id === 9 
+          //     ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
+          //     : {},
+          // gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
+          // menu: service?.id === 3 
+          //   ? (selectedMenuItemsForChefForParty || [])
+          //       .filter((item) => item.quantity > 0)
+          //       .map((item) => ({
+          //         ...item,
+          //         price: parseFloat(item.price),
+          //       }))
+          //   : [],
         },
       };
 
