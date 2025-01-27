@@ -581,6 +581,8 @@ setLoading(false);
 
 {bookingsIdWise?.payment_mode !== "online" && (
 <>
+                      {/*
+                      
                       <button
                   className="payment-option-button mt-2 mb-2"
                   onClick={() => {
@@ -600,7 +602,9 @@ setLoading(false);
                     </div>
                     <div className="payment-arrow">→</div>
                   </div>
-                </button>
+                </button> 
+                
+                */}
                 </>
 )}
 
