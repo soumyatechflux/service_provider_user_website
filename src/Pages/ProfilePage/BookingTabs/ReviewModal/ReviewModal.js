@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Star } from "lucide-react";
 import "./ReviewModal.css";
 import axios from "axios";
@@ -11,21 +11,48 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
+  // Fetch existing review when modal opens
+  useEffect(() => {
+    const fetchExistingReview = async () => {
+      if (isOpen && !isSubmitted) {
+        try {
+          const token = sessionStorage.getItem("ServiceProviderUserToken");
+
+          const response = await axios.get(
+            `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/${partnerId}`,
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+
+          if (response.status === 200 && response.data.success) {
+            const { rating, review } = response.data.data; // Extract data from the response
+            setRating(parseFloat(rating)); // Convert rating to float if needed
+            setReview(review);
+            setIsSubmitted(true); // Mark as reviewed
+          }
+        } catch (error) {
+          console.error("Error fetching review:", error);
+        }
+      }
+    };
+
+    fetchExistingReview();
+  }, [isOpen, partnerId, isSubmitted]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
+
     if (!rating) {
       setError("Please provide rating.");
       return;
     }
-  
+
     try {
-      setError(null); // Clear any previous errors
-      setSuccessMessage(""); // Clear any previous success messages
-      setIsSubmitting(true); // Disable the submit button while submitting
-  
+      setError(null);
+      setSuccessMessage("");
+      setIsSubmitting(true);
+
       const token = sessionStorage.getItem("ServiceProviderUserToken");
-  
+
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
         {
@@ -35,17 +62,11 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
         },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response.status === 200 && response.data.success) {
         setSuccessMessage("Your review has been submitted successfully!");
-        setRating(0);
-        setReview("");
         setIsSubmitted(true); // Mark as submitted
-  
-        // Automatically close the modal after a short delay
-        setTimeout(() => {
-          onClose(); // Close the modal
-        }, 500); // Adjust the delay (in milliseconds) as needed
+        // No longer closing the modal, leaving it open after submission
       } else {
         setError("Failed to submit your review. Please try again.");
       }
@@ -53,10 +74,49 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
       console.error("Error submitting review:", error);
       setError("An error occurred while submitting your review.");
     } finally {
-      setIsSubmitting(false); // Re-enable the submit button
+      setIsSubmitting(false);
     }
   };
-  
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    if (!rating) {
+      setError("Please provide rating.");
+      return;
+    }
+
+    try {
+      setError(null);
+      setSuccessMessage("");
+      setIsSubmitting(true);
+
+      const token = sessionStorage.getItem("ServiceProviderUserToken");
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
+        {
+          partner_id: partnerId,
+          rating,
+          review,
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (response.status === 200 && response.data.success) {
+        setSuccessMessage("Your review has been updated successfully!");
+        setIsSubmitted(true); // Mark as updated
+        // No longer closing the modal, leaving it open after updating
+      } else {
+        setError("Failed to update your review. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error updating review:", error);
+      setError("An error occurred while updating your review.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div
@@ -72,7 +132,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="review-form">
+        <form onSubmit={isSubmitted ? handleUpdate : handleSubmit} className="review-form">
           <div className="review-form-rating">
             <label>Rating</label>
             <div className="review-stars">
@@ -82,7 +142,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
                   type="button"
                   onClick={() => setRating(star)}
                   className="review-star-button"
-                  disabled={isSubmitted} // Disable buttons after successful submission
+                  disabled={isSubmitting} // Disable rating selection while submitting
                 >
                   <Star
                     fill={star <= rating ? "#ffc107" : "none"}
@@ -103,7 +163,6 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
               onChange={(e) => setReview(e.target.value)}
               placeholder="Share your experience..."
               rows="4"
-              disabled={isSubmitted} // Disable textarea after successful submission
             />
           </div>
 
@@ -111,13 +170,12 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
           {successMessage && <div className="review-success">{successMessage}</div>}
 
           <div className="review-modal-actions">
-            
             <button
               type="submit"
               className="review-modal-submit"
-              disabled={isSubmitting || isSubmitted} // Disable submit button during submission or after success
+              disabled={isSubmitting} // Disable submit button while submitting
             >
-              {isSubmitted ? "Submitted" : isSubmitting ? "Submitting..." : "Submit Review"}
+              {isSubmitted ? "Update Review" : isSubmitting ? "Submitting..." : "Submit Review"}
             </button>
           </div>
         </form>

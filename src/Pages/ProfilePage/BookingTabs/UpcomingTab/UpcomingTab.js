@@ -425,50 +425,80 @@ const UpcomingTab = () => {
                         </p>
                       </div>
                       <div className="info-group">
-                        <h4 className="booking-subtitle">Address</h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.visit_address}
-                        </p>
-                      </div>
+  <h4 className="booking-subtitle">Address</h4>
+  {bookingsIdWise?.category_id === 2 ? (
+    <>
+      <p className="booking-info-text">
+        <strong>From: </strong>
+        {bookingsIdWise?.address_from || "N/A"}
+      </p>
+      <p className="booking-info-text">
+        <strong>To: </strong>
+        {bookingsIdWise?.address_to || "N/A"}
+      </p>
+    </>
+  ) : (
+    <p className="booking-info-text">
+      {bookingsIdWise?.visit_address || "N/A"}
+    </p>
+  )}
+</div>
+
+                      {bookingsIdWise?.sub_category_id === 9 && (
+  <div className="info-group">
+    <h4 className="booking-subtitle">Total Visiting Slots</h4>
+    <p className="booking-info-text">
+      {bookingsIdWise?.gardener_visiting_slots
+        ? JSON.parse(bookingsIdWise.gardener_visiting_slots).length
+        : "N/A"}
+    </p>
+  </div>
+)}
                       <div className="info-group">
-                        <h4 className="booking-subtitle">
-                          {bookingsIdWise?.category_id === 2 ||
-                          bookingsIdWise?.category_id === 3
-                            ? bookingsIdWise?.category_id === 3
-                              ? "Gardener Visiting Slots"
-                              : "Number Of Hours Booked"
-                            : "Number of People"}
-                        </h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.category_id === 2
-                            ? bookingsIdWise?.no_of_hours_booked
-                            : bookingsIdWise?.category_id === 3
-                            ? bookingsIdWise?.gardener_visiting_slots &&
-                              JSON.parse(
-                                bookingsIdWise.gardener_visiting_slots
-                              ).map((slot, index) => {
-                                const formattedDate = new Date(
-                                  slot.date
-                                ).toLocaleDateString(
-                                  "en-US", // Locale for English (United States)
-                                  {
-                                    year: "numeric",
-                                    month: "short",
-                                    day: "numeric",
-                                  }
-                                );
-                                return (
-                                  <div key={index}>
-                                    <strong>Date : </strong>
-                                    {formattedDate},{" "}
-                                    <strong>Approx Time :</strong> {slot.hours}{" "}
-                                    mins
-                                  </div>
-                                );
-                              })
-                            : bookingsIdWise?.people_count}
-                        </p>
-                      </div>
+  <h4 className="booking-subtitle">
+    {bookingsIdWise?.sub_category_id === 8
+      ? "Visit Time"
+      : bookingsIdWise?.category_id === 2 ||
+        bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.sub_category_id === 9
+        ? "Gardener Visiting Slots"
+        : "Number Of Hours Booked"
+      : "Number of People"}
+  </h4>
+  <p className="booking-info-text">
+  {bookingsIdWise?.sub_category_id === 8
+    ? new Date(`1970-01-01T${bookingsIdWise?.visit_time}`).toLocaleTimeString(
+        "en-US",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Ensures AM/PM format
+        }
+      )
+    : bookingsIdWise?.category_id === 2
+    ? bookingsIdWise?.no_of_hours_booked
+    : bookingsIdWise?.sub_category_id === 9
+    ? bookingsIdWise?.gardener_visiting_slots &&
+      JSON.parse(bookingsIdWise.gardener_visiting_slots).map((slot, index) => {
+        const formattedDate = new Date(slot.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        return (
+          <div key={index}>
+            <strong>Date : </strong>
+            {formattedDate},{" "}
+            <strong>Approx Time :</strong> {slot.hours} mins
+          </div>
+        );
+      })
+    : bookingsIdWise?.people_count}
+</p>
+
+
+</div>
+
 
                       <div className="info-group">
                         {bookingsIdWise?.category_id !== 3 && (
@@ -493,7 +523,7 @@ const UpcomingTab = () => {
                             : bookingsIdWise?.dishes}
                         </p>
                       </div>
-                      {bookingsIdWise?.category_id !== 3 && (
+                      {bookingsIdWise?.sub_category_id !== 9 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
@@ -503,6 +533,8 @@ const UpcomingTab = () => {
                         </p>
                       </div>
                       )}
+                      
+
                       {bookingsIdWise?.category_id !== 3 && (
                         <div className="info-group">
                           <h4 className="booking-subtitle">
@@ -744,6 +776,7 @@ const UpcomingTab = () => {
               bookingId={cancelId}
               booking={bookings[cancelId]}
               onConfirm={passDataToNext}
+              sub_category_id = {bookingsIdWise?.sub_category_id}
             />
             <ConfirmationModal
               isOpen={currentModal === "confirmation"}

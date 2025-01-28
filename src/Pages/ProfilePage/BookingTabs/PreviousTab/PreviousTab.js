@@ -212,76 +212,132 @@ function PreviousTab() {
                   </div>
                 </div>
                 <div className="column2">
-                  <h3 className="heading-text mb-4">Booking Details</h3>
-                  <div className="booking-info">
-                    <div className="info-group">
-                      <h4 className="booking-subtitle">Booking For</h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.category?.category_name} -{" "}
-                        {bookingsIdWise?.sub_category?.sub_category_name}
-                      </p>
-                    </div>
-                    <div className="info-group">
-                      <h4 className="booking-subtitle">
-                        {bookingsIdWise?.category_id === 2 ||
-                        bookingsIdWise?.category_id === 3
-                          ? "Number Of Hours Booked"
-                          : "Number of People"}
-                      </h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.category_id === 2 ||
-                        bookingsIdWise?.category_id === 3
-                          ? bookingsIdWise?.no_of_hours_booked
-                          : bookingsIdWise?.people_count}
-                      </p>
-                    </div>
-                    <div className="info-group">
-                      {bookingsIdWise?.category_id !== 3 && (
-                        <h4 className="booking-subtitle">
-                          {bookingsIdWise?.category_id === 2
-                            ? "Car Type"
-                            : "Menu and Dishes"}
-                        </h4>
-                      )}
-
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.category_id === 2
-                          ? bookingsIdWise?.car_type // Show car type when category_id === 2
-                          : bookingsIdWise?.sub_category_id === 3
-                          ? bookingsIdWise?.menu?.map((item, index) => (
-                              <span key={index}>
-                                {item.name}
-                                {index !== bookingsIdWise.menu.length - 1 &&
-                                  ", "}
-                              </span>
-                            ))
-                          : bookingsIdWise?.dishes}
-                      </p>
-                    </div>
-                    {bookingsIdWise?.category_id !== 3 && (
-                    <div className="info-group">
-                      <h4 className="booking-subtitle">Date & Time</h4>
-                      <p className="booking-info-text">
-                        {`${formatDate(
-                          bookingsIdWise?.visit_date
-                        )}, ${formatTime(bookingsIdWise?.visit_time)}`}
-                      </p>
-                    </div>
-                    )}
-                    {bookingsIdWise?.category_id !== 3 && (
-                      <div className="info-group">
-                        <h4 className="booking-subtitle">
-                          Special Requests / Instructions
-                        </h4>
+                    <h3 className="heading-text mb-4">Booking Details</h3>
+                    <div className="booking-info">
+                      <div className="info-group mb-2">
+                        <h4 className="booking-subtitle">Booking For</h4>
                         <p className="booking-info-text">
-                          {bookingsIdWise?.instructions?.trim()
-                            ? bookingsIdWise.instructions
-                            : "N/A"}
+                          {bookingsIdWise?.guest_name}
+                          
+                        </p>
+                        <h4 className="booking-subtitle">Booking Of</h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.category?.category_name} -{" "}
+                          {bookingsIdWise?.sub_category?.sub_category_name}
                         </p>
                       </div>
-                    )}
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">Address</h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.visit_address}
+                        </p>
+                      </div>
+                      {bookingsIdWise?.sub_category_id === 9 && (
+  <div className="info-group">
+    <h4 className="booking-subtitle">Total Visiting Slots</h4>
+    <p className="booking-info-text">
+      {bookingsIdWise?.gardener_visiting_slots
+        ? JSON.parse(bookingsIdWise.gardener_visiting_slots).length
+        : "N/A"}
+    </p>
+  </div>
+)}
+                      <div className="info-group">
+  <h4 className="booking-subtitle">
+    {bookingsIdWise?.sub_category_id === 8
+      ? "Visit Time"
+      : bookingsIdWise?.category_id === 2 ||
+        bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.sub_category_id === 9
+        ? "Gardener Visiting Slots"
+        : "Number Of Hours Booked"
+      : "Number of People"}
+  </h4>
+  <p className="booking-info-text">
+  {bookingsIdWise?.sub_category_id === 8
+    ? new Date(`1970-01-01T${bookingsIdWise?.visit_time}`).toLocaleTimeString(
+        "en-US",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: true, // Ensures AM/PM format
+        }
+      )
+    : bookingsIdWise?.category_id === 2
+    ? bookingsIdWise?.no_of_hours_booked
+    : bookingsIdWise?.sub_category_id === 9
+    ? bookingsIdWise?.gardener_visiting_slots &&
+      JSON.parse(bookingsIdWise.gardener_visiting_slots).map((slot, index) => {
+        const formattedDate = new Date(slot.date).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        return (
+          <div key={index}>
+            <strong>Date : </strong>
+            {formattedDate},{" "}
+            <strong>Approx Time :</strong> {slot.hours} mins
+          </div>
+        );
+      })
+    : bookingsIdWise?.people_count}
+</p>
+
+
+</div>
+
+
+
+                      <div className="info-group">
+                        {bookingsIdWise?.category_id !== 3 && (
+                          <h4 className="booking-subtitle">
+                            {bookingsIdWise?.category_id === 2
+                              ? "Car Type"
+                              : "Menu and Dishes"}
+                          </h4>
+                        )}
+
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
+                            : bookingsIdWise?.sub_category_id === 3
+                            ? bookingsIdWise?.menu?.map((item, index) => (
+                                <span key={index}>
+                                  {item.name}
+                                  {index !== bookingsIdWise.menu.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))
+                            : bookingsIdWise?.dishes}
+                        </p>
+                      </div>
+                      {bookingsIdWise?.sub_category_id !== 9 && (
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">Date & Time</h4>
+                        <p className="booking-info-text">
+                          {`${formatDate(
+                            bookingsIdWise?.visit_date
+                          )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                        </p>
+                      </div>
+                      )}
+                      
+
+                      {bookingsIdWise?.category_id !== 3 && (
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">
+                            Special Requests / Instructions
+                          </h4>
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.instructions?.trim()
+                              ? bookingsIdWise.instructions
+                              : "N/A"}
+                          </p>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
                 <div className="column3">
                   <h3 className="heading-text mb-4">Billing Details</h3>
                   <div className="billing-info">

@@ -1692,29 +1692,25 @@ Your Subscription Ends At:
   <div className="people-counter-container">
 
     <span className="people-counter-label">Select Number of People</span>
-    <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrement}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">{people}</span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrement}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div className="booking-cooking-time">
-                        Total Cooking Time: {formatTime(approxTime)}
-                      </div>
-                    </div>
-                    </div>
-                    </div>
+
+
+<div className="people-counter">
+      <button type="button" className="counter-button" onClick={handleDecrement}>
+        -
+      </button>
+      <span className="counter-value">{people}</span>
+      <button type="button" className="counter-button" onClick={handleIncrement}>
+        +
+      </button>
+    </div>
+    
+  </div>
+
+  <div className="cooking-time-container pt-3">
+  <span className="people-counter-label">Total cooking time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
+  </div>
+  </div>
+</div>
                   </>
                 )}
 
