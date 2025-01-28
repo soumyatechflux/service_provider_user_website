@@ -1,3 +1,149 @@
+.date-scroll-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding: 10px 10px;
+}
+
+.date-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 90px;  /* Increased width */
+  min-width: 60px;
+  height: 100px; /* Slightly taller */
+  background: #f9f9f9;
+  border-radius: 19px; /* Smoother rounded edges */
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.3s, transform 0.2s;
+  padding: 12px;
+  text-align: center;
+}
+
+.date-item.selected {
+  background: #6979F8;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+.day.selected {
+  background: #6979F8;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+.month.selected {
+  background: #6979F8;
+  color: #fff !important;
+  transform: scale(1.05);
+}
+
+.date-item:hover {
+  background: #6979F8;
+  color: white;
+}
+
+/* .date-item:focus {
+  outline: 2px solid #6979F8;
+} */
+
+.day {
+  font-size: 12px;
+  font-weight: 400;
+  /* color: #777; */
+}
+
+.date {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.month {
+  font-size: 14px;
+  font-weight: 400;
+
+  /* color: #777; */
+}
+
+
+
+
+.div-people-count{
+  background-color: white;
+  box-shadow: 0px 0px 8.5px 0px #0000001A;
+  padding: 16px;
+  border-radius: 12px;
+
+
+
+}
+.people-counter-container {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  background: white;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.people-counter-label {
+  font-size: 14px;
+  color: #777;
+  font-family: "DM Sans";
+  font-weight: 400px;
+}
+
+.people-counter {
+  display: flex;
+  align-items: center;
+  background: #fff;
+  border-radius: 10px;
+  padding: 6px 10px;
+  /* box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); */
+}
+
+.counter-button {
+  background: #f1f1f1;
+  border: none;
+  padding: 8px 12px;
+  font-size: 18px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.counter-button:hover {
+  background: #e0e0e0;
+}
+
+.counter-value {
+  padding: 8px 13px;
+    font-size: 18px;
+    font-weight: bold;
+    background: #6979F8;
+    color: white;
+    border-radius: 7px;
+}
+
+.cooking-time-container {
+  margin-top: 12px;
+  font-size: 14px;
+  color: #555;
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid #F8F8F8;
+}
+
+.cooking-time-value {
+  color: #6979F8;
+  font-weight: bold;
+}
+
+
+
+
+
 /* Booking Form Group */
 .booking-form-group {
   margin-bottom: 1.5rem;
@@ -1417,7 +1563,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin: 10px;
+    margin: 0px;
   }
   /* For smaller mobile devices */
   .booking-illustration-section {

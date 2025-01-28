@@ -29,6 +29,9 @@ import { Button } from "react-bootstrap";
 import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
 import Loader from "../../Loader/Loader";
 
+import {  addDays } from "date-fns";
+import DriverBookingMap from "./DriverBookingMap";
+
 const BookingSection = () => {
 
   const [errorMessage, setErrorMessage] = useState("");
@@ -354,23 +357,62 @@ const BookingSection = () => {
 
 
 
-  const handleDateChange = (newDate) => {
-    const delhiDate = new Date(
-      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-    );
+  // const handleDateChange = (newDate) => {
+  //   const delhiDate = new Date(
+  //     newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  //   );
 
-    setSelectedDate(delhiDate);
+  //   setSelectedDate(delhiDate);
 
-    const isToday = delhiDate.toDateString() === new Date().toDateString();
+  //   const isToday = delhiDate.toDateString() === new Date().toDateString();
 
-    if (isToday) {
-      updateMinTime(new Date()); // Update minTime to current time for today
-    } else {
-      setMinTime("00:00"); // Reset minTime for future dates
-    }
+  //   if (isToday) {
+  //     updateMinTime(new Date()); // Update minTime to current time for today
+  //   } else {
+  //     setMinTime("00:00"); // Reset minTime for future dates
+  //   }
 
-    setSelectedTime(""); // Clear the time selection
-  };
+  //   setSelectedTime(""); // Clear the time selection
+  // };
+
+
+  
+// Handle date change
+const handleDateChange = (newDate) => {
+  console.log("New Date:", newDate); // Log the value of newDate
+  if (!newDate) {
+    console.error("Invalid date selected:", newDate);
+    return;
+  }
+
+  const delhiDate = new Date(
+    newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+  );
+
+  console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
+  setSelectedDate(delhiDate);
+
+  const isToday = delhiDate.toDateString() === new Date().toDateString();
+
+  if (isToday) {
+    setMinTime(
+      new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    ); // Set minTime for today
+  } else {
+    setMinTime("00:00"); // Reset minTime for future dates
+  }
+
+  setSelectedTime(""); // Clear the time selection
+};
+
+// Generate next 7 days dynamically
+const getUpcomingDates = () => {
+  const today = new Date();
+  const dates = Array.from({ length: 60 }, (_, i) => addDays(today, i));
+  console.log("Generated Dates:", dates); // Log generated dates
+  return dates;
+};
+  
 
 
 
@@ -1339,6 +1381,14 @@ const BookingSection = () => {
 
 
 
+  const [DriverCoordinates, setDriverCoordinates] = useState({});
+
+  const handleSelectedPoints = (data) => {
+    console.log('Selected Route Details:', data);
+    setDriverCoordinates(data);
+    // alert(`Start Point: ${data.startPoint}\nEnd Point: ${data.endPoint}\nDistance: ${data.distance}`);
+  };
+
 
 
   
@@ -1489,7 +1539,7 @@ const BookingSection = () => {
                 <>
                   <div>
                     {/* Date Picker */}
-                    <div className="booking-form-group flex-fill">
+                    {/* <div className="booking-form-group flex-fill">
                       <label
                         className="booking-form-label"
                         htmlFor="date-input"
@@ -1504,7 +1554,36 @@ const BookingSection = () => {
                           renderInput={(params) => <TextField {...params} />}
                         />
                       </LocalizationProvider>
-                    </div>
+                    </div> */}
+
+
+  <div className="booking-form flex-fill mb-4">
+  <label className="booking-form-label">Select Visit Date</label>
+  <div className="date-scroll-container">
+          {getUpcomingDates().map((date, index) => {
+            const isSelected =
+              selectedDate && selectedDate.toDateString() === date.toDateString();
+            return (
+              <div
+                key={index}
+                className={`date-item ${isSelected ? "selected" : ""}`}
+                onClick={() => handleDateChange(date)} // Handle click with div
+                role="button"
+                tabIndex={0}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    handleDateChange(date); // Handle keyboard interaction
+                  }
+                }}
+              >
+                <span className="day">{format(date, "EEE")}</span>
+                <span className="date">{format(date, "dd")}</span>
+                <span className="month">{format(date, "MMM")}</span>
+              </div>
+            );
+          })}
+        </div>
+      </div>
 
                     {/* Time Picker */}
                     <div className="booking-form-group">
@@ -1541,22 +1620,35 @@ const BookingSection = () => {
                 <>
                   <div>
                     {/* Date Picker */}
-                    <div className="booking-form-group flex-fill">
-                      <label
-                        className="booking-form-label"
-                        htmlFor="date-input"
-                      >
-                        Monthly Subscription Start Date
-                      </label>
-                      <LocalizationProvider dateAdapter={AdapterDateFns}>
-                        <DatePicker
-                          value={MonthlySubscriptionStartDate}
-                          onChange={handleStartDateChange}
-                          minDate={new Date()}
-                          renderInput={(params) => <TextField {...params} />}
-                        />
-                      </LocalizationProvider>
-                    </div>
+                    <div className="booking-form flex-fill mb-4">
+  <label className="booking-form-label">Monthly Subscription Start Date</label>
+  <div className="date-scroll-container">
+    {getUpcomingDates().map((date, index) => {
+      const isSelected =
+        MonthlySubscriptionStartDate &&
+        MonthlySubscriptionStartDate.toDateString() === date.toDateString();
+      return (
+        <div
+          key={index}
+          className={`date-item ${isSelected ? "selected" : ""}`}
+          onClick={() => handleStartDateChange(date)} // Handle click with div
+          role="button"
+          tabIndex={0}
+          onKeyPress={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              handleStartDateChange(date); // Handle keyboard interaction
+            }
+          }}
+        >
+          <span className="day">{format(date, "EEE")}</span>
+          <span className="date">{format(date, "dd")}</span>
+          <span className="month">{format(date, "MMM")}</span>
+        </div>
+      );
+    })}
+  </div>
+</div>
+
 
                     <div className="booking-cooking-time">
                       Your Subscription Starts From: {/* <br /> */}
@@ -1580,7 +1672,7 @@ const BookingSection = () => {
               <div>
                 {service?.category_id === 1 && (
                   <>
-                    <div className="booking-form-group">
+                    {/* <div className="booking-form-group">
                       <label className="booking-form-label">
                         Number of People
                       </label>
@@ -1604,7 +1696,33 @@ const BookingSection = () => {
                       <div className="booking-cooking-time">
                         Total Cooking Time: {formatTime(approxTime)}
                       </div>
-                    </div>
+                    </div> */}
+
+<div className="booking-form-group">
+  <label className="booking-form-label">Number of People</label>
+ 
+  <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of People</span>
+    <div className="people-counter">
+      <button type="button" className="counter-button" onClick={handleDecrement}>
+        -
+      </button>
+      <span className="counter-value">{people}</span>
+      <button type="button" className="counter-button" onClick={handleIncrement}>
+        +
+      </button>
+    </div>
+    
+  </div>
+
+  <div className="cooking-time-container pt-3">
+  <span className="people-counter-label">Total cooking time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
+  </div>
+  </div>
+</div>
                   </>
                 )}
 
@@ -1614,24 +1732,30 @@ const BookingSection = () => {
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count">
+                      <div className="people-counter-container">
+
+<span className="people-counter-label">Select Number of Hours</span>
+                      <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementHousForDriver}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfHoursObjectForDriver?.hours}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrementHousForDriver}
                         >
                           +
                         </button>
+                        </div>
+                        </div>
                       </div>
                     </div>
                   </>
@@ -1645,24 +1769,31 @@ const BookingSection = () => {
                         Number of Hours
                       </label>
                       
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+<div className="people-counter-container">
+
+  <span className="people-counter-label">Select Number of Hours</span>
+  <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementHousForGardner}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfHoursObjectForGardner?.hours}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrementHousForGardner}
                         >
                           +
                         </button>
+                      </div>
+                      </div>
                       </div>
                     </div>
                   </>
@@ -1678,60 +1809,87 @@ const BookingSection = () => {
                       <label className="booking-form-label">
                         Number of Visiting Slots
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of Hours</span>
+    <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementVisitsForMonthlyGardner}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfSlotsObjectForMonthlyGardner?.visit}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrementVisitsForMonthlyGardner}
                         >
                           +
                         </button>
                       </div>
+                      </div>
+                      </div>
                     </div>
 
                     {selectedVisitDates.map((visit, index) => (
-                      <div key={index} className="booking-form-group flex-fill">
-                        <label
-                          className="booking-form-label"
-                          htmlFor={`visit-date-${index}`}
-                        >
-                          Select Visit Date {index + 1}
-                        </label>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                          <DatePicker
-                            value={visit.date ? new Date(visit.date) : null}
-                            onChange={(newDate) => {
-                              const updatedDates = [...selectedVisitDates];
-                              updatedDates[index].date = newDate
-                                .toISOString()
-                                .split("T")[0];
-                              setSelectedVisitDates(updatedDates);
-                            }}
-                            minDate={new Date(MonthlySubscriptionStartDate)}
-                            maxDate={new Date(MonthlySubscriptionEndsDate)}
-                            renderInput={(params) => <TextField {...params} />}
-                          />
-                        </LocalizationProvider>
-                        <div>
-                          Average Time per Slot:{" "}
-                          {(() => {
-                            const totalMinutes = visit.hours; // Assuming 'visit.hours' is in minutes
-                            const hours = Math.floor(totalMinutes / 60); // Get the hours part
-                            const minutes = Math.floor(totalMinutes % 60); // Get the remaining minutes and round down
-                            return `${hours} hours ${minutes} minutes`; // Display only complete hours and minutes
-                          })()}
-                        </div>
-                      </div>
+                     <div key={index} className="booking-form-group flex-fill">
+                     <label className="booking-form-label">
+                       Select Visit Date {index + 1}
+                     </label>
+                     <div className="date-scroll-container">
+                       {getUpcomingDates(
+                         new Date(MonthlySubscriptionStartDate),
+                         new Date(MonthlySubscriptionEndsDate)
+                       ).map((date, i) => {
+                         const isSelected =
+                           visit.date &&
+                           new Date(visit.date).toDateString() === date.toDateString();
+                         return (
+                           <div
+                             key={i}
+                             className={`date-item ${isSelected ? "selected" : ""}`}
+                             onClick={() => {
+                               const updatedDates = [...selectedVisitDates];
+                               updatedDates[index].date = date.toISOString().split("T")[0];
+                               setSelectedVisitDates(updatedDates);
+                             }}
+                             role="button"
+                             tabIndex={0}
+                             onKeyPress={(e) => {
+                               if (e.key === "Enter" || e.key === " ") {
+                                 const updatedDates = [...selectedVisitDates];
+                                 updatedDates[index].date = date.toISOString().split("T")[0];
+                                 setSelectedVisitDates(updatedDates);
+                               }
+                             }}
+                           >
+                             <span className="day">{format(date, "EEE")}</span>
+                             <span className="date">{format(date, "dd")}</span>
+                             <span className="month">{format(date, "MMM")}</span>
+                           </div>
+                         );
+                       })}
+                     </div>
+                     <div className="cooking-time-container pt-3">
+                     <span className="people-counter-label">
+                       Average Time per Slot: </span>{" "}
+                       <span className="cooking-time-value">
+                       {(() => {
+                         const totalMinutes = visit.hours;
+                         const hours = Math.floor(totalMinutes / 60);
+                         const minutes = Math.floor(totalMinutes % 60);
+                         return `${hours} hours ${minutes} minutes`;
+                       })()}
+                       </span>
+                     </div>
+                   </div>
+                   
                     ))}
                   </>
                 )}
@@ -2427,6 +2585,9 @@ const BookingSection = () => {
 
 
 
+              {service?.category_id !== 2 && (
+      <>
+
               <Button
   onClick={() => setIsAddingAddress(true)}
   className="btn btn-primary nav-buttons"
@@ -2439,14 +2600,14 @@ const BookingSection = () => {
 >
   + Add New Address
 </Button>
+</> )}
 
 
-
-<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
+{/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
   <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
   <span style={{ padding: '0 10px' }}>OR</span>
   <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
-</div>
+</div> */}
 
 
               <div
@@ -2534,7 +2695,10 @@ const BookingSection = () => {
 <>
     {service?.category_id === 2 && (
       <>
-        <span>Select Address From:</span>
+
+<DriverBookingMap onSelectPoints={handleSelectedPoints} />
+
+        {/* <span>Select Address From:</span>
         {addresses.map((address, index) => (
           <div
             key={address.address_id}
@@ -2546,7 +2710,6 @@ const BookingSection = () => {
             }}
           >
             <div className="d-flex align-items-center">
-              {/* Radio button for selecting address */}
               <input
                 type="radio"
                 name="address-from"
@@ -2557,14 +2720,13 @@ const BookingSection = () => {
                 }
                 onChange={() => {
                   setSelectedLocationFromForDriver(address);
-                  // Validate if both selected addresses are the same
                   if (
                     selectedLocationToForDriver?.address_id ===
                     address?.address_id
                   ) {
                     setErrorMessage("From and To addresses cannot be the same.");
                   } else {
-                    setErrorMessage(""); // Clear error message if valid
+                    setErrorMessage(""); 
                   }
                 }}
                 className="me-2"
@@ -2624,7 +2786,6 @@ const BookingSection = () => {
             }}
           >
             <div className="d-flex align-items-center">
-              {/* Radio button for selecting address */}
               <input
                 type="radio"
                 name="address-to"
@@ -2635,14 +2796,13 @@ const BookingSection = () => {
                 }
                 onChange={() => {
                   setSelectedLocationToForDriver(address);
-                  // Validate if both selected addresses are the same
                   if (
                     selectedLocationFromForDriver?.address_id ===
                     address?.address_id
                   ) {
                     setErrorMessage("From and To addresses cannot be the same.");
                   } else {
-                    setErrorMessage(""); // Clear error message if valid
+                    setErrorMessage("");
                   }
                 }}
                 className="me-2"
@@ -2692,7 +2852,7 @@ const BookingSection = () => {
           <div className="text-danger mb-3">
             <strong>{errorMessage}</strong>
           </div>
-        )}
+        )} */}
 
         <>
        

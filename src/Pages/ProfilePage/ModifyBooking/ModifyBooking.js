@@ -18,7 +18,16 @@ import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPaymen
 import "./ModifyBooking.css";
 
 const ModifyBooking = () => {
-
+  const getUpcomingDates = (startDate, numDays) => {
+    const dates = [];
+    for (let i = 0; i < numDays; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      dates.push(date);
+    }
+    return dates;
+  };
+  
   
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
@@ -1503,20 +1512,50 @@ const handleCheckboxChange = (id) => {
 
               {service?.id !== 9 && (
                 <>
-                  <div>
-                    <div className="booking-form-group flex-fill" style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-  <label
-    className="booking-form-label"
-    htmlFor="date-input"
-    style={{ margin: 0 }}
-  >
-    Visit Date & Time:
-  </label>
-  <span>{DefaultDataOfBooking?.booking_date_time}</span>
+
+
+<div>
+  <div className="booking-form-group flex-fill">
+    <label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
+      Visit Date :
+    </label>
+    <div className="previous_time_selected">
+      <span>
+        {DefaultDataOfBooking?.booking_date_time
+          ? DefaultDataOfBooking.booking_date_time.split(", ").slice(0, 2).join(", ") 
+          : "N/A"}
+      </span>
+    </div>
+  </div>
 </div>
 
 
-             
+
+
+
+                  <div>
+                    <div className="booking-form-group flex-fill">
+                      <label
+                        className="booking-form-label"
+                        htmlFor="date-input"
+                        style={{ margin: 0 }}
+                      >
+                        Visit Time:
+                      </label>
+                      <div className="previous_time_selected1">
+                        <div className="previous_time_selected_child">
+                          <div>
+                          Visit Time 
+                          </div><div>{" "}
+                          {DefaultDataOfBooking?.booking_date_time
+                            ? DefaultDataOfBooking.booking_date_time
+                                .split(", ")
+                                .pop() // Extract last part (Time)
+                            : "N/A"}
+                            </div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -1542,21 +1581,32 @@ const handleCheckboxChange = (id) => {
                       </LocalizationProvider>
                     </div> */}
 
-                    <div className="booking-cooking-time">
-                      Your Subscription Starts From: {/* <br /> */}
-                      <strong>
-                        {MonthlySubscriptionStartDate
+<div className="booking-form-group flex-fill">
+<label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
+Your Subscription Starts From:
+</label>
+<div className="previous_time_selected">
+      <span>
+      {MonthlySubscriptionStartDate
                           ? MonthlySubscriptionStartDate.toDateString()
                           : "Not selected"}
-                      </strong>
-                      <br />
-                      Your Subscription Ends At: {/* <br /> */}
-                      <strong>
-                        {MonthlySubscriptionEndsDate
+      </span>
+    </div>
+  </div>
+
+
+  <div className="booking-form-group flex-fill">
+<label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
+Your Subscription Ends At:
+</label>
+<div className="previous_time_selected">
+      <span>
+      {MonthlySubscriptionEndsDate
                           ? MonthlySubscriptionEndsDate.toDateString()
                           : "Not calculated"}
-                      </strong>
-                    </div>
+      </span>
+    </div>
+  </div>
                   </div>
                 </>
               )}
@@ -1568,18 +1618,23 @@ const handleCheckboxChange = (id) => {
                       <label className="booking-form-label">
                         Number of People
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of People</span>
+    <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrement}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">{people}</span>
+                        <span className="counter-value">{people}</span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrement}
                         >
                           +
@@ -1588,6 +1643,8 @@ const handleCheckboxChange = (id) => {
                       <div className="booking-cooking-time">
                         Total Cooking Time: {formatTime(approxTime)}
                       </div>
+                    </div>
+                    </div>
                     </div>
                   </>
                 )}
@@ -1598,24 +1655,31 @@ const handleCheckboxChange = (id) => {
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of Hours</span>
+    <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementHousForDriver}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfHoursObjectForDriver?.hours}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className=" counter-button"
                           onClick={handleIncrementHousForDriver}
                         >
                           +
                         </button>
+                      </div>
+                      </div>
                       </div>
                     </div>
                   </>
@@ -1627,24 +1691,31 @@ const handleCheckboxChange = (id) => {
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of Hours</span>
+    <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementHousForGardner}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfHoursObjectForGardner?.hours}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrementHousForGardner}
                         >
                           +
                         </button>
+                      </div>
+                      </div>
                       </div>
                     </div>
                   </>
@@ -1659,61 +1730,106 @@ const handleCheckboxChange = (id) => {
                       <label className="booking-form-label">
                         Number of Visiting Slots
                       </label>
-                      <div className="booking-counter-container">
+                      <div className="div-people-count" >
+
+  <div className="people-counter-container">
+
+    <span className="people-counter-label">Select Number of Hours</span>
+    <div className="people-counter">
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleDecrementVisitsForMonthlyGardner}
                         >
                           -
                         </button>
-                        <span className="booking-counter-value">
+                        <span className="counter-value">
                           {SelectedNumberOfSlotsObjectForMonthlyGardner?.visit}
                         </span>
                         <button
                           type="button"
-                          className="booking-counter-button"
+                          className="counter-button"
                           onClick={handleIncrementVisitsForMonthlyGardner}
                         >
                           +
                         </button>
                       </div>
+                      </div>
+                      </div>
                     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     {selectedVisitDates.map((visit, index) => (
-                      <div key={index} className="booking-form-group flex-fill">
-                        <label
-                          className="booking-form-label"
-                          htmlFor={`visit-date-${index}`}
-                        >
-                          Select Visit Date {index + 1}
-                        </label>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                          <DatePicker
-                            value={visit.date ? new Date(visit.date) : null}
-                            onChange={(newDate) => {
-                              const updatedDates = [...selectedVisitDates];
-                              updatedDates[index].date = newDate
-                                .toISOString()
-                                .split("T")[0];
-                              setSelectedVisitDates(updatedDates);
-                            }}
-                            minDate={new Date(MonthlySubscriptionStartDate)}
-                            maxDate={new Date(MonthlySubscriptionEndsDate)}
-                            renderInput={(params) => <TextField {...params} />}
-                          />
-                        </LocalizationProvider>
-                        <div>
-                          Average Time per Slot:{" "}
-                          {(() => {
-                            const totalMinutes = visit.hours; // Assuming 'visit.hours' is in minutes
-                            const hours = Math.floor(totalMinutes / 60); // Get the hours part
-                            const minutes = Math.floor(totalMinutes % 60); // Get the remaining minutes and round down
-                            return `${hours} hours ${minutes} minutes`; // Display only complete hours and minutes
-                          })()}
-                        </div>
-                      </div>
-                    ))}
+  <div key={index} className="booking-form-group flex-fill">
+    <label className="booking-form-label">
+      Select Visit Date {index + 1}
+    </label>
+    <div className="date-scroll-container">
+      {getUpcomingDates(new Date(), 30).map((date, i) => {
+        const isSelected =
+          visit.date &&
+          new Date(visit.date).toDateString() === date.toDateString();
+        return (
+          <div
+            key={i}
+            className={`date-item ${isSelected ? "selected" : ""}`}
+            onClick={() => {
+              const updatedDates = [...selectedVisitDates];
+              updatedDates[index].date = date.toISOString().split("T")[0];
+              setSelectedVisitDates(updatedDates);
+            }}
+            role="button"
+            tabIndex={0}
+            onKeyPress={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                const updatedDates = [...selectedVisitDates];
+                updatedDates[index].date = date.toISOString().split("T")[0];
+                setSelectedVisitDates(updatedDates);
+              }
+            }}
+          >
+            <span className="day">{format(date, "EEE")}</span>
+            <span className="date">{format(date, "dd")}</span>
+            <span className="month">{format(date, "MMM")}</span>
+          </div>
+        );
+      })}
+    </div>
+    <div>
+      Average Time per Slot:{" "}
+      {(() => {
+        const totalMinutes = visit.hours;
+        const hours = Math.floor(totalMinutes / 60);
+        const minutes = Math.floor(totalMinutes % 60);
+        return `${hours} hours ${minutes} minutes`;
+      })()}
+    </div>
+  </div>
+))}
+
                   </>
                 )}
 
