@@ -128,9 +128,9 @@ function PreviousTab() {
                       <img
                         src={
                           {
-                            1: "./../ServicesSection/CookingSection/chef.jpg",
+                            1: "./../ServicesSection/CookingSection/chef.png",
                             2: "./../ServicesSection/CookingSection/chef-cooking-2.jpg",
-                            3: "./../ServicesSection/CookingSection/chef3.jpg",
+                            3: "./../ServicesSection/CookingSection/chef3.png",
                             4: "./../ServicesSection/DriverServices/driverServices1.jpg",
                             5: "./../ServicesSection/DriverServices/driverServices.jpg",
                             6: "./../ServicesSection/DriverServices/driverServices3.jpg",
@@ -258,24 +258,28 @@ function PreviousTab() {
                           : bookingsIdWise?.dishes}
                       </p>
                     </div>
-
+                    {bookingsIdWise?.category_id !== 3 && (
                     <div className="info-group">
                       <h4 className="booking-subtitle">Date & Time</h4>
-
                       <p className="booking-info-text">
                         {`${formatDate(
                           bookingsIdWise?.visit_date
                         )}, ${formatTime(bookingsIdWise?.visit_time)}`}
                       </p>
                     </div>
-                    <div className="info-group">
-                      <h4 className="booking-subtitle">
-                        Special Requests / Instructions
-                      </h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.instructions}
-                      </p>
-                    </div>
+                    )}
+                    {bookingsIdWise?.category_id !== 3 && (
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">
+                          Special Requests / Instructions
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.instructions?.trim()
+                            ? bookingsIdWise.instructions
+                            : "N/A"}
+                        </p>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="column3">
@@ -416,11 +420,9 @@ function PreviousTab() {
                     <p>{booking?.booking_date_time}</p>
 
                     <p>
-                      Service Provider -{" "}
-                      {booking?.partner_id
-                        ? booking?.partner_name
-                        : "No Partner Accepted"}
-                    </p>
+                        Service Provider -{" "}
+                        {booking?.partner_name || "No Partner Accepted"}
+                      </p>
                   </div>
 
                   <div className="amount">₹{booking?.billing_amount}</div>

@@ -114,7 +114,7 @@ const JoinAsPartnerForm = () => {
           name: "",
           mobile: "",
           email: "",
-          city: "",
+          city: "Delhi-NCR",
           message: "",
         });
         setErrors({});

@@ -102,9 +102,9 @@ const GardenerServiceCards = () => {
                           {service?.rating?.toFixed(1) || "0.0"}
                         </span>
                       </span>
-                      <span className="reviews">
+                      {/* <span className="reviews">
                         ({service?.reviews}273 reviews)
-                      </span>
+                      </span> */}
                     </div>
 
                     {service?.description && (

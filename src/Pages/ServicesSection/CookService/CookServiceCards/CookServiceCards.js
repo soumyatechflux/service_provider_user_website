@@ -88,7 +88,7 @@ const CookServiceCards = () => {
         <div className="nav-container container cook-services pt-4">
           <div>
             {/* <h2 className="section-title">Cook Services</h2> */}
-            <div className="service-cards-wrapper pt-4">
+            <div className="service-cards-wrapper pt-4 pb-4">
               {slides.map((service, index) => (
                 <div key={index} className="service-card">
                   <img
@@ -106,9 +106,9 @@ const CookServiceCards = () => {
                         </span>
                       </span>
 
-                      <span className="reviews">
+                      {/* <span className="reviews">
                         ({service?.reviews}273 reviews)
-                      </span>
+                      </span> */}
                     </div>
 
                     {service?.description && (

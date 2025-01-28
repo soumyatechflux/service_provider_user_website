@@ -176,7 +176,8 @@
   flex: 1;
   /* max-width: 500px; */
   margin: 20px 0px;
-  padding: 1.5rem;
+  /* padding: 1.5rem; */
+  padding: 0rem;
   border-radius: 7px;
   background: white;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
@@ -198,10 +199,19 @@
 
 /* Booking Form Header */
 .booking-form-header {
-  display: flex;
+  /* display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.5rem; */
+
+  display: flex ;
+  align-items: center;
+  /* margin-bottom: 20px; */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  /* width: 100%; */
+  padding: 16px 0px 16px 8px;
+  /* max-width: 417px; */
+  border-radius: 5px;
 }
 
 .booking-back-button {
@@ -892,9 +902,14 @@
 }
 
 .booking-summary-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
+  display: flex ;
+      align-items: center;
+      /* margin-bottom: 20px; */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      /* width: 100%; */
+      padding: 16px 0px 16px 8px;
+      /* max-width: 417px; */
+      border-radius: 5px;
 }
 .booking-summary-label {
   display: block;
@@ -1326,7 +1341,7 @@
   .payment-section-container,
   .success-container {
     max-width: 90%;
-    padding: 1rem;
+    /* padding: 1rem; */
     height: auto; /* Allow height to adjust based on content */
   }
 
@@ -1337,7 +1352,7 @@
   .address-step-container,
   .payment-section-container,
   .success-container {
-    padding: 1rem;
+    /* padding: 1rem; */
     border: 2px solid black;
   }
 
@@ -1388,7 +1403,7 @@
   .address-step-container,
   .payment-section-container,
   .success-container {
-    padding: 0.75rem;
+    /* padding: 0.75rem; */
     max-width: 100%;
   }
 

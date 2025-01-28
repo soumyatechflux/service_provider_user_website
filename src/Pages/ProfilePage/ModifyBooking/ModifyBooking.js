@@ -1,33 +1,21 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./ModifyBooking.css";
-import { ChevronLeft, MapPin, Voicemail } from "lucide-react";
-import TimePicker from "react-time-picker";
-import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css";
-import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import TextField from "@mui/material/TextField";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import { ArrowBarDown } from "react-bootstrap-icons";
-import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
-import { Dropdown, Modal } from "react-bootstrap";
-import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import MessageModal from "../../MessageModal/MessageModal";
-import { IoIosArrowForward } from "react-icons/io";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { useJsApiLoader } from "@react-google-maps/api";
+import axios from "axios";
+import { format } from "date-fns";
+import { ChevronLeft } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import "react-clock/dist/Clock.css";
+import { useLocation, useNavigate } from "react-router-dom";
+import "react-time-picker/dist/TimePicker.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ChevronRight, ChevronDown } from "react-feather";
-import { FaRupeeSign, FaPercent } from "react-icons/fa";
-import { useJsApiLoader } from "@react-google-maps/api";
-import { LoadScript } from "@react-google-maps/api";
-import { Button } from "react-bootstrap";
-import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
 import Loader from "../../Loader/Loader";
-import LocationModal from "../ProfileDetails/LocationModal";
+import MessageModal from "../../MessageModal/MessageModal";
+import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
+import "./ModifyBooking.css";
 
 const ModifyBooking = () => {
 
@@ -1495,7 +1483,7 @@ const handleCheckboxChange = (id) => {
               <h1 className="booking-form-title">Modify Booking :</h1>
             </div>
 
-            <form  onSubmit={(e) => {
+            <form style={{padding:"1rem"}} onSubmit={(e) => {
     e.preventDefault();
     // FunctionDataForPricesApplied();
   }} >
@@ -2194,6 +2182,7 @@ const handleCheckboxChange = (id) => {
               <h2>Booking Summary</h2>
             </div>
 
+<div style={{padding:"1rem"}}>
             <h3 className="booking-summary-label">Booking Details</h3>
             <div className="booking-summary-details">
               <div className="booking-detail-card">
@@ -2481,6 +2470,8 @@ const handleCheckboxChange = (id) => {
                 
              
               </div>
+            </div>
+
             </div>
         
 

@@ -8,7 +8,7 @@ import { Modal, Button } from "react-bootstrap";
 import MessageModal from "../../MessageModal/MessageModal";
 import { toast } from "react-toastify";
 import { useJsApiLoader } from "@react-google-maps/api";
-import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import LocationModal from "./LocationModal";
 
 const ProfileDetails = () => {
@@ -66,8 +66,6 @@ const ProfileDetails = () => {
     dropdownRefs.current = {};
   }, [addresses]);
 
-
-
   // Fetch profile data
   const fetchProfile = async () => {
     try {
@@ -121,18 +119,21 @@ const ProfileDetails = () => {
   const saveChanges = async () => {
     try {
       setLoading(true);
-  
+
       // Validation for empty name
-      if (editingField === "name" && (!editedProfile.name || editedProfile.name.trim() === "")) {
+      if (
+        editingField === "name" &&
+        (!editedProfile.name || editedProfile.name.trim() === "")
+      ) {
         setLoading(false);
         setMessage("Name should not be empty.");
         setShow(true);
         handleShow(); // Show the modal
         return;
       }
-  
+
       const data = new FormData();
-  
+
       if (editingField === "image" && editedProfile.image) {
         data.append("image", editedProfile.image || null);
       } else if (editingField === "name") {
@@ -142,14 +143,14 @@ const ProfileDetails = () => {
       } else if (editingField === "mobile") {
         data.append("mobile", editedProfile.mobile);
       }
-  
+
       setIsEditing(false);
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
         data,
         { headers: { Authorization: `Bearer ${token}` } }
       );
-  
+
       if (response?.status === 200 && response?.data?.success) {
         setProfileDataResponse(response.data.data);
         setEditedProfile(response.data.data);
@@ -170,7 +171,6 @@ const ProfileDetails = () => {
       setLoading(false);
     }
   };
-  
 
   // Handle input changes
   const handleInputChange = (field, value) => {
@@ -205,7 +205,6 @@ const ProfileDetails = () => {
     setEditedProfile(profileDataResponse); // Reset editedProfile to initial data
   };
 
-
   const [locationData, setLocationData] = useState({
     latitude: "",
     longitude: "",
@@ -230,20 +229,20 @@ const ProfileDetails = () => {
           },
         }
       );
-  
+
       if (response.ok) {
         const result = await response.json();
-  
+
         if (result.success === true) {
           const data = result.data; // Data fetched successfully
-  
+
           setLocationData({
-            latitude: data?.latitude || "", 
-            longitude: data?.longitude || "", 
+            latitude: data?.latitude || "",
+            longitude: data?.longitude || "",
             city: data?.city || "",
-            district: data?.district || "", 
-            state: data?.state || "", 
-            country: data?.country || "", 
+            district: data?.district || "",
+            state: data?.state || "",
+            country: data?.country || "",
             postalCode: data?.postal_code || "", // Correcting the naming
             formattedAddress: data?.formatted_address || "", // Correcting the naming
             landmark: data?.landmark || "",
@@ -266,49 +265,32 @@ const ProfileDetails = () => {
       toast.error(`Error fetching address: ${error.message}`);
     }
   };
-  
-
-
-
 
   // const { isLoaded } = useJsApiLoader({
   //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
   // });
-
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
     libraries: ["places"], // Add the Places library here
   });
 
-
-
   if (!isLoaded) {
     return null; // Or show a custom loader component.
   }
 
-  
-
-
-
-
-
-
-
   return (
     <>
-
-{loading && Loader}
+      {loading && Loader}
 
       <div className="container nav-container profile-container">
         <h1>Profile</h1>
 
         {loading && (
-        <div className="loader-overlay">
-          <div className="spinner"></div>
-        </div>
-      )}
-
+          <div className="loader-overlay">
+            <div className="spinner"></div>
+          </div>
+        )}
 
         <div className="profile-content">
           {/* Avatar Section */}
@@ -368,13 +350,10 @@ const ProfileDetails = () => {
                   />
                 ) : (
                   <>
-
-                  {profileDataResponse?.name && (
-                    <span>{profileDataResponse.name}</span>
-                  )}
-                  
+                    {profileDataResponse?.name && (
+                      <span>{profileDataResponse.name}</span>
+                    )}
                   </>
-                  
                 )}
                 <button
                   className="edit-button"
@@ -404,34 +383,39 @@ const ProfileDetails = () => {
                 ) : (
                   <span>{profileDataResponse.mobile}</span>
                 )}
-         
               </div>
             </div>
 
             {/* Email */}
             <div className="detail-item">
-              <label>Email</label>
-              <div className="detail-value">
-                {isEditing && editingField === "email" ? (
-                  <input
-                    type="email"
-                    value={editedProfile.email || email} // Autofill with state
-                    onChange={(e) => handleInputChange("email", e.target.value)}
-                  />
-                ) : (
-                  <span>{profileDataResponse.email}</span>
-                )}
-                <button
-                  className="edit-button"
-                  onClick={() => {
-                    setIsEditing(true);
-                    setEditingField("email");
-                  }}
-                >
-                  <Pencil size={16} />
-                </button>
-              </div>
-            </div>
+  <label>Email</label>
+  <div className="detail-value">
+    {isEditing && editingField === "email" ? (
+      <input
+        type="email"
+        value={editedProfile.email || ""} // Ensure controlled input
+        onChange={(e) => handleInputChange("email", e.target.value)}
+      />
+    ) : (
+      <span>{profileDataResponse.email}</span>
+    )}
+    <button
+      className="edit-button"
+      onClick={() => {
+        setIsEditing(true);
+        setEditingField("email");
+        setEditedProfile((prev) => ({
+          ...prev,
+          email: profileDataResponse.email || "", // Initialize with current email
+        }));
+      }}
+    >
+      <Pencil size={16} />
+    </button>
+  </div>
+</div>
+
+
 
             {isEditing && (
               <div className="edit-actions">
@@ -461,17 +445,10 @@ const ProfileDetails = () => {
             {addresses.map((address, index) => (
               <div key={address.id} className="mb-3">
                 <div className="d-flex align-items-center">
-                <p className="flex-fill mb-0 address-p">
-  <span className="serial-number me-2">{index + 1}.</span>
-  {address.landmark && `${address.landmark}, `}
-  {address.street_address_line2 && `${address.street_address_line2}, `}
-  {address.city && `${address.city}, `}
-  {address.state && `${address.state}, `}
-  {address.postal_code && `${address.postal_code},. `}
-  {address.country && `${address.country}`}
-  <br />
-
-</p>
+                  <p className="flex-fill mb-0 address-p">
+                    <span className="serial-number me-2">{index + 1}.</span>
+                    {address.formatted_address || "N/A"}
+                  </p>
 
                   <div
                     className="position-relative"
@@ -501,12 +478,10 @@ const ProfileDetails = () => {
                             setAddressToEdit(address?.address_id);
                             setIsEditingAddress(true);
                             setOpenDropdownIndex(null);
-                       
                           }}
                         >
                           <BsPencil size={16} className="me-2" /> Edit
                         </button>
-
 
                         <button
                           className="custom-dropdown-item"
@@ -525,58 +500,38 @@ const ProfileDetails = () => {
               </div>
             ))}
 
-
             <div className="container mt-5 mb-5">
-      <Button onClick={() => setIsAddingAddress(true)}
-                          className="btn btn-primary nav-buttons">
-                          {" "}
-                          + Add New Address
-                        </Button>
- <LocationModal
-  show={isAddingAddress}
-  onHide={() => {
-    setIsAddingAddress(false);
-    fetchProfile();
-  }}
-  latitude=""
-  longitude=""
-  city=""
-  district=""
-  state=""
-  country=""
-  postalCode=""
-  formattedAddress=""
-  landmark=""
-  streetAddressLine2=""
-  addressToEditId={null}
-/> 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    </div>
-
-
+              <Button
+                onClick={() => setIsAddingAddress(true)}
+                className="btn btn-primary nav-buttons"
+              >
+                {" "}
+                + Add New Address
+              </Button>
+              <LocationModal
+                show={isAddingAddress}
+                onHide={() => {
+                  setIsAddingAddress(false);
+                  fetchProfile();
+                }}
+                latitude=""
+                longitude=""
+                city=""
+                district=""
+                state=""
+                country=""
+                postalCode=""
+                formattedAddress=""
+                landmark=""
+                streetAddressLine2=""
+                addressToEditId={null}
+              />
+            </div>
 
             {/* Modal for Editing Address */}
 
             <div>
-
-{/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+              {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
 {isEditingAddress && (
      <LocationModal
         show={isEditingAddress}
@@ -600,31 +555,25 @@ const ProfileDetails = () => {
 
       </LoadScript> */}
 
-
-
-<LocationModal
-        show={isEditingAddress}
-        onHide={() => {
-          setIsEditingAddress(false);
-          fetchProfile();
-        }}
-        latitude={Number(locationData.latitude)}
-        longitude={Number(locationData.longitude)}        
-        city={locationData.city}
-        district={locationData.district}
-        state={locationData.state}
-        country={locationData.country}
-        postalCode={locationData.postalCode}
-        formattedAddress={locationData.formattedAddress}
-        landmark={locationData.landmark}
-        streetAddressLine2={locationData.streetAddressLine2}
-        addressToEditId={addressToEdit}
-      />
-      
-    </div>
-
-
-         
+              <LocationModal
+                show={isEditingAddress}
+                onHide={() => {
+                  setIsEditingAddress(false);
+                  fetchProfile();
+                }}
+                latitude={Number(locationData.latitude)}
+                longitude={Number(locationData.longitude)}
+                city={locationData.city}
+                district={locationData.district}
+                state={locationData.state}
+                country={locationData.country}
+                postalCode={locationData.postalCode}
+                formattedAddress={locationData.formattedAddress}
+                landmark={locationData.landmark}
+                streetAddressLine2={locationData.streetAddressLine2}
+                addressToEditId={addressToEdit}
+              />
+            </div>
 
             {/* Modal for Deleting Address */}
             <Modal
@@ -648,7 +597,7 @@ const ProfileDetails = () => {
                 <Button
                   variant="danger"
                   onClick={() => {
-                    handleDelete(addressToDelete); 
+                    handleDelete(addressToDelete);
                   }}
                 >
                   Delete

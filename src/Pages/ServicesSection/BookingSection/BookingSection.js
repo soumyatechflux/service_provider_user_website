@@ -326,6 +326,34 @@ const BookingSection = () => {
     setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const handleDateChange = (newDate) => {
     const delhiDate = new Date(
       newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
@@ -343,6 +371,35 @@ const BookingSection = () => {
 
     setSelectedTime(""); // Clear the time selection
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
   // Generate 15-minute intervals for the entire day
   const generateTimeIntervals = () => {
@@ -1413,7 +1470,7 @@ const BookingSection = () => {
               <h1 className="booking-form-title">Booking For :</h1>
             </div>
 
-            <form>
+            <form style={{padding:"1rem"}}>
               <div className="booking-form-group">
                 <label className="booking-form-label" htmlFor="guestName">
                   Enter Booking Guest Name
@@ -1581,11 +1638,13 @@ const BookingSection = () => {
                 )}
 
                 {service?.category_id === 3 && service?.id === 8 && (
+                
                   <>
                     <div className="booking-form-group">
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
+                      
                       <div className="booking-counter-container">
                         <button
                           type="button"
@@ -1607,6 +1666,7 @@ const BookingSection = () => {
                       </div>
                     </div>
                   </>
+                  
                 )}
 
                 {service?.category_id === 3 && service?.id === 9 && (
@@ -2865,6 +2925,8 @@ const BookingSection = () => {
               <h2>Booking Summary</h2>
             </div>
 
+            <div style={{padding:"1rem"}}>
+
             <h3 className="booking-summary-label">Booking Details</h3>
             <div className="booking-summary-details">
               <div className="booking-detail-card">
@@ -3418,6 +3480,7 @@ const BookingSection = () => {
                 Checkout
               </button>
             </div>
+          </div>
           </div>
         )}
 

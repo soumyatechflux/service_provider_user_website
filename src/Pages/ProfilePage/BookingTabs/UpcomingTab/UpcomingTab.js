@@ -13,7 +13,7 @@ import MessageModal from "../../../MessageModal/MessageModal";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -28,7 +28,6 @@ const UpcomingTab = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [ActiveBookingData, setActiveBookingData] = useState({});
-
 
   const navigate = useNavigate();
 
@@ -75,18 +74,15 @@ const UpcomingTab = () => {
     }
   };
 
-
-
   const location = useLocation();
 
   const handleModifyButton = (booking) => {
-
     const serviceObject = {
       id: booking?.sub_category_id,
       category_id: booking?.category_id,
-      booking_id:booking?.booking_id,
+      booking_id: booking?.booking_id,
     };
-  
+
     // Navigate and pass serviceObject as state
     navigate("/modify-booking", { state: { service: serviceObject } });
   };
@@ -120,7 +116,7 @@ const UpcomingTab = () => {
 
   const handleConfirmationNext = async () => {
     // console.log("...", selectedReason);
-setLoading(true);
+    setLoading(true);
     const cancelDetails = {
       booking: {
         booking_id: cancelId,
@@ -148,26 +144,25 @@ setLoading(true);
         setCurrentModal(null);
 
         setLoading(false);
-        toast.success(response?.data?.message || "The booking has been successfully cancelled.");
+        toast.success(
+          response?.data?.message ||
+            "The booking has been successfully cancelled."
+        );
       } else {
         // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");
         setShow(true);
         handleShow(); // Show the modal
-setLoading(false);
-
+        setLoading(false);
       }
     } catch (error) {
       setLoading(false);
       console.error(
-
         "Error during cancellation:",
         error.response?.data || error.message
-        
       );
       // alert(error.response?.data?.message || "Failed to cancel booking.");
-setLoading(false);
-
+      setLoading(false);
     }
   };
 
@@ -175,16 +170,10 @@ setLoading(false);
     setSelectedReason(reason);
   };
 
-
-
-
-
-  
-
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
-  
-  const handlePayment = async (mod,ID) => {
+
+  const handlePayment = async (mod, ID) => {
     setLoading(true);
 
     try {
@@ -217,12 +206,11 @@ setLoading(false);
         if (response?.data?.order) {
           setBookingData(response?.data?.order);
           setCallRazorPay(true);
-          console.log("sdjnkc6754dsgvhfrtynsdcbj")
+          console.log("sdjnkc6754dsgvhfrtynsdcbj");
         } else {
           setBookingData();
           setCallRazorPay(false);
         }
-
       } else {
         toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
@@ -235,11 +223,6 @@ setLoading(false);
       // setModalMessage("An error occurred. Please try again later.");
     }
   };
-
-
-
-
-
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -269,9 +252,6 @@ setLoading(false);
     3: Leaf,
   };
 
-
-
-  
   if (loading) {
     return <Loader />;
   }
@@ -279,7 +259,6 @@ setLoading(false);
   if (error) {
     return <div>{error}</div>;
   }
-
 
   return (
     <>
@@ -415,9 +394,8 @@ setLoading(false);
                         className="btn-modify-upcoming"
                         onClick={() => {
                           handleModifyButton(booking);
-                      
                         }}
-                        disabled={ booking?.booking_status !== "upcoming"}
+                        disabled={booking?.booking_status !== "upcoming"}
                         style={{
                           cursor:
                             booking?.booking_status === "cancelled"
@@ -434,8 +412,13 @@ setLoading(false);
                   <div className="column2">
                     <h3 className="heading-text mb-4">Booking Details</h3>
                     <div className="booking-info">
-                      <div className="info-group">
+                      <div className="info-group mb-2">
                         <h4 className="booking-subtitle">Booking For</h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.guest_name}
+                          
+                        </p>
+                        <h4 className="booking-subtitle">Booking Of</h4>
                         <p className="booking-info-text">
                           {bookingsIdWise?.category?.category_name} -{" "}
                           {bookingsIdWise?.sub_category?.sub_category_name}
@@ -451,13 +434,38 @@ setLoading(false);
                         <h4 className="booking-subtitle">
                           {bookingsIdWise?.category_id === 2 ||
                           bookingsIdWise?.category_id === 3
-                            ? "Number Of Hours Booked"
+                            ? bookingsIdWise?.category_id === 3
+                              ? "Gardener Visiting Slots"
+                              : "Number Of Hours Booked"
                             : "Number of People"}
                         </h4>
                         <p className="booking-info-text">
-                          {bookingsIdWise?.category_id === 2 ||
-                          bookingsIdWise?.category_id === 3
+                          {bookingsIdWise?.category_id === 2
                             ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.category_id === 3
+                            ? bookingsIdWise?.gardener_visiting_slots &&
+                              JSON.parse(
+                                bookingsIdWise.gardener_visiting_slots
+                              ).map((slot, index) => {
+                                const formattedDate = new Date(
+                                  slot.date
+                                ).toLocaleDateString(
+                                  "en-US", // Locale for English (United States)
+                                  {
+                                    year: "numeric",
+                                    month: "short",
+                                    day: "numeric",
+                                  }
+                                );
+                                return (
+                                  <div key={index}>
+                                    <strong>Date : </strong>
+                                    {formattedDate},{" "}
+                                    <strong>Approx Time :</strong> {slot.hours}{" "}
+                                    mins
+                                  </div>
+                                );
+                              })
                             : bookingsIdWise?.people_count}
                         </p>
                       </div>
@@ -485,7 +493,7 @@ setLoading(false);
                             : bookingsIdWise?.dishes}
                         </p>
                       </div>
-
+                      {bookingsIdWise?.category_id !== 3 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
@@ -494,14 +502,19 @@ setLoading(false);
                           )}, ${formatTime(bookingsIdWise?.visit_time)}`}
                         </p>
                       </div>
-                      <div className="info-group">
-                        <h4 className="booking-subtitle">
-                          Special Requests / Instructions
-                        </h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.instructions}
-                        </p>
-                      </div>
+                      )}
+                      {bookingsIdWise?.category_id !== 3 && (
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">
+                            Special Requests / Instructions
+                          </h4>
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.instructions?.trim()
+                              ? bookingsIdWise.instructions
+                              : "N/A"}
+                          </p>
+                        </div>
+                      )}
                     </div>
                   </div>
                   <div className="column3">
@@ -575,13 +588,9 @@ setLoading(false);
                         </span>
                       </div>
 
-
-
-                      
-
-{bookingsIdWise?.payment_mode !== "online" && (
-<>
-                      {/*
+                      {bookingsIdWise?.payment_mode !== "online" && (
+                        <>
+                          {/*
                       
                       <button
                   className="payment-option-button mt-2 mb-2"
@@ -605,30 +614,22 @@ setLoading(false);
                 </button> 
                 
                 */}
-                </>
-)}
+                        </>
+                      )}
 
-
-
-
-{callRazorPay && BookingData && (
-  <>
-  {/* {console.log("CallingGatewaydvnkegrfhyubjvdf")} */}
-          <RazorpayPayment
-            BookingData={BookingData}
-            callRazorPay={callRazorPay}
-            handleConfirmBooking={() => {
-              fetchUpcommingBookings();
-              handleViewMore(ActiveBookingData?.booking_id); 
-            }}
-            
-          />
-          </>
-
-        )}
-
-
-
+                      {callRazorPay && BookingData && (
+                        <>
+                          {/* {console.log("CallingGatewaydvnkegrfhyubjvdf")} */}
+                          <RazorpayPayment
+                            BookingData={BookingData}
+                            callRazorPay={callRazorPay}
+                            handleConfirmBooking={() => {
+                              fetchUpcommingBookings();
+                              handleViewMore(ActiveBookingData?.booking_id);
+                            }}
+                          />
+                        </>
+                      )}
                     </div>
                   </div>
                   <button
@@ -683,9 +684,7 @@ setLoading(false);
 
                       <p>
                         Service Provider -{" "}
-                        {booking?.partner_id
-                          ? booking?.partner_name
-                          : "No Partner Accepted"}
+                        {booking?.partner_name || "No Partner Accepted"}
                       </p>
                     </div>
 
@@ -697,20 +696,27 @@ setLoading(false);
                       className="btn-modify"
                       onClick={() => {
                         handleModifyButton(booking);
-                    
                       }}
-                      disabled={ booking?.booking_status !== "upcoming"}
+                      disabled={
+                        booking?.partner_name ||
+                        booking?.booking_status !== "upcoming"
+                      }
                       style={{
                         cursor:
+                          booking?.partner_name ||
                           booking?.booking_status === "cancelled"
                             ? "not-allowed"
                             : "pointer",
                         opacity:
-                          booking?.booking_status === "cancelled" ? 0.5 : 1,
+                          booking?.partner_name ||
+                          booking?.booking_status === "cancelled"
+                            ? 0.5
+                            : 1,
                       }}
                     >
                       Modify
                     </button>
+
                     <button
                       className="btn-view-details"
                       onClick={() => {
@@ -745,24 +751,20 @@ setLoading(false);
               onConfirm={handleConfirmationNext}
               bookingId={bookingsIdWise}
             />
-    
           </>
         )}
 
+        <MessageModal
+          show={show}
+          handleClose={handleClose}
+          handleShow={handleShow}
+          message={message}
+        />
 
-<MessageModal
-              show={show}
-              handleClose={handleClose}
-              handleShow={handleShow}
-              message={message}
-            />
-
-
-<SuccessModal
-              isOpen={currentModal === "success"}
-              onClose={handleCloseModal}
-            />
-     
+        <SuccessModal
+          isOpen={currentModal === "success"}
+          onClose={handleCloseModal}
+        />
       </div>
     </>
   );

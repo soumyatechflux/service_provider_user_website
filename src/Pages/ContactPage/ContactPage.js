@@ -33,7 +33,7 @@ function ContactPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     // Perform custom form validation
     if (!formData.name.trim()) {
       setMessage("Name is required.");
@@ -55,28 +55,23 @@ function ContactPage() {
       handleShow();
       return;
     }
-    if (!formData.city.trim()) {
-      setMessage("City is required.");
-      handleShow();
-      return;
-    }
     if (!formData.message.trim()) {
       setMessage("Message is required.");
       handleShow();
       return;
     }
-
+  
     try {
       const payload = {
         support: {
           name: formData.name,
           mobile: formData.mobile,
           email: formData.email,
-          city: formData.city,
+          city: "Delhi-NCR", // Predefined city
           description: formData.message,
         },
       };
-
+  
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
         payload,
@@ -87,24 +82,25 @@ function ContactPage() {
         }
       );
       console.log("API Response:", response.data);
-
+  
       setShowPopup(true);
-
+  
       // Clear the form fields after submission
       setFormData({
         name: "",
         mobile: "",
         email: "",
-        city: "",
+        city: "Delhi-NCR", // Reset to predefined value
         message: "",
       });
-
+  
       // Reset the selected location to "Select Location"
       setSelectedLocation("Select Location");
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
+  
 
   const closePopup = () => {
     setShowPopup(false);
@@ -300,25 +296,56 @@ function ContactPage() {
                       <div style={{ gap: "10px" }}>
                         <i className="bi bi-geo-alt-fill me-1"></i>{" "}
                         <span style={{ color: "#999999", fontSize: "16px" }}>
-                          {selectedLocation || "Delhi-NCR"}{" "}
-                          {/* Default location is Delhi */}
+                          {selectedLocation || "Select Location"}{" "}
+                          {/* Default location */}
                         </span>
                       </div>
                     </a>
-                    {/* {activeDropdown === "location" && (
+                    {activeDropdown === "location" && (
                       <div className="dropdown-menu show">
                         <a
                           className="dropdown-item"
                           href="#"
                           onClick={(e) => {
                             e.preventDefault();
-                            handleLocationChange("Delhi"); // Only Delhi is selectable
+                            handleLocationChange("Delhi-NCR");
                           }}
                         >
-                          Delhi
+                          Delhi-NCR
                         </a>
+                        {/* <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLocationChange("Mumbai");
+                          }}
+                        >
+                          Mumbai
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLocationChange("Bangalore");
+                          }}
+                        >
+                          Bangalore
+                        </a>
+                        <a
+                          className="dropdown-item"
+                          href="#"
+                          onClick={(e) => {
+                            e.preventDefault();
+                            handleLocationChange("Chennai");
+                          }}
+                        >
+                          Chennai
+                        </a> */}
+                        {/* Add more cities as needed */}
                       </div>
-                    )} */}
+                    )}
                   </div>
                 </div>
 
