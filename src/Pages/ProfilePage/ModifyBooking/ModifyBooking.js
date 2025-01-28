@@ -18,7 +18,7 @@ import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPaymen
 import "./ModifyBooking.css";
 
 const ModifyBooking = () => {
-  
+
   const getUpcomingDates = (startDate, numDays) => {
     const dates = [];
     for (let i = 0; i < numDays; i++) {
@@ -83,7 +83,6 @@ useEffect(() => {
   setSelectedCarType(DefaultDataOfBooking?.car_type);
   setSelectedCarTransmissionType(DefaultDataOfBooking?.transmission_type);
   setBasePrice(DefaultDataOfBooking?.actual_price);
-  // setMonthlySubscriptionStartDate(DefaultDataOfBooking?.visit_date);
 }, [DefaultDataOfBooking]);
 
 
@@ -92,27 +91,21 @@ useEffect(() => {
     const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
     setMonthlySubscriptionStartDate(visitDate);
   }
+
+  // if (DefaultDataOfBooking?.visit_date) {
+  //   const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
+  //   setMonthlySubscriptionEndsDate(visitDate);
+  // }
+
+  
 }, [DefaultDataOfBooking]);
 
-useEffect(() => {
-  if (DefaultDataOfBooking?.gardener_visiting_slots) {
-    try {
-      // Parse the JSON string
-      const parsedSlots = JSON.parse(DefaultDataOfBooking.gardener_visiting_slots);
 
-      // Convert dates to Date objects
-      const formattedSlots = parsedSlots.map((slot) => ({
-        ...slot,
-        date: slot.date ? new Date(slot.date).toISOString().split("T")[0] : null, // Ensure date is ISO formatted
-      }));
 
-      // Set the state with formatted slots
-      setSelectedVisitDates(formattedSlots);
-    } catch (error) {
-      console.error("Error parsing gardener_visiting_slots:", error);
-    }
-  }
-}, [DefaultDataOfBooking]);
+
+
+
+
 
 
 
@@ -939,6 +932,7 @@ const handleDecrementHousForDriver = () => {
   //   }
   // };
 
+  const [NumOfVisitsChanged, setNumOfVisitsChanged] = useState(false); // Renamed state
 
 
   const handleDecrementVisitsForMonthlyGardner = () => {
@@ -959,12 +953,19 @@ const handleDecrementHousForDriver = () => {
           hours: previousOption.hours,
           price: previousOption.price,
         });
+
+        setNumOfVisitsChanged(true);
+
       } else {
         toast.error("You cannot reduce the number of visits below the minimum allowed.");
+        setNumOfVisitsChanged(false);
+
       }
     } else {
       // Notify user about the minimum visit limit
       toast.error("You cannot reduce the number of visits below the minimum allowed.");
+      setNumOfVisitsChanged(false);
+
     }
   };
 
@@ -989,9 +990,12 @@ const handleDecrementHousForDriver = () => {
         hours: nextOption.hours,
         price: nextOption.price,
       });
+      setNumOfVisitsChanged(true);
+
     } else {
-      // Show toast notification for max limit
       toast.error("You've reached the maximum number of visits.");
+      setNumOfVisitsChanged(false);
+
     }
   };
 
@@ -1232,7 +1236,15 @@ const handleCheckboxChange = (id) => {
 
 
 
+  const getDateAfter30Days = (startDate) => {
+    if (!startDate) return "Not selected";
+  
+    const thirtyDaysLater = new Date(startDate);
+    thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
+    return thirtyDaysLater.toDateString();
+  };
 
+  
 
   useEffect(() => {
     setPeople(minPeople);
@@ -1408,9 +1420,23 @@ const handleCheckboxChange = (id) => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
   useEffect(() => {
+    if(NumOfVisitsChanged){
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
       // Calculate the hours per visit
       const hoursPerVisit =
@@ -1439,10 +1465,43 @@ const handleCheckboxChange = (id) => {
       // Update the state
       setSelectedVisitDates(newVisitDates);
     }
+  }
   }, [
-    SelectedNumberOfSlotsObjectForMonthlyGardner,
     MonthlySubscriptionStartDate,
+    SelectedNumberOfSlotsObjectForMonthlyGardner,
+    NumOfVisitsChanged
   ]);
+
+
+  useEffect(() => {
+    if (DefaultDataOfBooking?.gardener_visiting_slots) {
+      try {
+        // Parse and format dates
+        const parsedSlots = JSON.parse(DefaultDataOfBooking.gardener_visiting_slots);
+        const formattedSlots = parsedSlots.map((slot) => ({
+          ...slot,
+          date: slot.date ? new Date(slot.date).toISOString().split("T")[0] : null,
+        }));
+        setSelectedVisitDates(formattedSlots);
+      } catch (error) {
+        console.error("Error parsing gardener_visiting_slots:", error);
+      }
+    }
+  }, [DefaultDataOfBooking]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const convertToAmPm = (time) => {
     const [hours, minutes] = time.split(":");
@@ -1602,9 +1661,18 @@ Your Subscription Ends At:
 </label>
 <div className="previous_time_selected">
       <span>
-      {MonthlySubscriptionEndsDate
+      {/* {MonthlySubscriptionEndsDate
                           ? MonthlySubscriptionEndsDate.toDateString()
-                          : "Not calculated"}
+                          : "Not calculated"} */}
+
+{MonthlySubscriptionStartDate ? (
+  <div>
+    {/* Start Date: {MonthlySubscriptionStartDate.toDateString()} <br /> */}
+{getDateAfter30Days(MonthlySubscriptionStartDate)}
+  </div>
+) : (
+  "Not selected"
+)}
       </span>
     </div>
   </div>
@@ -1735,7 +1803,7 @@ Your Subscription Ends At:
 
   <div className="people-counter-container">
 
-    <span className="people-counter-label">Select Number of Hours</span>
+    <span className="people-counter-label">Select Number of Visits</span>
     <div className="people-counter">
                         <button
                           type="button"
@@ -1782,24 +1850,29 @@ Your Subscription Ends At:
 
 
 
-
                     {selectedVisitDates.map((visit, index) => (
+                      <>
+
+                      {console.log(selectedVisitDates,"selectedVisitDatesselectedVisitDates")}
   <div key={index} className="booking-form-group flex-fill">
-    <label className="booking-form-label">
-      Select Visit Date {index + 1}
-    </label>
+    <label className="booking-form-label">Select Visit Date {index + 1}</label>
+
+    {/* Date selection scroll container */}
     <div className="date-scroll-container">
-      {getUpcomingDates(new Date(), 30).map((date, i) => {
-        const isSelected =
-          visit.date &&
-          new Date(visit.date).toDateString() === date.toDateString();
+      {getUpcomingDates(
+        MonthlySubscriptionStartDate || new Date(),
+        60
+      ).map((date, i) => {
+        const formattedDate = date.toISOString().split("T")[0]; // Consistent date format
+        const isSelected = visit.date === formattedDate; // Direct string comparison
+
         return (
           <div
             key={i}
             className={`date-item ${isSelected ? "selected" : ""}`}
             onClick={() => {
               const updatedDates = [...selectedVisitDates];
-              updatedDates[index].date = date.toISOString().split("T")[0];
+              updatedDates[index].date = formattedDate;
               setSelectedVisitDates(updatedDates);
             }}
             role="button"
@@ -1807,7 +1880,7 @@ Your Subscription Ends At:
             onKeyPress={(e) => {
               if (e.key === "Enter" || e.key === " ") {
                 const updatedDates = [...selectedVisitDates];
-                updatedDates[index].date = date.toISOString().split("T")[0];
+                updatedDates[index].date = formattedDate;
                 setSelectedVisitDates(updatedDates);
               }
             }}
@@ -1819,17 +1892,24 @@ Your Subscription Ends At:
         );
       })}
     </div>
-    <div>
-      Average Time per Slot:{" "}
-      {(() => {
-        const totalMinutes = visit.hours;
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = Math.floor(totalMinutes % 60);
-        return `${hours} hours ${minutes} minutes`;
-      })()}
+
+    {/* Display average time per slot */}
+    <div className="cooking-time-container pt-3">
+      <span className="people-counter-label">Average Time per Slot:</span>{" "}
+      <span className="cooking-time-value">
+        {(() => {
+          const totalMinutes = visit.hours || 0;
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          return `${hours} hours ${minutes} minutes`;
+        })()}
+      </span>
     </div>
   </div>
+  </>
 ))}
+
+
 
                   </>
                 )}
