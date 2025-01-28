@@ -2810,8 +2810,7 @@ Your Subscription Ends At:
                   fontWeight: "bold",
                 }}
               >
-                Your booking is currently awaiting confirmation from the service
-                provider. We'll update you as soon as it's accepted!
+             Your booking has been successfully modified. We will notify you once it is confirmed by the service provider!
               </p>
 
               <button
