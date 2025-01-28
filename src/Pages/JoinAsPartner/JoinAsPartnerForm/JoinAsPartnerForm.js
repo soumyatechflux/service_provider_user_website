@@ -3,16 +3,19 @@ import "./JoinAsPartnerForm.css";
 import { Link } from "react-router-dom";
 import { ChevronDown } from "lucide-react";
 import MessageModal from "../../MessageModal/MessageModal";
+import Loader from "../../Loader/Loader";
+import axios from "axios";
 
 const JoinAsPartnerForm = () => {
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
     email: "",
-    city: "",
+    city: "Delhi-NCR", // Preselect Delhi-NCR
     message: "",
   });
 
+  const [loading, setLoading] = useState(true);
   const [show, setShow] = useState(false);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -21,7 +24,7 @@ const JoinAsPartnerForm = () => {
   const handleShow = () => setShow(true);
   const [message, setMessage] = useState("");
   const [activeDropdown, setActiveDropdown] = useState(null);
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("Delhi-NCR"); // Preselect Delhi-NCR
 
   const handleClosePopup = () => setShowPopup(false); // Close popup handler
 
@@ -96,20 +99,19 @@ const JoinAsPartnerForm = () => {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
+      setLoading(true);
+      const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
+        supportData,
         {
-          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(supportData),
         }
       );
+      setLoading(false);
 
-      const result = await response.json();
-
-      if (response.ok) {
+      if (response.status === 200) {
         setFormData({
           name: "",
           mobile: "",
@@ -121,21 +123,28 @@ const JoinAsPartnerForm = () => {
         setSelectedLocation("Select Location"); // Reset the location dropdown
         setShowPopup(true); // Show the popup only on success
       } else {
-        console.error("Error submitting form:", result);
+        console.error("Error submitting form:", response.data);
       }
     } catch (error) {
+      setLoading(false);
       console.error("Error during API request:", error);
     } finally {
+      setLoading(false);
       setIsSubmitting(false);
     }
   };
 
+  // if (loading) {
+  //   return <Loader />;
+  // }
+
   return (
     <div className="container nav-container join-partner-container">
       <div className="join-partner-section">
-        <h2 className="join-partner-title mb-1" >Get In Touch</h2>
+        <h2 className="join-partner-title mb-1">Get In Touch</h2>
         <p>
-        Please provide the following details to get in touch with us. For any booking related queries or complaints, please visit the help centre.
+          Please provide the following details to get in touch with us. For any
+          booking related queries or complaints, please visit the help centre.
         </p>
         <form onSubmit={handleSubmit}>
           <div className="join-partner-form-group">
@@ -183,38 +192,41 @@ const JoinAsPartnerForm = () => {
           </div>
 
           <div className="join-partner-form-group">
-          <div className="nav-item dropdown location-dropdown">
-  <a
-    className="nav-link dropdown-toggle location-drop"
-    href="#"
-    style={{ width: "auto", marginRight: "0px" }}
-    onClick={(e) => {
-      e.preventDefault();
-      setActiveDropdown(activeDropdown === "location" ? null : "location");
-    }}
-  >
-    <div style={{ gap: "10px" }}>
-      <i className="bi bi-geo-alt-fill me-1"></i>{" "}
-      <span style={{ color: "#999999", fontSize: "16px" }}>
-        {selectedLocation || "Delhi-NCR"} {/* Default location is Delhi */}
-      </span>
-    </div>
-  </a>
-  {/* {activeDropdown === "location" && (
-    <div className="dropdown-menu show">
-      <a
-        className="dropdown-item"
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          handleLocationChange("Delhi"); // Only Delhi is selectable
-        }}
-      >
-        Delhi
-      </a>
-    </div>
-  )} */}
-</div>
+            <div className="nav-item dropdown location-dropdown">
+              <a
+                className="nav-link dropdown-toggle location-drop"
+                href="#"
+                style={{ width: "auto", marginRight: "0px" }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  setActiveDropdown(
+                    activeDropdown === "location" ? null : "location"
+                  );
+                }}
+              >
+                <div style={{ gap: "10px" }}>
+                  <i className="bi bi-geo-alt-fill me-1"></i>{" "}
+                  <span style={{ color: "#999999", fontSize: "16px" }}>
+                    {selectedLocation || "Delhi-NCR"}{" "}
+                    {/* Default location is Delhi */}
+                  </span>
+                </div>
+              </a>
+              {/* {activeDropdown === "location" && (
+                <div className="dropdown-menu show">
+                  <a
+                    className="dropdown-item"
+                    href="#"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLocationChange("Delhi-NCR"); // Only Delhi is selectable
+                    }}
+                  >
+                    Delhi
+                  </a>
+                </div>
+              )} */}
+            </div>
 
             {errors.city && <p className="error-text">{errors.city}</p>}
           </div>
@@ -235,7 +247,13 @@ const JoinAsPartnerForm = () => {
             className="join-partner-button"
             disabled={isSubmitting}
           >
-            Send Now
+            {isSubmitting ? (
+              <>
+                <Loader /> Submitting...
+              </>
+            ) : (
+              "Send Now"
+            )}
           </button>
         </form>
       </div>
@@ -256,8 +274,11 @@ const JoinAsPartnerForm = () => {
       <div className="join-partner-section2">
         <div className="join-partner-text-center">
           <h2 className="join-partner-title">Join As A Partner</h2>
-          <p >Are you looking for work? Join us to get new bookings and earn more. Download the Servyo app on your mobile phone or fill your whatsapp number below and we will contact you. 
-        </p>
+          <p>
+            Are you looking for work? Join us to get new bookings and earn more.
+            Download the Servyo app on your mobile phone or fill your whatsapp
+            number below and we will contact you.
+          </p>
           <p className="mb-1">Download Our Partner App</p>
           <div>
             <button className="join-partner-button-download">
@@ -267,8 +288,12 @@ const JoinAsPartnerForm = () => {
         </div>
 
         <div className="join-partner-help-section">
-          <h3 className="join-partner-help-title mb-2" >Need Help?</h3>
-          <p>Please visit our help center if you need any quick assistance with your reservations. Our assistance and frequently asked questions will provide you with an immediate solution.          </p>
+          <h3 className="join-partner-help-title mb-2">Need Help?</h3>
+          <p>
+            Please visit our help center if you need any quick assistance with
+            your reservations. Our assistance and frequently asked questions
+            will provide you with an immediate solution.{" "}
+          </p>
           <Link to="/contact-us" className="join-partner-link text-center">
             Open Help Centre →
           </Link>

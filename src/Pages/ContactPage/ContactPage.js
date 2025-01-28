@@ -3,22 +3,29 @@ import { ChevronDown, ChevronUp } from "lucide-react";
 import axios from "axios";
 import "./ContactPage.css";
 import MessageModal from "../MessageModal/MessageModal";
+import Loader from "../Loader/Loader";
+// import Loader from "../../Loader/Loader";
+
 
 function ContactPage() {
   const [formData, setFormData] = useState({
     name: "",
     mobile: "",
     email: "",
-    city: "",
+    city: "Delhi-NCR", // Preselect Delhi-NCR
     message: "",
   });
+
+    const [loading, setLoading] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [message, setMessage] = useState("");
   const [activeDropdown, setActiveDropdown] = useState(null); // Dropdown toggle state
-  const [selectedLocation, setSelectedLocation] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("Delhi-NCR"); // Preselect Delhi-NCR
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -62,15 +69,19 @@ function ContactPage() {
     }
   
     try {
+
+      
       const payload = {
         support: {
           name: formData.name,
           mobile: formData.mobile,
           email: formData.email,
-          city: "Delhi-NCR", // Predefined city
+          city: selectedLocation, // Predefined city
           description: formData.message,
         },
       };
+      setIsSubmitting(true);
+      setLoading(true);
   
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
@@ -81,6 +92,8 @@ function ContactPage() {
           },
         }
       );
+      setLoading(false);
+
       console.log("API Response:", response.data);
   
       setShowPopup(true);
@@ -98,6 +111,9 @@ function ContactPage() {
       setSelectedLocation("Select Location");
     } catch (error) {
       console.error("Error submitting form:", error);
+    }finally {
+      setLoading(false);
+      setIsSubmitting(false);
     }
   };
   
@@ -301,7 +317,7 @@ function ContactPage() {
                         </span>
                       </div>
                     </a>
-                    {activeDropdown === "location" && (
+                    {/* {activeDropdown === "location" && (
                       <div className="dropdown-menu show">
                         <a
                           className="dropdown-item"
@@ -312,7 +328,7 @@ function ContactPage() {
                           }}
                         >
                           Delhi-NCR
-                        </a>
+                        </a> */}
                         {/* <a
                           className="dropdown-item"
                           href="#"
@@ -344,8 +360,8 @@ function ContactPage() {
                           Chennai
                         </a> */}
                         {/* Add more cities as needed */}
-                      </div>
-                    )}
+                      {/* </div>
+                    )} */}
                   </div>
                 </div>
 
@@ -357,9 +373,16 @@ function ContactPage() {
                     onChange={handleInputChange}
                   ></textarea>
                 </div>
-                <button type="submit" className="submit-btn">
-                  Send Now
-                </button>
+                <button type="submit" className="submit-btn"disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <>
+                <Loader /> Submitting...
+              </>
+            ) : (
+              "Send Now"
+            )}
+          </button>
               </form>
             </div>
 
