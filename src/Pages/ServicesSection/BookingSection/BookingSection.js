@@ -176,6 +176,27 @@ const BookingSection = () => {
       ? selectedCouponObject.voucher_code
       : null;
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     try {
       const body = {
         booking: {
@@ -186,15 +207,60 @@ const BookingSection = () => {
             service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
 
           visit_time: selectedTime,
-          visit_address_id: selectedLocation?.address_id || "",
-          address_from:
-            service?.category_id === 2
-              ? selectedLocationFromForDriver?.address_id
-              : "",
-          address_to:
-            service?.category_id === 2
-              ? selectedLocationToForDriver?.address_id
-              : "",
+
+
+
+          visit_address_id:
+           service?.category_id !== 2 ? selectedLocation?.address_id : "",
+
+
+          // address_from:
+          //   service?.category_id === 2
+          //     ? selectedLocationFromForDriver?.address_id
+          //     : "",
+          // address_to:
+          //   service?.category_id === 2
+          //     ? selectedLocationToForDriver?.address_id
+          //     : "",
+
+
+
+              address_from:
+              service?.category_id === 2
+                ? DriverCoordinates.startPoint
+                : "",
+            address_to:
+              service?.category_id === 2
+                ? DriverCoordinates.endPoint
+                : "",
+
+
+
+
+                address_from_latitude:
+                service?.category_id === 2
+                  ? DriverCoordinates.startCoordinates.lat
+                  : "",
+
+                  address_from_longitude:
+                service?.category_id === 2
+                  ? DriverCoordinates.startCoordinates.lng
+                  : "",   
+
+                  address_to_latitude:
+                  service?.category_id === 2
+                    ? DriverCoordinates.endCoordinates.lat
+                    : "",
+
+                    address_to_longitude:
+                  service?.category_id === 2
+                    ? DriverCoordinates.endCoordinates.lng
+                    : "",
+  
+
+
+
+
           no_of_hours_booked: "",
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
@@ -828,21 +894,16 @@ const getUpcomingDates = () => {
 
 
 
-      
-    if (
-      !selectedLocation?.address_id || 
-      (service?.category_id === 2 && (
-        !selectedLocationFromForDriver?.address_id || 
-        !selectedLocationToForDriver?.address_id 
-      ))
-    ) {
-      toast.error("Please fill all required fields.");
-      return;
-    }
-
-
-
-
+      if(service?.category_id !== 2){
+        if (
+          !selectedLocation?.address_id
+        ) {
+          toast.error("Please provide address details.");
+          return;
+        }
+        
+        }
+  
 
 
 
@@ -1843,7 +1904,7 @@ const getUpcomingDates = () => {
 
   <div className="people-counter-container">
 
-    <span className="people-counter-label">Select Number of Hours</span>
+    <span className="people-counter-label">Select Number of Visits</span>
     <div className="people-counter">
                         <button
                           type="button"
@@ -2413,13 +2474,16 @@ const getUpcomingDates = () => {
                     </div>
                     
                     <br/>
-                    <Link
-                      to="/cancellation-policy"
-                      className="read-policy-button"
-                    >
-                      READ CANCELLATION POLICY
-                      <IoIosArrowForward className="arrow_for_cancellation" />
-                    </Link>
+                    <a
+  href="/cancellation-policy"
+  className="read-policy-button"
+  target="_blank"
+  rel="noopener noreferrer"
+>
+  READ CANCELLATION POLICY
+  <IoIosArrowForward className="arrow_for_cancellation" />
+</a>
+
                   </div>
                 </div>
               </div>
@@ -2630,14 +2694,16 @@ const getUpcomingDates = () => {
 >
   + Add New Address
 </Button>
-</> )}
 
-
-{/* <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
   <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
   <span style={{ padding: '0 10px' }}>OR</span>
   <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
-</div> */}
+</div>
+
+</> )}
+
+
 
 
               <div

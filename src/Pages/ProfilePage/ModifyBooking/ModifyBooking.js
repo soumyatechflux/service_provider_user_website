@@ -18,6 +18,7 @@ import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPaymen
 import "./ModifyBooking.css";
 
 const ModifyBooking = () => {
+  
   const getUpcomingDates = (startDate, numDays) => {
     const dates = [];
     for (let i = 0; i < numDays; i++) {
