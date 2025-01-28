@@ -192,7 +192,7 @@ const JoinAsPartnerForm = () => {
           </div>
 
           <div className="join-partner-form-group">
-            <div className="nav-item dropdown location-dropdown">
+            <div className="nav-item dropdown location-dropdown" style={{width:"100%"}}>
               <a
                 className="nav-link dropdown-toggle location-drop"
                 href="#"
@@ -212,7 +212,7 @@ const JoinAsPartnerForm = () => {
                   </span>
                 </div>
               </a>
-              {/* {activeDropdown === "location" && (
+              {activeDropdown === "location" && (
                 <div className="dropdown-menu show">
                   <a
                     className="dropdown-item"
@@ -222,10 +222,10 @@ const JoinAsPartnerForm = () => {
                       handleLocationChange("Delhi-NCR"); // Only Delhi is selectable
                     }}
                   >
-                    Delhi
+                    Delhi-NCR
                   </a>
                 </div>
-              )} */}
+              )}
             </div>
 
             {errors.city && <p className="error-text">{errors.city}</p>}

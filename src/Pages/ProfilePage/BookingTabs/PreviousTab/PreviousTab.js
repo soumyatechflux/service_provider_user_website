@@ -92,12 +92,16 @@ function PreviousTab() {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
     date.setHours(hours, minutes);
-
-    return date.toLocaleString("en-GB", {
+  
+    // Format the time with hour, minute, and AM/PM
+    const formattedTime = date.toLocaleString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
+  
+    // Convert the AM/PM part to uppercase
+    return formattedTime.replace(/(am|pm)/, (match) => match.toUpperCase());
   };
   const categoryIcons = {
     1: ChefHat,

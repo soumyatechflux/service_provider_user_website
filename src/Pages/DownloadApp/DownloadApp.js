@@ -1,9 +1,23 @@
-import React from "react";
+import React, { useState } from "react";
+import { Modal, Button } from "react-bootstrap";
 import "./DownloadApp.css";
+import { FaEnvelope } from "react-icons/fa";
 
 const DownloadApp = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleOpenModal = (msg) => {
+    setMessage(msg);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
-    <div className=" Download-container">
+    <div className="Download-container">
       <div className="container nav-container download-section">
         <div className="container">
           <div className="row align-items-center">
@@ -20,7 +34,7 @@ const DownloadApp = () => {
                   Download The App
                 </h2>
                 <p className="download-text" style={{ color: "white", fontWeight:"700" }}>
-                Download the Servyo app on Android & iOS. Get access to all our services on your fingertips for a smooth and hassle-free experience
+                  Download the Servyo app on Android & iOS. Get access to all our services on your fingertips for a smooth and hassle-free experience
                 </p>
                 <div className="store-buttons">
                   <a
@@ -36,10 +50,12 @@ const DownloadApp = () => {
                     />
                   </a>
                   <a
-                    href="https://www.apple.com/app-store/" // Replace with your app's App Store URL
+                    href="#!" // Use a dummy href as you are not navigating directly
                     className="store-button app-store"
-                    target="_blank" // Opens the link in a new tab
-                    rel="noopener noreferrer" // Improves security
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default action of anchor tag
+                      handleOpenModal("App coming soon! Stay tuned.");
+                    }}
                   >
                     <img
                       src="/DownloadApp/AppStore.png"
@@ -51,7 +67,7 @@ const DownloadApp = () => {
               </div>
             </div>
 
-            <div className="col-lg-6 ">
+            <div className="col-lg-6">
               <div className="img-phone">
                 <img src="/DownloadApp/downloadApp.png" alt="Phone Display" />
               </div>
@@ -59,6 +75,30 @@ const DownloadApp = () => {
           </div>
         </div>
       </div>
+
+      {/* Modal Component */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        {/* <Modal.Header closeButton /> */}
+        <Modal.Body style={{ display: "flex", alignItems: "center" }}>
+          <FaEnvelope
+            style={{
+              color: "#6366f1",
+              marginRight: "10px",
+              fontSize: "2em",
+            }}
+          />
+          {message}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button
+            className="button-message"
+            variant="primary"
+            onClick={handleCloseModal}
+          >
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </div>
   );
 };

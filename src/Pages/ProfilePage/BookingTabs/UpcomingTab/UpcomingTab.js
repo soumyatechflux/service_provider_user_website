@@ -28,6 +28,7 @@ const UpcomingTab = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [ActiveBookingData, setActiveBookingData] = useState({});
+  const [isSuccess, setIsSuccess] =useState()
 
   const navigate = useNavigate();
 
@@ -115,7 +116,6 @@ const UpcomingTab = () => {
   }, []);
 
   const handleConfirmationNext = async () => {
-    // console.log("...", selectedReason);
     setLoading(true);
     const cancelDetails = {
       booking: {
@@ -123,9 +123,7 @@ const UpcomingTab = () => {
         reason: selectedReason,
       },
     };
-
-    // console.log("Payload sent:", cancelDetails);
-
+  
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/cancel_booking`,
@@ -133,38 +131,32 @@ const UpcomingTab = () => {
         {
           headers: {
             Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json", // Optional: add Content-Type header if needed
+            "Content-Type": "application/json",
           },
         }
       );
-      setLoading(true);
-
+  
+      setLoading(false);
+  
       if (response?.data?.success) {
-        // setCurrentModal("success");
-        setCurrentModal(null);
-
-        setLoading(false);
-        toast.success(
-          response?.data?.message ||
-            "The booking has been successfully cancelled."
-        );
+        setCurrentModal(null); // Close the modal
+        toast.success(response?.data?.message || "The booking has been successfully cancelled.");
+        setMessage(response?.data?.message || "The booking has been successfully cancelled.");
+        setIsSuccess(true); // Set to true for success
+        setCurrentModal("success"); // Show success modal
       } else {
-        // alert(response?.data?.message || "Failed to cancel booking!");
         setMessage(response?.data?.message || "Failed to cancel booking!");
-        setShow(true);
-        handleShow(); // Show the modal
-        setLoading(false);
+        setIsSuccess(false); // Set to false for error
+        setCurrentModal("error"); // Optionally create an error modal
       }
     } catch (error) {
       setLoading(false);
-      console.error(
-        "Error during cancellation:",
-        error.response?.data || error.message
-      );
-      // alert(error.response?.data?.message || "Failed to cancel booking.");
-      setLoading(false);
+      setMessage(error.response?.data?.message || "Failed to cancel booking.");
+      setIsSuccess(false); // Set to false for error
+      setCurrentModal("error"); // Optionally create an error modal
     }
   };
+  
 
   const passDataToNext = (reason) => {
     setSelectedReason(reason);
@@ -234,17 +226,7 @@ const UpcomingTab = () => {
   };
 
   // Function to format time to "04:39 PM"
-  const formatTime = (timeString) => {
-    const [hours, minutes] = timeString.split(":");
-    const date = new Date();
-    date.setHours(hours, minutes);
-
-    return date.toLocaleString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  };
+ 
 
   const categoryIcons = {
     1: ChefHat,
@@ -260,6 +242,24 @@ const UpcomingTab = () => {
     return <div>{error}</div>;
   }
 
+  const formatTime = (timeString) => {
+    const [hours, minutes] = timeString.split(":");
+    const date = new Date();
+    date.setHours(hours, minutes);
+  
+    // Format the time with hour, minute, and AM/PM
+    const formattedTime = date.toLocaleString("en-GB", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    });
+  
+    // Convert the AM/PM part to uppercase
+    return formattedTime.replace(/(am|pm)/, (match) => match.toUpperCase());
+  };
+  
+  
+
   return (
     <>
       <div className="booking-container">
@@ -274,10 +274,11 @@ const UpcomingTab = () => {
                 <div className="booking-details mt-3 mb-3">
                   <div className="column1">
                     <div className="details-header">
-                      <h2 className="details-head">
-                        {formatDate(bookingsIdWise?.visit_date)} at{" "}
-                        {formatTime(bookingsIdWise?.visit_time)}
-                      </h2>
+                    <h2 className="details-head">
+  {formatDate(bookingsIdWise?.visit_date)} at{" "}
+  {formatTime(bookingsIdWise?.visit_time)}
+</h2>
+
                       {/* <div className="service-image image-flex">
                         <img
                           src="./../ServicesSection/demoCancel.jpg"
@@ -788,17 +789,20 @@ const UpcomingTab = () => {
           </>
         )}
 
-        <MessageModal
+        {/* <MessageModal
           show={show}
           handleClose={handleClose}
           handleShow={handleShow}
           message={message}
-        />
+        /> */}
 
-        <SuccessModal
-          isOpen={currentModal === "success"}
-          onClose={handleCloseModal}
-        />
+<SuccessModal
+  isOpen={currentModal === "success" || currentModal === "error"}
+  onClose={handleCloseModal}
+  message={message}
+  isSuccess={isSuccess} // Pass isSuccess flag
+/>
+
       </div>
     </>
   );

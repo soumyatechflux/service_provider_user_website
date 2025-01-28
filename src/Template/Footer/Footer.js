@@ -1,20 +1,35 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Footer.css";
 import { Link } from "react-router-dom";
 import { FaFacebook, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { FaXTwitter } from "react-icons/fa6";
+import { Modal, Button } from "react-bootstrap";
+import { FaEnvelope } from "react-icons/fa";
 
 const Footer = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handleOpenModal = (msg) => {
+    setMessage(msg);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
   return (
     <footer className="footer">
-      <div className=" footer-container">
+      <div className="footer-container">
         {/* Branding */}
         <div className="container nav-container footer-brand mb-3">
-        <img
+          <img
             src="/LOGO_SP2.png"
             className="Footer-logo"
             // style={{ width: "186px", height: "54px" }}
-          ></img>
+            alt="Servyo Logo"
+          />
         </div>
 
         {/* Footer Columns */}
@@ -97,10 +112,13 @@ const Footer = () => {
                 <FaInstagram />
               </a>
             </div>
-            <div className="app-buttons ">
+            <div className="app-buttons">
               <a
-                href="https://www.apple.com/app-store/" // Replace with your app's App Store URL
-                 Google Play Store URL
+                href="#!"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default anchor behavior
+                  handleOpenModal("App coming soon! Stay tuned.");
+                }}
                 className="store-button-footer google-play"
               >
                 <img
@@ -110,7 +128,7 @@ const Footer = () => {
                 />
               </a>
               <a
-              href="https://play.google.com/store" // Replace with your app's
+                href="https://play.google.com/store"
                 className="store-button-footer google-play"
               >
                 <img
@@ -128,6 +146,26 @@ const Footer = () => {
       <div className="footer-bottom">
         <p>Copyright © 2024 Servyo</p>
       </div>
+
+      {/* Modal */}
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+        {/* <Modal.Header closeButton /> */}
+        <Modal.Body style={{ display: "flex", alignItems: "center" }}>
+          <FaEnvelope
+            style={{
+              color: "#6366f1",
+              marginRight: "10px",
+              fontSize: "2em",
+            }}
+          />
+          {message}
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary" onClick={handleCloseModal}>
+            Ok
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </footer>
   );
 };

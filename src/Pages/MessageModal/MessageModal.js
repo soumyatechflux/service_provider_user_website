@@ -35,9 +35,9 @@ import { FaEnvelope } from "react-icons/fa";
 const MessageModal = ({ show, handleClose, message }) => {
   return (
     <Modal show={show} onHide={handleClose} centered>
-      <Modal.Header closeButton>
+      {/* <Modal.Header closeButton>
       
-      </Modal.Header>
+      </Modal.Header> */}
       <Modal.Body style={{display:"flex", alignItems:"center"}}>  <FaEnvelope style={{ color: "#6366f1", marginRight: "10px", fontSize: "2em" }} />{message}</Modal.Body>
       <Modal.Footer>
         <Button className="button-message" variant="primary" onClick={handleClose}>
