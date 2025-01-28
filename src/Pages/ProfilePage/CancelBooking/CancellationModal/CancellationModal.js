@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './CancellationModal.css';
 import UpcomingTab from '../../BookingTabs/UpcomingTab/UpcomingTab';
 
-const CancellationModal = ({ isOpen, onClose, onNext, booking,onConfirm}) => {
+const CancellationModal = ({ isOpen, onClose, onNext, booking,onConfirm,sub_category_id}) => {
   const [selectedReason, setSelectedReason] = useState('');
 
   const reasons = [
@@ -52,11 +52,35 @@ const CancellationModal = ({ isOpen, onClose, onNext, booking,onConfirm}) => {
           </div>
           <div className="modal-body">
             <div className="booking-image mb-3 text-center">
-              <img
+              {/* <img
                 src="./../../ServicesSection/demoCancel.jpg"
                 alt="cancel"
                 className="cancel-image img-fluid"
-              />
+              /> */}
+
+
+<img
+                          src={
+                            {
+                              1: "./../ServicesSection/CookingSection/chef.png",
+                              2: "./../ServicesSection/CookingSection/chef-cooking-2.jpg",
+                              3: "./../ServicesSection/CookingSection/chef3.png",
+                              4: "./../ServicesSection/DriverServices/driverServices1.jpg",
+                              5: "./../ServicesSection/DriverServices/driverServices.jpg",
+                              6: "./../ServicesSection/DriverServices/driverServices3.jpg",
+                              7: "./../ServicesSection/DriverServices/driverServices2.jpg",
+                              8: "./../ServicesSection/GardenerServices/gardener3.jpg",
+                              9: "./../ServicesSection/GardenerServices/gardener2.jpg",
+                            }[sub_category_id] ||
+                            "./../ServicesSection/demoCancel.jpg" // Fallback image
+                          }
+                          alt={
+                            
+                            "Service Image"
+                          }
+                          style={{ marginBottom: "15px" }}
+                        />
+                        
               {/* <p className="mt-2">{booking.serviceType}</p> */}
             </div>
             <div className="mb-3">

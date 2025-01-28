@@ -777,6 +777,7 @@ const UpcomingTab = () => {
               booking={bookings[cancelId]}
               onConfirm={passDataToNext}
               sub_category_id = {bookingsIdWise?.sub_category_id}
+              
             />
             <ConfirmationModal
               isOpen={currentModal === "confirmation"}
