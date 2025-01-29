@@ -1,15 +1,16 @@
 /* Custom Tabs Styling */
 .custom-tabs .nav-tabs {
-    border-bottom: none; /* Remove default Bootstrap border */
+    border-bottom: none;
     display: flex;
-    justify-content: start; /* Align tabs to the left */
+    justify-content: start; 
   }
   
   .custom-tabs .nav-link {
     position: relative;
     border: none;
     background: none;
-    color: #a0a0a0; /* Inactive tab color */
+    /* color: #a0a0a0;  */
+    color: #a0a0a0; 
     font-size: 1rem;
     font-weight: 500;
     padding: 0.5rem 1rem;
@@ -17,7 +18,7 @@
   }
   
   .custom-tabs .nav-link:hover {
-    color: #007bff !important; /* Hover effect for inactive tabs */
+    color: #007bff !important;
     text-decoration: none;
   }
   
