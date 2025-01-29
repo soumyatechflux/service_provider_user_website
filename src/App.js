@@ -30,6 +30,7 @@ import PrivacyPolicy from "./Pages/PrivacyPolicy/PrivacyPolicy";
 import TermsAndConditions from "./Pages/TermsAndConditions/TermsAndConditions";
 import Navbar from "./Template/Navbar/Navbar";
 import CancellationPolicy from "./Pages/CancellationPolicy/CancellationPolicy";
+import HelpCentreTab from "./Pages/ProfilePage/BookingTabs/HelpCentreTab/HelpCentreTab";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -128,6 +129,7 @@ function App() {
           <Route path="/join-as-partner" element={<JoinAsPartner />} />
           <Route path="/modify-booking" element={<ModifyBooking />} />
           <Route path ="/booking" element={<BookingSection/>} />
+          <Route path ="/help-centre" element={<HelpCentreTab/>} />
          
           
 

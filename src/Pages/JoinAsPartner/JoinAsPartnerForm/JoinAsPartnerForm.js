@@ -1,10 +1,9 @@
-import React, { useState } from "react";
-import "./JoinAsPartnerForm.css";
-import { Link } from "react-router-dom";
-import { ChevronDown } from "lucide-react";
-import MessageModal from "../../MessageModal/MessageModal";
-import Loader from "../../Loader/Loader";
 import axios from "axios";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
+import Loader from "../../Loader/Loader";
+import MessageModal from "../../MessageModal/MessageModal";
+import "./JoinAsPartnerForm.css";
 
 const JoinAsPartnerForm = () => {
   const [formData, setFormData] = useState({
