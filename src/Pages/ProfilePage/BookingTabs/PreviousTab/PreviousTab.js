@@ -302,19 +302,23 @@ function PreviousTab() {
                           </h4>
                         )}
 
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.category_id === 2
-                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
-                            : bookingsIdWise?.sub_category_id === 3
-                            ? bookingsIdWise?.menu?.map((item, index) => (
-                                <span key={index}>
-                                  {item.name}
-                                  {index !== bookingsIdWise.menu.length - 1 &&
-                                    ", "}
-                                </span>
-                              ))
-                            : bookingsIdWise?.dishes}
-                        </p>
+<p className="booking-info-text">
+  {bookingsIdWise?.category_id === 2
+    ? bookingsIdWise?.car_type // Show car type when category_id === 2
+    : bookingsIdWise?.sub_category_id === 3
+    ? bookingsIdWise?.menu?.map((item, index) => (
+        <span key={index}>
+          {item.name}
+          {index !== bookingsIdWise.menu.length - 1 && ", "}
+        </span>
+      ))
+    : bookingsIdWise?.dishes?.map((dish, index) => (
+        <span key={index}>
+          {dish}
+          {index !== bookingsIdWise.dishes.length - 1 && ", "}
+        </span>
+      ))}
+</p>
                       </div>
                       {bookingsIdWise?.sub_category_id !== 9 && (
                       <div className="info-group">

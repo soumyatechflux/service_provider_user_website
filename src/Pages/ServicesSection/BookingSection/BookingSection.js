@@ -43,6 +43,9 @@ const BookingSection = () => {
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
+  const [isTimeDropdownOpen, setTimeDropdownOpen] = useState(false);
+
+
   const [menuItems, setMenuItems] = useState([]);
   const [
     selectedMenuItemsForChefForParty,
@@ -1678,31 +1681,37 @@ const getUpcomingDates = () => {
 
                     {/* Time Picker */}
                     <div className="booking-form-group">
-                      <label
-                        className="booking-form-label"
-                        htmlFor="time-select"
-                      >
-                        Select Time of Visit
-                      </label>
-                      <div className="booking-time-dropdown-wrapper">
-                        <select
-                          id="time-select"
-                          className="booking-time-dropdown"
-                          value={selectedTime}
-                          onChange={(e) => setSelectedTime(e.target.value)}
-                        >
-                          <option value="" disabled>
-                            Select a time
-                          </option>
-                          {filteredTimeOptions.map((time) => (
-                            <option key={time} value={time}>
-                              {/* {time} */}
-                              {formatTimeTo12Hour(time)}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
+  <label className="booking-form-label">Select Time of Visit</label>
+  
+  <div 
+    className={`booking-time-dropdown-wrapper-time ${isTimeDropdownOpen ? "active" : ""}`} 
+    onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
+  >
+    {/* Dropdown Button */}
+    <div className="booking-time-dropdown-button">
+      {selectedTime ? formatTimeTo12Hour(selectedTime) : "Select a time"}
+      <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
+    </div>
+
+    {/* Dropdown Grid UI */}
+    {isTimeDropdownOpen && (
+      <div className="booking-time-options-grid">
+        {filteredTimeOptions.map((time) => (
+          <div
+            key={time}
+            className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
+            onClick={() => {
+              setSelectedTime(time);
+              setTimeDropdownOpen(false); // Close dropdown on selection
+            }}
+          >
+            {formatTimeTo12Hour(time)}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</div>
                   </div>
                 </>
               )}
@@ -2743,18 +2752,13 @@ const getUpcomingDates = () => {
                             style={{ cursor: "pointer", width: "auto" }}
                           />
                           <p className="flex-fill mb-0 address-p">
-                            <span className="serial-number me-2">
-                              {index + 1}.
-                            </span>
-                            {address.landmark && `${address.landmark}, `}
-                            {address.street_address_line2 &&
-                              `${address.street_address_line2}, `}
-                            {address.city && `${address.city}, `}
-                            {address.state && `${address.state}, `}
-                            {address.postal_code && `${address.postal_code},. `}
-                            {address.country && `${address.country}`}
-                            <br />
-                          </p>
+  <span className="serial-number me-2">
+    {index + 1}.
+  </span>
+  {address.formatted_address}
+  <br />
+</p>
+
 
                           <Dropdown className="custom-dropdown-container">
                             <Dropdown.Toggle
@@ -2768,7 +2772,7 @@ const getUpcomingDates = () => {
                                 style={{ cursor: "pointer" }}
                               />
                             </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu-booking">
+                            <Dropdown.Menu className="custom-dropdown-menu-booking" style={{minWidth:"100px", marginLeft:"50px",position:"absolute"}}>
                               <Dropdown.Item
                                 className="custom-dropdown-item-booking"
                                 onClick={() => {

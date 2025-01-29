@@ -1,3 +1,73 @@
+.booking-time-dropdown-wrapper-time {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.booking-time-dropdown-button {
+  background: transparent;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 500;
+  appearance: none; /* Hides default dropdown arrow */
+  -webkit-appearance: none; 
+  -moz-appearance: none; 
+}
+
+/* Custom Dropdown Icon */
+.custom-dropdown-icon {
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.booking-time-options-grid {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: white;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  padding: 10px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Creates a 3-column layout */
+  gap: 15px;
+  max-height: 250px; /* Scrollable if too many options */
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.booking-time-option {
+  padding: 10px;
+  text-align: center;
+  border-radius: 8px;
+  background: #fff;
+  cursor: pointer;
+  font-weight: 500;
+  box-shadow: 0px 4px 8px 0px #0000001A; /* Shadow effect */
+}
+
+.booking-time-option:hover {
+  background: #6366f1;
+  color: white;
+}
+
+.booking-time-option.selected {
+  background: #6366f1; /* Blue color from image */
+  color: white;
+}
+
+
+
+
+
+
+
 .date-scroll-container {
   display: flex;
   gap: 15px;
