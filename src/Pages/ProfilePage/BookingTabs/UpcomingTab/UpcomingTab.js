@@ -28,7 +28,7 @@ const UpcomingTab = () => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [ActiveBookingData, setActiveBookingData] = useState({});
-  const [isSuccess, setIsSuccess] =useState()
+  const [isSuccess, setIsSuccess] = useState();
 
   const navigate = useNavigate();
 
@@ -123,7 +123,7 @@ const UpcomingTab = () => {
         reason: selectedReason,
       },
     };
-  
+
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/cancel_booking`,
@@ -135,13 +135,19 @@ const UpcomingTab = () => {
           },
         }
       );
-  
+
       setLoading(false);
-  
+
       if (response?.data?.success) {
         setCurrentModal(null); // Close the modal
-        toast.success(response?.data?.message || "The booking has been successfully cancelled.");
-        setMessage(response?.data?.message || "The booking has been successfully cancelled.");
+        toast.success(
+          response?.data?.message ||
+            "The booking has been successfully cancelled."
+        );
+        setMessage(
+          response?.data?.message ||
+            "The booking has been successfully cancelled."
+        );
         setIsSuccess(true); // Set to true for success
         setCurrentModal("success"); // Show success modal
       } else {
@@ -156,7 +162,6 @@ const UpcomingTab = () => {
       setCurrentModal("error"); // Optionally create an error modal
     }
   };
-  
 
   const passDataToNext = (reason) => {
     setSelectedReason(reason);
@@ -226,7 +231,6 @@ const UpcomingTab = () => {
   };
 
   // Function to format time to "04:39 PM"
- 
 
   const categoryIcons = {
     1: ChefHat,
@@ -246,19 +250,17 @@ const UpcomingTab = () => {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
     date.setHours(hours, minutes);
-  
+
     // Format the time with hour, minute, and AM/PM
     const formattedTime = date.toLocaleString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
-  
+
     // Convert the AM/PM part to uppercase
     return formattedTime.replace(/(am|pm)/, (match) => match.toUpperCase());
   };
-  
-  
 
   return (
     <>
@@ -274,10 +276,10 @@ const UpcomingTab = () => {
                 <div className="booking-details mt-3 mb-3">
                   <div className="column1">
                     <div className="details-header">
-                    <h2 className="details-head">
-  {formatDate(bookingsIdWise?.visit_date)} at{" "}
-  {formatTime(bookingsIdWise?.visit_time)}
-</h2>
+                      <h2 className="details-head">
+                        {formatDate(bookingsIdWise?.visit_date)} at{" "}
+                        {formatTime(bookingsIdWise?.visit_time)}
+                      </h2>
 
                       {/* <div className="service-image image-flex">
                         <img
@@ -379,31 +381,46 @@ const UpcomingTab = () => {
                       <button
                         className="btn-cancel"
                         onClick={() => handleCancelClick(booking?.booking_id)}
-                        disabled={booking?.booking_status === "cancelled"}
+                        disabled={
+                          booking?.booking_status === "cancelled" ||
+                          booking?.booking_status === "inprogress"
+                        }
                         style={{
                           cursor:
-                            booking?.booking_status === "cancelled"
+                            booking?.booking_status === "cancelled" ||
+                            booking?.booking_status === "inprogress"
                               ? "not-allowed"
                               : "pointer",
                           opacity:
-                            booking?.booking_status === "cancelled" ? 0.5 : 1,
+                            booking?.booking_status === "cancelled" ||
+                            booking?.booking_status === "inprogress"
+                              ? 0.5
+                              : 1,
                         }}
                       >
                         Cancel
                       </button>
+
                       <button
                         className="btn-modify-upcoming"
                         onClick={() => {
                           handleModifyButton(booking);
                         }}
-                        disabled={booking?.booking_status !== "upcoming"}
+                        disabled={
+                          booking?.partner_name ||
+                          booking?.booking_status !== "upcoming"
+                        }
                         style={{
                           cursor:
+                            booking?.partner_name ||
                             booking?.booking_status === "cancelled"
                               ? "not-allowed"
                               : "pointer",
                           opacity:
-                            booking?.booking_status === "cancelled" ? 0.5 : 1,
+                            booking?.partner_name ||
+                            booking?.booking_status === "cancelled"
+                              ? 0.5
+                              : 1,
                         }}
                       >
                         Modify
@@ -417,7 +434,6 @@ const UpcomingTab = () => {
                         <h4 className="booking-subtitle">Booking For</h4>
                         <p className="booking-info-text">
                           {bookingsIdWise?.guest_name}
-                          
                         </p>
                         <h4 className="booking-subtitle">Booking Of</h4>
                         <p className="booking-info-text">
@@ -426,80 +442,85 @@ const UpcomingTab = () => {
                         </p>
                       </div>
                       <div className="info-group">
-  <h4 className="booking-subtitle">Address</h4>
-  {bookingsIdWise?.category_id === 2 ? (
-    <>
-      <p className="booking-info-text">
-        <strong>From: </strong>
-        {bookingsIdWise?.address_from || "N/A"}
-      </p>
-      <p className="booking-info-text">
-        <strong>To: </strong>
-        {bookingsIdWise?.address_to || "N/A"}
-      </p>
-    </>
-  ) : (
-    <p className="booking-info-text">
-      {bookingsIdWise?.visit_address || "N/A"}
-    </p>
-  )}
-</div>
+                        <h4 className="booking-subtitle">Address</h4>
+                        {bookingsIdWise?.category_id === 2 ? (
+                          <>
+                            <p className="booking-info-text">
+                              <strong>From: </strong>
+                              {bookingsIdWise?.address_from || "N/A"}
+                            </p>
+                            <p className="booking-info-text">
+                              <strong>To: </strong>
+                              {bookingsIdWise?.address_to || "N/A"}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.visit_address || "N/A"}
+                          </p>
+                        )}
+                      </div>
 
                       {bookingsIdWise?.sub_category_id === 9 && (
-  <div className="info-group">
-    <h4 className="booking-subtitle">Total Visiting Slots</h4>
-    <p className="booking-info-text">
-      {bookingsIdWise?.gardener_visiting_slots
-        ? JSON.parse(bookingsIdWise.gardener_visiting_slots).length
-        : "N/A"}
-    </p>
-  </div>
-)}
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">
+                            Total Visiting Slots
+                          </h4>
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.gardener_visiting_slots
+                              ? JSON.parse(
+                                  bookingsIdWise.gardener_visiting_slots
+                                ).length
+                              : "N/A"}
+                          </p>
+                        </div>
+                      )}
                       <div className="info-group">
-  <h4 className="booking-subtitle">
-    {bookingsIdWise?.sub_category_id === 8
-      ? "Visit Time"
-      : bookingsIdWise?.category_id === 2 ||
-        bookingsIdWise?.sub_category_id === 9
-      ? bookingsIdWise?.sub_category_id === 9
-        ? "Gardener Visiting Slots"
-        : "Number Of Hours Booked"
-      : "Number of People"}
-  </h4>
-  <p className="booking-info-text">
-  {bookingsIdWise?.sub_category_id === 8
-    ? new Date(`1970-01-01T${bookingsIdWise?.visit_time}`).toLocaleTimeString(
-        "en-US",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true, // Ensures AM/PM format
-        }
-      )
-    : bookingsIdWise?.category_id === 2
-    ? bookingsIdWise?.no_of_hours_booked
-    : bookingsIdWise?.sub_category_id === 9
-    ? bookingsIdWise?.gardener_visiting_slots &&
-      JSON.parse(bookingsIdWise.gardener_visiting_slots).map((slot, index) => {
-        const formattedDate = new Date(slot.date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-        return (
-          <div key={index}>
-            <strong>Date : </strong>
-            {formattedDate},{" "}
-            <strong>Approx Time :</strong> {slot.hours} mins
-          </div>
-        );
-      })
-    : bookingsIdWise?.people_count}
-</p>
-
-
-</div>
-
+                        <h4 className="booking-subtitle">
+                          {bookingsIdWise?.sub_category_id === 8
+                            ? "Visit Time"
+                            : bookingsIdWise?.category_id === 2 ||
+                              bookingsIdWise?.sub_category_id === 9
+                            ? bookingsIdWise?.sub_category_id === 9
+                              ? "Gardener Visiting Slots"
+                              : "Number Of Hours Booked"
+                            : "Number of People"}
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.sub_category_id === 8
+                            ? new Date(
+                                `1970-01-01T${bookingsIdWise?.visit_time}`
+                              ).toLocaleTimeString("en-US", {
+                                hour: "2-digit",
+                                minute: "2-digit",
+                                hour12: true, // Ensures AM/PM format
+                              })
+                            : bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.sub_category_id === 9
+                            ? bookingsIdWise?.gardener_visiting_slots &&
+                              JSON.parse(
+                                bookingsIdWise.gardener_visiting_slots
+                              ).map((slot, index) => {
+                                const formattedDate = new Date(
+                                  slot.date
+                                ).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                });
+                                return (
+                                  <div key={index}>
+                                    <strong>Date : </strong>
+                                    {formattedDate},{" "}
+                                    <strong>Approx Time :</strong> {slot.hours}{" "}
+                                    mins
+                                  </div>
+                                );
+                              })
+                            : bookingsIdWise?.people_count}
+                        </p>
+                      </div>
 
                       <div className="info-group">
                         {bookingsIdWise?.category_id !== 3 && (
@@ -510,35 +531,36 @@ const UpcomingTab = () => {
                           </h4>
                         )}
 
-<p className="booking-info-text">
-  {bookingsIdWise?.category_id === 2
-    ? bookingsIdWise?.car_type // Show car type when category_id === 2
-    : bookingsIdWise?.sub_category_id === 3
-    ? bookingsIdWise?.menu?.map((item, index) => (
-        <span key={index}>
-          {item.name}
-          {index !== bookingsIdWise.menu.length - 1 && ", "}
-        </span>
-      ))
-    : bookingsIdWise?.dishes?.map((dish, index) => (
-        <span key={index}>
-          {dish}
-          {index !== bookingsIdWise.dishes.length - 1 && ", "}
-        </span>
-      ))}
-</p>
-                      </div>
-                      {bookingsIdWise?.sub_category_id !== 9 && (
-                      <div className="info-group">
-                        <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
-                          {`${formatDate(
-                            bookingsIdWise?.visit_date
-                          )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                          {bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
+                            : bookingsIdWise?.sub_category_id === 3
+                            ? bookingsIdWise?.menu?.map((item, index) => (
+                                <span key={index}>
+                                  {item.name}
+                                  {index !== bookingsIdWise.menu.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))
+                            : bookingsIdWise?.dishes?.map((dish, index) => (
+                                <span key={index}>
+                                  {dish}
+                                  {index !== bookingsIdWise.dishes.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))}
                         </p>
                       </div>
+                      {bookingsIdWise?.sub_category_id !== 9 && (
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">Date & Time</h4>
+                          <p className="booking-info-text">
+                            {`${formatDate(
+                              bookingsIdWise?.visit_date
+                            )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                          </p>
+                        </div>
                       )}
-                      
 
                       {bookingsIdWise?.category_id !== 3 && (
                         <div className="info-group">
@@ -781,8 +803,7 @@ const UpcomingTab = () => {
               bookingId={cancelId}
               booking={bookings[cancelId]}
               onConfirm={passDataToNext}
-              sub_category_id = {bookingsIdWise?.sub_category_id}
-              
+              sub_category_id={bookingsIdWise?.sub_category_id}
             />
             <ConfirmationModal
               isOpen={currentModal === "confirmation"}
@@ -800,13 +821,12 @@ const UpcomingTab = () => {
           message={message}
         /> */}
 
-<SuccessModal
-  isOpen={currentModal === "success" || currentModal === "error"}
-  onClose={handleCloseModal}
-  message={message}
-  isSuccess={isSuccess} // Pass isSuccess flag
-/>
-
+        <SuccessModal
+          isOpen={currentModal === "success" || currentModal === "error"}
+          onClose={handleCloseModal}
+          message={message}
+          isSuccess={isSuccess} // Pass isSuccess flag
+        />
       </div>
     </>
   );
