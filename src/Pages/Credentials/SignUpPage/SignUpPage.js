@@ -38,6 +38,8 @@ const SignUpPage = () => {
     navigate("/"); // Navigate to the home route
   };
 
+  const [referralCode, setReferralCode] = useState(""); // New state for referral code
+
   const handleSendOtp = async () => {
     if (!name.trim()) {
       setMessage("Name cannot be empty.");
@@ -60,6 +62,7 @@ const SignUpPage = () => {
         full_name: name,
         country_code: countryCode,
         mobile: phone,
+        referral_code: referralCode || "", // Add referral code to payload (optional)
       },
     };
 
@@ -70,7 +73,6 @@ const SignUpPage = () => {
       if (response?.status === 200 && response?.data?.success === true) {
         const message = response?.data?.message;
 
-        // Extract the mobile number and OTP
         const regex = /OTP for (\d{10}): (\d{4})/;
         const match = message.match(regex);
 
@@ -80,12 +82,9 @@ const SignUpPage = () => {
           localStorage.setItem("mobile", mobileNumber);
           localStorage.setItem("OTP", otp);
           setPhone(localStorage.getItem("mobile"));
-          console.log("Mobile Number:", mobileNumber); // 7878787878
-          console.log("OTP:", otp); // 9284
-          setMessage(
-            response.data.message ||
-              "OTP send successfully to your register mobile number."
-          );
+          console.log("Mobile Number:", mobileNumber);
+          console.log("OTP:", otp);
+          setMessage(response.data.message || "OTP sent successfully.");
           handleShow();
         } else {
           setMessage("No match found");
@@ -93,18 +92,13 @@ const SignUpPage = () => {
         }
         setStep("otp");
       } else {
-        if (response?.data?.message === "Mobile number already exists") {
-          setMessage("User already exists. Please login to your account to continue.");
-        } else {
-          setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
-        }
+        setMessage(response?.data?.message || "Failed to send OTP.");
         handleShow();
       }
-      
     } catch (err) {
       setLoading(false);
       console.error("Error sending OTP:", err);
-      setMessage("An error occurred while sending OTP. Please try again.");
+      setMessage("An error occurred while sending OTP.");
       handleShow();
     } finally {
       setLoading(false);
@@ -155,7 +149,10 @@ const SignUpPage = () => {
       const response = await OTPAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
-        sessionStorage.setItem("ServiceProviderUserToken", response?.data?.token);
+        sessionStorage.setItem(
+          "ServiceProviderUserToken",
+          response?.data?.token
+        );
         sessionStorage.setItem("user_name", name);
         sessionStorage.setItem("IsLogedIn", true);
 
@@ -168,7 +165,9 @@ const SignUpPage = () => {
         }, 2000);
         setStep("otp");
       } else {
-        setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
+        setMessage(
+          response?.data?.message || "Failed to send OTP. Please try again."
+        );
         handleShow();
       }
     } catch (err) {
@@ -241,6 +240,17 @@ const SignUpPage = () => {
                   placeholder="Enter phone number"
                 />
               </div>
+              <label className="login-label text-left">
+                Referral Code (Optional)
+              </label>
+              <input
+                type="text"
+                value={referralCode}
+                onChange={(e) => setReferralCode(e.target.value)}
+                className="referral-input-unique"
+                placeholder="Enter referral code (if any)"
+              />
+
               <div className="terms-container-unique">
                 <input
                   type="checkbox"
@@ -265,7 +275,10 @@ const SignUpPage = () => {
                 </label>
               </div>
               {error && <p className="error-message-unique">{error}</p>}
-              <button className="send-otp-button-unique" onClick={handleSendOtp}>
+              <button
+                className="send-otp-button-unique"
+                onClick={handleSendOtp}
+              >
                 Send OTP
               </button>
               <p className="login-link-container-unique">
