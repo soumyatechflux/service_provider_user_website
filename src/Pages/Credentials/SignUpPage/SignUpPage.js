@@ -11,7 +11,6 @@ const SignUpPage = () => {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState(""); // Changed to a string for a 4-digit OTP
   const [countryCode, setCountryCode] = useState("+91");
-  const [referralCode, setReferralCode] = useState(""); // Added referral code state
   const [step, setStep] = useState("signup");
   const [error, setError] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
@@ -21,7 +20,7 @@ const SignUpPage = () => {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [isDisabled, setIsDisabled] = useState(true); // Initially disabled
-  const [countdown, setCountdown] = useState(30); // Countdown starts at 30 seconds
+  const [countdown, setCountdown] = useState(30); // Countdown starts at 10 seconds
 
   const navigate = useNavigate();
 
@@ -38,6 +37,8 @@ const SignUpPage = () => {
   const handleBackToHome = () => {
     navigate("/"); // Navigate to the home route
   };
+
+  const [referralCode, setReferralCode] = useState(""); // New state for referral code
 
   const handleSendOtp = async () => {
     if (!name.trim()) {
@@ -61,7 +62,7 @@ const SignUpPage = () => {
         full_name: name,
         country_code: countryCode,
         mobile: phone,
-        referral_code: referralCode.trim() || null, // Included referral_code
+        referral_code: referralCode || "", // Add referral code to payload (optional)
       },
     };
 
@@ -70,11 +71,103 @@ const SignUpPage = () => {
       const response = await SignUpAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
-        setMessage(response.data.message || "OTP sent successfully.");
-        handleShow();
+        const message = response?.data?.message;
+
+        const regex = /OTP for (\d{10}): (\d{4})/;
+        const match = message.match(regex);
+
+        if (match) {
+          const mobileNumber = match[1];
+          const otp = match[2];
+          localStorage.setItem("mobile", mobileNumber);
+          localStorage.setItem("OTP", otp);
+          setPhone(localStorage.getItem("mobile"));
+          console.log("Mobile Number:", mobileNumber);
+          console.log("OTP:", otp);
+          setMessage(response.data.message || "OTP sent successfully.");
+          handleShow();
+        } else {
+          setMessage("No match found");
+          handleShow();
+        }
         setStep("otp");
       } else {
-        setMessage(response?.data?.message || "Failed to send OTP. Please try again.");
+        setMessage(response?.data?.message || "Failed to send OTP.");
+        handleShow();
+      }
+    } catch (err) {
+      setLoading(false);
+      console.error("Error sending OTP:", err);
+      setMessage("An error occurred while sending OTP.");
+      handleShow();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOtpChange = (index, value) => {
+    if (/^\d?$/.test(value)) {
+      const newOtp = otp.split("");
+      newOtp[index] = value || "";
+      setOtp(newOtp.join(""));
+
+      if (value && index < 3) {
+        const nextInput = document.getElementById(`otp-${index + 1}`);
+        nextInput?.focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (index, e) => {
+    if (e.key === "Backspace") {
+      const newOtp = otp.split("");
+      if (!newOtp[index]) {
+        if (index > 0) {
+          const prevInput = document.getElementById(`otp-${index - 1}`);
+          prevInput?.focus();
+        }
+      } else {
+        newOtp[index] = "";
+        setOtp(newOtp.join(""));
+      }
+    }
+  };
+
+  const handleBack = () => setStep("signup");
+
+  const handleVerifyOtp = async () => {
+    const data = {
+      customer: {
+        country_code: countryCode,
+        mobile: phone,
+        otp: otp,
+      },
+    };
+
+    try {
+      setLoading(true);
+      const response = await OTPAPI(data);
+      console.log("API Response:", response);
+      if (response?.status === 200 && response?.data?.success === true) {
+        sessionStorage.setItem(
+          "ServiceProviderUserToken",
+          response?.data?.token
+        );
+        sessionStorage.setItem("user_name", name);
+        sessionStorage.setItem("IsLogedIn", true);
+
+        setMessage("Sign up successful!");
+        setShow(true);
+        handleShow();
+
+        setTimeout(() => {
+          navigate("/");
+        }, 2000);
+        setStep("otp");
+      } else {
+        setMessage(
+          response?.data?.message || "Failed to send OTP. Please try again."
+        );
         handleShow();
       }
     } catch (err) {
@@ -86,6 +179,37 @@ const SignUpPage = () => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    let timer;
+
+    if (isDisabled) {
+      timer = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev > 0) return prev - 1;
+          clearInterval(timer);
+          setIsDisabled(false);
+          return 0;
+        });
+      }, 1000);
+    }
+
+    return () => clearInterval(timer);
+  }, [isDisabled]);
+
+  const handleResendClick = () => {
+    handleSendOtp();
+    setIsDisabled(true);
+    setCountdown(10);
+  };
+
+  const handleTermsClick = () => {
+    navigate("/terms-and-conditions"); // Navigate to the Terms & Conditions page
+  };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>
@@ -109,18 +233,24 @@ const SignUpPage = () => {
                   type="tel"
                   value={phone}
                   onChange={handlePhoneChange}
-                  className={`phone-number-input ${error ? "input-error-unique" : ""}`}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendOtp()}
+                  className={`phone-number-input ${
+                    error ? "input-error-unique" : ""
+                  }`}
                   placeholder="Enter phone number"
                 />
               </div>
-              <label className="login-label text-left">Do You Have a Referral Code (Optional)</label>
+              <label className="login-label text-left">
+                Referral Code (Optional)
+              </label>
               <input
                 type="text"
                 value={referralCode}
                 onChange={(e) => setReferralCode(e.target.value)}
-                className="name-input-unique"
-                placeholder="Enter your Referral Code"
+                className="referral-input-unique"
+                placeholder="Enter referral code (if any)"
               />
+
               <div className="terms-container-unique">
                 <input
                   type="checkbox"
@@ -135,8 +265,8 @@ const SignUpPage = () => {
                     href="#"
                     className="terms-link-unique"
                     onClick={(e) => {
-                      e.preventDefault();
-                      window.open("/terms-and-conditions", "_blank");
+                      e.preventDefault(); // Prevent default anchor behavior
+                      handleTermsClick(); // Navigate to Terms & Conditions
                     }}
                   >
                     Terms & Conditions
@@ -145,7 +275,10 @@ const SignUpPage = () => {
                 </label>
               </div>
               {error && <p className="error-message-unique">{error}</p>}
-              <button className="send-otp-button-unique" onClick={handleSendOtp}>
+              <button
+                className="send-otp-button-unique"
+                onClick={handleSendOtp}
+              >
                 Send OTP
               </button>
               <p className="login-link-container-unique">
@@ -154,13 +287,16 @@ const SignUpPage = () => {
                   Log In
                 </a>
               </p>
-              <button className="back-button-unique1" onClick={handleBackToHome}>
+              <button
+                className="back-button-unique1"
+                onClick={handleBackToHome}
+              >
                 ← Back To Home
               </button>
             </div>
           ) : (
             <div className="otp-card-unique">
-              <button onClick={() => setStep("signup")} className="back-button-unique">
+              <button onClick={handleBack} className="back-button-unique">
                 ← Back
               </button>
               <h2 className="otp-title-unique">One Time Password</h2>
@@ -175,10 +311,10 @@ const SignUpPage = () => {
                     type="text"
                     maxLength={1}
                     value={otp[index] || ""}
-                    onChange={(e) => {
-                      const newOtp = otp.split("");
-                      newOtp[index] = e.target.value;
-                      setOtp(newOtp.join(""));
+                    onChange={(e) => handleOtpChange(index, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") handleVerifyOtp();
+                      else handleKeyDown(index, e);
                     }}
                     className="otp-input-unique"
                     inputMode="numeric"
@@ -186,12 +322,19 @@ const SignUpPage = () => {
                 ))}
               </div>
               {error && <p className="error-message-unique">{error}</p>}
-              <button className="verify-otp-button-unique mb-2">
+              <button
+                className="verify-otp-button-unique mb-2"
+                onClick={handleVerifyOtp}
+              >
                 Sign Up
               </button>
               <p className="resend-otp-unique">
                 Didn’t receive OTP?{" "}
-                <button className="resend-button-unique" disabled={isDisabled}>
+                <button
+                  className="resend-button-unique"
+                  onClick={handleResendClick}
+                  disabled={isDisabled}
+                >
                   {isDisabled ? `Resend in ${countdown}s` : "Resend"}
                 </button>
               </p>
@@ -199,7 +342,12 @@ const SignUpPage = () => {
           )}
         </div>
       </div>
-      <MessageModal show={show} handleClose={handleClose} message={message} />
+      <MessageModal
+        show={show}
+        handleClose={handleClose}
+        handleShow={handleShow}
+        message={message}
+      />
     </>
   );
 };
