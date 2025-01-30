@@ -527,10 +527,6 @@ const UpcomingTab = () => {
         </span>
       ))}
 </p>
-<<<<<<< HEAD
-=======
-
->>>>>>> 709bf16990576467b9074f96a2e159c1ffa5efe8
                       </div>
                       {bookingsIdWise?.sub_category_id !== 9 && (
                       <div className="info-group">
