@@ -305,6 +305,7 @@ const SignUpPage = () => {
               </p>
               <div className="otp-input-container-unique">
                 {[0, 1, 2, 3].map((index) => (
+                  
                   <input
                     key={index}
                     id={`otp-${index}`}
