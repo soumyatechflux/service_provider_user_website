@@ -1107,14 +1107,16 @@ const handleDecrementHousForDriver = () => {
   const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
     const totalQuantity = calculateTotalQuantityForChefForParty();
 
-    // Check if the total quantity exceeds the maximum allowed (4)
-    if (
-      totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
-      4
-    ) {
-      toast.error("Maximum total quantity reached (4).");
-      return; // Prevent further changes if total quantity exceeds 4
-    }
+
+    // if (
+    //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
+    //   4
+    // ) {
+    //   toast.error("Maximum total quantity reached (4).");
+    //   return;
+    // }
+
+
 
     // Prevent negative quantities for individual items
     if (value < 0) value = 0;
@@ -2264,7 +2266,9 @@ Your Subscription Ends At:
                               (item, index) => (
                                 <tr key={index}>
                                   <td>{item.name}</td>
-                                  <td>₹ {item.price}</td>
+                                  {/* <td>₹ {item.price}</td> */}
+                                  <td>₹ {parseInt(item.price, 10)}</td>
+
                                   <td>
                                     <input
                                       type="number"

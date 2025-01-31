@@ -551,8 +551,7 @@ const getUpcomingDates = () => {
 
     setAdjustedStartTime(basicDataByGet?.sub_category?.booking_time_before);
 
-  }, []);
-
+  }, [basicDataByGet]);
 
 
   const filterTimeOptions = () => {
@@ -586,6 +585,9 @@ const getUpcomingDates = () => {
     const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
     const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
   
+    console.log(`Current Time: ${currentTime}`);
+    console.log(`Adjusted Start Time: ${adjustedStartTimeFormatted}`);
+  
     // Filter time options
     return timeOptions.filter((time) => {
       const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
@@ -600,13 +602,13 @@ const getUpcomingDates = () => {
     });
   };
   
-  
+
 
 
   // const filterTimeOptions = () => {
   //   const currentDate = new Date();
   //   const today = currentDate.toDateString();
-  //   const currentTime = getCurrentTimeInHHMM();
+  //   const currentTime = getCurrentTimeInHHMM(); // Get current time in HH:MM format
   
   //   // Extract service start and end times
   //   const serviceStartTime =
@@ -616,18 +618,20 @@ const getUpcomingDates = () => {
   
   //   // Convert service times to HH:MM format
   //   const startTime = serviceStartTime.slice(0, 5); 
-  //   const endTime = serviceEndTime.slice(0, 5); 
+  //   const endTime = serviceEndTime.slice(0, 5);
   
-  //   // Convert startTime to minutes
-  //   const [startHour, startMinute] = startTime.split(':').map(Number);
-  //   // const startTimeInMinutes = startHour * 60 + startMinute;
-  //   const startTimeInMinutes = startHour * 60 + startMinute;
-
+  //   // Convert current time (currentTime) to minutes
+  //   const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+  //   const currentTimeInMinutes = currentHour * 60 + currentMinute;
   
-  //   // Add adjustedStartTime (in minutes) to the startTimeInMinutes
-  //   const adjustedStartTimeInMinutes = startTimeInMinutes + adjustedStartTime;
+  //   // Add adjustedStartTime (in minutes) only for today
+  //   let adjustedStartTimeInMinutes = currentTimeInMinutes;
   
-  //   // Convert the adjusted start time back to HH:MM format
+  //   if (selectedDate.toDateString() === today) {
+  //     adjustedStartTimeInMinutes += adjustedStartTime; // Adjust current time for today
+  //   }
+  
+  //   // Convert adjusted start time back to HH:MM format
   //   const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
   //   const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
   //   const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
@@ -637,11 +641,12 @@ const getUpcomingDates = () => {
   //     const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
   
   //     if (selectedDate.toDateString() === today) {
-  //       // Compare time to current time (for today, we only show times greater than or equal to current time)
-  //       return time >= currentTime && isWithinServiceHours;
+  //       // For today, only show times greater than or equal to adjusted start time
+  //       return time >= adjustedStartTimeFormatted && isWithinServiceHours;
   //     }
   
-  //     return isWithinServiceHours;
+  //     // For future dates, show options within service hours
+  //     return time >= startTime && time <= endTime;
   //   });
   // };
   
@@ -1220,14 +1225,16 @@ const getUpcomingDates = () => {
   const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
     const totalQuantity = calculateTotalQuantityForChefForParty();
 
-    // Check if the total quantity exceeds the maximum allowed (4)
-    if (
-      totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
-      4
-    ) {
-      toast.error("Maximum total quantity reached (4).");
-      return; // Prevent further changes if total quantity exceeds 4
-    }
+
+    // if (
+    //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
+    //   4
+    // ) {
+    //   toast.error("Maximum total quantity reached (4).");
+    //   return;
+    // }
+
+
 
     // Prevent negative quantities for individual items
     if (value < 0) value = 0;
@@ -2428,7 +2435,9 @@ const getUpcomingDates = () => {
                               (item, index) => (
                                 <tr key={index}>
                                   <td>{item.name}</td>
-                                  <td>₹ {item.price}</td>
+                                  {/* <td>₹ {item.price}</td> */}
+                                  <td>₹ {parseInt(item.price, 10)}</td>
+
                                   <td>
                                     <input
                                       type="number"
