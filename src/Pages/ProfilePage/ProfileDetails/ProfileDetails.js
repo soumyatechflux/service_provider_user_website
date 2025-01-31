@@ -636,7 +636,7 @@ const shareText = `Use my referral code *${referralCode}* to sign up and enjoy b
       </div>
 
       <div className="container nav-container profile-container">
-        <h1 >Share You Referral Code</h1>
+        <h1 >Share You Referral Code <span style={{fontSize:"22px"}}>(share you referral code to earn Reward Points)</span></h1>
       <div className="referral-container">
                 {/* Referral Code */}
                 <span className="referral-code">{referralCode}</span>
