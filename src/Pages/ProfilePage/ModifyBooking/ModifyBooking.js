@@ -2854,7 +2854,7 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Night Charges(Included in Amount) :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                  <div>₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
 
 
