@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { GoogleMap, Marker } from "@react-google-maps/api";
 import { Spinner } from "react-bootstrap";
-import { FaLocationArrow } from "react-icons/fa";
+import { FaBullseye, FaLocationArrow } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../Loader/Loader";
@@ -112,6 +112,8 @@ const LocationModal = ({
           setLocation(currentLocation);
           fetchAddress(currentLocation);
           setMapLoading(false); 
+    setLoading(false);
+
         },
         (error) => {
           console.error("Error getting location:", error.message);
@@ -339,13 +341,21 @@ const LocationModal = ({
   
       // Call handleResetLocation() only when newState (UseMyLocation) is true
       if (newState) {
+    setLoading(true);
+
         handleResetLocation();
+    setLoading(false);
+
       }
   
       return newState;
     });
+
+    setLoading(true);
   
     resetState();
+    setLoading(false);
+
   };
 
 

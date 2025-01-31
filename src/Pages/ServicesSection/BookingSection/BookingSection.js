@@ -544,12 +544,12 @@ const getUpcomingDates = () => {
   
 
   
-  const [adjustedStartTime, setAdjustedStartTime] = useState(120);
+  const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
 
   useEffect(() => {
 
-    setAdjustedStartTime(120);
+    setAdjustedStartTime(basicDataByGet?.sub_category?.booking_time_before);
 
   }, []);
 
@@ -558,7 +558,7 @@ const getUpcomingDates = () => {
   const filterTimeOptions = () => {
     const currentDate = new Date();
     const today = currentDate.toDateString();
-    const currentTime = getCurrentTimeInHHMM();
+    const currentTime = getCurrentTimeInHHMM(); // Get current time in HH:MM format
   
     // Extract service start and end times
     const serviceStartTime =
@@ -568,16 +568,20 @@ const getUpcomingDates = () => {
   
     // Convert service times to HH:MM format
     const startTime = serviceStartTime.slice(0, 5); 
-    const endTime = serviceEndTime.slice(0, 5); 
+    const endTime = serviceEndTime.slice(0, 5);
   
-    // Convert startTime to minutes
-    const [startHour, startMinute] = startTime.split(':').map(Number);
-    const startTimeInMinutes = startHour * 60 + startMinute;
+    // Convert current time (currentTime) to minutes
+    const [currentHour, currentMinute] = currentTime.split(':').map(Number);
+    const currentTimeInMinutes = currentHour * 60 + currentMinute;
   
-    // Add adjustedStartTime (in minutes) to the startTimeInMinutes
-    const adjustedStartTimeInMinutes = startTimeInMinutes + adjustedStartTime;
+    // Add adjustedStartTime (in minutes) only for today
+    let adjustedStartTimeInMinutes = currentTimeInMinutes;
   
-    // Convert the adjusted start time back to HH:MM format
+    if (selectedDate.toDateString() === today) {
+      adjustedStartTimeInMinutes += adjustedStartTime; // Adjust current time for today
+    }
+  
+    // Convert adjusted start time back to HH:MM format
     const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
     const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
     const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
@@ -587,13 +591,59 @@ const getUpcomingDates = () => {
       const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
   
       if (selectedDate.toDateString() === today) {
-        // Compare time to current time (for today, we only show times greater than or equal to current time)
-        return time >= currentTime && isWithinServiceHours;
+        // For today, only show times greater than or equal to adjusted start time
+        return time >= adjustedStartTimeFormatted && isWithinServiceHours;
       }
   
-      return isWithinServiceHours;
+      // For future dates, show options within service hours
+      return time >= startTime && time <= endTime;
     });
   };
+  
+  
+
+
+  // const filterTimeOptions = () => {
+  //   const currentDate = new Date();
+  //   const today = currentDate.toDateString();
+  //   const currentTime = getCurrentTimeInHHMM();
+  
+  //   // Extract service start and end times
+  //   const serviceStartTime =
+  //     basicDataByGet?.sub_category?.service_start_time || "00:00:00";
+  //   const serviceEndTime =
+  //     basicDataByGet?.sub_category?.service_end_time || "23:59:59";
+  
+  //   // Convert service times to HH:MM format
+  //   const startTime = serviceStartTime.slice(0, 5); 
+  //   const endTime = serviceEndTime.slice(0, 5); 
+  
+  //   // Convert startTime to minutes
+  //   const [startHour, startMinute] = startTime.split(':').map(Number);
+  //   // const startTimeInMinutes = startHour * 60 + startMinute;
+  //   const startTimeInMinutes = startHour * 60 + startMinute;
+
+  
+  //   // Add adjustedStartTime (in minutes) to the startTimeInMinutes
+  //   const adjustedStartTimeInMinutes = startTimeInMinutes + adjustedStartTime;
+  
+  //   // Convert the adjusted start time back to HH:MM format
+  //   const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
+  //   const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
+  //   const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
+  
+  //   // Filter time options
+  //   return timeOptions.filter((time) => {
+  //     const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
+  
+  //     if (selectedDate.toDateString() === today) {
+  //       // Compare time to current time (for today, we only show times greater than or equal to current time)
+  //       return time >= currentTime && isWithinServiceHours;
+  //     }
+  
+  //     return isWithinServiceHours;
+  //   });
+  // };
   
   
 
@@ -672,11 +722,18 @@ const getUpcomingDates = () => {
 
 
   const nextStep = () => {
+    setLoading(true);
     setStep((prev) => prev + 1);
+    setLoading(false);
+
   };
 
   const prevStep = () => {
+    setLoading(true);
+
     setStep((prev) => prev - 1);
+    setLoading(false);
+
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -2473,7 +2530,9 @@ const getUpcomingDates = () => {
 </span>
 
 <span className="mb-1">
-  💵 Surcharge : {100 - (basicDataByGet?.sub_category?.commission || 0)}%
+  {/* 💵 Surcharge : {100 - (basicDataByGet?.sub_category?.commission || 0)}% */}
+  💵 Surcharge : {12}%
+
 </span>
 
               </div>
@@ -2808,7 +2867,15 @@ const getUpcomingDates = () => {
   <span className="serial-number me-2">
     {index + 1}.
   </span>
-  {address.formatted_address}
+  <>
+      {address.street_address_line2 ? address.street_address_line2 + ", " : ""}
+      {address.landmark ? address.landmark + ", " : ""}
+      {address.city ? address.city + ", " : ""}
+      {address.district ? address.district + ", " : ""}
+      {address.state ? address.state + ", " : ""}
+      {address.postal_code ? address.postal_code + ", " : ""}
+      {address.country ? address.country : ""}
+    </>
   <br />
 </p>
 

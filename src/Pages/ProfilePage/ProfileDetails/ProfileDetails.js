@@ -447,7 +447,15 @@ const ProfileDetails = () => {
                 <div className="d-flex align-items-center">
                   <p className="flex-fill mb-0 address-p">
                     <span className="serial-number me-2">{index + 1}.</span>
-                    {address.formatted_address || "N/A"}
+                    <>
+      {address.street_address_line2 ? address.street_address_line2 + ", " : ""}
+      {address.landmark ? address.landmark + ", " : ""}
+      {address.city ? address.city + ", " : ""}
+      {address.district ? address.district + ", " : ""}
+      {address.state ? address.state + ", " : ""}
+      {address.postal_code ? address.postal_code + ", " : ""}
+      {address.country ? address.country : ""}
+    </>
                   </p>
 
                   <div
