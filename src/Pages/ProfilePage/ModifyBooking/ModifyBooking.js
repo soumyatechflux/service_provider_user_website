@@ -2606,8 +2606,8 @@ Your Subscription Ends At:
 
 
 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Actual Price Without Discount:</div>
-                  <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+<div className="fare-breakdown-title">Amount :</div>
+<div>₹ {DataForPricesAppliedGet?.actual_price}</div>
                 </div>
 
 
@@ -2615,7 +2615,7 @@ Your Subscription Ends At:
 
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">GST:</div>
+                <div className="fare-breakdown-title">Taxes and Fees :</div>
                   <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
                 </div>
 
@@ -2688,6 +2688,9 @@ Your Subscription Ends At:
             </div>
 
             </div>
+
+
+            
         
 
             <div className="booking-summary-footer ">

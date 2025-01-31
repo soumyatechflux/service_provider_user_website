@@ -1292,6 +1292,19 @@ const getUpcomingDates = () => {
     }
   }, [menu, dishesOptionsArrayOri]);
 
+
+  const convertTo12HourFormat = (time) => {
+    if (!time) return "Invalid Time"; // Handle null/undefined values
+    const [hour, minute] = time.split(":").map(Number);
+  
+    if (isNaN(hour) || isNaN(minute)) return "Invalid Time"; // Handle edge cases
+  
+    const period = hour >= 12 ? "PM" : "AM";
+    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
+  
+    return `${formattedHour}:${minute.toString().padStart(2, "0")} ${period}`;
+  };
+
   const formatTime = (timeInMinutes) => {
     const hours = Math.floor(timeInMinutes / 60);
     const minutes = timeInMinutes % 60;
@@ -2450,7 +2463,22 @@ const getUpcomingDates = () => {
 
 
               <div>
+
                 <div className="additional-details">
+              <h3>Additional Details</h3>
+              <div className="details-item">
+                <span className="mb-1">🌙 Night Surcharge Policy</span>
+                <span className="mb-1">
+  ⏰ Timing : {convertTo12HourFormat(basicDataByGet?.sub_category?.service_start_time)} to {convertTo12HourFormat(basicDataByGet?.sub_category?.service_end_time)}
+</span>
+
+<span className="mb-1">
+  💵 Surcharge : {100 - (basicDataByGet?.sub_category?.commission || 0)}%
+</span>
+
+              </div>
+            </div>
+                {/* <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
                   {showMoreAdditionalDetails
@@ -2466,7 +2494,10 @@ const getUpcomingDates = () => {
   </div>
                     
                   </div>
-                </div>
+
+
+                  
+                </div> */}
 
         
 
@@ -3655,7 +3686,7 @@ const getUpcomingDates = () => {
                 
 
 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Actual Price Without Discount:</div>
+                  <div className="fare-breakdown-title">Amount :</div>
                   <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
                 </div>
 
@@ -3663,7 +3694,7 @@ const getUpcomingDates = () => {
 
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">All Charges :</div>
+                  <div className="fare-breakdown-title">Taxes and Fees :</div>
                   <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
                 </div>
 
@@ -3681,10 +3712,10 @@ const getUpcomingDates = () => {
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
                 </div> */}
 
-                {/* <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges:</div>
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Night Charges :</div>
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
-                </div> */}
+                </div>
 
 
                 <div className="fare-breakdown-div">
@@ -3733,21 +3764,23 @@ const getUpcomingDates = () => {
                 </div>
               </div>
             </div>
-            {/* 
+            
             <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
                 <span className="mb-1">
-                  ⏰ Timing: {additionalDetails.surchargeTiming}
-                </span>
-                <span className="mb-1">
-                  💵 Surcharge: {additionalDetails.surchargeRate}
-                </span>
+  ⏰ Timing : {convertTo12HourFormat(basicDataByGet?.sub_category?.service_start_time)} to {convertTo12HourFormat(basicDataByGet?.sub_category?.service_end_time)}
+</span>
+
+<span className="mb-1">
+  💵 Surcharge : 12%
+</span>
+
               </div>
             </div>
             
-            */}
+           
 
             <div className="booking-summary-footer ">
               <div className="estimated-fare">
