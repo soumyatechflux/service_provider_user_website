@@ -2838,18 +2838,19 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div">
                 <div className="fare-breakdown-title">Taxes and Fees :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
+                  <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
                 </div>
-
+                {service.category_id === 2 && (
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Secure Fee:</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
                 </div>
+                )}
 
-                <div className="fare-breakdown-div">
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Platform Fee:</div>
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
-                </div>
+                </div> */}
 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Night Charges:</div>
