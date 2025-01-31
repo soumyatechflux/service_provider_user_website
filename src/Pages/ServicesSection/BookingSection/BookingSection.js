@@ -3982,8 +3982,8 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
                 </div> */}
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                  <div className="fare-breakdown-title">Night Charges(Included in Amount) :</div>
+                  <div>₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
 
 

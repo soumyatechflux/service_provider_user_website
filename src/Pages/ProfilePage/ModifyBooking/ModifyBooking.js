@@ -2842,7 +2842,7 @@ Your Subscription Ends At:
                 </div>
                 {service.category_id === 2 && (
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Secure Fee:</div>
+                  <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
                 </div>
                 )}
@@ -2853,18 +2853,18 @@ Your Subscription Ends At:
                 </div> */}
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges:</div>
+                  <div className="fare-breakdown-title">Night Charges(Included in Amount) :</div>
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
 
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount:</div>
+                  <div className="fare-breakdown-title">Discount :</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Price After Discount:</div>
+                  <div className="fare-breakdown-title">Price After Discount :</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
                 </div>
            
@@ -2877,7 +2877,7 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Grand Total:</h5>
+                    <h5>Grand Total :</h5>
                   </div>
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>
@@ -2888,7 +2888,7 @@ Your Subscription Ends At:
           
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Previous Amount:</h5>
+                    <h5>Previous Amount:  </h5>
                   </div>
                   <div>
                     <h5>-₹ {DataForPricesAppliedGet?.collected_amount}</h5>
@@ -2899,7 +2899,7 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Extra/Final Amount To Be Paid:</h5>
+                    <h5>Extra/Final Amount To Be Paid :</h5>
                   </div>
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
