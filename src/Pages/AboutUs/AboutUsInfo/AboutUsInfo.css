@@ -1,3 +1,14 @@
+@media (max-width: 2000px) {
+  .image-flex-wrapper-top,
+.image-flex-wrapper-bottom {
+  display: flex;
+  gap: 0px !important;
+  justify-content: space-evenly !important;
+  flex-wrap: nowrap; 
+}
+}
+
+
 /* Main Container */
 .about-us-container {
   display: flex;

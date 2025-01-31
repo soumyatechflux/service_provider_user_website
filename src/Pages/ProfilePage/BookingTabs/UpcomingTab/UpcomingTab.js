@@ -475,52 +475,48 @@ const UpcomingTab = () => {
                           </p>
                         </div>
                       )}
+                      
                       <div className="info-group">
-                        <h4 className="booking-subtitle">
-                          {bookingsIdWise?.sub_category_id === 8
-                            ? "Visit Time"
-                            : bookingsIdWise?.category_id === 2 ||
-                              bookingsIdWise?.sub_category_id === 9
-                            ? bookingsIdWise?.sub_category_id === 9
-                              ? "Gardener Visiting Slots"
-                              : "Number Of Hours Booked"
-                            : "Number of People"}
-                        </h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.sub_category_id === 8
-                            ? new Date(
-                                `1970-01-01T${bookingsIdWise?.visit_time}`
-                              ).toLocaleTimeString("en-US", {
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true, // Ensures AM/PM format
-                              })
-                            : bookingsIdWise?.category_id === 2
-                            ? bookingsIdWise?.no_of_hours_booked
-                            : bookingsIdWise?.sub_category_id === 9
-                            ? bookingsIdWise?.gardener_visiting_slots &&
-                              JSON.parse(
-                                bookingsIdWise.gardener_visiting_slots
-                              ).map((slot, index) => {
-                                const formattedDate = new Date(
-                                  slot.date
-                                ).toLocaleDateString("en-US", {
-                                  year: "numeric",
-                                  month: "short",
-                                  day: "numeric",
-                                });
-                                return (
-                                  <div key={index}>
-                                    <strong>Date : </strong>
-                                    {formattedDate},{" "}
-                                    <strong>Approx Time :</strong> {slot.hours}{" "}
-                                    mins
-                                  </div>
-                                );
-                              })
-                            : bookingsIdWise?.people_count}
-                        </p>
-                      </div>
+  <h4 className="booking-subtitle">
+    {bookingsIdWise?.sub_category_id === 8
+      ? "Number Of Hours Booked"
+      : bookingsIdWise?.category_id === 2 ||
+        bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.sub_category_id === 9
+        ? "Gardener Visiting Slots"
+        : "Number Of Hours Booked"
+      : "Number of People"}
+  </h4>
+  <p className="booking-info-text">
+    {bookingsIdWise?.sub_category_id === 8
+      ? bookingsIdWise?.no_of_hours_booked
+      : bookingsIdWise?.category_id === 2
+      ? bookingsIdWise?.no_of_hours_booked
+      : bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.gardener_visiting_slots &&
+        JSON.parse(bookingsIdWise.gardener_visiting_slots).map(
+          (slot, index) => {
+            const formattedDate = new Date(slot.date).toLocaleDateString(
+              "en-US",
+              {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+              }
+            );
+            return (
+              <div key={index}>
+                <strong>Date : </strong>
+                {formattedDate},{" "}
+                <strong>Approx Time :</strong> {slot.hours} mins
+              </div>
+            );
+          }
+        )
+      : bookingsIdWise?.people_count}
+  </p>
+</div>
+
 
                       <div className="info-group">
                         {bookingsIdWise?.category_id !== 3 && (
