@@ -1,3 +1,45 @@
+.referral-container {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+  width: 100%;
+  max-width: 400px;
+  margin: auto;
+}
+
+.referral-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+}
+
+.referral-code {
+  font-weight: bold;
+  color: #333;
+}
+
+.copy-btn {
+  background: #007bff;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.copy-btn:hover {
+  background: #0056b3;
+}
+
+
+
 .profile-container {
   margin: 0 auto;
   padding: 40px 0px !important;

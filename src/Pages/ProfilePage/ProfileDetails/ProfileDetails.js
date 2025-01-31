@@ -33,6 +33,8 @@ const ProfileDetails = () => {
   const [message, setMessage] = useState("");
   const handleShow = () => setShow(true);
 
+  const [referralCode, setReferralCode] = useState(""); // State for referral code
+
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
 
   const dropdownRefs = useRef([]);
@@ -83,6 +85,7 @@ const ProfileDetails = () => {
         setEmail(data.email);
         setAddresses(data?.address);
         setEditedProfile(data); // Pre-fill the editedProfile state
+        setReferralCode(data?.referral_code || "N/A"); // Set referral code from API
       }
     } catch (err) {
       console.error("Error fetching profile data:", err);
@@ -94,6 +97,12 @@ const ProfileDetails = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(referralCode);
+    alert("Referral code copied!");
+};
 
   const handleDelete = async (id) => {
     try {
@@ -614,6 +623,18 @@ const ProfileDetails = () => {
             </Modal>
           </div>
         </div>
+      </div>
+
+      <div className="container nav-container profile-container">
+      <div className="referral-container">
+        <h3>Share Your Referral Code</h3>
+        <div className="referral-box">
+            <span className="referral-code">{referralCode}</span>
+            <button className="copy-btn" onClick={copyToClipboard}>
+                Copy
+            </button>
+        </div>
+    </div>
       </div>
 
       <MessageModal show={show} handleClose={handleClose} message={message} />

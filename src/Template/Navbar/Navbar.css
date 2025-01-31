@@ -253,10 +253,23 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-  width: 131px;
+  width: 143px;
   padding: 0.5rem 0;
   z-index: 1000;
 }
+
+.disabled-label {
+  color: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.disabled-label:hover{
+  background-color: white !important;
+  color: gray !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 
 .custom-dropdown-item {
   display: block;

@@ -3,6 +3,7 @@ import "./Navbar.css";
 import { ChevronDown, MapPin, User } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
+import axios from "axios";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -10,6 +11,8 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [loading, setLoading] = useState();
+  const token = sessionStorage.getItem("ServiceProviderUserToken");
 
   const navbarRef = useRef(null);
   const navigate = useNavigate();
@@ -17,6 +20,31 @@ const Navbar = () => {
   useEffect(() => {
     const loginStatus = sessionStorage.getItem("IsLogedIn");
     setIsLoggedIn(loginStatus === "true");
+  }, []);
+
+
+  const [walletBalance, setWalletBalance] = useState(0); // State for wallet balance
+
+  const fetchProfile = async () => {
+      try {
+          const response = await axios.get(
+              `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
+              { headers: { Authorization: `Bearer ${token}` } }
+          );
+  
+          if (response?.status && response?.data?.success) {
+              const data = response?.data?.data;
+              setWalletBalance(data?.wallet_balance || 0); // Set wallet balance from API
+          }
+      } catch (err) {
+          console.error("Error fetching profile data:", err);
+      } finally {
+          setLoading(false);
+      }
+  };
+
+  useEffect(() => {
+    fetchProfile();
   }, []);
 
   const handleLogout = () => {
@@ -288,6 +316,9 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
+                      <label className="custom-dropdown-item disabled-label">
+        Reward Points: {walletBalance}
+    </label>
                     </>
                   ) : (
                     <Link
@@ -371,6 +402,9 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
+                      <label className="custom-dropdown-item disabled-label">
+        Reward Points : {walletBalance}
+    </label>
                     </>
                   ) : (
                     <Link
