@@ -225,7 +225,13 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
 
         <div className="mb-3">
           <label className="form-label">
-            Drop Location <MdLocationOn size={20} />
+
+
+
+  {service.id === 7 ? "Destination" : "Drop Location"}
+
+            
+             <MdLocationOn size={20} />
           </label>
           <div className="w-100">
             <Autocomplete

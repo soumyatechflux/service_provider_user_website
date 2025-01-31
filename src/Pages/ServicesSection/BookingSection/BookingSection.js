@@ -1909,6 +1909,99 @@ const getUpcomingDates = () => {
 
                 {service?.category_id === 2 && (
                   <>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{service.id === 6 && (
+<>
+                    <div className="booking-form-group">
+               
+
+                    <div className="d-flex justify-content-between align-items-center">
+  <label className="booking-form-label mb-0">
+    Number of Hours:
+  </label>
+  <span className="counter-value">
+    Maximum {SelectedNumberOfHoursObjectForDriver?.hours} Hours
+  </span>
+</div>
+
+
+
+
+                      {/* <div className="div-people-count">
+                      <div className="people-counter-container">
+
+<span className="people-counter-label">Select Number of Hours</span>
+                      <div className="people-counter">
+                        <button
+                          type="button"
+                          className="counter-button"
+                          onClick={handleDecrementHousForDriver}
+                        >
+                          -
+                        </button>
+                        <span className="counter-value">
+                          {SelectedNumberOfHoursObjectForDriver?.hours}
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-button"
+                          onClick={handleIncrementHousForDriver}
+                        >
+                          +
+                        </button>
+                        </div>
+                        </div>
+                      </div> */}
+
+
+                    </div>
+                    </>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{service.id !== 6 && service.id !== 7 && (
+<>
                     <div className="booking-form-group">
                       <label className="booking-form-label">
                         Number of Hours
@@ -1939,6 +2032,85 @@ const getUpcomingDates = () => {
                         </div>
                       </div>
                     </div>
+                    </>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{service?.id === 7  && (
+<>
+                    <div className="booking-form-group">
+                      <label className="booking-form-label">
+                        Number of Days
+                      </label>
+                      <div className="div-people-count">
+                      <div className="people-counter-container">
+
+<span className="people-counter-label">Select Number of Days</span>
+                      <div className="people-counter">
+                        <button
+                          type="button"
+                          className="counter-button"
+                          onClick={handleDecrementHousForDriver}
+                        >
+                          -
+                        </button>
+                        <span className="counter-value">
+                          {/* {SelectedNumberOfHoursObjectForDriver?.hours} */}
+                          <span className="counter-value">
+  {SelectedNumberOfHoursObjectForDriver?.hours &&
+    `${(SelectedNumberOfHoursObjectForDriver.hours / 24).toFixed(1)} ${
+      SelectedNumberOfHoursObjectForDriver.hours > 24 ? "days" : "day"
+    }`}
+</span>
+
+                        </span>
+                        <button
+                          type="button"
+                          className="counter-button"
+                          onClick={handleIncrementHousForDriver}
+                        >
+                          +
+                        </button>
+                        </div>
+                        </div>
+                      </div>
+                    </div>
+                    </>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </>
                 )}
 
