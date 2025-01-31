@@ -51,13 +51,8 @@ function PreviousTab() {
   };
 
 
-<<<<<<< HEAD
-  const handleHelpCentreButtonClick = () => {
-    navigate('/help-center', { state: { bookingId } });
-=======
   const handleHelpCentreButtonClick = (bookingId) => {
     navigate("/help-centre", { state: { booking_id: bookingId } });
->>>>>>> c5d88c77a0193bc09689facd4c8394e092530f3d
   };
   useEffect(() => {
     const fetchPreviousBookings = async () => {
