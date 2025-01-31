@@ -16,6 +16,7 @@ function PreviousTab() {
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
   const navigate = useNavigate();
+  const bookingId = bookingsIdWise?.booking_id; // Example, replace with actual bookingId
 
   const handleModifyButton = () => {
     navigate("/my-profile");
@@ -51,7 +52,7 @@ function PreviousTab() {
 
 
   const handleHelpCentreButtonClick = () => {
-    navigate("/help-centre");
+    navigate('/help-center', { state: { bookingId } });
   };
   useEffect(() => {
     const fetchPreviousBookings = async () => {
