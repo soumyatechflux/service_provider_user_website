@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import LocationModal from "./LocationModal";
+import { FaCopy, FaWhatsapp, FaFacebook, FaTwitter, FaEnvelope } from "react-icons/fa";
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState({});
@@ -32,6 +33,8 @@ const ProfileDetails = () => {
   const handleClose = () => setShow(false);
   const [message, setMessage] = useState("");
   const handleShow = () => setShow(true);
+
+  const [referralCode, setReferralCode] = useState(""); // State for referral code
 
   const [openDropdownIndex, setOpenDropdownIndex] = useState(null);
 
@@ -83,6 +86,7 @@ const ProfileDetails = () => {
         setEmail(data.email);
         setAddresses(data?.address);
         setEditedProfile(data); // Pre-fill the editedProfile state
+        setReferralCode(data?.referral_code || "N/A"); // Set referral code from API
       }
     } catch (err) {
       console.error("Error fetching profile data:", err);
@@ -94,6 +98,21 @@ const ProfileDetails = () => {
   useEffect(() => {
     fetchProfile();
   }, []);
+
+
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(referralCode);
+    setMessage("Referral code copied!"); // Set success message
+    setShow(true); // Show modal
+};
+
+const shareText = `Use my referral code *${referralCode}* to sign up and enjoy benefits!`;
+    const currentURL = window.location.href;
+
+    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+    const facebookURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`;
+    const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
+    const emailURL = `mailto:?subject=Join with my referral code&body=${encodeURIComponent(shareText)}`;
 
   const handleDelete = async (id) => {
     try {
@@ -614,6 +633,33 @@ const ProfileDetails = () => {
             </Modal>
           </div>
         </div>
+      </div>
+
+      <div className="container nav-container profile-container">
+        <h1 >Share You Referral Code</h1>
+      <div className="referral-container">
+                {/* Referral Code */}
+                <span className="referral-code">{referralCode}</span>
+
+                {/* Copy Button */}
+                <button className="icon-btn copy-btn" onClick={copyToClipboard}>
+                    <FaCopy />
+                </button>
+
+                {/* Social Media Share Buttons */}
+                <a href={whatsappURL} target="_blank" rel="noopener noreferrer" className="icon-btn whatsapp">
+                    <FaWhatsapp />
+                </a>
+                <a href={facebookURL} target="_blank" rel="noopener noreferrer" className="icon-btn facebook">
+                    <FaFacebook />
+                </a>
+                <a href={twitterURL} target="_blank" rel="noopener noreferrer" className="icon-btn twitter">
+                    <FaTwitter />
+                </a>
+                <a href={emailURL} className="icon-btn email">
+                    <FaEnvelope />
+                </a>
+            </div>
       </div>
 
       <MessageModal show={show} handleClose={handleClose} message={message} />
