@@ -16,6 +16,8 @@ import Loader from "../../Loader/Loader";
 import MessageModal from "../../MessageModal/MessageModal";
 import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
 import "./ModifyBooking.css";
+import { addDays, differenceInDays } from 'date-fns';
+
 
 const ModifyBooking = () => {
 
@@ -29,6 +31,26 @@ const ModifyBooking = () => {
     return dates;
   };
   
+
+
+  const getUpcomingDatesToVisits = (startDate, endDate) => {
+    if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
+      console.error('Invalid date parameters');
+      return [];
+    }
+  
+    // Calculate the total number of days between start and end dates
+    const totalDays = differenceInDays(endDate, startDate);
+  
+    // Generate dates array
+    const dates = Array.from({ length: totalDays + 1 }, (_, i) => addDays(startDate, i));
+  
+    console.log('Generated Dates:', dates); // Log for debugging
+    return dates;
+  };
+
+
+
   
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
@@ -2039,19 +2061,19 @@ Your Subscription Ends At:
 
 
 
-                    {selectedVisitDates.map((visit, index) => (
+                    {MonthlySubscriptionStartDate && MonthlySubscriptionEndsDate && selectedVisitDates.map((visit, index) => (
                       <>
 
-                      {console.log(selectedVisitDates,"selectedVisitDatesselectedVisitDates")}
+                      {/* {console.log(selectedVisitDates,"selectedVisitDatesselectedVisitDates")} */}
   <div key={index} className="booking-form-group flex-fill">
     <label className="booking-form-label">Select Visit Date {index + 1}</label>
 
     {/* Date selection scroll container */}
     <div className="date-scroll-container">
-      {getUpcomingDates(
-        MonthlySubscriptionStartDate || new Date(),
-        60
-      ).map((date, i) => {
+      {getUpcomingDatesToVisits(
+                         new Date(MonthlySubscriptionStartDate),
+                          new Date(MonthlySubscriptionEndsDate)
+                       ).map((date, i) => {
         const formattedDate = date.toISOString().split("T")[0]; // Consistent date format
         const isSelected = visit.date === formattedDate; // Direct string comparison
 

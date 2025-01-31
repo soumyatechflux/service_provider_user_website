@@ -28,8 +28,7 @@ import { LoadScript } from "@react-google-maps/api";
 import { Button } from "react-bootstrap";
 import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
 import Loader from "../../Loader/Loader";
-
-import {  addDays } from "date-fns";
+import { addDays, differenceInDays } from 'date-fns';
 import DriverBookingMap from "./DriverBookingMap";
 
 const BookingSection = () => {
@@ -471,7 +470,21 @@ const getUpcomingDates = () => {
 
 
 
+const getUpcomingDatesToVisits = (startDate, endDate) => {
+  if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
+    console.error('Invalid date parameters');
+    return [];
+  }
 
+  // Calculate the total number of days between start and end dates
+  const totalDays = differenceInDays(endDate, startDate);
+
+  // Generate dates array
+  const dates = Array.from({ length: totalDays + 1 }, (_, i) => addDays(startDate, i));
+
+  console.log('Generated Dates:', dates); // Log for debugging
+  return dates;
+};
 
 
 
@@ -2190,15 +2203,15 @@ const getUpcomingDates = () => {
                       </div>
                     </div>
 
-                    {selectedVisitDates.map((visit, index) => (
+                    { MonthlySubscriptionStartDate &&  MonthlySubscriptionEndsDate && selectedVisitDates.map((visit, index) => (
                      <div key={index} className="booking-form-group flex-fill">
                      <label className="booking-form-label">
                        Select Visit Date {index + 1}
                      </label>
                      <div className="date-scroll-container">
-                       {getUpcomingDates(
+                       {getUpcomingDatesToVisits(
                          new Date(MonthlySubscriptionStartDate),
-                         new Date(MonthlySubscriptionEndsDate)
+                          new Date(MonthlySubscriptionEndsDate)
                        ).map((date, i) => {
                          const isSelected =
                            visit.date &&
