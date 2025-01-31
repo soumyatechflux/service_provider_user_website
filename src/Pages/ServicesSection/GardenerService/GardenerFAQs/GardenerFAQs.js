@@ -77,7 +77,7 @@ function GardenerFAQs() {
           ))}
         </div>
         <button
-          className="view-more-button"
+          className="view-more-button2"
           onClick={() => setShowAll(!showAll)}
         >
           {showAll ? "View Less" : "View More FAQs"}

@@ -245,7 +245,7 @@ useEffect(() => {
 
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
-
+  const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
 
   const FunctionDataForPricesApplied = async () => {
     setLoading(true);
@@ -259,6 +259,8 @@ useEffect(() => {
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
           // sub_category_id: service?.id || "",
+          is_secure_fee:
+           service?.category_id === 2 ? isSecureFeeChecked : false,
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
@@ -1707,7 +1709,7 @@ Your Subscription Ends At:
   </div>
 
   <div className="cooking-time-container pt-3">
-  <span className="people-counter-label">Total cooking time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
+  <span className="people-counter-label">Estimated Time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
   </div>
   </div>
 </div>
@@ -2332,6 +2334,26 @@ Your Subscription Ends At:
                   placeholder="Enter Your Special Request"
                 />
               </div>
+
+              {service?.category_id === 2 && (
+<div className="d-flex align-items-center gap-2 details-item " style={{marginTop:"20px", flexDirection:"row"}}>
+  <input
+    type="checkbox"
+    // className="form-check-input"
+    id="secureFeeCheckbox"
+    checked={isSecureFeeChecked}
+    onChange={() => setIsSecureFeeChecked(!isSecureFeeChecked)}
+    style={{ width: "18px", height: "18px", cursor: "pointer" }}
+  />
+  <label
+    className="form-check-label fw-bold"
+    htmlFor="secureFeeCheckbox"
+    style={{ fontSize: "16px", cursor: "pointer" }}
+  >
+    Secure Fees {service?.secure_fee}
+  </label>
+</div>
+ )}
 
 
               <div className="payable-amount-section">

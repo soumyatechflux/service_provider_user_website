@@ -38,10 +38,12 @@ const DownloadApp = () => {
                 </p>
                 <div className="store-buttons">
                   <a
-                    href="https://play.google.com/store" // Replace with your app's Google Play Store URL
+                    href="#! "
                     className="store-button google-play"
-                    target="_blank" // Opens the link in a new tab
-                    rel="noopener noreferrer" // Improves security
+                    onClick={(e) => {
+                      e.preventDefault(); // Prevent default action of anchor tag
+                      handleOpenModal("App coming soon! Stay tuned.");
+                    }}
                   >
                     <img
                       src="/DownloadApp/Google_Play_Store.png"

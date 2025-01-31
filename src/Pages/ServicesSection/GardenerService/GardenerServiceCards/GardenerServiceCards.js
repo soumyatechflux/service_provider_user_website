@@ -85,7 +85,7 @@ const GardenerServiceCards = () => {
         <div className="nav-container container gardener-services pt-4 pb-5">
           <div className="container">
             {/* <h2 className="section-title">Gardener Services</h2> */}
-            <div className="service-cards-wrapper-gardener pt-4 pb-2">
+            <div className="service-cards-wrapper-gardener pt-4 pb-4">
               {slides.map((service, index) => (
                 <div key={index} className="service-card">
                   <img
@@ -93,7 +93,7 @@ const GardenerServiceCards = () => {
                     alt={service?.sub_category_name}
                     className="card-image"
                   />
-                  <div className="card-content">
+                  <div className="card-content p-0">
                     <h3>{service?.sub_category_name}</h3>
                     <div className="rating">
                     <span className="stars">
@@ -146,7 +146,7 @@ const GardenerServiceCards = () => {
                       </a>
                     </div>
 
-                    <div className="price-section mt-2">
+                    <div className="price-section mt-2 mb-0">
                       {/* <div className="price">
                         Starting from
                         <div className="amount">

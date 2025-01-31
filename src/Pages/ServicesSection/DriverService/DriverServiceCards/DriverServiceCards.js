@@ -87,86 +87,71 @@ const DriverServiceCards = () => {
             {/* <h2 className="section-title">Driver Services</h2> */}
             <div className="service-cards-wrapper pt-4 pb-5">
               {slides.map((service, index) => (
-                <div key={index} className="service-card">
-                  <img
-                    src={service?.image}
-                    alt={service?.sub_category_name}
-                    className="card-image"
-                  />
-                  <div className="card-content">
-                    <h3>{service?.sub_category_name}</h3>
-                    <div className="rating-cook">
+                <div className="service-card">
+                
+                <div className="card-content" style={{padding:"0px"}}>
+                <img
+                  src={service?.image}
+                  alt={service?.sub_category_name}
+                  className="card-image"
+                />
+                  <h3>{service?.sub_category_name}</h3>
+                  <div className="rating-cook">
                       <span className="stars">
                         {"★"}{" "}
                         <span style={{ color: "#666666" }}>
                           {service?.rating?.toFixed(1) || "0.0"}
                         </span>
                       </span>
+
                       {/* <span className="reviews">
                         ({service?.reviews}273 reviews)
                       </span> */}
                     </div>
 
-                    {service?.description && (
-                      <div className="reviews">
-                        <span>
-                          {viewMore[index]
-                            ? service.description
-                            : truncateText(service.description, 30).truncated}
-                        </span>
-                        {truncateText(service.description, 30).isTruncated && (
-                          <a
-                            className="view-more-button"
-                            onClick={() => toggleViewMore(index)}
-                          >
-                            {viewMore[index] ? "View Less" : "View More"}
-                          </a>
-                        )}
-                      </div>
-                    )}
-                    {/* Checklist Section */}
-                    <ul className="checklist">
-                      {service?.bullet_points?.map((item, idx) => (
-                        <li key={idx}>
-                          <div className="circle-icon">
-                            <span className="check-icon">✔</span>
-                          </div>
-                          {item}
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="mt-3">
-                      <a
-                        className="view-more-button"
-                        onClick={() => handleViewDetails(service)} // Open the modal with service details
-                      >
-                        View Details
-                      </a>
+              
+                  {service?.description && (
+                    <div className="reviews">
+                      <span>
+                        {viewMore[index]
+                          ? service.description
+                          : truncateText(service.description, 30).truncated}
+                      </span>
+                      {truncateText(service.description, 30).isTruncated && (
+                        <a className="view-more-button" onClick={() => toggleViewMore(index)}>
+                          {viewMore[index] ? "View Less" : "View More"}
+                        </a>
+                      )}
                     </div>
-
-                    <div className="price-section mt-2 mb-0">
-                      {/* <div className="price">
-                        Starting from
-                        <div className="amount">
-                          <span className="currency">₹</span>
-                          <span className="value">{service?.price}</span>
-                          <span className="period">
-                            /{service?.number_of_people}
-                          </span>
+                  )}
+              
+                  <ul className="checklist">
+                    {service?.bullet_points?.map((item, idx) => (
+                      <li key={idx}>
+                        <div className="circle-icon">
+                          <span className="check-icon">✔</span>
                         </div>
-                      </div> */}
-                      <div>
-                        <button
-                          className="book-now"
-                          onClick={() => handleBooking(service)}
-                        >
-                          <span className="book-icon">▶</span> Book Now
-                        </button>
-                      </div>
-                    </div>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  <div className="mb-1">
+                    <a className="view-more-button" onClick={() => handleViewDetails(service)}>
+                      View Details
+                    </a>
                   </div>
+                  
                 </div>
+              
+                {/* Book Now Button Stays at Bottom */}
+                <div className="book-now-container">
+                
+                  <button className="book-now" onClick={() => handleBooking(service)}>
+                    <span className="book-icon">▶</span> Book Now
+                  </button>
+                </div>
+              </div>
+              
               ))}
               <MessageModal
                 show={show}

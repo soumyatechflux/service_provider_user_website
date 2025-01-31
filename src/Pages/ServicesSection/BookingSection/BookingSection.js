@@ -69,6 +69,9 @@ const BookingSection = () => {
 
   const [addresses, setAddresses] = useState([]);
 
+  const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
+
+
   const dropdownRef = useRef(null); // Reference to the dropdown container
 
   useEffect(() => {
@@ -211,7 +214,8 @@ const BookingSection = () => {
 
           visit_time: selectedTime,
 
-
+          is_secure_fee:
+           service?.category_id === 2 ? isSecureFeeChecked : false,
 
           visit_address_id:
            service?.category_id !== 2 ? selectedLocation?.address_id : "",
@@ -1819,7 +1823,7 @@ const getUpcomingDates = () => {
   </div>
 
   <div className="cooking-time-container pt-3">
-  <span className="people-counter-label">Total cooking time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
+  <span className="people-counter-label">Estimated Time</span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
   </div>
   </div>
 </div>
@@ -2638,7 +2642,25 @@ const getUpcomingDates = () => {
 
 
 
-
+{service?.category_id === 2 && (
+<div className="d-flex align-items-center gap-2 details-item " style={{marginTop:"20px", flexDirection:"row"}}>
+  <input
+    type="checkbox"
+    // className="form-check-input"
+    id="secureFeeCheckbox"
+    checked={isSecureFeeChecked}
+    onChange={() => setIsSecureFeeChecked(!isSecureFeeChecked)}
+    style={{ width: "18px", height: "18px", cursor: "pointer" }}
+  />
+  <label
+    className="form-check-label fw-bold"
+    htmlFor="secureFeeCheckbox"
+    style={{ fontSize: "16px", cursor: "pointer" }}
+  >
+    Secure Fees {service?.secure_fee}
+  </label>
+</div>
+ )}
 
 
 
@@ -2772,7 +2794,7 @@ const getUpcomingDates = () => {
                                 style={{ cursor: "pointer" }}
                               />
                             </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu-booking" style={{minWidth:"100px", marginLeft:"50px",position:"absolute"}}>
+                            <Dropdown.Menu className="custom-dropdown-menu-booking" >
                               <Dropdown.Item
                                 className="custom-dropdown-item-booking"
                                 onClick={() => {
@@ -3641,37 +3663,41 @@ const getUpcomingDates = () => {
 
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">GST:</div>
-                  <div>+₹ {DataForPricesAppliedGet?.gst_amount}</div>
+                  <div className="fare-breakdown-title">All Charges :</div>
+                  <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
                 </div>
 
+                {service?.category_id === 2 && (
+
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Secure Fee:</div>
+                  <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
                 </div>
 
-                <div className="fare-breakdown-div">
+)}
+
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Platform Fee:</div>
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
-                </div>
+                </div> */}
 
-                <div className="fare-breakdown-div">
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Night Charges:</div>
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
-                </div>
+                </div> */}
 
 
                 <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount:</div>
+                  <div className="fare-breakdown-title">Discount :</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>
 
 
            
-                <div className="fare-breakdown-div">
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
-                </div>
+                </div> */}
 
 
       

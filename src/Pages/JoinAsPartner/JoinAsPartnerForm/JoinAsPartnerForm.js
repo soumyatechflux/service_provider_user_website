@@ -275,8 +275,7 @@ const JoinAsPartnerForm = () => {
           <h2 className="join-partner-title">Join As A Partner</h2>
           <p>
             Are you looking for work? Join us to get new bookings and earn more.
-            Download the Servyo app on your mobile phone or fill your whatsapp
-            number below and we will contact you.
+            Download the Servyo app on your mobile phone and create an account to start working and earning
           </p>
           <p className="mb-1">Download Our Partner App</p>
           <div>

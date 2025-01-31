@@ -128,15 +128,15 @@ const Footer = () => {
                 />
               </a>
               <a
-                href="https://play.google.com/store"
-                className="store-button-footer google-play"
-              >
-                <img
-                  className="store-img"
-                  src="/Footer/google.png"
-                  alt="Google Play"
-                />
-              </a>
+  href="#!"
+  onClick={(e) => {
+    e.preventDefault(); // Prevent default anchor behavior
+    handleOpenModal("App coming soon! Stay tuned.");
+  }}
+  className="store-button-footer google-play"
+>
+  <img className="store-img" src="/Footer/google.png" alt="Google Play" />
+</a>
             </div>
           </div>
         </div>

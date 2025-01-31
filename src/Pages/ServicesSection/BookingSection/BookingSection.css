@@ -347,14 +347,17 @@
 .custom-dropdown-menu-booking {
   position: absolute !important;
   right: 0 !important;
-  left: -140px !important;
+  left: -95px !important;
   background-color: #ffffff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   max-width:  100px;
+  min-width: 100px !important;
   z-index: 1000;
   overflow: hidden;
   border: 1px solid #e5e5e5;
+  transform: none !important;
+  
 }
 
 /* Dropdown Item Styling */

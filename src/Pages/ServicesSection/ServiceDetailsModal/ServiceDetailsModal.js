@@ -130,7 +130,7 @@ function ServiceDetailsModal({ isOpen, onClose, service }) {
           </div>
 
           <div className="modal-body">
-            <h6 className="modal-subtitles">Key Highlights:</h6>
+            <h6 className="modal-subtitles">Key Details:</h6>
             <ul>
               {staticPoints.map((point, index) => (
                 <li key={index}>{point}</li>

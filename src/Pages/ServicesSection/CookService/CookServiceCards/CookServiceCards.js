@@ -96,7 +96,7 @@ const CookServiceCards = () => {
                     alt={service?.sub_category_name}
                     className="card-image"
                   />
-                  <div className="card-content">
+                  <div className="card-content p-0">
                     <h3>{service?.sub_category_name}</h3>
                     <div className="rating-cook">
                       <span className="stars">

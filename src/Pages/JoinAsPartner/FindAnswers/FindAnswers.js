@@ -52,6 +52,11 @@ const faqs = [
     id: 10,
     question: "Can I rate my service?",
     answer: "Yes, after every trip, you'll have the option to rate your service and provide feedback through our app."
+  },
+  {
+    id: 11,
+    question: "How can I stay updated on new services or offers?",
+    answer: "Sign up for our newsletter or follow us on social media to stay informed about new services, discounts, and updates"
   }
 ];
 
