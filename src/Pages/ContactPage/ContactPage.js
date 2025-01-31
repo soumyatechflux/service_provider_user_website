@@ -72,19 +72,17 @@ function ContactPage() {
 
       
       const payload = {
-        support: {
-          name: formData.name,
-          mobile: formData.mobile,
-          email: formData.email,
-          city: selectedLocation, // Predefined city
-          description: formData.message,
-        },
-      };
+        name: formData.name,
+        mobile: formData.mobile,
+        email: formData.email,
+        location: selectedLocation, // Change "city" to "location" to match API expectation
+        message: formData.message, // Change "description" to "message" to match API expectation
+      };      
       setIsSubmitting(true);
       setLoading(true);
   
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/support/add`,
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/contactus/add`,
         payload,
         {
           headers: {
