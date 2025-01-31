@@ -556,19 +556,26 @@ useEffect(() => {
       if (response.status === 200) {
         // toast.success(response?.data?.message || "Successful!");
 
-        if (response?.data?.order) {
-          setBookingData(response?.data?.order);
-          setCallRazorPay(true);
-        } else {
-          setBookingData();
-          setCallRazorPay(false);
-        }
-
         if (mod === "cod") {
           // toast.info("Please confirm your booking to proceed.");
 
           nextStep(true);
         }
+        
+        if (response?.data?.order) {
+          if (response.data.order?.success === false) {
+            toast.error(response.data.order?.message || "An error occurred!");
+          } else {
+            setBookingData(response?.data?.order);
+            setCallRazorPay(true);
+          }
+        } else {
+          setBookingData(null);
+          setCallRazorPay(false);
+        }
+        
+
+
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");

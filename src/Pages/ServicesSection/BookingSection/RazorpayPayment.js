@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import MessageModal from "../../MessageModal/MessageModal";
+import Loader from "../../Loader/Loader";
 
 const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) => {
   const navigate = useNavigate();
   const [isScriptReady, setIsScriptReady] = useState(false);
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
+  const [loading, setLoading] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
 
@@ -16,13 +19,11 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
 
-    // On script load, set the state to true indicating it's ready
     script.onload = () => {
       console.log("Razorpay script loaded successfully!");
       setIsScriptReady(true);
     };
 
-    // On error loading script, log the error
     script.onerror = () => {
       console.error("Failed to load Razorpay script");
     };
@@ -48,7 +49,7 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
         customer_detail,
         razorpayModalTheme,
         notes,
-        id, // Order ID generated from your backend
+        id,
       } = BookingData;
 
       const options = {
@@ -59,8 +60,8 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
         description: product_description,
         image: business_logo,
         order_id: id,
-
         handler: (response) => {
+          setLoading(true);
           fetch(callback_url, {
             method: "POST",
             headers: {
@@ -78,23 +79,19 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
               }
               return res.json();
             })
-            .then((data) => {
-              console.log("Payment verified!", data);
+            .then(() => {
               handleConfirmBooking();
-              // navigate("/user-profile");
             })
             .catch((err) => {
-              
-              console.error("Verification failed:", err);
               alert("Payment verification failed. Please try again.");
               setMessage("Payment verification failed. Please try again.");
-        setShow(true);
-        handleShow(); 
-              // handleConfirmBooking();
-
+              setShow(true);
+              handleShow();
+            })
+            .finally(() => {
+              setLoading(false);
             });
         },
-
         prefill: {
           name: customer_detail?.name,
           email: customer_detail?.email,
@@ -110,43 +107,40 @@ const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) =>
         },
         modal: {
           ondismiss: () => {
-            // alert("Payment modal closed");
             setMessage("Payment modal closed");
-        setShow(true);
-        handleShow(); // Show the modal
+            setShow(true);
+            handleShow();
           },
         },
       };
 
-      // Create the Razorpay instance and open the payment modal
       const razorpay = new window.Razorpay(options);
       razorpay.on("payment.failed", (response) => {
-        // alert(`Payment failed! Error: ${response.error.description}`);
         setMessage(`Payment failed! Error: ${response.error.description}`);
         setShow(true);
-        handleShow(); // Show the modal
+        handleShow();
       });
       razorpay.open();
     } else {
       console.error("Razorpay object not found or script not ready.");
     }
-    <MessageModal
-  show={show}
-  handleClose={handleClose}
-  handleShow={handleShow}
-  message={message}
-  />
   };
 
   // Trigger payment on component load if `callRazorPay` is true and script is ready
   useEffect(() => {
     if (callRazorPay && isScriptReady) {
+      setLoading(true);
       handlePayment();
+      setLoading(false);
     }
   }, [callRazorPay, isScriptReady]);
 
-  return null; // This component doesn't render anything on its own
+  return (
+    <>
+      {loading && <Loader />}
+      <MessageModal show={show} handleClose={handleClose} message={message} />
+    </>
+  );
 };
-
 
 export default RazorpayPayment;
