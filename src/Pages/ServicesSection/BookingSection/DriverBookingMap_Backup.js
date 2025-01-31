@@ -18,7 +18,7 @@ const center = {
   lng: 77.209,
 };
 
-const DriverBookingMap = ({ onSelectPoints ,service}) => {
+const DriverBookingMap = ({ onSelectPoints }) => {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
     libraries: ["places"],
@@ -44,13 +44,11 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
   const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
+
         const { latitude, longitude } = position.coords;
+        // setStartPoint({ lat: latitude, lng: longitude });
         fetchAddress(latitude, longitude);
         setStartCoordinates({ lat: latitude, lng: longitude });
-        if(service?.id === 4){
-        setEndCoordinates({ lat: latitude, lng: longitude });
-        }
-
       },
       (error) => console.error("Error fetching current location:", error)
     );
@@ -69,10 +67,7 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
   
       if (data.status === "OK" && data.results.length > 0) {
         const result = data.results[0];
-        setStartPoint(result.formatted_address);
-        if(service?.id === 4){
-          setEndPoint(result.formatted_address);
-          }
+        setStartPoint(result.formatted_address); // Properly set full address string
       }
     } catch (error) {
       console.error("Error fetching address:", error.message);
@@ -80,6 +75,7 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
       setLoading(false);
     }
   };
+  
 
   const calculateRoute = async () => {
     if (!startPoint || !endPoint) return;
@@ -153,35 +149,17 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
     backdropFilter: "blur(5px)", // Apply the blur effect
   };
 
-  return  (
+  // Spinning animation keyframes as an inline style
+  const spinAnimation =
+    "@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }";
+
+  return isLoaded ? (
     <>
       {loading && (
         <div style={overlayStyle}>
           <div style={loaderStyle}></div>
         </div>
       )}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service?.id !== 4 && (
-  <>
 
       <div className="container mt-4 mb-4">
         <div className="mb-4">
@@ -203,9 +181,6 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
                     });
                   }
                 }
-              }}
-              options={{
-                componentRestrictions: { country: "IN" }, // Restrict to India
               }}
             >
               <input
@@ -243,9 +218,6 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
                   }
                 }
               }}
-              options={{
-                componentRestrictions: { country: "IN" }, // Restrict to India
-              }}
             >
               <input
                 type="text"
@@ -278,115 +250,10 @@ const DriverBookingMap = ({ onSelectPoints ,service}) => {
           </>
         )}
       </div>
-</>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service?.id === 4 && (
-  <>
-
-<div className="container mt-4 mb-4">
-  <div className="mb-4">
-    <label className="form-label">
-      Pickup and Drop Location <MdLocationOn size={20} />
-    </label>
-    <div className="w-100">
-      <Autocomplete
-        onLoad={() => {
-          handleLoadStartAutocomplete();
-          handleLoadEndAutocomplete();
-        }}
-        onPlaceChanged={() => {
-          if (startAutocomplete) {
-            const place = startAutocomplete.getPlace();
-            const location = place.geometry?.location;
-            if (location) {
-              const formattedAddress = place.formatted_address;
-              const coordinates = {
-                lat: location.lat(),
-                lng: location.lng(),
-              };
-
-              // Set start and end locations with the same values
-              setStartPoint(formattedAddress);
-              setStartCoordinates(coordinates);
-
-              setEndPoint(formattedAddress);
-              setEndCoordinates(coordinates);
-            }
-          }
-        }}
-        options={{
-          componentRestrictions: { country: 'IN' }, // Restrict to India
-        }}
-      >
-        <input
-          type="text"
-          className="form-control w-100"
-          placeholder="Search location"
-          value={
-            typeof startPoint === 'string'
-              ? startPoint
-              : 'My Current Location'
-          }
-          onChange={(e) => {
-            const value = e.target.value;
-            setStartPoint(value);
-            setEndPoint(value);
-          }}
-        />
-      </Autocomplete>
-    </div>
-  </div>
-</div>
-
-
-  
-
-
-        {startPoint && endPoint && (
-          <>
-            <GoogleMap
-              mapContainerStyle={containerStyle}
-              center={center}
-              zoom={10}
-              onLoad={(mapInstance) => setMap(mapInstance)}
-            >
-              {directionsResponse && (
-                <DirectionsRenderer directions={directionsResponse} />
-              )}
-            </GoogleMap>
-          </>
-        )}
-      
-</>
-)}
-
-
-
-
-
-
-
-
-
-</>
-  )
+    </>
+  ) : (
+    <p>Loading...</p>
+  );
 };
 
 export default DriverBookingMap;

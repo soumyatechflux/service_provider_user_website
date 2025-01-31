@@ -248,8 +248,26 @@ useEffect(() => {
   const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
 
   const FunctionDataForPricesApplied = async () => {
+
+
+
+    if (service.category_id === 2) {
+      if (
+        BookingForGuestName === "" ||
+        (service?.category_id === 2 && (selectedCarTransmissionType === "" || selectedCarType === ""))
+      ) {
+        setMessage("Please fill all required fields.");
+        setShow(true);
+        handleShow();
+        return;
+      }
+    }
+    
+
+
     setLoading(true);
   
+
     try {
       const body = {
         booking: {
@@ -2371,7 +2389,7 @@ Your Subscription Ends At:
                   className="continue-button"
                   // onClick={nextStep}
                   onClick={(e) => {
-                    e.preventDefault(); // Prevent page reload
+                    e.preventDefault(); 
                     FunctionDataForPricesApplied();
                   }}
                   // onClick={validateFieldsStepOne}

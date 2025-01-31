@@ -185,24 +185,6 @@ const BookingSection = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     try {
       const body = {
         booking: {
@@ -782,8 +764,6 @@ const getUpcomingDates = () => {
         selectedDate === "" ||
         selectedTime === "" ||
         people <= 0 
-
-
       ) {
         setMessage("Please fill all required fields.");
         setShow(true);
@@ -791,6 +771,25 @@ const getUpcomingDates = () => {
         return;
       }
     }
+
+
+    if (service.category_id === 2) {
+      if (
+        BookingForGuestName === "" ||
+        selectedDate === "" ||
+        selectedTime === "" ||
+        (service?.category_id === 2 && (selectedCarTransmissionType === "" || selectedCarType === ""))
+      ) {
+        setMessage("Please fill all required fields.");
+        setShow(true);
+        handleShow();
+        return;
+      }
+    }
+    
+
+
+
 
     nextStep();
   };
@@ -941,6 +940,7 @@ const getUpcomingDates = () => {
 
 
     if(service?.category_id === 2){
+      // console.log(DriverCoordinates,"DriverCoordinatesDriverCoordinates")
       if (
         !DriverCoordinates ||
         !DriverCoordinates.startPoint ||
@@ -950,8 +950,8 @@ const getUpcomingDates = () => {
         !DriverCoordinates.endPoint ||
         !DriverCoordinates.endCoordinates ||
         !DriverCoordinates.endCoordinates.lat ||
-        !DriverCoordinates.endCoordinates.lng ||
-        !DriverCoordinates.distance ||
+        !DriverCoordinates.endCoordinates.lng 
+        || !DriverCoordinates.distance ||
         !DriverCoordinates.duration
       ) {
         toast.error("Please provide complete pickup and drop location details.");
@@ -2215,7 +2215,7 @@ const getUpcomingDates = () => {
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Cars Type (Optional)
+                          Select Cars Type 
                         </label>
                         <div 
                           className="dropdown-container"
@@ -2312,7 +2312,7 @@ const getUpcomingDates = () => {
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Transmission Type (Optional)
+                          Select Transmission Type 
                         </label>
                         <div 
                           className="dropdown-container-tra"
@@ -2756,7 +2756,7 @@ const getUpcomingDates = () => {
     htmlFor="secureFeeCheckbox"
     style={{ fontSize: "16px", cursor: "pointer" }}
   >
-    Secure Fees {service?.secure_fee}
+    Secure Fees :  ₹ {service?.secure_fee}
   </label>
 </div>
  )}
@@ -2925,7 +2925,7 @@ const getUpcomingDates = () => {
     {service?.category_id === 2 && (
       <>
 
-<DriverBookingMap onSelectPoints={handleSelectedPoints} />
+<DriverBookingMap onSelectPoints={handleSelectedPoints} service={service} />
 
         {/* <span>Select Address From:</span>
         {addresses.map((address, index) => (
