@@ -50,8 +50,8 @@ function PreviousTab() {
   };
 
 
-  const handleHelpCentreButtonClick = () => {
-    navigate("/help-centre");
+  const handleHelpCentreButtonClick = (bookingId) => {
+    navigate("/help-centre", { state: { booking_id: bookingId } });
   };
   useEffect(() => {
     const fetchPreviousBookings = async () => {
@@ -423,9 +423,9 @@ function PreviousTab() {
                   </div>
                   {bookingsIdWise?.booking_status === "completed" ? (
                     <div>
-                     <button className="rating-button" onClick={handleHelpCentreButtonClick}>
-      Help Centre
-    </button>
+                    <button className="rating-button" onClick={() => handleHelpCentreButtonClick(bookingsIdWise.booking_id)}>
+  Help Centre
+</button>
 
                     <button
                       className="rating-button"
