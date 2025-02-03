@@ -1,31 +1,28 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { Calendar } from "lucide-react";
-import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../Loader/Loader";
 import "./HelpCentreTab.css";
+import MessageModal from "../../../MessageModal/MessageModal";
 
 const HelpCentreTab = () => {
-  const location = useLocation();
-  const bookingId = location.state?.booking_id || ""; // Get booking_id from navigation
-
   const [query, setQuery] = useState("");
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
+ const [message, setMessage] = useState("");
+ const [show, setShow] = useState(false);
+const handleClose = () => setShow(false);
+const handleShow = () => setShow(true);
+  
 
-  const BASE_API_URL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL;
+  const BASE_API_URL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL; // Get base URL from env
   const POST_API_URL = `${BASE_API_URL}/api/customer/help_center/add`;
-  const GET_API_URL = `${BASE_API_URL}/api/customer/help_center/${bookingId}`; // Fetch booking-wise
+  const GET_API_URL = `${BASE_API_URL}/api/customer/help_center`; // Fetch all queries for the user
 
   // Fetch previous queries when component loads
   useEffect(() => {
-    if (!bookingId) {
-      toast.error("Booking ID is missing.");
-      return;
-    }
-
     const fetchQueries = async () => {
       setLoading(true);
       try {
@@ -38,11 +35,11 @@ const HelpCentreTab = () => {
         });
 
         if (response.data.success && response.data.data) {
-          const item = response.data.data; // Extract single object
+          const data = response.data.data;
 
-          // Convert the single object into an array
-          setQueries([
-            {
+          // Map data to structure as expected
+          setQueries(
+            data.map((item) => ({
               id: item.id,
               query: item.description,
               status: item.status,
@@ -54,26 +51,31 @@ const HelpCentreTab = () => {
                 month: "short",
                 day: "numeric",
               }),
-            },
-          ]);
+            }))
+          );
         } else {
           setQueries([]); // Empty state if no data found
         }
       } catch (error) {
         console.error("Error fetching queries:", error);
-        toast.error("Failed to load previous queries.");
+        // toast.error("Failed to load previous queries.");
+        setMessage("Failed to load previous queries.");
+        handleShow();
+
       } finally {
         setLoading(false);
       }
     };
 
     fetchQueries();
-  }, [bookingId]); // Runs when bookingId changes
+  }, []); // Fetch queries once when component mounts
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (query.trim() === "" || !bookingId) {
-      toast.error("Please enter a query and make sure booking_id is available.");
+    if (query.trim() === "") {
+      // toast.error("Please enter a query.");
+      setMessage("Please enter a query.");
+      handleShow();
       return;
     }
 
@@ -84,7 +86,7 @@ const HelpCentreTab = () => {
 
       const response = await axios.post(
         POST_API_URL,
-        { booking_id: bookingId, description: query },
+        { description: query },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -93,13 +95,13 @@ const HelpCentreTab = () => {
         }
       );
 
-      const { booking_id, description } = response.data;
+      const { description } = response.data;
 
       // Update state with new query
       setQueries((prevQueries) => [
         ...prevQueries,
         {
-          id: booking_id,
+          id: response.data.booking_id,
           query: description,
           status: "Pending",
           createddate: new Date().toLocaleDateString("en-US", {
@@ -111,10 +113,16 @@ const HelpCentreTab = () => {
       ]);
 
       setQuery(""); // Clear input field
-      toast.success("Your query has been submitted successfully! 🎉");
+      // toast.success("Your query has been submitted successfully! 🎉");
+      setMessage("Your query has been submitted successfully! 🎉");
+      handleShow();
+
     } catch (error) {
       console.error("Error submitting query:", error);
-      toast.error("Failed to submit query. Please try again.");
+      // toast.error("Failed to submit query. Please try again.");
+      setMessage("Failed to submit query. Please try again.");
+      handleShow();
+
     } finally {
       setLoading(false);
     }
@@ -165,6 +173,12 @@ const HelpCentreTab = () => {
           <p className="no-queries">No previous queries found.</p>
         )}
       </div>
+      <MessageModal
+        show={show}
+        handleClose={handleClose}
+        handleShow={handleShow}
+        message={message}
+      />
     </div>
   );
 };

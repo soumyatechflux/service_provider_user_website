@@ -183,41 +183,53 @@
 }
 
 /* Status Badge Colors */
-.status-badge.completed {
-  background-color: #dcfce7; /* Green for Completed */
-  color: #166534;
-}
-
-.status-badge.pending {
-  background-color: #fef9c3; /* Light Yellow for Pending */
-  color: #854d0e;
-}
-
-.status-badge.closed {
-  background-color: #dbeafe; /* Blue for Closed */
-  color: #1e40af;
+.status-badge.inprogress {
+  background-color: #d1fad1; /* Light Green for In Progress */
+  color: #2f9f2f;
 }
 
 .status-badge.open {
-  background-color: #fef9c3; /* Yellow for Open */
-  color: #854d0e;
+  background-color: #fde0c9; /* Light Orange for Open */
+  color: #9a6027;
 }
+
+.status-badge.closed {
+  background-color: #f8d7da; /* Light Red for Closed */
+  color: #9b2d20;
+}
+
+.status-badge.resolved {
+  background-color: #e0f7fa; /* Light Blue for Resolved */
+  color: #0278a0;
+}
+
+/* Status Badge Colors */
+.status-badge.pending {
+  background-color: #fef9c3; /* Light Yellow for Pending */
+  color: #a68b00;
+}
+
+/* Background color for Pending status cards */
+.card-helpcentre.pending {
+  background-color: #fef9c3; /* Light Yellow for Pending */
+}
+
 
 /* Background color for different status cards */
+.card-helpcentre.inprogress {
+  background-color: #d1fad1; /* Light Green for In Progress */
+}
+
 .card-helpcentre.open {
-  background-color: #fef9c3; /* Yellow for Open */
-}
-
-.card-helpcentre.pending {
-  background-color: #fde68a; /* Light Yellow for Pending */
-}
-
-.card-helpcentre.completed {
-  background-color: #dcfce7; /* Green for Completed */
+  background-color: #fde0c9; /* Light Orange for Open */
 }
 
 .card-helpcentre.closed {
-  background-color: #dbeafe; /* Blue for Closed */
+  background-color: #f8d7da; /* Light Red for Closed */
+}
+
+.card-helpcentre.resolved {
+  background-color: #e0f7fa; /* Light Blue for Resolved */
 }
 
 .section-title {
