@@ -57,29 +57,7 @@ const Navbar = () => {
     setIsLoggedIn(loginStatus === "true");
   }, []);
 
-  const [walletBalance, setWalletBalance] = useState(0); // State for wallet balance
 
-  const fetchProfile = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/profile`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      if (response?.status && response?.data?.success) {
-        const data = response?.data?.data;
-        setWalletBalance(data?.wallet_balance || 0); // Set wallet balance from API
-      }
-    } catch (err) {
-      console.error("Error fetching profile data:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchProfile();
-  }, []);
 
   const handleLogout = () => {
     setIsLoggedIn(false);
@@ -343,6 +321,20 @@ const Navbar = () => {
                       >
                         My Profile
                       </Link>
+                      
+                      <Link
+                        to="/notification-center"
+                        className="dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        Notifications{" "}
+                        {localStorage.getItem("hasNewNotifications") && (
+                          <span className="notification-dot"></span>
+                        )}
+                      </Link>
+                      {/* <label className="custom-dropdown-item disabled-label mb-0">
+                        Reward Points: {walletBalance}
+                      </label> */}
                       <Link
                         to="#"
                         className="custom-dropdown-item"
@@ -350,28 +342,27 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
-                      <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
-                Notifications{" "}
-                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
-              </Link>
-                      <label className="custom-dropdown-item disabled-label">
-                        Reward Points: {walletBalance}
-                      </label>
                     </>
                   ) : (
                     <>
-                    <Link
-                      to="/login"
-                      className="custom-dropdown-item"
-                      onClick={closeAllDropdowns}
+                      <Link
+                        to="/login"
+                        className="custom-dropdown-item"
+                        onClick={closeAllDropdowns}
                       >
-                      Login
-                    </Link>
-                    <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
-                Notifications{" "}
-                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
-              </Link>
-                      </>
+                        Login
+                      </Link>
+                      <Link
+                        to="/notification-center"
+                        className="dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        Notifications{" "}
+                        {localStorage.getItem("hasNewNotifications") && (
+                          <span className="notification-dot"></span>
+                        )}
+                      </Link>
+                    </>
                   )}
                 </div>
               )}
@@ -439,6 +430,20 @@ const Navbar = () => {
                       >
                         My Profile
                       </Link>
+                      
+                      <Link
+                        to="/notification-center"
+                        className="dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        Notifications{" "}
+                        {localStorage.getItem("hasNewNotifications") && (
+                          <span className="notification-dot"></span>
+                        )}
+                      </Link>
+                      {/* <label className="custom-dropdown-item disabled-label mb-0">
+                        Reward Points : {walletBalance}
+                      </label> */}
                       <Link
                         to="#"
                         className="dropdown-item"
@@ -446,28 +451,26 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
-                      <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
-                Notifications{" "}
-                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
-              </Link>
-                      <label className="custom-dropdown-item disabled-label">
-                        Reward Points : {walletBalance}
-                      </label>
                     </>
                   ) : (
                     <>
-                    
-                    <Link
-                      to="/login"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Login
-                    </Link>
-                    <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
-                Notifications{" "}
-                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
-              </Link>
+                      <Link
+                        to="/login"
+                        className="dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        to="/notification-center"
+                        className="dropdown-item"
+                        onClick={closeAllDropdowns}
+                      >
+                        Notifications{" "}
+                        {localStorage.getItem("hasNewNotifications") && (
+                          <span className="notification-dot"></span>
+                        )}
+                      </Link>
                     </>
                   )}
                 </div>

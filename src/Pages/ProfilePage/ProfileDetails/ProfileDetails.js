@@ -10,7 +10,13 @@ import { toast } from "react-toastify";
 import { useJsApiLoader } from "@react-google-maps/api";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import LocationModal from "./LocationModal";
-import { FaCopy, FaWhatsapp, FaFacebook, FaTwitter, FaEnvelope } from "react-icons/fa";
+import {
+  FaCopy,
+  FaWhatsapp,
+  FaFacebook,
+  FaTwitter,
+  FaEnvelope,
+} from "react-icons/fa";
 
 const ProfileDetails = () => {
   const [profileDataResponse, setProfileDataResponse] = useState({});
@@ -33,6 +39,8 @@ const ProfileDetails = () => {
   const handleClose = () => setShow(false);
   const [message, setMessage] = useState("");
   const handleShow = () => setShow(true);
+
+  const [walletBalance, setWalletBalance] = useState(0); // State for wallet balance
 
   const [referralCode, setReferralCode] = useState(""); // State for referral code
 
@@ -87,6 +95,7 @@ const ProfileDetails = () => {
         setAddresses(data?.address);
         setEditedProfile(data); // Pre-fill the editedProfile state
         setReferralCode(data?.referral_code || "N/A"); // Set referral code from API
+        setWalletBalance(data?.wallet_balance || 0); // Set wallet balance from API
       }
     } catch (err) {
       console.error("Error fetching profile data:", err);
@@ -99,20 +108,25 @@ const ProfileDetails = () => {
     fetchProfile();
   }, []);
 
-
   const copyToClipboard = () => {
     navigator.clipboard.writeText(referralCode);
     setMessage("Referral code copied!"); // Set success message
     setShow(true); // Show modal
-};
+  };
 
-const shareText = `Use my referral code *${referralCode}* to sign up and enjoy benefits!`;
-    const currentURL = window.location.href;
+  const shareText = `Use my referral code *${referralCode}* to sign up and enjoy benefits!`;
+  const currentURL = window.location.href;
 
-    const whatsappURL = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
-    const facebookURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentURL)}`;
-    const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}`;
-    const emailURL = `mailto:?subject=Join with my referral code&body=${encodeURIComponent(shareText)}`;
+  const whatsappURL = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+  const facebookURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+    currentURL
+  )}`;
+  const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+    shareText
+  )}`;
+  const emailURL = `mailto:?subject=Join with my referral code&body=${encodeURIComponent(
+    shareText
+  )}`;
 
   const handleDelete = async (id) => {
     try {
@@ -407,34 +421,32 @@ const shareText = `Use my referral code *${referralCode}* to sign up and enjoy b
 
             {/* Email */}
             <div className="detail-item">
-  <label>Email</label>
-  <div className="detail-value">
-    {isEditing && editingField === "email" ? (
-      <input
-        type="email"
-        value={editedProfile.email || ""} // Ensure controlled input
-        onChange={(e) => handleInputChange("email", e.target.value)}
-      />
-    ) : (
-      <span>{profileDataResponse.email}</span>
-    )}
-    <button
-      className="edit-button"
-      onClick={() => {
-        setIsEditing(true);
-        setEditingField("email");
-        setEditedProfile((prev) => ({
-          ...prev,
-          email: profileDataResponse.email || "", // Initialize with current email
-        }));
-      }}
-    >
-      <Pencil size={16} />
-    </button>
-  </div>
-</div>
-
-
+              <label>Email</label>
+              <div className="detail-value">
+                {isEditing && editingField === "email" ? (
+                  <input
+                    type="email"
+                    value={editedProfile.email || ""} // Ensure controlled input
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                  />
+                ) : (
+                  <span>{profileDataResponse.email}</span>
+                )}
+                <button
+                  className="edit-button"
+                  onClick={() => {
+                    setIsEditing(true);
+                    setEditingField("email");
+                    setEditedProfile((prev) => ({
+                      ...prev,
+                      email: profileDataResponse.email || "", // Initialize with current email
+                    }));
+                  }}
+                >
+                  <Pencil size={16} />
+                </button>
+              </div>
+            </div>
 
             {isEditing && (
               <div className="edit-actions">
@@ -467,14 +479,16 @@ const shareText = `Use my referral code *${referralCode}* to sign up and enjoy b
                   <p className="flex-fill mb-0 address-p">
                     <span className="serial-number me-2">{index + 1}.</span>
                     <>
-      {address.street_address_line2 ? address.street_address_line2 + ", " : ""}
-      {address.landmark ? address.landmark + ", " : ""}
-      {address.city ? address.city + ", " : ""}
-      {address.district ? address.district + ", " : ""}
-      {address.state ? address.state + ", " : ""}
-      {address.postal_code ? address.postal_code + ", " : ""}
-      {address.country ? address.country : ""}
-    </>
+                      {address.street_address_line2
+                        ? address.street_address_line2 + ", "
+                        : ""}
+                      {address.landmark ? address.landmark + ", " : ""}
+                      {address.city ? address.city + ", " : ""}
+                      {address.district ? address.district + ", " : ""}
+                      {address.state ? address.state + ", " : ""}
+                      {address.postal_code ? address.postal_code + ", " : ""}
+                      {address.country ? address.country : ""}
+                    </>
                   </p>
 
                   <div
@@ -636,30 +650,57 @@ const shareText = `Use my referral code *${referralCode}* to sign up and enjoy b
       </div>
 
       <div className="container nav-container profile-container">
-        <h1 >Share You Referral Code <span style={{fontSize:"22px"}}>(share you referral code to earn Reward Points)</span></h1>
-      <div className="referral-container">
-                {/* Referral Code */}
-                <span className="referral-code">{referralCode}</span>
+        <h1>
+          Share You Referral Code{" "}
+          <span style={{ fontSize: "22px" }}>
+            (share you referral code to earn Reward Points)
+          </span>
+        </h1>
+        <div className="referral-container">
+          {/* Referral Code */}
+          <span className="referral-code">{referralCode}</span>
 
-                {/* Copy Button */}
-                <button className="icon-btn copy-btn" onClick={copyToClipboard}>
-                    <FaCopy />
-                </button>
+          {/* Copy Button */}
+          <button className="icon-btn copy-btn" onClick={copyToClipboard}>
+            <FaCopy />
+          </button>
 
-                {/* Social Media Share Buttons */}
-                <a href={whatsappURL} target="_blank" rel="noopener noreferrer" className="icon-btn whatsapp">
-                    <FaWhatsapp />
-                </a>
-                <a href={facebookURL} target="_blank" rel="noopener noreferrer" className="icon-btn facebook">
-                    <FaFacebook />
-                </a>
-                <a href={twitterURL} target="_blank" rel="noopener noreferrer" className="icon-btn twitter">
-                    <FaTwitter />
-                </a>
-                <a href={emailURL} className="icon-btn email">
-                    <FaEnvelope />
-                </a>
-            </div>
+          {/* Social Media Share Buttons */}
+          <a
+            href={whatsappURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-btn whatsapp"
+          >
+            <FaWhatsapp />
+          </a>
+          <a
+            href={facebookURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-btn facebook"
+          >
+            <FaFacebook />
+          </a>
+          <a
+            href={twitterURL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="icon-btn twitter"
+          >
+            <FaTwitter />
+          </a>
+          <a href={emailURL} className="icon-btn email">
+            <FaEnvelope />
+          </a>
+        </div>
+      </div>
+      <div className="container nav-container profile-container">
+        <h1>Your Points</h1>
+        <div className="referral-container">
+          {/* Referral Code */}
+          <span className="referral-code" style={{fontWeight:"bolder"}}>{walletBalance}</span>
+        </div>
       </div>
 
       <MessageModal show={show} handleClose={handleClose} message={message} />
