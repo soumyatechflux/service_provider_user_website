@@ -31,6 +31,7 @@ import TermsAndConditions from "./Pages/TermsAndConditions/TermsAndConditions";
 import Navbar from "./Template/Navbar/Navbar";
 import CancellationPolicy from "./Pages/CancellationPolicy/CancellationPolicy";
 import HelpCentreTab from "./Pages/ProfilePage/BookingTabs/HelpCentreTab/HelpCentreTab";
+import NotificationCenter from "./Pages/NotificationCenter/NotificationCenter";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -137,6 +138,8 @@ function App() {
           <Route path ="/terms-and-conditions" element={<TermsAndConditions />} />
 
           <Route path="/cancellation-policy" element={<CancellationPolicy/>} />
+
+          <Route path="/notification-center" element={<NotificationCenter/>}/>
 
 
 

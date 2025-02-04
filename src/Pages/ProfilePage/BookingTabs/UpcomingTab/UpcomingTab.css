@@ -247,6 +247,7 @@
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
+    align-items: center;
   }
   
   .billing-row.discount {
@@ -318,6 +319,9 @@
   
   /* Responsive Styles */
   @media (max-width: 768px) {
+    .booking-summary{
+      padding: 20px 20px;
+    }
     .booking-details {
       flex-wrap: wrap;
       gap: 10px;

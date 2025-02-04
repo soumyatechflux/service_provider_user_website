@@ -601,12 +601,12 @@ const UpcomingTab = () => {
                         </span>
                       </div> */}
                       <div className="billing-row">
-                        <span className="billing-subtitle">GST</span>
-                        <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.gst_amount}
-                        </span>
+                      <span className="billing-subtitle">All Taxes</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.all_taxes}
+                      </span>
                       </div>
-                      <div className="billing-row">
+                      {/* <div className="billing-row">
                         <span className="billing-subtitle">Secure Fee</span>
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.secure_fee}
@@ -617,13 +617,16 @@ const UpcomingTab = () => {
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.platform_fee}
                         </span>
-                      </div>
-                      <div className="billing-row">
-                        <span className="billing-subtitle">Night Charges</span>
-                        <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.night_charge}
-                        </span>
-                      </div>
+                      </div> */}
+                      {bookingsIdWise?.night_charge != 0 && (
+  <div className="billing-row">
+    <span className="billing-subtitle">Night Charges</span>
+    <span className="billing-subtitle">
+      ₹{bookingsIdWise?.night_charge}
+    </span>
+  </div>
+)}
+
                       <div className="billing-row total">
                         <span className="billing-subtitle text-bold">
                           Grand Total
@@ -698,11 +701,11 @@ const UpcomingTab = () => {
                 // Summary View
                 <div className="booking-summary mt-3 mb-3">
                   <div className="summary-header">
-                    <div className="service-info">
+                    <div className="service-info" style={{alignItems:"center"}}>
                       {booking?.category_id &&
                         React.createElement(
                           categoryIcons[booking.category_id],
-                          { className: "user-icon" }
+                          // { className: "user-icon" }
                         )}
                       <h2 className="profile-heading">
                         {booking?.sub_category_name}
