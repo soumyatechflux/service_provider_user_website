@@ -2723,7 +2723,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
               <div>
 
-                <div className="additional-details">
+                {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
@@ -2732,14 +2732,14 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 </span>
 
 <span className="mb-1">
-  {/* 💵 Surcharge : {100 - (basicDataByGet?.sub_category?.commission || 0)}% */}
+  
   💵 Surcharge : {12}%
 
 </span>
 
               </div>
-            </div>
-                {/* <div className="additional-details">
+            </div> */}
+                <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
                   {showMoreAdditionalDetails
@@ -2758,7 +2758,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
                   
-                </div> */}
+                </div>
 
         
 
@@ -3691,7 +3691,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
 
-              <div className="additional-details">
+              {/* <div className="additional-details">
                   <h3>Booking Summary</h3>
                   <div className="details-item">
                   {showMoreBookingSummary
@@ -3707,7 +3707,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
   </div>
                     
                   </div>
-                </div>
+                </div> */}
 
 
             </div>
@@ -4034,7 +4034,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
               </div>
             </div>
             
-            <div className="additional-details">
+            {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
@@ -4047,8 +4047,24 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 </span>
 
               </div>
-            </div>
-            
+            </div> */}
+            <div className="additional-details">
+                  <h3>Booking Summary</h3>
+                  <div className="details-item">
+                  {showMoreBookingSummary
+  ? bookingSummery
+  : limitTextByWords(bookingSummery || "", wordLimit)}
+  <div>
+  <a
+                      onClick={() => toggleVisibility("booking")}
+                      className="view-more-btn"
+                    >
+                      {showMoreBookingSummary ? "View Less" : "View More"}
+                    </a>
+  </div>
+                    
+                  </div>
+                </div>
            
 
             <div className="booking-summary-footer ">

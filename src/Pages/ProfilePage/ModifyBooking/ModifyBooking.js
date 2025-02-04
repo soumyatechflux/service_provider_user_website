@@ -2264,7 +2264,7 @@ Your Subscription Ends At:
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Cars Type (Optional)
+                          Select Cars Type
                         </label>
                         <div 
                           className="dropdown-container"
@@ -2361,7 +2361,7 @@ Your Subscription Ends At:
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Transmission Type (Optional)
+                          Select Transmission Type
                         </label>
                         <div 
                           className="dropdown-container-tra"

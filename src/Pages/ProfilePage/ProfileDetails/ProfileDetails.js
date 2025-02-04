@@ -648,8 +648,10 @@ const ProfileDetails = () => {
           </div>
         </div>
       </div>
+<div className="container nav-container col-md-12 d-flex" style={{justifyContent:"space-evenly"}}>
 
-      <div className="container nav-container profile-container">
+
+      <div className="container nav-container profile-container col-md-8 m-0">
         <h1>
           Share You Referral Code{" "}
           <span style={{ fontSize: "22px" }}>
@@ -695,12 +697,13 @@ const ProfileDetails = () => {
           </a>
         </div>
       </div>
-      <div className="container nav-container profile-container">
+      <div className="container nav-container profile-container col-md-3 m-0">
         <h1>Your Points</h1>
         <div className="referral-container">
           {/* Referral Code */}
-          <span className="referral-code" style={{fontWeight:"bolder"}}>{walletBalance}</span>
+          <span className="referral-code" style={{fontSize:"32px"}}>{walletBalance}</span>
         </div>
+      </div>
       </div>
 
       <MessageModal show={show} handleClose={handleClose} message={message} />
