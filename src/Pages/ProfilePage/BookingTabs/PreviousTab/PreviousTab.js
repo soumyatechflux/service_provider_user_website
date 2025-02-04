@@ -401,11 +401,11 @@ function PreviousTab() {
                       </span>
                     </div>
                      */}
-                    {bookingsIdWise?.night_charge != 0 && (
+                    {bookingsIdWise?.final_amount != 0 && (
   <div className="billing-row">
-    <span className="billing-subtitle">Night Charges</span>
+    <span className="billing-subtitle">Extra Charges</span>
     <span className="billing-subtitle">
-      ₹{bookingsIdWise?.night_charge}
+      ₹{bookingsIdWise?.final_amount}
     </span>
   </div>
 )}

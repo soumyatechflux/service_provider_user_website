@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import "./Navbar.css";
 import { ChevronDown, MapPin, User } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -13,6 +13,41 @@ const Navbar = () => {
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const [loading, setLoading] = useState();
   const token = sessionStorage.getItem("ServiceProviderUserToken");
+
+  const [hasNewNotifications, setHasNewNotifications] = useState(false);
+  const location = useLocation(); // Get current route
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/notifications`
+        );
+
+        if (response?.data?.success) {
+          const newNotifications = response.data.data.length > 0;
+          setHasNewNotifications(newNotifications);
+
+          // Save notification state in localStorage
+          if (newNotifications) {
+            localStorage.setItem("hasNewNotifications", "true");
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching notifications:", error);
+      }
+    };
+
+    fetchNotifications();
+  }, []);
+
+  // Check if the user has visited the notification center
+  useEffect(() => {
+    if (location.pathname === "/notification-center") {
+      setHasNewNotifications(false);
+      localStorage.removeItem("hasNewNotifications"); // Remove stored notification status
+    }
+  }, [location]);
 
   const navbarRef = useRef(null);
   const navigate = useNavigate();
@@ -315,13 +350,10 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
-                      <Link
-                      to="/notification-center"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Notifications
-                    </Link>
+                      <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
+                Notifications{" "}
+                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
+              </Link>
                       <label className="custom-dropdown-item disabled-label">
                         Reward Points: {walletBalance}
                       </label>
@@ -335,13 +367,10 @@ const Navbar = () => {
                       >
                       Login
                     </Link>
-                    <Link
-                      to="/notification-center"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Notifications
-                    </Link>
+                    <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
+                Notifications{" "}
+                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
+              </Link>
                       </>
                   )}
                 </div>
@@ -417,13 +446,10 @@ const Navbar = () => {
                       >
                         Logout
                       </Link>
-                      <Link
-                      to="/notification-center"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Notifications
-                    </Link>
+                      <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
+                Notifications{" "}
+                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
+              </Link>
                       <label className="custom-dropdown-item disabled-label">
                         Reward Points : {walletBalance}
                       </label>
@@ -438,13 +464,10 @@ const Navbar = () => {
                     >
                       Login
                     </Link>
-                    <Link
-                      to="/notification-center"
-                      className="dropdown-item"
-                      onClick={closeAllDropdowns}
-                    >
-                      Notifications
-                    </Link>
+                    <Link to="/notification-center" className="dropdown-item" onClick={closeAllDropdowns}>
+                Notifications{" "}
+                {localStorage.getItem("hasNewNotifications") && <span className="notification-dot"></span>}
+              </Link>
                     </>
                   )}
                 </div>

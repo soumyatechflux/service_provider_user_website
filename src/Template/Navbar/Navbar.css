@@ -16,6 +16,16 @@
   gap: 1rem;
 }
 
+.notification-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+
 .sidebar-close-btn {
   /* position: absolute; */
   top: 1rem;

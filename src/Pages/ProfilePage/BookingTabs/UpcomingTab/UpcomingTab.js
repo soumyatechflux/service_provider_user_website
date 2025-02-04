@@ -606,23 +606,25 @@ const UpcomingTab = () => {
                         ₹{bookingsIdWise?.all_taxes}
                       </span>
                       </div>
+                      {bookingsIdWise?.category_id ==2 && (
+                    <div className="billing-row">
+                      <span className="billing-subtitle">Secure Fee</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.secure_fee}
+                      </span>
+                    </div>
+                      )}
                       {/* <div className="billing-row">
-                        <span className="billing-subtitle">Secure Fee</span>
-                        <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.secure_fee}
-                        </span>
-                      </div>
-                      <div className="billing-row">
                         <span className="billing-subtitle">Platform Fee</span>
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.platform_fee}
                         </span>
                       </div> */}
-                      {bookingsIdWise?.night_charge != 0 && (
+                      {bookingsIdWise?.final_amount != 0 && (
   <div className="billing-row">
-    <span className="billing-subtitle">Night Charges</span>
+    <span className="billing-subtitle">Extra Charges</span>
     <span className="billing-subtitle">
-      ₹{bookingsIdWise?.night_charge}
+      ₹{bookingsIdWise?.final_amount}
     </span>
   </div>
 )}
