@@ -2277,7 +2277,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
                     (service?.id !== 8 || service?.id !== 9) && (
                       <>
                         <label className="booking-form-label">
-                          Select Dishes (Optional)
+                          Select Dishes 
                         </label>
 
                         <div ref={dropdownRef}
@@ -2675,7 +2675,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
               <div className="booking-form-group">
                 <label className="booking-form-label">
-                  Special Requests / Instructions (Optional)
+                  Special Requests / Instructions 
                 </label>
                 <input
                   className="booking-textarea"

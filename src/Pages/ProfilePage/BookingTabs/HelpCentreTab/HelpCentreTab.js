@@ -81,20 +81,22 @@ const handleShow = () => setShow(true);
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (query.trim() === "") {
-      // toast.error("Please enter a query.");
       setMessage("Please enter a query.");
       handleShow();
       return;
     }
-
+  
     setLoading(true);
-
+  
     try {
       const token = sessionStorage.getItem("ServiceProviderUserToken");
-
+  
       const response = await axios.post(
         POST_API_URL,
-        { description: query },
+        { 
+          description: query, 
+          booking_id : booking_id  // ✅ Sending booking_id in the payload
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,9 +104,9 @@ const handleShow = () => setShow(true);
           },
         }
       );
-
+  
       const { description } = response.data;
-
+  
       // Update state with new query
       setQueries((prevQueries) => [
         ...prevQueries,
@@ -119,22 +121,20 @@ const handleShow = () => setShow(true);
           updateddate: "Just now",
         },
       ]);
-
+  
       setQuery(""); // Clear input field
-      // toast.success("Your query has been submitted successfully! 🎉");
       setMessage("Your query has been submitted successfully! 🎉");
       handleShow();
-
+  
     } catch (error) {
       console.error("Error submitting query:", error);
-      // toast.error("Failed to submit query. Please try again.");
       setMessage("Failed to submit query. Please try again.");
       handleShow();
-
     } finally {
       setLoading(false);
     }
   };
+  
 
   return (
     <div className="help-center-container">
