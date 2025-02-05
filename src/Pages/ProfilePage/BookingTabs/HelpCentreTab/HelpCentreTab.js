@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from "react-router-dom"; // Import to get passed state
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Calendar } from "lucide-react";
@@ -8,6 +9,9 @@ import "./HelpCentreTab.css";
 import MessageModal from "../../../MessageModal/MessageModal";
 
 const HelpCentreTab = () => {
+
+  const location = useLocation();
+  const { booking_id, sub_category_name } = location.state || {}; // Get booking details
   const [query, setQuery] = useState("");
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -16,6 +20,8 @@ const HelpCentreTab = () => {
 const handleClose = () => setShow(false);
 const handleShow = () => setShow(true);
   
+
+
 
   const BASE_API_URL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL; // Get base URL from env
   const POST_API_URL = `${BASE_API_URL}/api/customer/help_center/add`;
@@ -27,19 +33,21 @@ const handleShow = () => setShow(true);
       setLoading(true);
       try {
         const token = sessionStorage.getItem("ServiceProviderUserToken");
-
+  
         const response = await axios.get(GET_API_URL, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-
+  
         if (response.data.success && response.data.data) {
           const data = response.data.data;
-
-          // Map data to structure as expected
+  
+          // Filter queries to only include those with matching booking_id
+          const filteredQueries = data.filter(item => item.booking_id === booking_id);
+  
           setQueries(
-            data.map((item) => ({
+            filteredQueries.map((item) => ({
               id: item.id,
               query: item.description,
               status: item.status,
@@ -58,18 +66,18 @@ const handleShow = () => setShow(true);
         }
       } catch (error) {
         console.error("Error fetching queries:", error);
-        // toast.error("Failed to load previous queries.");
         setMessage("Failed to load previous queries.");
         handleShow();
-
       } finally {
         setLoading(false);
       }
     };
-
-    fetchQueries();
-  }, []); // Fetch queries once when component mounts
-
+  
+    if (booking_id) {
+      fetchQueries(); // Fetch only if booking_id is available
+    }
+  }, [booking_id]); // Re-run effect when booking_id changes
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (query.trim() === "") {
@@ -130,12 +138,14 @@ const handleShow = () => setShow(true);
 
   return (
     <div className="help-center-container">
-      <h1 className="help-center-title">Help Center</h1>
+      <h1 className="help-center-title">Raise a Ticket related to Booking</h1>
 
       <form onSubmit={handleSubmit} className="query-form">
         <div className="form-group">
-          <div className="Service-Heading">Service Name</div>
-          <label htmlFor="user-query">Have a question?</label>
+        <div className="Service-Heading">
+            {sub_category_name ? `Service Name - ${sub_category_name}  ` : "Service Name"}
+          </div>
+          <label htmlFor="user-query">Tell us About Your Issue !</label>
           <textarea
             id="user-query"
             value={query}
@@ -145,12 +155,12 @@ const handleShow = () => setShow(true);
             disabled={loading}
           />
         </div>
-        <button type="submit" className="submit-button">Submit Query</button>
+        <button type="submit" className="submit-button">Submit Ticket</button>
       </form>
 
       {loading && <Loader />} {/* Show loader while fetching */}
 
-      <h2 className="section-title">Previous Queries</h2>
+      <h2 className="section-title">Previous Tickets</h2>
       <div className="cards-grid">
         {queries.length > 0 ? (
           queries.map((item) => (

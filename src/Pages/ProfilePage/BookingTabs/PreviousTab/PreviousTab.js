@@ -50,9 +50,15 @@ function PreviousTab() {
     setIsRatingModalOpen(false);
   };
 
-  const handleHelpCentreButtonClick = (bookingId) => {
-    navigate("/help-centre", { state: { booking_id: bookingId } });
+  const handleHelpCentreButtonClick = (bookingId, subCategoryName) => {
+    navigate("/help-centre", {
+      state: {
+        booking_id: bookingId,
+        sub_category_name: subCategoryName,
+      },
+    });
   };
+
   useEffect(() => {
     const fetchPreviousBookings = async () => {
       try {
@@ -379,6 +385,14 @@ function PreviousTab() {
                         ₹{bookingsIdWise?.actual_price}
                       </span>
                     </div>
+                    {bookingsIdWise?.night_charge > 0 && (
+                    <div className="billing-row">
+                      <span className="billing-subtitle">Night Charges</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.night_charge}
+                      </span>
+                    </div>
+                    )}  
                     <div className="billing-row discount">
                       <span className="billing-subtitle">Discount</span>
                       <span className="billing-subtitle">
@@ -453,10 +467,13 @@ function PreviousTab() {
                       <button
                         className="rating-button"
                         onClick={() =>
-                          handleHelpCentreButtonClick(bookingsIdWise.booking_id)
+                          handleHelpCentreButtonClick(
+                            bookingsIdWise.booking_id,
+                            bookingsIdWise?.sub_category?.sub_category_name
+                          )
                         }
                       >
-                        Help Centre
+                        Raise a Ticket
                       </button>
 
                       <button

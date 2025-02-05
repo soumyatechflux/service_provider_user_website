@@ -2828,9 +2828,29 @@ Your Subscription Ends At:
 
 
 <div className="fare-breakdown-div">
-<div className="fare-breakdown-title">Amount :</div>
+<div className="fare-breakdown-title">Base Price :</div>
 <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
                 </div>
+
+                {DataForPricesAppliedGet?.night_charge > 0 && (
+  <div className="fare-breakdown-div">
+    <div className="fare-breakdown-title">Night Charges :</div>
+    <div>₹ {DataForPricesAppliedGet.night_charge}</div>
+  </div>
+)}
+
+
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Discount :</div>
+                  <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
+                </div>
+
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Total Amount :</div>
+                  <div>₹ {DataForPricesAppliedGet?.total_amount}</div>
+                </div>
+
 
 
             
@@ -2852,21 +2872,14 @@ Your Subscription Ends At:
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
                 </div> */}
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges(Included in Amount) :</div>
-                  <div>₹ {DataForPricesAppliedGet?.night_charge}</div>
-                </div>
+                
 
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount :</div>
-                  <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
-                </div>
-
-                <div className="fare-breakdown-div">
+                
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount :</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
-                </div>
+                </div> */}
            
            
 

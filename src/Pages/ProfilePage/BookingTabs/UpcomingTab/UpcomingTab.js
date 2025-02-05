@@ -592,12 +592,20 @@ const UpcomingTab = () => {
                   <div className="column3">
                     <h3 className="heading-text mb-4">Billing Details</h3>
                     <div className="billing-info">
-                      <div className="billing-row">
-                        <span className="billing-subtitle">Base Price</span>
-                        <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.actual_price}
-                        </span>
-                      </div>
+                    <div className="billing-row">
+                      <span className="billing-subtitle">Base Price</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.actual_price}
+                      </span>
+                    </div>
+                    {bookingsIdWise?.night_charge > 0 && (
+                    <div className="billing-row">
+                      <span className="billing-subtitle">Night Charges</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.night_charge}
+                      </span>
+                    </div>
+                    )}
                       <div className="billing-row discount">
                         <span className="billing-subtitle">Discount</span>
                         <span className="billing-subtitle">
