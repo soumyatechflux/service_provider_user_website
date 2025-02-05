@@ -8,14 +8,14 @@ const MeetOurTeam = () => {
       name: "Riya Bansal",
       role: "Co-Founder",
       image: "./../ServicesSection/AboutUs/ProfilePic.jpg", // Replace with the correct image path
-      linkedin: "https://www.linkedin.com/in/riya-bansal",
+      linkedin: "https://www.linkedin.com/in/riyabansal7/",
     },
     {
       id: 2,
       name: "Priyasha Goel",
       role: "Co-Founder",
       image: "./../ServicesSection/AboutUs/ProfilePic.jpg", // Replace with the correct image path
-      linkedin: "https://www.linkedin.com/in/priyasha-goel",
+      linkedin: "https://www.linkedin.com/in/priyasha-goel-1601/",
     },
   ];
 

@@ -50,7 +50,6 @@ function PreviousTab() {
     setIsRatingModalOpen(false);
   };
 
-
   const handleHelpCentreButtonClick = (bookingId) => {
     navigate("/help-centre", { state: { booking_id: bookingId } });
   };
@@ -97,14 +96,14 @@ function PreviousTab() {
     const [hours, minutes] = timeString.split(":");
     const date = new Date();
     date.setHours(hours, minutes);
-  
+
     // Format the time with hour, minute, and AM/PM
     const formattedTime = date.toLocaleString("en-GB", {
       hour: "2-digit",
       minute: "2-digit",
       hour12: true,
     });
-  
+
     // Convert the AM/PM part to uppercase
     return formattedTime.replace(/(am|pm)/, (match) => match.toUpperCase());
   };
@@ -221,111 +220,123 @@ function PreviousTab() {
                   </div>
                 </div>
                 <div className="column2">
-                    <h3 className="heading-text mb-4">Booking Details</h3>
-                    <div className="booking-info">
-                      <div className="info-group mb-2">
-                        <h4 className="booking-subtitle">Booking For</h4>
+                  <h3 className="heading-text mb-4">Booking Details</h3>
+                  <div className="booking-info">
+                    <div className="info-group mb-2">
+                      <h4 className="booking-subtitle">Booking For</h4>
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.guest_name}
+                      </p>
+                      <h4 className="booking-subtitle">Booking Of</h4>
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.category?.category_name} -{" "}
+                        {bookingsIdWise?.sub_category?.sub_category_name}
+                      </p>
+                    </div>
+                    <div className="info-group">
+                      <h4 className="booking-subtitle">Address</h4>
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.visit_address}
+                      </p>
+                    </div>
+                    {bookingsIdWise?.sub_category_id === 9 && (
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">
+                          Total Visiting Slots
+                        </h4>
                         <p className="booking-info-text">
-                          {bookingsIdWise?.guest_name}
-                          
-                        </p>
-                        <h4 className="booking-subtitle">Booking Of</h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.category?.category_name} -{" "}
-                          {bookingsIdWise?.sub_category?.sub_category_name}
+                          {bookingsIdWise?.gardener_visiting_slots
+                            ? JSON.parse(bookingsIdWise.gardener_visiting_slots)
+                                .length
+                            : "N/A"}
                         </p>
                       </div>
-                      <div className="info-group">
-                        <h4 className="booking-subtitle">Address</h4>
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.visit_address}
-                        </p>
-                      </div>
-                      {bookingsIdWise?.sub_category_id === 9 && (
-  <div className="info-group">
-    <h4 className="booking-subtitle">Total Visiting Slots</h4>
-    <p className="booking-info-text">
-      {bookingsIdWise?.gardener_visiting_slots
-        ? JSON.parse(bookingsIdWise.gardener_visiting_slots).length
-        : "N/A"}
-    </p>
-  </div>
-)}
-                      <div className="info-group">
-  <h4 className="booking-subtitle">
-    {bookingsIdWise?.sub_category_id === 8
-      ? "Visit Time"
-      : bookingsIdWise?.category_id === 2 ||
-        bookingsIdWise?.sub_category_id === 9
-      ? bookingsIdWise?.sub_category_id === 9
-        ? "Gardener Visiting Slots"
-        : "Number Of Hours Booked"
-      : "Number of People"}
-  </h4>
-  <p className="booking-info-text">
-  {bookingsIdWise?.sub_category_id === 8
-    ? new Date(`1970-01-01T${bookingsIdWise?.visit_time}`).toLocaleTimeString(
-        "en-US",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-          hour12: true, // Ensures AM/PM format
-        }
-      )
-    : bookingsIdWise?.category_id === 2
-    ? bookingsIdWise?.no_of_hours_booked
-    : bookingsIdWise?.sub_category_id === 9
-    ? bookingsIdWise?.gardener_visiting_slots &&
-      JSON.parse(bookingsIdWise.gardener_visiting_slots).map((slot, index) => {
-        const formattedDate = new Date(slot.date).toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short",
-          day: "numeric",
-        });
-        return (
-          <div key={index}>
-            <strong>Date : </strong>
-            {formattedDate},{" "}
-            <strong>Approx Time :</strong> {slot.hours} mins
-          </div>
-        );
-      })
-    : bookingsIdWise?.people_count}
-</p>
+                    )}
+                    <div className="info-group">
+                      <h4 className="booking-subtitle">
+                        {bookingsIdWise?.sub_category_id === 8
+                          ? "Visit Time"
+                          : bookingsIdWise?.category_id === 2 ||
+                            bookingsIdWise?.sub_category_id === 9
+                          ? bookingsIdWise?.sub_category_id === 9
+                            ? "Gardener Visiting Slots"
+                            : "Number Of Hours Booked"
+                          : "Number of People"}
+                      </h4>
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.sub_category_id === 8
+                          ? new Date(
+                              `1970-01-01T${bookingsIdWise?.visit_time}`
+                            ).toLocaleTimeString("en-US", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              hour12: true, // Ensures AM/PM format
+                            })
+                          : bookingsIdWise?.category_id === 2
+                          ? bookingsIdWise?.no_of_hours_booked
+                          : bookingsIdWise?.sub_category_id === 9
+                          ? bookingsIdWise?.gardener_visiting_slots &&
+                            JSON.parse(
+                              bookingsIdWise.gardener_visiting_slots
+                            ).map((slot, index) => {
+                              const formattedDate = new Date(
+                                slot.date
+                              ).toLocaleDateString("en-US", {
+                                year: "numeric",
+                                month: "short",
+                                day: "numeric",
+                              });
+                              return (
+                                <div key={index}>
+                                  <strong>Date : </strong>
+                                  {formattedDate},{" "}
+                                  <strong>Approx Time :</strong> {slot.hours}{" "}
+                                  mins
+                                </div>
+                              );
+                            })
+                          : bookingsIdWise?.people_count}
+                      </p>
+                    </div>
 
+                    <div className="info-group">
+                      {bookingsIdWise?.category_id !== 3 && (
+                        <h4 className="booking-subtitle">
+                          {bookingsIdWise?.category_id === 2
+                            ? "Car Type"
+                            : "Menu and Dishes"}
+                        </h4>
+                      )}
 
-</div>
-
-
-
-                      <div className="info-group">
-                        {bookingsIdWise?.category_id !== 3 && (
-                          <h4 className="booking-subtitle">
-                            {bookingsIdWise?.category_id === 2
-                              ? "Car Type"
-                              : "Menu and Dishes"}
-                          </h4>
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.category_id === 2 ? (
+                          bookingsIdWise?.car_type // Show car type when category_id === 2
+                        ) : bookingsIdWise?.sub_category_id === 3 ? (
+                          bookingsIdWise?.menu?.length > 0 ? (
+                            bookingsIdWise?.menu?.map((item, index) => (
+                              <span key={index}>
+                                {item.name}
+                                {index !== bookingsIdWise.menu.length - 1 &&
+                                  ", "}
+                              </span>
+                            ))
+                          ) : (
+                            <span>No menu items selected</span>
+                          )
+                        ) : bookingsIdWise?.dishes?.length > 0 ? (
+                          bookingsIdWise?.dishes?.map((dish, index) => (
+                            <span key={index}>
+                              {dish}
+                              {index !== bookingsIdWise.dishes.length - 1 &&
+                                ", "}
+                            </span>
+                          ))
+                        ) : (
+                          <span>No Dishes Selected</span>
                         )}
-
-<p className="booking-info-text">
-  {bookingsIdWise?.category_id === 2
-    ? bookingsIdWise?.car_type // Show car type when category_id === 2
-    : bookingsIdWise?.sub_category_id === 3
-    ? bookingsIdWise?.menu?.map((item, index) => (
-        <span key={index}>
-          {item.name}
-          {index !== bookingsIdWise.menu.length - 1 && ", "}
-        </span>
-      ))
-    : bookingsIdWise?.dishes?.map((dish, index) => (
-        <span key={index}>
-          {dish}
-          {index !== bookingsIdWise.dishes.length - 1 && ", "}
-        </span>
-      ))}
-</p>
-                      </div>
-                      {bookingsIdWise?.sub_category_id !== 9 && (
+                      </p>
+                    </div>
+                    {bookingsIdWise?.sub_category_id !== 9 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
                         <p className="booking-info-text">
@@ -334,23 +345,31 @@ function PreviousTab() {
                           )}, ${formatTime(bookingsIdWise?.visit_time)}`}
                         </p>
                       </div>
-                      )}
-                      
+                    )}
 
-                      {bookingsIdWise?.category_id !== 3 && (
-                        <div className="info-group">
-                          <h4 className="booking-subtitle">
-                            Special Requests / Instructions
-                          </h4>
-                          <p className="booking-info-text">
-                            {bookingsIdWise?.instructions?.trim()
-                              ? bookingsIdWise.instructions
-                              : "N/A"}
-                          </p>
-                        </div>
-                      )}
-                    </div>
+                    {bookingsIdWise?.category_id == 2 && (
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">Transmission Type</h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.transmission_type}
+                        </p>
+                      </div>
+                    )}
+
+                    {bookingsIdWise?.category_id !== 3 && (
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">
+                          Special Requests / Instructions
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.instructions?.trim()
+                            ? bookingsIdWise.instructions
+                            : "N/A"}
+                        </p>
+                      </div>
+                    )}
                   </div>
+                </div>
                 <div className="column3">
                   <h3 className="heading-text mb-4">Billing Details</h3>
                   <div className="billing-info">
@@ -385,15 +404,15 @@ function PreviousTab() {
                         ₹{bookingsIdWise?.all_taxes}
                       </span>
                     </div>
-                    {bookingsIdWise?.category_id ==2 && (
-                    <div className="billing-row">
-                      <span className="billing-subtitle">Secure Fee</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.secure_fee}
-                      </span>
-                    </div>
-)}
-                    
+                    {bookingsIdWise?.category_id == 2 && (
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Secure Fee</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.secure_fee}
+                        </span>
+                      </div>
+                    )}
+
                     {/* <div className="billing-row">
                       <span className="billing-subtitle">Platform Fee</span>
                       <span className="billing-subtitle">
@@ -402,13 +421,13 @@ function PreviousTab() {
                     </div>
                      */}
                     {bookingsIdWise?.final_amount != 0 && (
-  <div className="billing-row">
-    <span className="billing-subtitle">Extra Charges</span>
-    <span className="billing-subtitle">
-      ₹{bookingsIdWise?.final_amount}
-    </span>
-  </div>
-)}
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Extra Charges</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.final_amount}
+                        </span>
+                      </div>
+                    )}
 
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
@@ -431,16 +450,21 @@ function PreviousTab() {
                   </div>
                   {bookingsIdWise?.booking_status === "completed" ? (
                     <div>
-                    <button className="rating-button" onClick={() => handleHelpCentreButtonClick(bookingsIdWise.booking_id)}>
-  Help Centre
-</button>
+                      <button
+                        className="rating-button"
+                        onClick={() =>
+                          handleHelpCentreButtonClick(bookingsIdWise.booking_id)
+                        }
+                      >
+                        Help Centre
+                      </button>
 
-                    <button
-                      className="rating-button"
-                      onClick={handleRatingButtonClick}
-                    >
-                      Give Rating to Partner
-                    </button>
+                      <button
+                        className="rating-button"
+                        onClick={handleRatingButtonClick}
+                      >
+                        Give Rating to Partner
+                      </button>
                     </div>
                   ) : (
                     <button className="rating-button disabled" disabled>
@@ -460,7 +484,10 @@ function PreviousTab() {
               // Summary View
               <div className="booking-summary mt-3 mb-3">
                 <div className="summary-header">
-                  <div className="service-info" style={{alignItems:"center"}}>
+                  <div
+                    className="service-info"
+                    style={{ alignItems: "center" }}
+                  >
                     {booking?.category_id &&
                       React.createElement(categoryIcons[booking.category_id], {
                         // className: "user-icon",
@@ -503,9 +530,9 @@ function PreviousTab() {
                     <p>{booking?.booking_date_time}</p>
 
                     <p>
-                        Service Provider -{" "}
-                        {booking?.partner_name || "No Partner Accepted"}
-                      </p>
+                      Service Provider -{" "}
+                      {booking?.partner_name || "No Partner Accepted"}
+                    </p>
                   </div>
 
                   <div className="amount">₹{booking?.billing_amount}</div>

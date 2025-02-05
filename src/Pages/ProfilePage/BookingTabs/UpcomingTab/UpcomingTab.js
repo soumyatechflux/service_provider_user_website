@@ -475,48 +475,47 @@ const UpcomingTab = () => {
                           </p>
                         </div>
                       )}
-                      
-                      <div className="info-group">
-  <h4 className="booking-subtitle">
-    {bookingsIdWise?.sub_category_id === 8
-      ? "Number Of Hours Booked"
-      : bookingsIdWise?.category_id === 2 ||
-        bookingsIdWise?.sub_category_id === 9
-      ? bookingsIdWise?.sub_category_id === 9
-        ? "Gardener Visiting Slots"
-        : "Number Of Hours Booked"
-      : "Number of People"}
-  </h4>
-  <p className="booking-info-text">
-    {bookingsIdWise?.sub_category_id === 8
-      ? bookingsIdWise?.no_of_hours_booked
-      : bookingsIdWise?.category_id === 2
-      ? bookingsIdWise?.no_of_hours_booked
-      : bookingsIdWise?.sub_category_id === 9
-      ? bookingsIdWise?.gardener_visiting_slots &&
-        JSON.parse(bookingsIdWise.gardener_visiting_slots).map(
-          (slot, index) => {
-            const formattedDate = new Date(slot.date).toLocaleDateString(
-              "en-US",
-              {
-                year: "numeric",
-                month: "short",
-                day: "numeric",
-              }
-            );
-            return (
-              <div key={index}>
-                <strong>Date : </strong>
-                {formattedDate},{" "}
-                <strong>Approx Time :</strong> {slot.hours} mins
-              </div>
-            );
-          }
-        )
-      : bookingsIdWise?.people_count}
-  </p>
-</div>
 
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">
+                          {bookingsIdWise?.sub_category_id === 8
+                            ? "Number Of Hours Booked"
+                            : bookingsIdWise?.category_id === 2 ||
+                              bookingsIdWise?.sub_category_id === 9
+                            ? bookingsIdWise?.sub_category_id === 9
+                              ? "Gardener Visiting Slots"
+                              : "Number Of Hours Booked"
+                            : "Number of People"}
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.sub_category_id === 8
+                            ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.category_id === 2
+                            ? bookingsIdWise?.no_of_hours_booked
+                            : bookingsIdWise?.sub_category_id === 9
+                            ? bookingsIdWise?.gardener_visiting_slots &&
+                              JSON.parse(
+                                bookingsIdWise.gardener_visiting_slots
+                              ).map((slot, index) => {
+                                const formattedDate = new Date(
+                                  slot.date
+                                ).toLocaleDateString("en-US", {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "numeric",
+                                });
+                                return (
+                                  <div key={index}>
+                                    <strong>Date : </strong>
+                                    {formattedDate},{" "}
+                                    <strong>Approx Time :</strong> {slot.hours}{" "}
+                                    mins
+                                  </div>
+                                );
+                              })
+                            : bookingsIdWise?.people_count}
+                        </p>
+                      </div>
 
                       <div className="info-group">
                         {bookingsIdWise?.category_id !== 3 && (
@@ -528,32 +527,50 @@ const UpcomingTab = () => {
                         )}
 
                         <p className="booking-info-text">
-                          {bookingsIdWise?.category_id === 2
-                            ? bookingsIdWise?.car_type // Show car type when category_id === 2
-                            : bookingsIdWise?.sub_category_id === 3
-                            ? bookingsIdWise?.menu?.map((item, index) => (
+                          {bookingsIdWise?.category_id === 2 ? (
+                            bookingsIdWise?.car_type // Show car type when category_id === 2
+                          ) : bookingsIdWise?.sub_category_id === 3 ? (
+                            bookingsIdWise?.menu?.length > 0 ? (
+                              bookingsIdWise?.menu?.map((item, index) => (
                                 <span key={index}>
                                   {item.name}
                                   {index !== bookingsIdWise.menu.length - 1 &&
                                     ", "}
                                 </span>
                               ))
-                            : bookingsIdWise?.dishes?.map((dish, index) => (
-                                <span key={index}>
-                                  {dish}
-                                  {index !== bookingsIdWise.dishes.length - 1 &&
-                                    ", "}
-                                </span>
-                              ))}
+                            ) : (
+                              <span>No menu items selected</span>
+                            )
+                          ) : bookingsIdWise?.dishes?.length > 0 ? (
+                            bookingsIdWise?.dishes?.map((dish, index) => (
+                              <span key={index}>
+                                {dish}
+                                {index !== bookingsIdWise.dishes.length - 1 &&
+                                  ", "}
+                              </span>
+                            ))
+                          ) : (
+                            <span>No Dishes Selected</span>
+                          )}
                         </p>
                       </div>
-                      {bookingsIdWise?.sub_category_id !== 9 && (
+                      {bookingsIdWise?.category_id !== 9 && (
                         <div className="info-group">
                           <h4 className="booking-subtitle">Date & Time</h4>
                           <p className="booking-info-text">
                             {`${formatDate(
                               bookingsIdWise?.visit_date
                             )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                          </p>
+                        </div>
+                      )}
+                      {bookingsIdWise?.category_id == 2 && (
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">Transmission Type</h4>
+                          <p className="booking-info-text">
+                            {
+                              bookingsIdWise?.transmission_type
+                            }
                           </p>
                         </div>
                       )}
@@ -601,18 +618,18 @@ const UpcomingTab = () => {
                         </span>
                       </div> */}
                       <div className="billing-row">
-                      <span className="billing-subtitle">All Taxes</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.all_taxes}
-                      </span>
+                        <span className="billing-subtitle">All Taxes</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.all_taxes}
+                        </span>
                       </div>
-                      {bookingsIdWise?.category_id ==2 && (
-                    <div className="billing-row">
-                      <span className="billing-subtitle">Secure Fee</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.secure_fee}
-                      </span>
-                    </div>
+                      {bookingsIdWise?.category_id == 2 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">Secure Fee</span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.secure_fee}
+                          </span>
+                        </div>
                       )}
                       {/* <div className="billing-row">
                         <span className="billing-subtitle">Platform Fee</span>
@@ -621,13 +638,15 @@ const UpcomingTab = () => {
                         </span>
                       </div> */}
                       {bookingsIdWise?.final_amount != 0 && (
-  <div className="billing-row">
-    <span className="billing-subtitle">Extra Charges</span>
-    <span className="billing-subtitle">
-      ₹{bookingsIdWise?.final_amount}
-    </span>
-  </div>
-)}
+                        <div className="billing-row">
+                          <span className="billing-subtitle">
+                            Extra Charges
+                          </span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.final_amount}
+                          </span>
+                        </div>
+                      )}
 
                       <div className="billing-row total">
                         <span className="billing-subtitle text-bold">
@@ -703,10 +722,13 @@ const UpcomingTab = () => {
                 // Summary View
                 <div className="booking-summary mt-3 mb-3">
                   <div className="summary-header">
-                    <div className="service-info" style={{alignItems:"center"}}>
+                    <div
+                      className="service-info"
+                      style={{ alignItems: "center" }}
+                    >
                       {booking?.category_id &&
                         React.createElement(
-                          categoryIcons[booking.category_id],
+                          categoryIcons[booking.category_id]
                           // { className: "user-icon" }
                         )}
                       <h2 className="profile-heading">
