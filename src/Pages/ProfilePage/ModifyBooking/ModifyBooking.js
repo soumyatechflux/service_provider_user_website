@@ -2141,7 +2141,7 @@ Your Subscription Ends At:
                     (service?.id !== 8 || service?.id !== 9) && (
                       <>
                         <label className="booking-form-label">
-                          Select Dishes (Optional)
+                          Select Dishes
                         </label>
 
              
@@ -2547,7 +2547,7 @@ Your Subscription Ends At:
 
               <div className="booking-form-group">
                 <label className="booking-form-label">
-                  Special Requests / Instructions (Optional)
+                  Special Requests / Instructions
                 </label>
                 <input
                   className="booking-textarea"
