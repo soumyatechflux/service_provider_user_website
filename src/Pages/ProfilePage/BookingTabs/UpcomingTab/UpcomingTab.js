@@ -606,6 +606,13 @@ const UpcomingTab = () => {
                       </span>
                     </div>
                     )}
+
+<div className="billing-row">
+                      <span className="billing-subtitle">Sub-Total </span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.sub_total_amount}
+                      </span>
+                    </div>
                       <div className="billing-row discount">
                         <span className="billing-subtitle">Discount</span>
                         <span className="billing-subtitle">

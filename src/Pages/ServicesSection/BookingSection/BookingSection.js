@@ -3968,6 +3968,10 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
                 <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Sub-Total :</div>
+                  <div> ₹ {DataForPricesAppliedGet?.sub_total_amount}</div>
+                </div>
+                <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Discount :</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                 </div>

@@ -2838,7 +2838,10 @@ Your Subscription Ends At:
     <div>₹ {DataForPricesAppliedGet.night_charge}</div>
   </div>
 )}
-
+<div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Sub-Total :</div>
+                  <div> ₹ {DataForPricesAppliedGet?.sub_total_amount}</div>
+                </div>
 
 
                 <div className="fare-breakdown-div">
@@ -2942,9 +2945,19 @@ Your Subscription Ends At:
                 </div>
               </div>
 
-              <button className="checkout-button" onClick={nextStep}>
-                Checkout
-              </button>
+              <button
+  className="checkout-button"
+  onClick={() => {
+    if (DataForPricesAppliedGet?.billing_amount == 0) {
+      setStep(4); // Go directly to step 4 if billing_amount is 0
+    } else {
+      nextStep(); // Proceed normally otherwise
+    }
+  }}
+>
+  Checkout
+</button>
+
             </div>
           </div>
         )}
