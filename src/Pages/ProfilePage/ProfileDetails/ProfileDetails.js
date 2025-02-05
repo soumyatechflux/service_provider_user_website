@@ -653,10 +653,8 @@ const ProfileDetails = () => {
 
       <div className="container nav-container profile-container col-md-8 m-0">
         <h1>
-          Share You Referral Code{" "}
-          <span style={{ fontSize: "22px" }}>
-            (share you referral code to earn Reward Points)
-          </span>
+          Share You Referral Code To Earn Points
+          
         </h1>
         <div className="referral-container">
           {/* Referral Code */}
