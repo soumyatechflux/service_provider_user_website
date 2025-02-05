@@ -3125,7 +3125,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     {service?.category_id === 2 && (
       <>
 
-<DriverBookingMap onSelectPoints={handleSelectedPoints} service={service} />
+<DriverBookingMap onSelectPoints={handleSelectedPoints} DriverCoordinates={DriverCoordinates} service={service} />
 
         {/* <span>Select Address From:</span>
         {addresses.map((address, index) => (

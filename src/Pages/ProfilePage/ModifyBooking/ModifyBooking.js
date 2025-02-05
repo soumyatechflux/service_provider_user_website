@@ -299,8 +299,10 @@ useEffect(() => {
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
           // sub_category_id: service?.id || "",
-          is_secure_fee:
-           service?.category_id === 2 ? isSecureFeeChecked : false,
+
+          // is_secure_fee:
+          //  service?.category_id === 2 ? isSecureFeeChecked : false,
+
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
@@ -2557,7 +2559,7 @@ Your Subscription Ends At:
                 />
               </div>
 
-              {service?.category_id === 2 && (
+              {/* {service?.category_id === 2 && (
 <div className="d-flex align-items-center gap-2 details-item " style={{marginTop:"20px", flexDirection:"row"}}>
   <input
     type="checkbox"
@@ -2575,7 +2577,7 @@ Your Subscription Ends At:
     Secure Fees {service?.secure_fee}
   </label>
 </div>
- )}
+ )} */}
 
 
               <div className="payable-amount-section">
