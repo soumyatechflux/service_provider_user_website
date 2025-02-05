@@ -180,7 +180,7 @@ const handleShow = () => setShow(true);
             </div>
           ))
         ) : (
-          <p className="no-queries">No previous queries found.</p>
+          <p className="no-queries">No previous Tickets found.</p>
         )}
       </div>
       <MessageModal

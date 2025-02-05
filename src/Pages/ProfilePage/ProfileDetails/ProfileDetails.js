@@ -648,7 +648,9 @@ const ProfileDetails = () => {
           </div>
         </div>
       </div>
-<div className="container nav-container col-md-12 d-flex" style={{justifyContent:"space-evenly"}}>
+
+      
+{/* <div className="container nav-container col-md-12 d-flex" style={{justifyContent:"space-evenly"}}>
 
 
       <div className="container nav-container profile-container col-md-8 m-0">
@@ -657,15 +659,15 @@ const ProfileDetails = () => {
           
         </h1>
         <div className="referral-container">
-          {/* Referral Code */}
+         
           <span className="referral-code">{referralCode}</span>
 
-          {/* Copy Button */}
+          
           <button className="icon-btn copy-btn" onClick={copyToClipboard}>
             <FaCopy />
           </button>
 
-          {/* Social Media Share Buttons */}
+          
           <a
             href={whatsappURL}
             target="_blank"
@@ -698,11 +700,11 @@ const ProfileDetails = () => {
       <div className="container nav-container profile-container col-md-3 m-0">
         <h1>Your Points</h1>
         <div className="referral-container">
-          {/* Referral Code */}
+          
           <span className="referral-code" style={{fontSize:"32px"}}>{walletBalance}</span>
         </div>
       </div>
-      </div>
+      </div> */}
 
       <MessageModal show={show} handleClose={handleClose} message={message} />
     </>

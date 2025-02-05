@@ -2838,10 +2838,10 @@ Your Subscription Ends At:
     <div>₹ {DataForPricesAppliedGet.night_charge}</div>
   </div>
 )}
-<div className="fare-breakdown-div">
+{/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Sub-Total :</div>
                   <div> ₹ {DataForPricesAppliedGet?.sub_total_amount}</div>
-                </div>
+                </div> */}
 
 
                 <div className="fare-breakdown-div">

@@ -2739,58 +2739,62 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
               </div>
             </div> */}
-                <div className="additional-details">
-                  <h3>Additional Details</h3>
-                  <div className="details-item">
-                  {showMoreAdditionalDetails
-  ? additionalDetails
-  : limitTextByWords(additionalDetails || "", wordLimit)}
-  <div>
-  <a
-                      onClick={() => toggleVisibility("additional")}
-                      className="view-more-btn"
-                    >
-                      {showMoreAdditionalDetails ? "View Less" : "View More"}
-                    </a>
+<div className="additional-details">
+  <h3>Additional Details</h3>
+  <div className="details-item">
+    <div
+      dangerouslySetInnerHTML={{
+        __html: showMoreAdditionalDetails
+          ? additionalDetails
+          : limitTextByWords(additionalDetails || "", wordLimit),
+      }}
+    />
+    <div>
+      <a
+        onClick={() => toggleVisibility("additional")}
+        className="view-more-btn"
+      >
+        {showMoreAdditionalDetails ? "View Less" : "View More"}
+      </a>
+    </div>
   </div>
-                    
-                  </div>
+</div>
 
-
-                  
-                </div>
 
         
 
-                <div className="cancellation-policy">
-                  <h3>Cancellation Policy</h3>
-                  <div className="cancellation-policy-div">
-                  {showMoreCancellationPolicy
-  ? cancellationPolicy
-  : limitTextByWords(cancellationPolicy || "", wordLimit)}
-                    <br/>
-                    <div>
-                    <a
-                      onClick={() => toggleVisibility("cancellation")}
-                      className="view-more-btn"
-                    >
-                      {showMoreCancellationPolicy ? "View Less" : "View More"}
-                    </a>
-                    </div>
-                    
-                    <br/>
-                    <a
-  href="/cancellation-policy"
-  className="read-policy-button"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  READ CANCELLATION POLICY
-  <IoIosArrowForward className="arrow_for_cancellation" />
-</a>
+<div className="cancellation-policy">
+  <h3>Cancellation Policy</h3>
+  <div className="cancellation-policy-div">
+    <div
+      dangerouslySetInnerHTML={{
+        __html: showMoreCancellationPolicy
+          ? cancellationPolicy
+          : limitTextByWords(cancellationPolicy || "", wordLimit),
+      }}
+    />
+    <br />
+    <div>
+      <a
+        onClick={() => toggleVisibility("cancellation")}
+        className="view-more-btn"
+      >
+        {showMoreCancellationPolicy ? "View Less" : "View More"}
+      </a>
+    </div>
+    <br />
+    <a
+      href="/cancellation-policy"
+      className="read-policy-button"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      READ CANCELLATION POLICY
+      <IoIosArrowForward className="arrow_for_cancellation" />
+    </a>
+  </div>
+</div>
 
-                  </div>
-                </div>
               </div>
 
 
@@ -3967,10 +3971,10 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 )}
 
 
-                <div className="fare-breakdown-div">
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Sub-Total :</div>
                   <div> ₹ {DataForPricesAppliedGet?.sub_total_amount}</div>
-                </div>
+                </div> */}
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Discount :</div>
                   <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
@@ -4062,23 +4066,28 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
               </div>
             </div> */}
-            <div className="additional-details">
-                  <h3>Booking Summary</h3>
-                  <div className="details-item">
-                  {showMoreBookingSummary
-  ? bookingSummery
-  : limitTextByWords(bookingSummery || "", wordLimit)}
-  <div>
-  <a
-                      onClick={() => toggleVisibility("booking")}
-                      className="view-more-btn"
-                    >
-                      {showMoreBookingSummary ? "View Less" : "View More"}
-                    </a>
+<div className="additional-details">
+  <h3>Booking Summary</h3>
+  <div className="details-item">
+    <div
+      dangerouslySetInnerHTML={{
+        __html: showMoreBookingSummary
+          ? bookingSummery
+          : limitTextByWords(bookingSummery || "", wordLimit),
+      }}
+    />
+    <div>
+      <a
+        onClick={() => toggleVisibility("booking")}
+        className="view-more-btn"
+      >
+        {showMoreBookingSummary ? "View Less" : "View More"}
+      </a>
+    </div>
   </div>
-                    
-                  </div>
-                </div>
+</div>
+
+
            
 
             <div className="booking-summary-footer ">
