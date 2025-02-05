@@ -629,7 +629,7 @@ const LocationModal = ({
 
 
 <Form.Group controlId="formattedAddress" className="mt-2">
-  <Form.Label>Street Name *</Form.Label>
+  <Form.Label>Street | Area Name *</Form.Label>
   <Form.Control
     type="text"
     value={addressDetails.formattedAddress}
