@@ -380,11 +380,28 @@ function PreviousTab() {
                   <h3 className="heading-text mb-4">Billing Details</h3>
                   <div className="billing-info">
                     <div className="billing-row">
-                      <span className="billing-subtitle">Base Price</span>
+                      <span className="billing-subtitle">Amount</span>
                       <span className="billing-subtitle">
                         ₹{bookingsIdWise?.actual_price}
                       </span>
                     </div>
+
+                    <div className="billing-row">
+                      <span className="billing-subtitle">Taxes and Fees</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.all_taxes}
+                      </span>
+                    </div>
+
+                    {bookingsIdWise?.secure_fee > 0 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">Secure Fee</span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.secure_fee}
+                          </span>
+                        </div>
+                      )}
+
                     {bookingsIdWise?.night_charge > 0 && (
                     <div className="billing-row">
                       <span className="billing-subtitle">Night Charges</span>
@@ -407,12 +424,12 @@ function PreviousTab() {
                         -₹{bookingsIdWise?.discount_amount}
                       </span>
                     </div>
-                    <div className="billing-row">
+                    {/* <div className="billing-row">
                       <span className="billing-subtitle">Total</span>
                       <span className="billing-subtitle">
                         ₹{bookingsIdWise?.price}
                       </span>
-                    </div>
+                    </div> */}
 
                     {/* <div className="billing-row ">
                         <span className="billing-subtitle">Menu Price</span>
@@ -420,20 +437,8 @@ function PreviousTab() {
                           ₹{bookingsIdWise?.menu_amount || 0}
                         </span>
                       </div> */}
-                    <div className="billing-row">
-                      <span className="billing-subtitle">All Taxes</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.all_taxes}
-                      </span>
-                    </div>
-                    {bookingsIdWise?.category_id == 2 && (
-                      <div className="billing-row">
-                        <span className="billing-subtitle">Secure Fee</span>
-                        <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.secure_fee}
-                        </span>
-                      </div>
-                    )}
+                    
+                  
 
                     {/* <div className="billing-row">
                       <span className="billing-subtitle">Platform Fee</span>
