@@ -69,6 +69,7 @@ const BookingSection = () => {
   const [addresses, setAddresses] = useState([]);
 
   const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
+  const [isUsePoints, setIsUsePoints]=  useState(true)
 
 
   const dropdownRef = useRef(null); // Reference to the dropdown container
@@ -187,18 +188,20 @@ const BookingSection = () => {
     try {
       const body = {
         booking: {
-          category_id: service?.category_id || "",
-          sub_category_id: service?.id || "",
+          category_id : service?.category_id || "",
+          sub_category_id : service?.id || "",
 
-          visit_date:
+          visit_date :
             service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
 
-          visit_time: selectedTime,
+          visit_time : selectedTime,
 
-          is_secure_fee:
+          is_secure_fee :
            service?.category_id === 2 ? isSecureFeeChecked : false,
 
-          visit_address_id:
+          is_use_points : isUsePoints, // ✅ Sending checkbox value
+
+          visit_address_id :
            service?.category_id !== 2 ? selectedLocation?.address_id : "",
 
 
@@ -1678,7 +1681,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     basicDataByGet?.sub_category?.booking_summary || ""
   );
 
-  const wordLimit = 30; // Specify the number of words to display
+  const wordLimit = 50; // Specify the number of words to display
 
   // const { isLoaded } = useJsApiLoader({
   //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
@@ -2726,7 +2729,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
               <div>
 
-                <div className="additional-details">
+                {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
@@ -2735,19 +2738,22 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 </span>
 
 <span className="mb-1">
-  {/* 💵 Surcharge : {100 - (basicDataByGet?.sub_category?.commission || 0)}% */}
-  💵 Surcharge : {12}%
+
 
 </span>
 
               </div>
-            </div>
-                {/* <div className="additional-details">
+            </div> */}
+                <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
-                  {showMoreAdditionalDetails
-  ? additionalDetails
-  : limitTextByWords(additionalDetails || "", wordLimit)}
+                  <div
+  dangerouslySetInnerHTML={{
+    __html: showMoreAdditionalDetails
+      ? basicDataByGet?.sub_category?.booking_details || ""
+      : limitTextByWords(basicDataByGet?.sub_category?.booking_details || "", wordLimit),
+  }}
+/>
   <div>
   <a
                       onClick={() => toggleVisibility("additional")}
@@ -2761,7 +2767,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
                   
-                </div> */}
+                </div>
 
         
 
@@ -2775,7 +2781,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
       : limitTextByWords(basicDataByGet?.sub_category?.cancellation_policy || "", wordLimit),
   }}
 />
-                    <br/>
+                    {/* <br/> */}
                     <div>
                     <a
                       onClick={() => toggleVisibility("cancellation")}
@@ -2785,7 +2791,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
                     </a>
                     </div>
                     
-                    <br/>
+                    {/* <br/> */}
                     <a
   href="/cancellation-policy"
   className="read-policy-button"
@@ -3910,6 +3916,23 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
             </div>
 
+            <div className="d-flex align-items-center gap-2 details-item " style={{ marginTop: "20px", flexDirection: "row" }}>
+  <input
+    type="checkbox"
+    id="secureFeeCheckbox"
+    checked={isUsePoints}
+    onChange={() => setIsUsePoints(!isUsePoints)} // ✅ Fixed toggle function
+    style={{ width: "18px", height: "18px", cursor: "pointer" }}
+  />
+  <label
+    className="form-check-label fw-bold"
+    htmlFor="secureFeeCheckbox"
+    style={{ fontSize: "16px", cursor: "pointer" }}
+  >
+    Use Reward Points : ₹ {service?.reward_points}
+  </label>
+</div>
+
             <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
             <div className="fare-breakdown-section">
               <div className="fare-breakdown-card">
@@ -4047,7 +4070,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
               </div>
             </div>
             
-            <div className="additional-details">
+            {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
@@ -4060,7 +4083,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 </span>
 
               </div>
-            </div>
+            </div> */}
             
            
 
