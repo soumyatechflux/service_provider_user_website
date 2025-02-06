@@ -2833,12 +2833,14 @@ Your Subscription Ends At:
 <div className="fare-breakdown-title">Base Price :</div>
 <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
                 </div>
-
-                {DataForPricesAppliedGet?.night_charge > 0 && (
-  <div className="fare-breakdown-div">
-    <div className="fare-breakdown-title">Night Charges :</div>
-    <div>₹ {DataForPricesAppliedGet.night_charge}</div>
-  </div>
+                {(DataForPricesAppliedGet?.night_charge > 0) && (
+  <>
+  
+                <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-title">Night Charges :</div>
+                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                </div>
+                </>
 )}
 {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Sub-Total :</div>
@@ -2866,10 +2868,13 @@ Your Subscription Ends At:
                   <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
                 </div>
                 {service.category_id === 2 && (
-                <div className="fare-breakdown-div">
+                  <>
+                {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
-                </div>
+                </div> */}
+                </>
+
                 )}
 
                 {/* <div className="fare-breakdown-div">

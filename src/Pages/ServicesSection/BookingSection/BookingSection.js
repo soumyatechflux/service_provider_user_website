@@ -196,8 +196,10 @@ const BookingSection = () => {
 
           visit_time : selectedTime,
 
-          is_secure_fee :
-           service?.category_id === 2 ? isSecureFeeChecked : false,
+          // is_secure_fee :
+          //  service?.category_id === 2 ? isSecureFeeChecked : false,
+
+          is_secure_fee :false,
 
           // is_use_points : isUsePoints, // ✅ Sending checkbox value
 
@@ -1801,8 +1803,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
       <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
     </div>
 
-    {/* Dropdown Grid UI */}
-    {isTimeDropdownOpen && (
+    {/* {isTimeDropdownOpen && (
       <div className="booking-time-options-grid">
         {filteredTimeOptions.map((time) => (
           <div
@@ -1817,7 +1818,52 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
           </div>
         ))}
       </div>
-    )}
+    )} */}
+    
+
+
+
+
+
+
+
+
+
+
+
+    {isTimeDropdownOpen && (
+  filteredTimeOptions.length > 0 ? (
+    <div className="booking-time-options-grid">
+      {filteredTimeOptions.map((time) => (
+        <div
+          key={time}
+          className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
+          onClick={() => {
+            setSelectedTime(time);
+            setTimeDropdownOpen(false); // Close dropdown on selection
+          }}
+        >
+          {formatTimeTo12Hour(time)}
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="time-dropdown-placeholder" style={{ color: 'red', cursor: 'not-allowed', opacity: 0.7, padding: '8px', fontStyle: 'italic' }}>
+      No more time options are available for today.
+    </div>
+  )
+)}
+
+
+
+
+
+
+
+
+
+
+
   </div>
 </div>
                   </div>
@@ -2947,7 +2993,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
 
-{service?.category_id === 2 && (
+{/* {service?.category_id === 2 && (
 <div className="d-flex align-items-center gap-2 details-item " style={{marginTop:"20px", flexDirection:"row"}}>
   <input
     type="checkbox"
@@ -2965,7 +3011,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     Secure Fees :  ₹ {service?.secure_fee}
   </label>
 </div>
- )}
+ )} */}
 
 
 
@@ -3921,7 +3967,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     type="checkbox"
     id="secureFeeCheckbox"
     checked={isUsePoints}
-    onChange={() => setIsUsePoints(!isUsePoints)} // ✅ Fixed toggle function
+    onChange={() => setIsUsePoints(!isUsePoints)} 
     style={{ width: "18px", height: "18px", cursor: "pointer" }}
   />
   <label
@@ -4004,11 +4050,15 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
                 </div>
 
                 {service?.category_id === 2 && (
-
+<>
+                {/* 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
-                </div>
+                </div> 
+                */}
+</>
+
 
 )}
 
@@ -4017,10 +4067,15 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
                 </div> */}
 
+{(DataForPricesAppliedGet?.night_charge > 0) && (
+  <>
+  
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Night Charges :</div>
                   <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
                 </div>
+                </>
+)}
 
 
                 <div className="fare-breakdown-div">

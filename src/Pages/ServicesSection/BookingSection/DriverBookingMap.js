@@ -119,15 +119,42 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
     }
   };
 
-  // Fetch current location on component mount
-  useEffect(() => {
-    if(!DriverCoordinates){
-    setLoading(true);
-    getCurrentLocation();
-    setLoading(false);
-    }
 
-  }, [getCurrentLocation]);
+  // useEffect(() => {
+  //   if(!DriverCoordinates){
+  //   setLoading(true);
+  //   getCurrentLocation();
+  //   setLoading(false);
+  //   }
+
+  // }, [getCurrentLocation]);
+
+
+
+
+
+
+
+  useEffect(() => {
+    if (DriverCoordinates) {
+      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
+  
+      // Check if all required values are present
+      if (startPoint && endPoint && startCoordinates && endCoordinates) {
+        // Do not call getCurrentLocation if all values are present
+        console.log("All values are present. Skipping getCurrentLocation.");
+      } else {
+        // Call getCurrentLocation if any value is missing
+        getCurrentLocation();
+      }
+    }
+  }, [DriverCoordinates, getCurrentLocation]);
+
+
+
+
+
+
 
   // Calculate route when startPoint or endPoint changes
   useEffect(() => {
@@ -189,7 +216,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
             <div className="container mt-4 mb-4">
               <div className="mb-4">
                 <label className="form-label">
-                  Pick Up  <MdLocationOn size={20} />
+                  Pickup  <MdLocationOn size={20} />
                 </label>
                 <div className="w-100">
                   <Autocomplete
