@@ -199,7 +199,7 @@ const BookingSection = () => {
           is_secure_fee :
            service?.category_id === 2 ? isSecureFeeChecked : false,
 
-          is_use_points : isUsePoints, // ✅ Sending checkbox value
+          // is_use_points : isUsePoints, // ✅ Sending checkbox value
 
           visit_address_id :
            service?.category_id !== 2 ? selectedLocation?.address_id : "",
