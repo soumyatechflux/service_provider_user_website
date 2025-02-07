@@ -144,8 +144,11 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
         // Do not call getCurrentLocation if all values are present
         console.log("All values are present. Skipping getCurrentLocation.");
       } else {
+        setLoading(true);
         // Call getCurrentLocation if any value is missing
         getCurrentLocation();
+        setLoading(false);
+
       }
     }
   }, [DriverCoordinates, getCurrentLocation]);
@@ -165,7 +168,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
 
   // Reset state values if onSelectPoints has values
   useEffect(() => {
-    console.log(DriverCoordinates,"DriverCoordinatesbhjdfv")
+    // console.log(DriverCoordinates,"DriverCoordinatesbhjdfv");
 
     if (DriverCoordinates) {
       const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
@@ -204,7 +207,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   // Render the component
   return (
     <>
-      {loading && (
+      {(loading || !isLoaded )&& (
         <div style={overlayStyle}>
           <div style={loaderStyle}></div>
         </div>
