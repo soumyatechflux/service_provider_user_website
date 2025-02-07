@@ -361,7 +361,11 @@ const BookingSection = () => {
 
   const [step, setStep] = useState(1); // Manage the current step
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  // const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+  });
 
   const [selectedTime, setSelectedTime] = useState("");
   const [minTime, setMinTime] = useState("");
@@ -477,14 +481,26 @@ const handleDateChange = (newDate) => {
   setSelectedTime(""); // Clear the time selection
 };
 
-// Generate next 7 days dynamically
-const getUpcomingDates = () => {
-  const today = new Date();
-  const dates = Array.from({ length: 60 }, (_, i) => addDays(today, i));
-  console.log("Generated Dates:", dates); // Log generated dates
-  return dates;
-};
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -505,198 +521,76 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 };
 
 
+// Generate dynamic dates
+const getUpcomingDates = () => {
+  const today = new Date();
+  return Array.from({ length: 7 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  
-
-  // Generate 15-minute intervals for the entire day
-  const generateTimeIntervals = () => {
-    const intervals = [];
-    for (let hour = 0; hour < 24; hour++) {
-      for (let minute = 0; minute < 60; minute += 15) {
-        const time = `${hour.toString().padStart(2, "0")}:${minute
-          .toString()
-          .padStart(2, "0")}`;
-        intervals.push(time);
-      }
+const generateTimeIntervals = () => {
+  const intervals = [];
+  for (let hour = 0; hour < 24; hour++) {
+    for (let minute = 0; minute < 60; minute += 15) {
+      intervals.push(`${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`);
     }
-    return intervals;
-  };
+  }
+  return intervals;
+};
 
-  const timeOptions = generateTimeIntervals();
+const timeOptions = generateTimeIntervals();
 
-  const getCurrentTimeInHHMM = () => {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, "0");
-    const minutes = now.getMinutes().toString().padStart(2, "0");
-    return `${hours}:${minutes}`;
-  };
+const timeToMinutes = (time) => {
+  const [hour, minute] = time.split(":").map(Number);
+  return hour * 60 + minute;
+};
 
+const getCurrentTimeInHHMM = () => {
+  const now = new Date();
+  return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
+};
+const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
+const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
-
-  
-
-  
-  const [adjustedStartTime, setAdjustedStartTime] = useState(0);
-
-
-  useEffect(() => {
-
-    setAdjustedStartTime(basicDataByGet?.sub_category?.booking_time_before);
-
-  }, [basicDataByGet]);
+useEffect(() => {
+  if (basicDataByGet?.sub_category?.booking_time_before) {
+    setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
+  }
+}, [basicDataByGet]);
 
 
+
+useEffect(() => {
   const filterTimeOptions = () => {
+    if (!selectedDate || timeOptions.length === 0) return;
+
     const currentDate = new Date();
     const today = currentDate.toDateString();
-    const currentTime = getCurrentTimeInHHMM(); // Get current time in HH:MM format
-  
-    // Extract service start and end times
-    const serviceStartTime =
-      basicDataByGet?.sub_category?.service_start_time || "00:00:00";
-    const serviceEndTime =
-      basicDataByGet?.sub_category?.service_end_time || "23:59:59";
-  
-    // Convert service times to HH:MM format
-    const startTime = serviceStartTime.slice(0, 5); 
-    const endTime = serviceEndTime.slice(0, 5);
-  
-    // Convert current time (currentTime) to minutes
-    const [currentHour, currentMinute] = currentTime.split(':').map(Number);
-    const currentTimeInMinutes = currentHour * 60 + currentMinute;
-  
-    // Add adjustedStartTime (in minutes) only for today
-    let adjustedStartTimeInMinutes = currentTimeInMinutes;
-  
+    const currentTime = getCurrentTimeInHHMM();
+
+    const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
+    const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
+
+    const currentTimeInMinutes = timeToMinutes(currentTime);
+    let startBoundary = timeToMinutes(serviceStartTime);
+
+    console.log(currentTimeInMinutes, "currentTimeInMinutescurrentTimeInMinutes");
+    console.log(adjustedStartTime, "adjustedStartTimeadjustedStartTime");
+
     if (selectedDate.toDateString() === today) {
-      adjustedStartTimeInMinutes += adjustedStartTime; // Adjust current time for today
+      // Consider both current time and adjusted start time
+      startBoundary = Math.max(currentTimeInMinutes, startBoundary, adjustedStartTime);
     }
-  
-    // Convert adjusted start time back to HH:MM format
-    const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
-    const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
-    const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
-  
-    console.log(`Current Time: ${currentTime}`);
-    console.log(`Adjusted Start Time: ${adjustedStartTimeFormatted}`);
-  
-    // Filter time options
-    return timeOptions.filter((time) => {
-      const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
-  
-      if (selectedDate.toDateString() === today) {
-        // For today, only show times greater than or equal to adjusted start time
-        return time >= adjustedStartTimeFormatted && isWithinServiceHours;
-      }
-  
-      // For future dates, show options within service hours
-      return time >= startTime && time <= endTime;
+
+    const options = timeOptions.filter((time) => {
+      const timeInMinutes = timeToMinutes(time);
+      return timeInMinutes >= startBoundary && timeInMinutes <= timeToMinutes(serviceEndTime);
     });
+
+    setFilteredTimeOptions(options);
   };
-  
 
-
-
-  // const filterTimeOptions = () => {
-  //   const currentDate = new Date();
-  //   const today = currentDate.toDateString();
-  //   const currentTime = getCurrentTimeInHHMM(); // Get current time in HH:MM format
-  
-  //   // Extract service start and end times
-  //   const serviceStartTime =
-  //     basicDataByGet?.sub_category?.service_start_time || "00:00:00";
-  //   const serviceEndTime =
-  //     basicDataByGet?.sub_category?.service_end_time || "23:59:59";
-  
-  //   // Convert service times to HH:MM format
-  //   const startTime = serviceStartTime.slice(0, 5); 
-  //   const endTime = serviceEndTime.slice(0, 5);
-  
-  //   // Convert current time (currentTime) to minutes
-  //   const [currentHour, currentMinute] = currentTime.split(':').map(Number);
-  //   const currentTimeInMinutes = currentHour * 60 + currentMinute;
-  
-  //   // Add adjustedStartTime (in minutes) only for today
-  //   let adjustedStartTimeInMinutes = currentTimeInMinutes;
-  
-  //   if (selectedDate.toDateString() === today) {
-  //     adjustedStartTimeInMinutes += adjustedStartTime; // Adjust current time for today
-  //   }
-  
-  //   // Convert adjusted start time back to HH:MM format
-  //   const adjustedStartHour = Math.floor(adjustedStartTimeInMinutes / 60);
-  //   const adjustedStartMinute = adjustedStartTimeInMinutes % 60;
-  //   const adjustedStartTimeFormatted = `${String(adjustedStartHour).padStart(2, '0')}:${String(adjustedStartMinute).padStart(2, '0')}`;
-  
-  //   // Filter time options
-  //   return timeOptions.filter((time) => {
-  //     const isWithinServiceHours = time >= adjustedStartTimeFormatted && time <= endTime;
-  
-  //     if (selectedDate.toDateString() === today) {
-  //       // For today, only show times greater than or equal to adjusted start time
-  //       return time >= adjustedStartTimeFormatted && isWithinServiceHours;
-  //     }
-  
-  //     // For future dates, show options within service hours
-  //     return time >= startTime && time <= endTime;
-  //   });
-  // };
-  
-  
-
-
-
-
-
-
-
-  // const filterTimeOptions = () => {
-  //   const currentDate = new Date();
-  //   const today = currentDate.toDateString();
-  //   const currentTime = getCurrentTimeInHHMM();
-
-  //   // Extract service start and end times
-  //   const serviceStartTime =
-  //     basicDataByGet?.sub_category?.service_start_time || "00:00:00";
-  //   const serviceEndTime =
-  //     basicDataByGet?.sub_category?.service_end_time || "23:59:59";
-
-  //   // Convert service times to HH:MM format
-  //   const startTime = serviceStartTime.slice(0, 5); // "00:00:00" -> "00:00"
-  //   const endTime = serviceEndTime.slice(0, 5); // "19:30:00" -> "19:30"
-
-  //   // Filter time options
-  //   return timeOptions.filter((time) => {
-  //     const isWithinServiceHours = time >= startTime && time <= endTime;
-
-  //     if (selectedDate.toDateString() === today) {
-  //       return time >= currentTime && isWithinServiceHours;
-  //     }
-
-  //     return isWithinServiceHours;
-  //   });
-  // };
+  filterTimeOptions();
+}, [selectedDate, basicDataByGet, adjustedStartTime]);
 
 
 
@@ -705,7 +599,14 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
 
 
-  const filteredTimeOptions = filterTimeOptions();
+
+
+
+
+
+
+
+
 
 
 
@@ -1448,24 +1349,64 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     SelectedNumberOfHoursObjectForDriver,
   ]);
 
-  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] =
-    useState(new Date());
-  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] =
-    useState(() => {
-      const initialEndDate = new Date();
-      initialEndDate.setDate(initialEndDate.getDate() + 30);
-      return initialEndDate;
-    });
+  const getISTDate = (date = new Date()) => {
+    // Convert to UTC and adjust by IST offset (+5:30)
+    const istOffset = 5 * 60 + 30; // Minutes offset for IST
+    const utcDate = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
+    return new Date(utcDate + istOffset * 60 * 1000);
+  };
+  
+  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] = useState(getISTDate());
+  
+  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] = useState(() => {
+    const initialEndDate = getISTDate();
+    initialEndDate.setDate(initialEndDate.getDate() + 30);
+    return initialEndDate;
+  });
 
   const handleStartDateChange = (newDate) => {
-    setMonthlySubscriptionStartDate(newDate);
-
+    console.log("New Date:", newDate); // Log the value of newDate
+  
+    if (!newDate) {
+      console.error("Invalid date selected:", newDate);
+      return;
+    }
+  
+    // Convert newDate to IST
+    const delhiDate = new Date(
+      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    
+    console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
+    setSelectedDate(delhiDate);
+    setMonthlySubscriptionStartDate(delhiDate);
+  
+    // Check if the selected date is today
+    const isToday = delhiDate.toDateString() === new Date().toDateString();
+  
+    if (isToday) {
+      const currentISTTime = new Date().toLocaleTimeString("en-US", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      setMinTime(currentISTTime); // Set minTime for today
+    } else {
+      setMinTime("00:00"); // Reset minTime for future dates
+    }
+  
+    // Calculate the end date in IST timezone
     if (newDate) {
-      const calculatedEndDate = new Date(newDate);
+      const calculatedEndDate = new Date(
+        delhiDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
       calculatedEndDate.setDate(calculatedEndDate.getDate() + 30);
       setMonthlySubscriptionEndsDate(calculatedEndDate);
     }
+  
+    setSelectedTime(""); // Clear the time selection
   };
+  
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
@@ -1799,7 +1740,10 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
         </div>
       </div>
 
-                    {/* Time Picker */}
+
+
+
+
                     <div className="booking-form-group">
   <label className="booking-form-label">Select Time of Visit</label>
   
@@ -1807,39 +1751,10 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     className={`booking-time-dropdown-wrapper-time ${isTimeDropdownOpen ? "active" : ""}`} 
     onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
   >
-    {/* Dropdown Button */}
     <div className="booking-time-dropdown-button">
       {selectedTime ? formatTimeTo12Hour(selectedTime) : "Select a time"}
       <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
     </div>
-
-    {/* {isTimeDropdownOpen && (
-      <div className="booking-time-options-grid">
-        {filteredTimeOptions.map((time) => (
-          <div
-            key={time}
-            className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
-            onClick={() => {
-              setSelectedTime(time);
-              setTimeDropdownOpen(false); // Close dropdown on selection
-            }}
-          >
-            {formatTimeTo12Hour(time)}
-          </div>
-        ))}
-      </div>
-    )} */}
-    
-
-
-
-
-
-
-
-
-
-
 
     {isTimeDropdownOpen && (
   filteredTimeOptions.length > 0 ? (
@@ -1859,23 +1774,16 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
     </div>
   ) : (
     <div className="time-dropdown-placeholder" style={{ color: 'red', cursor: 'not-allowed', opacity: 0.7, padding: '8px', fontStyle: 'italic' }}>
-      No more time options are available for today.
+      No more time options are available for choosen date.
     </div>
   )
 )}
 
-
-
-
-
-
-
-
-
-
-
   </div>
 </div>
+
+
+
                   </div>
                 </>
               )}
@@ -2238,6 +2146,141 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 
                 {service?.category_id === 3 && service?.id === 9 && (
                   <>
+
+
+
+
+
+
+
+
+
+
+                  
+<div className="booking-form-group">
+  <label className="booking-form-label">Select Time of Visit For All Slots</label>
+  
+  <div 
+    className={`booking-time-dropdown-wrapper-time ${isTimeDropdownOpen ? "active" : ""}`} 
+    onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
+  >
+    <div className="booking-time-dropdown-button">
+      {selectedTime ? formatTimeTo12Hour(selectedTime) : "Select a time"}
+      <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
+    </div>
+
+    {isTimeDropdownOpen && (
+  filteredTimeOptions.length > 0 ? (
+    <div className="booking-time-options-grid">
+      {filteredTimeOptions.map((time) => (
+        <div
+          key={time}
+          className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
+          onClick={() => {
+            setSelectedTime(time);
+            setTimeDropdownOpen(false); // Close dropdown on selection
+          }}
+        >
+          {formatTimeTo12Hour(time)}
+        </div>
+      ))}
+    </div>
+  ) : (
+    <div className="time-dropdown-placeholder" style={{ color: 'red', cursor: 'not-allowed', opacity: 0.7, padding: '8px', fontStyle: 'italic' }}>
+      No more time options are available for choosen date.
+    </div>
+  )
+)}
+
+  </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <div
                       style={{ marginTop: "20px" }}
                       className="booking-form-group"
