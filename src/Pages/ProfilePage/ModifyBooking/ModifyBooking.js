@@ -1454,26 +1454,63 @@ const handleCheckboxChange = (id) => {
     SelectedNumberOfHoursObjectForDriver,
   ]);
 
-  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] =
-    useState(new Date());
-  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] =
-    useState(() => {
-      const initialEndDate = new Date();
-      initialEndDate.setDate(initialEndDate.getDate() + 30);
-      return initialEndDate;
-    });
+  const getISTDate = (date = new Date()) => {
+    // Convert to UTC and adjust by IST offset (+5:30)
+    const istOffset = 5 * 60 + 30; // Minutes offset for IST
+    const utcDate = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
+    return new Date(utcDate + istOffset * 60 * 1000);
+  };
+  
+  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] = useState(getISTDate());
+  
+  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] = useState(() => {
+    const initialEndDate = getISTDate();
+    initialEndDate.setDate(initialEndDate.getDate() + 30);
+    return initialEndDate;
+  });
 
   const handleStartDateChange = (newDate) => {
-    setMonthlySubscriptionStartDate(newDate);
-
+    console.log("New Date:", newDate); // Log the value of newDate
+  
+    if (!newDate) {
+      console.error("Invalid date selected:", newDate);
+      return;
+    }
+  
+    // Convert newDate to IST
+    const delhiDate = new Date(
+      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
+    
+    console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
+    // setSelectedDate(delhiDate);
+    setMonthlySubscriptionStartDate(delhiDate);
+  
+    // Check if the selected date is today
+    const isToday = delhiDate.toDateString() === new Date().toDateString();
+  
+    if (isToday) {
+      const currentISTTime = new Date().toLocaleTimeString("en-US", {
+        timeZone: "Asia/Kolkata",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      setMinTime(currentISTTime); // Set minTime for today
+    } else {
+      setMinTime("00:00"); // Reset minTime for future dates
+    }
+  
+    // Calculate the end date in IST timezone
     if (newDate) {
-      const calculatedEndDate = new Date(newDate);
+      const calculatedEndDate = new Date(
+        delhiDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+      );
       calculatedEndDate.setDate(calculatedEndDate.getDate() + 30);
       setMonthlySubscriptionEndsDate(calculatedEndDate);
     }
+  
+    // setSelectedTime(""); 
   };
-
-
 
 
 
@@ -1489,7 +1526,7 @@ const handleCheckboxChange = (id) => {
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
   useEffect(() => {
-    if(NumOfVisitsChanged){
+    // if(NumOfVisitsChanged){
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
       // Calculate the hours per visit
       const hoursPerVisit =
@@ -1513,7 +1550,7 @@ const handleCheckboxChange = (id) => {
 
         // Increment the date by 7 days for each visit (adjust as needed)
         currentDate.setDate(currentDate.getDate() + 3); // You can change the interval as needed
-      }
+      // }
 
       // Update the state
       setSelectedVisitDates(newVisitDates);
@@ -1522,7 +1559,7 @@ const handleCheckboxChange = (id) => {
   }, [
     MonthlySubscriptionStartDate,
     SelectedNumberOfSlotsObjectForMonthlyGardner,
-    NumOfVisitsChanged
+    NumOfVisitsChanged,
   ]);
 
 
@@ -2012,6 +2049,37 @@ Your Subscription Ends At:
 
                 {service?.category_id === 3 && service?.id === 9 && (
                   <>
+
+
+
+
+
+<div>
+                    <div className="booking-form-group flex-fill">
+                      <label
+                        className="booking-form-label"
+                        htmlFor="date-input"
+                        style={{ margin: 0 }}
+                      >
+                        Visit Time:
+                      </label>
+                      <div className="previous_time_selected1">
+                        <div className="previous_time_selected_child">
+                          <div>
+                          Visit Time 
+                          </div><div>{" "}
+                          {DefaultDataOfBooking?.booking_date_time
+                            ? DefaultDataOfBooking.booking_date_time
+                                .split(", ")
+                                .pop() // Extract last part (Time)
+                            : "N/A"}
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+
                     <div
                       style={{ marginTop: "20px" }}
                       className="booking-form-group"
@@ -2020,7 +2088,7 @@ Your Subscription Ends At:
                         Number of Visiting Slots
                       </label>
                       <div className="div-people-count" >
-
+{/* 
   <div className="people-counter-container">
 
     <span className="people-counter-label">Select Number of Visits</span>
@@ -2043,7 +2111,67 @@ Your Subscription Ends At:
                           +
                         </button>
                       </div>
-                      </div>
+                      </div> */}
+
+
+
+
+
+
+
+<div
+  className="people-counter-container"
+  style={{ position: "relative", display: "inline-block", width: "100%" }}
+>
+  <select
+    id="visit-select"
+    value={SelectedNumberOfSlotsObjectForMonthlyGardner?.visit || ""}
+    onChange={(e) => {
+      const selectedVisit = parseInt(e.target.value, 10);
+      const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
+        (option) => option.visit === selectedVisit
+      );
+      if (selectedOption) {
+        setSelectedNumberOfSlotsObjectForMonthlyGardner({
+          visit: selectedOption.visit,
+          hours: selectedOption.hours,
+          price: selectedOption.price,
+        });
+      }
+    }}
+    style={{
+      width: "100%",
+      padding: "10px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      fontSize: "14px",
+      cursor: "pointer",
+      appearance: "none",
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "calc(100% - 10px) center",
+      backgroundColor: "#fff",
+    }}
+  >
+    {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
+      const hours = Math.floor(option.hours / 60);
+      const minutes = option.hours % 60;
+      return (
+        <option key={index} value={option.visit}>
+          {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
+            hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
+          } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
+        </option>
+      );
+    })}
+  </select>
+</div>
+
+
+
+
+
+
                       </div>
                     </div>
 
@@ -2113,8 +2241,7 @@ Your Subscription Ends At:
       })}
     </div>
 
-    {/* Display average time per slot */}
-    <div className="cooking-time-container pt-3">
+    {/* <div className="cooking-time-container pt-3">
       <span className="people-counter-label">Average Time per Slot:</span>{" "}
       <span className="cooking-time-value">
         {(() => {
@@ -2124,7 +2251,7 @@ Your Subscription Ends At:
           return `${hours} hours ${minutes} minutes`;
         })()}
       </span>
-    </div>
+    </div> */}
   </div>
   </>
 ))}

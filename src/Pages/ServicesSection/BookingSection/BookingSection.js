@@ -1349,17 +1349,7 @@ useEffect(() => {
   }, [menu, dishesOptionsArrayOri]);
 
 
-  const convertTo12HourFormat = (time) => {
-    if (!time) return "Invalid Time"; // Handle null/undefined values
-    const [hour, minute] = time.split(":").map(Number);
-  
-    if (isNaN(hour) || isNaN(minute)) return "Invalid Time"; // Handle edge cases
-  
-    const period = hour >= 12 ? "PM" : "AM";
-    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
-  
-    return `${formattedHour}:${minute.toString().padStart(2, "0")} ${period}`;
-  };
+
 
   const formatTime = (timeInMinutes) => {
     const hours = Math.floor(timeInMinutes / 60);
@@ -1494,6 +1484,7 @@ useEffect(() => {
   }, [
     SelectedNumberOfSlotsObjectForMonthlyGardner,
     MonthlySubscriptionStartDate,
+    selectedVisitDates
   ]);
 
   const convertToAmPm = (time) => {

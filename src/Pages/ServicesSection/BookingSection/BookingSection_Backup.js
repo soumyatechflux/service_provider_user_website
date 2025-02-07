@@ -1044,6 +1044,31 @@ useEffect(() => {
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [
     OptionsForNumberOFSlotsForMonthlyGardnerArray,
     setOptionsForNumberOFSlotsForMonthlyGardnerArray,
@@ -1112,6 +1137,33 @@ useEffect(() => {
       toast.error("You've reached the maximum number of visits.");
     }
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const minPeople = basicDataByGet?.no_of_people[0]?.people_count;
   const maxPeople =
@@ -2290,6 +2342,25 @@ useEffect(() => {
                       </label>
                       <div className="div-people-count" >
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/* 
+
   <div className="people-counter-container">
 
     <span className="people-counter-label">Select Number of Visits</span>
@@ -2313,6 +2384,75 @@ useEffect(() => {
                         </button>
                       </div>
                       </div>
+
+ */}
+
+
+
+
+
+
+
+
+
+<div
+  className="people-counter-container"
+  style={{ position: "relative", display: "inline-block", width: "100%" }}
+>
+  <select
+    id="visit-select"
+    value={SelectedNumberOfSlotsObjectForMonthlyGardner?.visit || ""}
+    onChange={(e) => {
+      const selectedVisit = parseInt(e.target.value, 10);
+      const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
+        (option) => option.visit === selectedVisit
+      );
+      if (selectedOption) {
+        setSelectedNumberOfSlotsObjectForMonthlyGardner({
+          visit: selectedOption.visit,
+          hours: selectedOption.hours,
+          price: selectedOption.price,
+        });
+      }
+    }}
+    style={{
+      width: "100%",
+      padding: "10px",
+      border: "1px solid #ddd",
+      borderRadius: "4px",
+      fontSize: "14px",
+      cursor: "pointer",
+      appearance: "none",
+      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
+      backgroundRepeat: "no-repeat",
+      backgroundPosition: "calc(100% - 10px) center",
+      backgroundColor: "#fff",
+    }}
+  >
+    {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
+      const hours = Math.floor(option.hours / 60);
+      const minutes = option.hours % 60;
+      return (
+        <option key={index} value={option.visit}>
+          {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
+            hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
+          } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
+        </option>
+      );
+    })}
+  </select>
+</div>
+
+
+
+
+
+
+
+
+
+
+
                       </div>
                     </div>
 
@@ -2355,7 +2495,11 @@ useEffect(() => {
                          );
                        })}
                      </div>
-                     <div className="cooking-time-container pt-3">
+
+
+
+
+                     {/* <div className="cooking-time-container pt-3">
                      <span className="people-counter-label">
                        Average Time per Slot: </span>{" "}
                        <span className="cooking-time-value">
@@ -2366,7 +2510,12 @@ useEffect(() => {
                          return `${hours} hours ${minutes} minutes`;
                        })()}
                        </span>
-                     </div>
+                     </div> */}
+
+
+
+
+
                    </div>
                    
                     ))}
@@ -3707,14 +3856,34 @@ useEffect(() => {
     <div className="booking-detail-card">
       <div>
         <strong>
-          {service.id === 9 && "Number of Slots :"}
+          Number of Visits :
         </strong>
       </div>
       <div>
-        {DataForPricesAppliedGet?.gardener_monthly_subscription
-          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.visit
-          : null}
-      </div>
+  {DataForPricesAppliedGet?.gardener_monthly_subscription &&
+    (() => {
+      const subscriptionData = JSON.parse(DataForPricesAppliedGet.gardener_monthly_subscription);
+      const visitCount = subscriptionData?.visit;
+      const totalMinutes = subscriptionData?.hours;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      const formattedTime = [
+        hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
+        minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      return (
+        <>
+          {visitCount} {visitCount > 1 ? "visits" : "visit"} lasting {formattedTime} per visit
+        </>
+      );
+    })()}
+</div>
+
+
     </div>
 
 
@@ -3730,7 +3899,7 @@ useEffect(() => {
       ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
         {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
-        <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div>
+        {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
       </div>
       
         ))
@@ -3739,16 +3908,27 @@ useEffect(() => {
 </div>
 
     <div className="booking-detail-card">
-      <div>
-        <strong>
-          {service.id === 9 && "Number of Total Hours :"}
-        </strong>
-      </div>
-      <div>
-        {DataForPricesAppliedGet?.gardener_monthly_subscription
-          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.hours
-          : null}
-      </div>
+  
+
+
+
+      {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                  <>
+                    <div>
+                      <strong>Time :</strong>{" "}
+                      <div>
+                        {DataForPricesAppliedGet?.visit_time && (
+                          <div>
+                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+
+
     </div>
 
 
@@ -3777,20 +3957,7 @@ useEffect(() => {
                 </div>
 )}
 
-                {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
-                  <>
-                    <div>
-                      <strong>Time :</strong>{" "}
-                      <div>
-                        {DataForPricesAppliedGet?.visit_time && (
-                          <div>
-                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
+             
 
                 <div></div>
               </div>
