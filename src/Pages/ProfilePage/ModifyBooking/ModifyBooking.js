@@ -1525,43 +1525,67 @@ const handleCheckboxChange = (id) => {
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
-  useEffect(() => {
-    // if(NumOfVisitsChanged){
-    if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
-      // Calculate the hours per visit
-      const hoursPerVisit =
-        SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
-        SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+  // useEffect(() => {
+  //   // if(NumOfVisitsChanged){
+  //   if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
+  //     // Calculate the hours per visit
+  //     const hoursPerVisit =
+  //       SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+  //       SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
 
-      // Initialize the selected dates array
-      const newVisitDates = [];
+  //     // Initialize the selected dates array
+  //     const newVisitDates = [];
 
-      // Calculate the date for each visit
-      let currentDate = new Date(MonthlySubscriptionStartDate);
-      for (
-        let i = 0;
-        i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
-        i++
-      ) {
-        newVisitDates.push({
-          date: currentDate.toISOString().split("T")[0], // Format date to YYYY-MM-DD
-          hours: hoursPerVisit,
-        });
+  //     // Calculate the date for each visit
+  //     let currentDate = new Date(MonthlySubscriptionStartDate);
+  //     for (
+  //       let i = 0;
+  //       i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+  //       i++
+  //     ) {
+  //       newVisitDates.push({
+  //         date: currentDate.toISOString().split("T")[0], // Format date to YYYY-MM-DD
+  //         hours: hoursPerVisit,
+  //       });
 
-        // Increment the date by 7 days for each visit (adjust as needed)
-        currentDate.setDate(currentDate.getDate() + 3); // You can change the interval as needed
-      // }
+  //       // Increment the date by 7 days for each visit (adjust as needed)
+  //       currentDate.setDate(currentDate.getDate() + 3); // You can change the interval as needed
+  //     // }
 
-      // Update the state
-      setSelectedVisitDates(newVisitDates);
-    }
-  }
-  }, [
-    MonthlySubscriptionStartDate,
-    SelectedNumberOfSlotsObjectForMonthlyGardner,
-    NumOfVisitsChanged,
-  ]);
+  //     // Update the state
+  //     setSelectedVisitDates(newVisitDates);
+  //   }
+  // }
+  // }, [
+  //   MonthlySubscriptionStartDate,
+  //   SelectedNumberOfSlotsObjectForMonthlyGardner,
+  //   NumOfVisitsChanged,
+  // ]);
 
+
+  
+    useEffect(() => {
+      if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
+        const hoursPerVisit =
+          SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+          SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+    
+        const newVisitDates = [];
+        let currentDate = new Date(MonthlySubscriptionStartDate);
+        for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
+          newVisitDates.push({
+            date: currentDate.toISOString().split("T")[0],
+            hours: hoursPerVisit,
+          });
+          currentDate.setDate(currentDate.getDate() + 3);
+        }
+    
+        setSelectedVisitDates(newVisitDates);
+      }
+    }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate,NumOfVisitsChanged]);
+    
+  
+  
 
   useEffect(() => {
     if (DefaultDataOfBooking?.gardener_visiting_slots) {
@@ -2209,38 +2233,48 @@ Your Subscription Ends At:
 
     {/* Date selection scroll container */}
     <div className="date-scroll-container">
-      {getUpcomingDatesToVisits(
-                         new Date(MonthlySubscriptionStartDate),
-                          new Date(MonthlySubscriptionEndsDate)
-                       ).map((date, i) => {
-        const formattedDate = date.toISOString().split("T")[0]; // Consistent date format
-        const isSelected = visit.date === formattedDate; // Direct string comparison
-
-        return (
-          <div
-            key={i}
-            className={`date-item ${isSelected ? "selected" : ""}`}
-            onClick={() => {
-              const updatedDates = [...selectedVisitDates];
-              updatedDates[index].date = formattedDate;
+    
+    
+    {getUpcomingDatesToVisits(
+      new Date(MonthlySubscriptionStartDate),
+      new Date(MonthlySubscriptionEndsDate)
+    ).map((date, i) => {
+      const isSelected =
+        visit.date &&
+        new Date(visit.date).toDateString() === date.toDateString();
+    
+      return (
+        <div
+          key={i}
+          className={`date-item ${isSelected ? "selected" : ""}`}
+          onClick={() => {
+            const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+              visitIndex === index
+                ? { ...visitItem, date: date.toISOString().split("T")[0] }
+                : visitItem
+            );
+            setSelectedVisitDates(updatedDates);
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+                visitIndex === index
+                  ? { ...visitItem, date: date.toISOString().split("T")[0] }
+                  : visitItem
+              );
               setSelectedVisitDates(updatedDates);
-            }}
-            role="button"
-            tabIndex={0}
-            onKeyPress={(e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                const updatedDates = [...selectedVisitDates];
-                updatedDates[index].date = formattedDate;
-                setSelectedVisitDates(updatedDates);
-              }
-            }}
-          >
-            <span className="day">{format(date, "EEE")}</span>
-            <span className="date">{format(date, "dd")}</span>
-            <span className="month">{format(date, "MMM")}</span>
-          </div>
-        );
-      })}
+            }
+          }}
+        >
+          <span className="day">{format(date, "EEE")}</span>
+          <span className="date">{format(date, "dd")}</span>
+          <span className="month">{format(date, "MMM")}</span>
+        </div>
+      );
+    })}
+    
     </div>
 
     {/* <div className="cooking-time-container pt-3">
