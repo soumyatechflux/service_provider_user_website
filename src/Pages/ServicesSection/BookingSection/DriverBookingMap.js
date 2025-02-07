@@ -6,6 +6,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
+import Loader from "../../Loader/Loader";
 
 const containerStyle = {
   width: "100%",
@@ -19,11 +20,15 @@ const center = {
 };
 
 const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded } =
+   useJsApiLoader({
+
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
     libraries: ["places"],
   });
 
+
+  
   const [map, setMap] = useState(null);
   const [startPoint, setStartPoint] = useState("My Current Location");
   const [endPoint, setEndPoint] = useState("");
@@ -208,8 +213,12 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   return (
     <>
       {(loading || !isLoaded )&& (
-        <div style={overlayStyle}>
-          <div style={loaderStyle}></div>
+        // <div style={overlayStyle}>
+        //   <div style={loaderStyle}></div>
+        //   {/* <Loader /> */}
+        // </div>
+        <div>
+               <Loader />
         </div>
       )}
 
