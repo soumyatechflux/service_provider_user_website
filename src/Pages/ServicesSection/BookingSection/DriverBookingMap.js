@@ -388,7 +388,11 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
           )}
         </>
       ) : (
-        <div>Loading Google Maps...</div>
+        <>
+
+        <Loader />
+
+        </>
       )}
     </>
   );
