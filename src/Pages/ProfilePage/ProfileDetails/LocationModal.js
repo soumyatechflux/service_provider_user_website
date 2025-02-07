@@ -298,6 +298,8 @@ const LocationModal = ({
         country: addressDetails.country || "",
         district: addressDetails.district || "",
         formatted_address: addressDetails.formattedAddress || "",
+
+
       },
     };
   

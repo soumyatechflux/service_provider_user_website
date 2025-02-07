@@ -229,16 +229,6 @@ const BookingSection = () => {
 
 
 
-                short_address_from:
-                service?.category_id === 2
-                  ? DriverCoordinates.startPoint
-                  : "",
-                  short_address_to:
-                service?.category_id === 2
-                  ? DriverCoordinates.endPoint
-                  : "",
-
-
 
                 address_from_latitude:
                 service?.category_id === 2
@@ -1598,7 +1588,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
   const [DriverCoordinates, setDriverCoordinates] = useState({});
 
   const handleSelectedPoints = (data) => {
-    // console.log('Selected Route Details:', data);
+    console.log('Selected Route Details:', data);
     setDriverCoordinates(data);
     // alert(`Start Point: ${data.startPoint}\nEnd Point: ${data.endPoint}\nDistance: ${data.distance}`);
   };
