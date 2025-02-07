@@ -3856,14 +3856,34 @@ useEffect(() => {
     <div className="booking-detail-card">
       <div>
         <strong>
-          {service.id === 9 && "Number of Slots :"}
+          Number of Visits :
         </strong>
       </div>
       <div>
-        {DataForPricesAppliedGet?.gardener_monthly_subscription
-          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.visit
-          : null}
-      </div>
+  {DataForPricesAppliedGet?.gardener_monthly_subscription &&
+    (() => {
+      const subscriptionData = JSON.parse(DataForPricesAppliedGet.gardener_monthly_subscription);
+      const visitCount = subscriptionData?.visit;
+      const totalMinutes = subscriptionData?.hours;
+      const hours = Math.floor(totalMinutes / 60);
+      const minutes = totalMinutes % 60;
+
+      const formattedTime = [
+        hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
+        minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : "",
+      ]
+        .filter(Boolean)
+        .join(" ");
+
+      return (
+        <>
+          {visitCount} {visitCount > 1 ? "visits" : "visit"} lasting {formattedTime} per visit
+        </>
+      );
+    })()}
+</div>
+
+
     </div>
 
 
@@ -3879,7 +3899,7 @@ useEffect(() => {
       ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
         <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
         {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
-        <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div>
+        {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
       </div>
       
         ))
@@ -3888,16 +3908,27 @@ useEffect(() => {
 </div>
 
     <div className="booking-detail-card">
-      <div>
-        <strong>
-          {service.id === 9 && "Number of Total Hours :"}
-        </strong>
-      </div>
-      <div>
-        {DataForPricesAppliedGet?.gardener_monthly_subscription
-          ? JSON.parse(DataForPricesAppliedGet?.gardener_monthly_subscription)?.hours
-          : null}
-      </div>
+  
+
+
+
+      {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                  <>
+                    <div>
+                      <strong>Time :</strong>{" "}
+                      <div>
+                        {DataForPricesAppliedGet?.visit_time && (
+                          <div>
+                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+
+
     </div>
 
 
@@ -3926,20 +3957,7 @@ useEffect(() => {
                 </div>
 )}
 
-                {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
-                  <>
-                    <div>
-                      <strong>Time :</strong>{" "}
-                      <div>
-                        {DataForPricesAppliedGet?.visit_time && (
-                          <div>
-                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
+             
 
                 <div></div>
               </div>
