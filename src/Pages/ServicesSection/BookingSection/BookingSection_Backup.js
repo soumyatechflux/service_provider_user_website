@@ -524,7 +524,7 @@ const getUpcomingDatesToVisits = (startDate, endDate) => {
 // Generate dynamic dates
 const getUpcomingDates = () => {
   const today = new Date();
-  return Array.from({ length: 7 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
+  return Array.from({ length: 60 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
 };
 
 const generateTimeIntervals = () => {
@@ -690,7 +690,7 @@ useEffect(() => {
   const validateFieldsStepOne = (e) => {
     e.preventDefault();
 
-    if (service.id !== 9) {
+    // if (service.id !== 9) {
       if (
         BookingForGuestName === "" ||
         selectedDate === "" ||
@@ -702,10 +702,10 @@ useEffect(() => {
         handleShow();
         return;
       }
-    }
+    // }
 
 
-    if (service.category_id === 2) {
+    if (service?.category_id === 2) {
       if (
         BookingForGuestName === "" ||
         selectedDate === "" ||
