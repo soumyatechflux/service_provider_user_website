@@ -462,18 +462,20 @@ const UpcomingTab = () => {
                       </div>
 
                       {bookingsIdWise?.sub_category_id === 9 && (
-                        <div className="info-group">
-                          <h4 className="booking-subtitle">
-                            Total Visiting Slots
-                          </h4>
-                          <p className="booking-info-text">
-                            {bookingsIdWise?.gardener_visiting_slots
-                              ? JSON.parse(
-                                  bookingsIdWise.gardener_visiting_slots
-                                ).length
-                              : "N/A"}
-                          </p>
-                        </div>
+                       <div className="info-group">
+                       <h4 className="booking-subtitle">Total Visiting Slots</h4>
+                       <p className="booking-info-text">
+                         {bookingsIdWise?.gardener_monthly_subscription ? (() => {
+                           const subscription = JSON.parse(bookingsIdWise.gardener_monthly_subscription);
+                           const visitText = `${subscription.visit} ${subscription.visit > 1 ? "visits" : "visit"}`;
+                           const hours = Math.floor(subscription.hours / 60);
+                           const minutes = subscription.hours % 60;
+                           const timeText = `${hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""} ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""}`;
+                           return `${visitText} lasting ${timeText} per visit`;
+                         })() : "N/A"}
+                       </p>
+                     </div>
+                     
                       )}
 
                       <div className="info-group">
@@ -507,9 +509,7 @@ const UpcomingTab = () => {
                                 return (
                                   <div key={index}>
                                     <strong>Date : </strong>
-                                    {formattedDate},{" "}
-                                    <strong>Approx Time :</strong> {slot.hours}{" "}
-                                    mins
+                                    {formattedDate}
                                   </div>
                                 );
                               })

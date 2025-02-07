@@ -2384,57 +2384,58 @@ useEffect(() => {
 
 
 
-
-
-<div
-  className="people-counter-container"
-  style={{ position: "relative", display: "inline-block", width: "100%" }}
+<select
+  id="visit-select"
+  value={
+    SelectedNumberOfSlotsObjectForMonthlyGardner
+      ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit}-${SelectedNumberOfSlotsObjectForMonthlyGardner.hours}-${SelectedNumberOfSlotsObjectForMonthlyGardner.price}`
+      : ""
+  }
+  onChange={(e) => {
+    const [visit, hours, price] = e.target.value.split("-");
+    const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
+      (option) =>
+        option.visit === parseInt(visit, 10) &&
+        option.hours === parseInt(hours, 10) &&
+        option.price === price
+    );
+    if (selectedOption) {
+      setSelectedNumberOfSlotsObjectForMonthlyGardner({
+        visit: selectedOption.visit,
+        hours: selectedOption.hours,
+        price: selectedOption.price,
+      });
+    }
+  }}
+  style={{
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    fontSize: "14px",
+    cursor: "pointer",
+    appearance: "none",
+    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "calc(100% - 10px) center",
+    backgroundColor: "#fff",
+  }}
 >
-  <select
-    id="visit-select"
-    value={SelectedNumberOfSlotsObjectForMonthlyGardner?.visit || ""}
-    onChange={(e) => {
-      const selectedVisit = parseInt(e.target.value, 10);
-      const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
-        (option) => option.visit === selectedVisit
-      );
-      if (selectedOption) {
-        setSelectedNumberOfSlotsObjectForMonthlyGardner({
-          visit: selectedOption.visit,
-          hours: selectedOption.hours,
-          price: selectedOption.price,
-        });
-      }
-    }}
-    style={{
-      width: "100%",
-      padding: "10px",
-      border: "1px solid #ddd",
-      borderRadius: "4px",
-      fontSize: "14px",
-      cursor: "pointer",
-      appearance: "none",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "calc(100% - 10px) center",
-      backgroundColor: "#fff",
-    }}
-  >
-    {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
-      const hours = Math.floor(option.hours / 60);
-      const minutes = option.hours % 60;
-      return (
-        <option key={index} value={option.visit}>
-          {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
-            hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
-          } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
-        </option>
-      );
-    })}
-  </select>
-</div>
-
-
+  {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
+    const hours = Math.floor(option.hours / 60);
+    const minutes = option.hours % 60;
+    return (
+      <option
+        key={index}
+        value={`${option.visit}-${option.hours}-${option.price}`}
+      >
+        {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
+          hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
+        } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
+      </option>
+    );
+  })}
+</select>
 
 
 
