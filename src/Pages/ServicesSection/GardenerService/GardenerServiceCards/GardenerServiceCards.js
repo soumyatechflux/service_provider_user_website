@@ -88,12 +88,13 @@ const GardenerServiceCards = () => {
             <div className="service-cards-wrapper-gardener pt-4 pb-4">
               {slides.map((service, index) => (
                 <div key={index} className="service-card">
+                 
+                  <div className="card-content p-0">
                   <img
                     src={service?.image}
                     alt={service?.sub_category_name}
                     className="card-image"
                   />
-                  <div className="card-content p-0">
                     <h3>{service?.sub_category_name}</h3>
                     <div className="rating">
                     <span className="stars">
@@ -137,7 +138,7 @@ const GardenerServiceCards = () => {
                       ))}
                     </ul>
 
-                    <div className="mt-3">
+                    <div className="">
                       <a
                         className="view-more-button"
                         onClick={() => handleViewDetails(service)}
@@ -157,7 +158,10 @@ const GardenerServiceCards = () => {
                           </span>
                         </div>
                       </div> */}
-                      <div>
+                     
+                    </div>
+                  </div>
+                  <div className="book-now-container">
                         <button
                           className="book-now"
                           onClick={() => handleBooking(service)}
@@ -165,8 +169,6 @@ const GardenerServiceCards = () => {
                           <span className="book-icon">▶</span> Book Now
                         </button>
                       </div>
-                    </div>
-                  </div>
                 </div>
               ))}
 
