@@ -7,6 +7,8 @@ import {
 } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
 import Loader from "../../Loader/Loader";
+import debounce from "lodash.debounce";
+
 
 const containerStyle = {
   width: "100%",
@@ -46,10 +48,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   // Handle loading of Autocomplete instances
   const handleLoadStartAutocomplete = (autocomplete) =>
     setStartAutocomplete(autocomplete);
+
   const handleLoadEndAutocomplete = (autocomplete) =>
     setEndAutocomplete(autocomplete);
 
-  // Fetch current location and set initial coordinates
+
+
+
   const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
@@ -60,9 +65,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
           setEndCoordinates({ lat: latitude, lng: longitude });
         }
       },
-      (error) => console.error("Error fetching current location:", error)
+      (error) => {
+        console.error("Error fetching current location:", error);
+        alert("Please enable location access or set a manual location.");
+      }
     );
   }, [service]);
+  
 
   // Fetch address from coordinates
   const fetchAddress = async (latitude, longitude) => {
@@ -125,38 +134,61 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   };
 
 
+
+
+
+
   // useEffect(() => {
-  //   if(!DriverCoordinates){
-  //   setLoading(true);
-  //   getCurrentLocation();
-  //   setLoading(false);
+  //   if (startPoint !== "My Current Location" && endPoint && startCoordinates && endCoordinates) {
+  //     calculateRoute();
   //   }
+  // }, [startPoint, endPoint, startCoordinates, endCoordinates,distance,duration]);
 
-  // }, [getCurrentLocation]);
-
-
-
+  
 
 
+  const debounceTime = 600;
+  let debounceTimer = null;
+  
+  useEffect(() => {
+    if (
+      startPoint !== "My Current Location" &&
+      endPoint &&
+      startCoordinates &&
+      endCoordinates
+    ) {
+      // Clear previous debounce timer
+      clearTimeout(debounceTimer);
+  
+      // Set a new debounce timer
+      debounceTimer = setTimeout(() => {
+        calculateRoute();
+      }, debounceTime);
+    }
+  
+    return () => clearTimeout(debounceTimer);
+  }, [startPoint, endPoint, startCoordinates, endCoordinates]);
 
+  
 
   useEffect(() => {
     if (DriverCoordinates) {
       const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
   
-      // Check if all required values are present
-      if (startPoint && endPoint && startCoordinates && endCoordinates) {
-        // Do not call getCurrentLocation if all values are present
-        console.log("All values are present. Skipping getCurrentLocation.");
-      } else {
-        setLoading(true);
-        // Call getCurrentLocation if any value is missing
+      setStartPoint(startPoint || "");
+      setEndPoint(endPoint || "");
+      setStartCoordinates(startCoordinates || null);
+      setEndCoordinates(endCoordinates || null);
+  
+      // Fetch location only if required values are missing
+      if (!(startPoint && endPoint && startCoordinates && endCoordinates)) {
         getCurrentLocation();
-        setLoading(false);
-
       }
+    } else {
+      getCurrentLocation();
     }
   }, [DriverCoordinates, getCurrentLocation]);
+  
 
 
 
@@ -164,59 +196,15 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
 
 
 
-  // Calculate route when startPoint or endPoint changes
-  useEffect(() => {
-    if (startPoint !== "My Current Location" && endPoint) {
-      calculateRoute();
-    }
-  }, [startPoint, endPoint, startCoordinates, endCoordinates]);
+  if (!isLoaded || loading) {
+    return <Loader />;
+  }
+  
 
-  // Reset state values if onSelectPoints has values
-  useEffect(() => {
-    // console.log(DriverCoordinates,"DriverCoordinatesbhjdfv");
 
-    if (DriverCoordinates) {
-      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
-
-      if (startPoint) setStartPoint(startPoint);
-      if (endPoint) setEndPoint(endPoint);
-      if (startCoordinates) setStartCoordinates(startCoordinates);
-      if (endCoordinates) setEndCoordinates(endCoordinates);
-    }
-  }, [DriverCoordinates]);
-
-  // Loader and overlay styles
-  const loaderStyle = {
-    border: "8px solid #f3f3f3",
-    borderTop: "8px solid #3498db",
-    borderRadius: "50%",
-    width: "50px",
-    height: "50px",
-    animation: "spin 2s linear infinite",
-  };
-
-  const overlayStyle = {
-    position: "fixed",
-    top: "0",
-    left: "0",
-    width: "100%",
-    height: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: "999",
-    backdropFilter: "blur(5px)",
-  };
-
-  // Render the component
   return (
     <>
       {(loading || !isLoaded )&& (
-        // <div style={overlayStyle}>
-        //   <div style={loaderStyle}></div>
-        //   {/* <Loader /> */}
-        // </div>
         <div>
                <Loader />
         </div>

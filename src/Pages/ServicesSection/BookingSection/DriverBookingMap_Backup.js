@@ -6,6 +6,7 @@ import {
   DirectionsRenderer,
 } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
+import Loader from "../../Loader/Loader";
 
 const containerStyle = {
   width: "100%",
@@ -19,11 +20,15 @@ const center = {
 };
 
 const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
-  const { isLoaded } = useJsApiLoader({
+  const { isLoaded } =
+   useJsApiLoader({
+
     googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
     libraries: ["places"],
   });
 
+
+  
   const [map, setMap] = useState(null);
   const [startPoint, setStartPoint] = useState("My Current Location");
   const [endPoint, setEndPoint] = useState("");
@@ -119,13 +124,45 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
     }
   };
 
-  // Fetch current location on component mount
-  useEffect(() => {
-    setLoading(true);
-    getCurrentLocation();
-    setLoading(false);
 
-  }, [getCurrentLocation]);
+  // useEffect(() => {
+  //   if(!DriverCoordinates){
+  //   setLoading(true);
+  //   getCurrentLocation();
+  //   setLoading(false);
+  //   }
+
+  // }, [getCurrentLocation]);
+
+
+
+
+
+
+
+  useEffect(() => {
+    if (DriverCoordinates) {
+      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
+  
+      // Check if all required values are present
+      if (startPoint && endPoint && startCoordinates && endCoordinates) {
+        // Do not call getCurrentLocation if all values are present
+        console.log("All values are present. Skipping getCurrentLocation.");
+      } else {
+        setLoading(true);
+        // Call getCurrentLocation if any value is missing
+        getCurrentLocation();
+        setLoading(false);
+
+      }
+    }
+  }, [DriverCoordinates, getCurrentLocation]);
+
+
+
+
+
+
 
   // Calculate route when startPoint or endPoint changes
   useEffect(() => {
@@ -136,9 +173,10 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
 
   // Reset state values if onSelectPoints has values
   useEffect(() => {
+    // console.log(DriverCoordinates,"DriverCoordinatesbhjdfv");
+
     if (DriverCoordinates) {
-      const { startPoint, endPoint, startCoordinates, endCoordinates } =
-      DriverCoordinates;
+      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
 
       if (startPoint) setStartPoint(startPoint);
       if (endPoint) setEndPoint(endPoint);
@@ -174,9 +212,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   // Render the component
   return (
     <>
-      {loading && (
-        <div style={overlayStyle}>
-          <div style={loaderStyle}></div>
+      {(loading || !isLoaded )&& (
+        // <div style={overlayStyle}>
+        //   <div style={loaderStyle}></div>
+        //   {/* <Loader /> */}
+        // </div>
+        <div>
+               <Loader />
         </div>
       )}
 
@@ -186,7 +228,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
             <div className="container mt-4 mb-4">
               <div className="mb-4">
                 <label className="form-label">
-                  Pickup Location <MdLocationOn size={20} />
+                  Pickup  <MdLocationOn size={20} />
                 </label>
                 <div className="w-100">
                   <Autocomplete
@@ -225,7 +267,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
 
               <div className="mb-3">
                 <label className="form-label">
-                  {service.id === 7 ? "Destination" : "Drop Location"}
+                  {service.id === 7 ? "Destination" : "Drop"}
                   <MdLocationOn size={20} />
                 </label>
                 <div className="w-100">
@@ -346,7 +388,11 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
           )}
         </>
       ) : (
-        <div>Loading Google Maps...</div>
+        <>
+
+        <Loader />
+
+        </>
       )}
     </>
   );
