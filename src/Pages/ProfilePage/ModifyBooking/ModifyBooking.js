@@ -239,7 +239,8 @@ useEffect(() => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (response?.data?.success === true) {
