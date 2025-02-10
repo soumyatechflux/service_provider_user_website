@@ -4279,7 +4279,7 @@ useEffect(() => {
     htmlFor="secureFeeCheckbox"
     style={{ fontSize: "16px", cursor: "pointer" }}
   >
-    Use Reward Points : ₹ {service?.reward_points}
+    Use Reward Points : ₹ {service?.wallet_amount}
   </label>
 </div>
 

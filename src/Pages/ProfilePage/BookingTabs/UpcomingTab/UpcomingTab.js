@@ -140,10 +140,10 @@ const UpcomingTab = () => {
 
       if (response?.data?.success) {
         setCurrentModal(null); // Close the modal
-        toast.success(
-          response?.data?.message ||
-            "The booking has been successfully cancelled."
-        );
+        // toast.success(
+        //   response?.data?.message ||
+        //     "The booking has been successfully cancelled."
+        // );
         setMessage(
           response?.data?.message ||
             "The booking has been successfully cancelled."
