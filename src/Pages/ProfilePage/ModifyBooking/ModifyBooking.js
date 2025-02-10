@@ -1743,7 +1743,7 @@ const handleCheckboxChange = (id) => {
                         className="booking-form-label"
                         htmlFor="date-input"
                       >
-                        Monthly Subscription Start Date
+                        Monthly Package Start Date
                       </label>
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
@@ -3184,7 +3184,7 @@ Your Subscription Ends At:
 
 
 
-{DefaultDataOfBooking?.payment_mode === "cod" && (
+{DefaultDataOfBooking?.payment_mode === "cod" && service.id !== 9 && (
 <>
 
                 <button     

@@ -283,10 +283,12 @@ const BookingSection = () => {
 
           gardener_time_duration:
             service?.id === 8 ? SelectedNumberOfHoursObjectForGardner : {},
+
           gardener_monthly_subscription:
             service?.id === 9
               ? SelectedNumberOfSlotsObjectForMonthlyGardner
               : {},
+
           gardener_visiting_slots: service?.id === 9 ? selectedVisitDates : [],
 
           voucher_code: voucherCode ? voucherCode : "",
@@ -1076,7 +1078,7 @@ useEffect(() => {
   const [
     SelectedNumberOfSlotsObjectForMonthlyGardner,
     setSelectedNumberOfSlotsObjectForMonthlyGardner,
-  ] = useState({ hours: 0, price: 0 });
+  ] = useState({visit :0, hours: 0, price: 0 });
 
   useEffect(() => {
     if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
@@ -1494,9 +1496,13 @@ useEffect(() => {
 
   useEffect(() => {
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
-      const hoursPerVisit =
-        SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
-        SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+      // const hoursPerVisit =
+      //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+      //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+
+
+        const hoursPerVisit =
+        SelectedNumberOfSlotsObjectForMonthlyGardner.hours
   
       const newVisitDates = [];
       let currentDate = new Date(MonthlySubscriptionStartDate);
@@ -1866,7 +1872,7 @@ useEffect(() => {
                   <div>
                     {/* Date Picker */}
                     <div className="booking-form flex-fill mb-4">
-  <label className="booking-form-label">Monthly Subscription Start Date</label>
+  <label className="booking-form-label">Monthly Package Start Date</label>
   <div className="date-scroll-container">
     {getUpcomingDates().map((date, index) => {
       const isSelected =
@@ -4497,6 +4503,25 @@ useEffect(() => {
                   </div>
                 </button>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{service.id !== 9 &&  (
+  <>
                 <button
                   className="payment-option-button"
                   onClick={(event) => {
@@ -4518,6 +4543,19 @@ useEffect(() => {
                     <div className="payment-arrow">→</div>
                   </div>
                 </button>
+
+</>
+                )}
+
+
+
+
+
+
+
+
+
+
               </div>
             </div>
           </div>

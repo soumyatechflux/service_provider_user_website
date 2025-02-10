@@ -10,8 +10,8 @@
 //     },
 //     {
 //         id: 2,
-//         title: "Monthly subscription",
-//         description: "Keep your garden flourishing year-round with our convenient monthly subscription. With 2 to 4 visits a month, our professionals handle all the maintenance, making it easy for you to enjoy a beautiful outdoor space without the stress. Subscribe today for a healthy green space and peace of mind!",
+//         title: "Monthly Package",
+//         description: "Keep your garden flourishing year-round with our convenient Monthly Package. With 2 to 4 visits a month, our professionals handle all the maintenance, making it easy for you to enjoy a beautiful outdoor space without the stress. Subscribe today for a healthy green space and peace of mind!",
 //         image: "./../ServicesSection/GardenerServices/gardener5.jpg",
 //     },
 // ];
