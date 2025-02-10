@@ -482,6 +482,11 @@ const ProfileDetails = () => {
                       {address.street_address_line2
                         ? address.street_address_line2 + ", "
                         : ""}
+
+{address.formatted_address
+                        ? address.formatted_address + ", "
+                        : ""}
+
                       {address.landmark ? address.landmark + ", " : ""}
                       {address.city ? address.city + ", " : ""}
                       {address.district ? address.district + ", " : ""}

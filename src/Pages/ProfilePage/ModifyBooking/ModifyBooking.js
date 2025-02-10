@@ -1566,10 +1566,13 @@ const handleCheckboxChange = (id) => {
   
     useEffect(() => {
       if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
-        const hoursPerVisit =
-          SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
-          SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+        // const hoursPerVisit =
+        //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+        //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
     
+        const hoursPerVisit =
+        SelectedNumberOfSlotsObjectForMonthlyGardner.hours;
+
         const newVisitDates = [];
         let currentDate = new Date(MonthlySubscriptionStartDate);
         for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
