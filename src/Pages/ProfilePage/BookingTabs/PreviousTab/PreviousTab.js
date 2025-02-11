@@ -447,14 +447,25 @@ function PreviousTab() {
                       </span>
                     </div>
                      */}
-                    {bookingsIdWise?.final_amount != 0 && (
+
+{bookingsIdWise?.extra_charge != 0 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">
+                            Extra Charges
+                          </span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.extra_charge}
+                          </span>
+                        </div>
+                      )}
+                    {/* {bookingsIdWise?.final_amount != 0 && (
                       <div className="billing-row">
                         <span className="billing-subtitle">Extra Charges</span>
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.final_amount}
                         </span>
                       </div>
-                    )}
+                    )} */}
 
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">

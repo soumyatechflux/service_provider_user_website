@@ -3566,14 +3566,33 @@ const BookingSection = () => {
 
                 <div className="booking-detail-card">
                   {service.id !== 9 && (
-                    <div>
-                      <strong>Date :</strong>{" "}
-                      <div>
-                        {new Date(
-                          DataForPricesAppliedGet?.visit_date
-                        ).toLocaleDateString("en-GB")}
-                      </div>
-                    </div>
+                    <>
+                   <div>
+  <strong>Date:</strong>
+  <div>
+    {DataForPricesAppliedGet?.visit_date
+      ? new Date(DataForPricesAppliedGet.visit_date).toLocaleDateString("en-GB")
+      : "N/A"}
+  </div>
+</div>
+
+<div>
+  <strong>Time:</strong>
+  <div>
+    {DataForPricesAppliedGet?.visit_time
+      ? (() => {
+          const [hours, minutes] = DataForPricesAppliedGet.visit_time.split(":");
+          const hour = parseInt(hours, 10);
+          const period = hour >= 12 ? "PM" : "AM";
+          const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
+          return `${formattedHour}:${minutes} ${period}`;
+        })()
+      : "N/A"}
+  </div>
+</div>
+
+                  </>
+                  
                   )}
 
                   <div></div>
