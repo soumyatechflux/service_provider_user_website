@@ -362,7 +362,7 @@ function PreviousTab() {
                       </div>
                     )}
 
-                    {bookingsIdWise?.category_id !== 3 && (
+                    
                       <div className="info-group">
                         <h4 className="booking-subtitle">
                           Special Requests / Instructions
@@ -373,7 +373,7 @@ function PreviousTab() {
                             : "N/A"}
                         </p>
                       </div>
-                    )}
+                    
                   </div>
                 </div>
                 <div className="column3">
@@ -458,7 +458,7 @@ function PreviousTab() {
 
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
-                        Grand Total
+                      Total Amount
                       </span>
                       <span className="final-amount">
                         ₹{bookingsIdWise?.billing_amount}

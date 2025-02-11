@@ -3076,7 +3076,7 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Grand Total :</h5>
+                    <h5>Total Amount :</h5>
                   </div>
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>

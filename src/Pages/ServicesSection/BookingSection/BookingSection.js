@@ -28,13 +28,12 @@ import { LoadScript } from "@react-google-maps/api";
 import { Button } from "react-bootstrap";
 import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
 import Loader from "../../Loader/Loader";
-import { addDays, differenceInDays } from 'date-fns';
+import { addDays, differenceInDays } from "date-fns";
 import DriverBookingMap from "./DriverBookingMap";
 
 const BookingSection = () => {
-
   const [errorMessage, setErrorMessage] = useState("");
-  
+
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
@@ -43,7 +42,6 @@ const BookingSection = () => {
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
   const [isTimeDropdownOpen, setTimeDropdownOpen] = useState(false);
-
 
   const [menuItems, setMenuItems] = useState([]);
   const [
@@ -69,8 +67,7 @@ const BookingSection = () => {
   const [addresses, setAddresses] = useState([]);
 
   const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
-  const [isUsePoints, setIsUsePoints]=  useState(true)
-
+  const [isUsePoints, setIsUsePoints] = useState(true);
 
   const dropdownRef = useRef(null); // Reference to the dropdown container
 
@@ -88,8 +85,6 @@ const BookingSection = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
-  
 
   const cancelAddAddress = () => {
     setNewAddress({
@@ -183,30 +178,26 @@ const BookingSection = () => {
       ? selectedCouponObject.voucher_code
       : null;
 
-
-
-
     try {
       const body = {
         booking: {
-          category_id : service?.category_id || "",
-          sub_category_id : service?.id || "",
+          category_id: service?.category_id || "",
+          sub_category_id: service?.id || "",
 
-          visit_date :
+          visit_date:
             service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
 
-          visit_time : selectedTime,
+          visit_time: selectedTime,
 
           // is_secure_fee :
           //  service?.category_id === 2 ? isSecureFeeChecked : false,
 
-          is_secure_fee :false,
+          is_secure_fee: false,
 
           // is_use_points : isUsePoints, // ✅ Sending checkbox value
 
-          visit_address_id :
-           service?.category_id !== 2 ? selectedLocation?.address_id : "",
-
+          visit_address_id:
+            service?.category_id !== 2 ? selectedLocation?.address_id : "",
 
           // address_from:
           //   service?.category_id === 2
@@ -217,53 +208,35 @@ const BookingSection = () => {
           //     ? selectedLocationToForDriver?.address_id
           //     : "",
 
+          address_from:
+            service?.category_id === 2 ? DriverCoordinates.startPoint : "",
+          address_to:
+            service?.category_id === 2 ? DriverCoordinates.endPoint : "",
 
+          short_address_from:
+            service?.category_id === 2 ? DriverCoordinates.startPoint : "",
+          short_address_to:
+            service?.category_id === 2 ? DriverCoordinates.endPoint : "",
 
-              address_from:
-              service?.category_id === 2
-                ? DriverCoordinates.startPoint
-                : "",
-            address_to:
-              service?.category_id === 2
-                ? DriverCoordinates.endPoint
-                : "",
+          address_from_latitude:
+            service?.category_id === 2
+              ? DriverCoordinates.startCoordinates.lat
+              : "",
 
+          address_from_longitude:
+            service?.category_id === 2
+              ? DriverCoordinates.startCoordinates.lng
+              : "",
 
+          address_to_latitude:
+            service?.category_id === 2
+              ? DriverCoordinates.endCoordinates.lat
+              : "",
 
-                short_address_from:
-                service?.category_id === 2
-                  ? DriverCoordinates.startPoint
-                  : "",
-                  short_address_to:
-                service?.category_id === 2
-                  ? DriverCoordinates.endPoint
-                  : "",
-
-
-
-                address_from_latitude:
-                service?.category_id === 2
-                  ? DriverCoordinates.startCoordinates.lat
-                  : "",
-
-                  address_from_longitude:
-                service?.category_id === 2
-                  ? DriverCoordinates.startCoordinates.lng
-                  : "",   
-
-                  address_to_latitude:
-                  service?.category_id === 2
-                    ? DriverCoordinates.endCoordinates.lat
-                    : "",
-
-                    address_to_longitude:
-                  service?.category_id === 2
-                    ? DriverCoordinates.endCoordinates.lng
-                    : "",
-  
-
-
-
+          address_to_longitude:
+            service?.category_id === 2
+              ? DriverCoordinates.endCoordinates.lng
+              : "",
 
           no_of_hours_booked: "",
           number_of_people: SelectedObjectOfPeople || {},
@@ -324,7 +297,8 @@ const BookingSection = () => {
         // window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
         toast.error(
-         response?.data?.message || "An error occurred. Please try again later."
+          response?.data?.message ||
+            "An error occurred. Please try again later."
         );
         setDataForPricesAppliedGet({});
       }
@@ -339,6 +313,10 @@ const BookingSection = () => {
       setLoading(false);
     }
   };
+
+  const dishesArray = Array.isArray(DataForPricesAppliedGet.dishes)
+    ? DataForPricesAppliedGet.dishes
+    : JSON.parse(DataForPricesAppliedGet.dishes || "[]");
 
   const [selectedCoupon, setSelectedCoupon] = useState(null); // State to hold the selected coupon
   const [isCouponsVisible, setIsCouponsVisible] = useState(false); // State to toggle coupon menu visibility
@@ -377,20 +355,17 @@ const BookingSection = () => {
     updateMinTime(new Date());
   }, []);
 
-
   const formatTimeTo12Hour = (time) => {
-    const [hours, minutes] = time.split(':').map(Number);
-  
+    const [hours, minutes] = time.split(":").map(Number);
+
     // Convert hours to 12-hour format
     const adjustedHours = hours % 12 || 12; // If hours is 0 or 12, it should display 12 (AM/PM format)
-    const period = hours < 12 ? 'AM' : 'PM';
-  
+    const period = hours < 12 ? "AM" : "PM";
+
     // Return the formatted time
-    return `${adjustedHours}:${String(minutes).padStart(2, '0')} ${period}`;
+    return `${adjustedHours}:${String(minutes).padStart(2, "0")} ${period}`;
   };
 
-  
-  
   // Helper to get current time in HH:MM format in Asia/Kolkata timezone
   const getCurrentTimeInDelhi = () => {
     const now = new Date();
@@ -407,34 +382,6 @@ const BookingSection = () => {
     const isToday = date.toDateString() === new Date().toDateString();
     setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   // const handleDateChange = (newDate) => {
   //   const delhiDate = new Date(
@@ -454,164 +401,142 @@ const BookingSection = () => {
   //   setSelectedTime(""); // Clear the time selection
   // };
 
-
-  
-// Handle date change
-const handleDateChange = (newDate) => {
-  console.log("New Date:", newDate); // Log the value of newDate
-  if (!newDate) {
-    console.error("Invalid date selected:", newDate);
-    return;
-  }
-
-  const delhiDate = new Date(
-    newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
-  );
-
-  console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
-  setSelectedDate(delhiDate);
-
-  const isToday = delhiDate.toDateString() === new Date().toDateString();
-
-  if (isToday) {
-    setMinTime(
-      new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-    ); // Set minTime for today
-  } else {
-    setMinTime("00:00"); // Reset minTime for future dates
-  }
-
-  setSelectedTime(""); // Clear the time selection
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const getUpcomingDatesToVisits = (startDate, endDate) => {
-  if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
-    console.error('Invalid date parameters');
-    return [];
-  }
-
-  // Calculate the total number of days between start and end dates
-  const totalDays = differenceInDays(endDate, startDate);
-
-  // Generate dates array
-  const dates = Array.from({ length: totalDays + 1 }, (_, i) => addDays(startDate, i));
-
-  console.log('Generated Dates:', dates); // Log for debugging
-  return dates;
-};
-
-
-// Generate dynamic dates
-const getUpcomingDates = () => {
-  const today = new Date();
-  return Array.from({ length: 60 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
-};
-
-const generateTimeIntervals = () => {
-  const intervals = [];
-  for (let hour = 0; hour < 24; hour++) {
-    for (let minute = 0; minute < 60; minute += 15) {
-      intervals.push(`${hour.toString().padStart(2, "0")}:${minute.toString().padStart(2, "0")}`);
-    }
-  }
-  return intervals;
-};
-
-const timeOptions = generateTimeIntervals();
-
-const timeToMinutes = (time) => {
-  const [hour, minute] = time.split(":").map(Number);
-  return hour * 60 + minute;
-};
-
-const getCurrentTimeInHHMM = () => {
-  const now = new Date();
-  return `${now.getHours().toString().padStart(2, "0")}:${now.getMinutes().toString().padStart(2, "0")}`;
-};
-const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
-const [adjustedStartTime, setAdjustedStartTime] = useState(0);
-
-useEffect(() => {
-  if (basicDataByGet?.sub_category?.booking_time_before) {
-    setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
-  }
-}, [basicDataByGet]);
-
-
-
-useEffect(() => {
-  const filterTimeOptions = () => {
-    if (!selectedDate || timeOptions.length === 0) return;
-
-    const currentDate = new Date();
-    const today = currentDate.toDateString();
-    const currentTime = getCurrentTimeInHHMM();
-
-    const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
-    const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
-
-    const currentTimeInMinutes = timeToMinutes(currentTime);
-    let startBoundary = timeToMinutes(serviceStartTime);
-
-    console.log(currentTimeInMinutes, "currentTimeInMinutescurrentTimeInMinutes");
-    console.log(adjustedStartTime, "adjustedStartTimeadjustedStartTime");
-
-    if (selectedDate.toDateString() === today) {
-      // Consider both current time and adjusted start time
-      startBoundary = Math.max(currentTimeInMinutes, startBoundary, adjustedStartTime);
+  // Handle date change
+  const handleDateChange = (newDate) => {
+    console.log("New Date:", newDate); // Log the value of newDate
+    if (!newDate) {
+      console.error("Invalid date selected:", newDate);
+      return;
     }
 
-    const options = timeOptions.filter((time) => {
-      const timeInMinutes = timeToMinutes(time);
-      return timeInMinutes >= startBoundary && timeInMinutes <= timeToMinutes(serviceEndTime);
-    });
+    const delhiDate = new Date(
+      newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+    );
 
-    setFilteredTimeOptions(options);
+    console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
+    setSelectedDate(delhiDate);
+
+    const isToday = delhiDate.toDateString() === new Date().toDateString();
+
+    if (isToday) {
+      setMinTime(
+        new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      ); // Set minTime for today
+    } else {
+      setMinTime("00:00"); // Reset minTime for future dates
+    }
+
+    setSelectedTime(""); // Clear the time selection
   };
 
-  filterTimeOptions();
-}, [selectedDate, basicDataByGet, adjustedStartTime]);
+  const getUpcomingDatesToVisits = (startDate, endDate) => {
+    if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
+      console.error("Invalid date parameters");
+      return [];
+    }
 
+    // Calculate the total number of days between start and end dates
+    const totalDays = differenceInDays(endDate, startDate);
 
+    // Generate dates array
+    const dates = Array.from({ length: totalDays + 1 }, (_, i) =>
+      addDays(startDate, i)
+    );
 
+    console.log("Generated Dates:", dates); // Log for debugging
+    return dates;
+  };
 
+  // Generate dynamic dates
+  const getUpcomingDates = () => {
+    const today = new Date();
+    return Array.from({ length: 60 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
+  };
 
+  const generateTimeIntervals = () => {
+    const intervals = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        intervals.push(
+          `${hour.toString().padStart(2, "0")}:${minute
+            .toString()
+            .padStart(2, "0")}`
+        );
+      }
+    }
+    return intervals;
+  };
 
+  const timeOptions = generateTimeIntervals();
 
+  const timeToMinutes = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    return hour * 60 + minute;
+  };
 
+  const getCurrentTimeInHHMM = () => {
+    const now = new Date();
+    return `${now.getHours().toString().padStart(2, "0")}:${now
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
+  };
+  const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
+  const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
+  useEffect(() => {
+    if (basicDataByGet?.sub_category?.booking_time_before) {
+      setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
+    }
+  }, [basicDataByGet]);
 
+  useEffect(() => {
+    const filterTimeOptions = () => {
+      if (!selectedDate || timeOptions.length === 0) return;
 
+      const currentDate = new Date();
+      const today = currentDate.toDateString();
+      const currentTime = getCurrentTimeInHHMM();
 
+      const serviceStartTime =
+        basicDataByGet?.sub_category?.service_start_time || "00:00";
+      const serviceEndTime =
+        basicDataByGet?.sub_category?.service_end_time || "23:59";
 
+      const currentTimeInMinutes = timeToMinutes(currentTime);
+      let startBoundary = timeToMinutes(serviceStartTime);
 
+      console.log(
+        currentTimeInMinutes,
+        "currentTimeInMinutescurrentTimeInMinutes"
+      );
+      console.log(adjustedStartTime, "adjustedStartTimeadjustedStartTime");
 
+      if (selectedDate.toDateString() === today) {
+        // Consider both current time and adjusted start time
+        startBoundary = Math.max(
+          currentTimeInMinutes,
+          startBoundary,
+          adjustedStartTime
+        );
+      }
 
+      const options = timeOptions.filter((time) => {
+        const timeInMinutes = timeToMinutes(time);
+        return (
+          timeInMinutes >= startBoundary &&
+          timeInMinutes <= timeToMinutes(serviceEndTime)
+        );
+      });
 
+      setFilteredTimeOptions(options);
+    };
 
+    filterTimeOptions();
+  }, [selectedDate, basicDataByGet, adjustedStartTime]);
 
   const [people, setPeople] = useState(1);
 
@@ -622,7 +547,6 @@ useEffect(() => {
   const [basePrice, setBasePrice] = useState(totalPrice);
 
   const [specialRequests, setSpecialRequests] = useState();
-
 
   const [selectedLocation, setSelectedLocation] = useState({});
 
@@ -642,12 +566,10 @@ useEffect(() => {
   const mapRef = useRef(null);
   const searchBoxRef = useRef(null);
 
-
   const nextStep = () => {
     setLoading(true);
     setStep((prev) => prev + 1);
     setLoading(false);
-
   };
 
   const prevStep = () => {
@@ -655,7 +577,6 @@ useEffect(() => {
 
     setStep((prev) => prev - 1);
     setLoading(false);
-
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -694,26 +615,26 @@ useEffect(() => {
     e.preventDefault();
 
     // if (service.id !== 9) {
-      if (
-        BookingForGuestName === "" ||
-        selectedDate === "" ||
-        selectedTime === "" ||
-        people <= 0 
-      ) {
-        setMessage("Please fill all required fields.");
-        setShow(true);
-        handleShow();
-        return;
-      }
+    if (
+      BookingForGuestName === "" ||
+      selectedDate === "" ||
+      selectedTime === "" ||
+      people <= 0
+    ) {
+      setMessage("Please fill all required fields.");
+      setShow(true);
+      handleShow();
+      return;
+    }
     // }
-
 
     if (service?.category_id === 2) {
       if (
         BookingForGuestName === "" ||
         selectedDate === "" ||
         selectedTime === "" ||
-        (service?.category_id === 2 && (selectedCarTransmissionType === "" || selectedCarType === ""))
+        (service?.category_id === 2 &&
+          (selectedCarTransmissionType === "" || selectedCarType === ""))
       ) {
         setMessage("Please fill all required fields.");
         setShow(true);
@@ -721,10 +642,6 @@ useEffect(() => {
         return;
       }
     }
-    
-
-
-
 
     nextStep();
   };
@@ -793,7 +710,6 @@ useEffect(() => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
-
   const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
     (coupon) => coupon.voucher_id === selectedCoupon
   );
@@ -801,7 +717,6 @@ useEffect(() => {
   const voucherCode = selectedCouponObject
     ? selectedCouponObject.voucher_code
     : null;
-
 
   const handlePayment = async (mod) => {
     setLoading(true);
@@ -844,14 +759,12 @@ useEffect(() => {
       if (response.status === 200) {
         // toast.success(response?.data?.message || "Successful!");
 
-
-        
         if (mod === "cod") {
           // toast.info("Please confirm your booking to proceed.");
 
           nextStep(true);
         }
-        
+
         if (response?.data?.order) {
           if (response.data.order?.success === false) {
             toast.error(response.data.order?.message || "An error occurred!");
@@ -863,8 +776,6 @@ useEffect(() => {
           setBookingData(null);
           setCallRazorPay(false);
         }
-        
-
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
@@ -878,11 +789,10 @@ useEffect(() => {
     }
   };
 
-  const handleConfirmAddress= (e) => {
+  const handleConfirmAddress = (e) => {
     e.preventDefault();
 
-
-    if(service?.category_id === 2){
+    if (service?.category_id === 2) {
       // console.log(DriverCoordinates,"DriverCoordinatesDriverCoordinates")
       if (
         !DriverCoordinates ||
@@ -893,31 +803,23 @@ useEffect(() => {
         !DriverCoordinates.endPoint ||
         !DriverCoordinates.endCoordinates ||
         !DriverCoordinates.endCoordinates.lat ||
-        !DriverCoordinates.endCoordinates.lng 
-        || !DriverCoordinates.distance ||
+        !DriverCoordinates.endCoordinates.lng ||
+        !DriverCoordinates.distance ||
         !DriverCoordinates.duration
       ) {
-        toast.error("Please provide complete pickup and drop location details.");
+        toast.error(
+          "Please provide complete pickup and drop location details."
+        );
         return;
       }
-      
+    }
+
+    if (service?.category_id !== 2) {
+      if (!selectedLocation?.address_id) {
+        toast.error("Please provide address details.");
+        return;
       }
-
-
-
-
-      if(service?.category_id !== 2){
-        if (
-          !selectedLocation?.address_id
-        ) {
-          toast.error("Please provide address details.");
-          return;
-        }
-        
-        }
-  
-
-
+    }
 
     FunctionDataForPricesApplied();
 
@@ -1047,31 +949,6 @@ useEffect(() => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const [
     OptionsForNumberOFSlotsForMonthlyGardnerArray,
     setOptionsForNumberOFSlotsForMonthlyGardnerArray,
@@ -1079,7 +956,7 @@ useEffect(() => {
   const [
     SelectedNumberOfSlotsObjectForMonthlyGardner,
     setSelectedNumberOfSlotsObjectForMonthlyGardner,
-  ] = useState({visit :0, hours: 0, price: 0 });
+  ] = useState({ visit: 0, hours: 0, price: 0 });
 
   useEffect(() => {
     if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
@@ -1141,33 +1018,6 @@ useEffect(() => {
     }
   };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const minPeople = basicDataByGet?.no_of_people[0]?.people_count;
   const maxPeople =
     basicDataByGet?.no_of_people[basicDataByGet?.no_of_people.length - 1]
@@ -1220,7 +1070,6 @@ useEffect(() => {
   const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
     const totalQuantity = calculateTotalQuantityForChefForParty();
 
-
     // if (
     //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
     //   4
@@ -1228,8 +1077,6 @@ useEffect(() => {
     //   toast.error("Maximum total quantity reached (4).");
     //   return;
     // }
-
-
 
     // Prevent negative quantities for individual items
     if (value < 0) value = 0;
@@ -1322,9 +1169,6 @@ useEffect(() => {
     }
   };
 
-
-
-
   useEffect(() => {
     if (Array.isArray(basicDataByGet?.no_of_people) && people !== undefined) {
       const selectedEntry = basicDataByGet.no_of_people.find(
@@ -1350,9 +1194,6 @@ useEffect(() => {
       setSelectedNamesOfDishes([]);
     }
   }, [menu, dishesOptionsArrayOri]);
-
-
-
 
   const formatTime = (timeInMinutes) => {
     const hours = Math.floor(timeInMinutes / 60);
@@ -1400,35 +1241,37 @@ useEffect(() => {
     const utcDate = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
     return new Date(utcDate + istOffset * 60 * 1000);
   };
-  
-  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] = useState(getISTDate());
-  
-  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] = useState(() => {
-    const initialEndDate = getISTDate();
-    initialEndDate.setDate(initialEndDate.getDate() + 30);
-    return initialEndDate;
-  });
+
+  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] =
+    useState(getISTDate());
+
+  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] =
+    useState(() => {
+      const initialEndDate = getISTDate();
+      initialEndDate.setDate(initialEndDate.getDate() + 30);
+      return initialEndDate;
+    });
 
   const handleStartDateChange = (newDate) => {
     console.log("New Date:", newDate); // Log the value of newDate
-  
+
     if (!newDate) {
       console.error("Invalid date selected:", newDate);
       return;
     }
-  
+
     // Convert newDate to IST
     const delhiDate = new Date(
       newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
-    
+
     console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
     setSelectedDate(delhiDate);
     setMonthlySubscriptionStartDate(delhiDate);
-  
+
     // Check if the selected date is today
     const isToday = delhiDate.toDateString() === new Date().toDateString();
-  
+
     if (isToday) {
       const currentISTTime = new Date().toLocaleTimeString("en-US", {
         timeZone: "Asia/Kolkata",
@@ -1439,7 +1282,7 @@ useEffect(() => {
     } else {
       setMinTime("00:00"); // Reset minTime for future dates
     }
-  
+
     // Calculate the end date in IST timezone
     if (newDate) {
       const calculatedEndDate = new Date(
@@ -1448,10 +1291,9 @@ useEffect(() => {
       calculatedEndDate.setDate(calculatedEndDate.getDate() + 30);
       setMonthlySubscriptionEndsDate(calculatedEndDate);
     }
-  
+
     setSelectedTime(""); // Clear the time selection
   };
-  
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
@@ -1490,39 +1332,34 @@ useEffect(() => {
   //   selectedVisitDates
   // ]);
 
-
-
-
-
-
   useEffect(() => {
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
       // const hoursPerVisit =
       //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
       //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
 
+      const hoursPerVisit = SelectedNumberOfSlotsObjectForMonthlyGardner.hours;
 
-        const hoursPerVisit =
-        SelectedNumberOfSlotsObjectForMonthlyGardner.hours
-  
       const newVisitDates = [];
       let currentDate = new Date(MonthlySubscriptionStartDate);
-      for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
+      for (
+        let i = 0;
+        i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+        i++
+      ) {
         newVisitDates.push({
           date: currentDate.toISOString().split("T")[0],
           hours: hoursPerVisit,
         });
         currentDate.setDate(currentDate.getDate() + 3);
       }
-  
+
       setSelectedVisitDates(newVisitDates);
     }
-  }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate]);
-  
-
-
-
-
+  }, [
+    SelectedNumberOfSlotsObjectForMonthlyGardner,
+    MonthlySubscriptionStartDate,
+  ]);
 
   const convertToAmPm = (time) => {
     const [hours, minutes] = time.split(":");
@@ -1532,26 +1369,6 @@ useEffect(() => {
 
     return `${hour}:${minutes} ${amPm}`;
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const handleApplyCoupen = async () => {
     // setIsCouponsVisible(false);
@@ -1607,15 +1424,6 @@ useEffect(() => {
     }
   };
 
-
-
-
-
-
-
-
-
-
   const [DriverCoordinates, setDriverCoordinates] = useState({});
 
   const handleSelectedPoints = (data) => {
@@ -1624,12 +1432,8 @@ useEffect(() => {
     // alert(`Start Point: ${data.startPoint}\nEnd Point: ${data.endPoint}\nDistance: ${data.distance}`);
   };
 
-
-
-  
   const handleRemoveCoupen = async () => {
     setLoading(true);
-
 
     try {
       const body = {
@@ -1637,8 +1441,7 @@ useEffect(() => {
           ? DataForPricesAppliedGet.booking_id
           : "",
         //  voucher_code: voucherCode ? voucherCode : "",
-         voucher_code: "",
-
+        voucher_code: "",
       };
 
       setLoading(true);
@@ -1660,9 +1463,7 @@ useEffect(() => {
       if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
         // toast.success(response?.data?.message || "Coupen id Valid.");
-        toast.success(
-          "Coupen removed succesfully"
-          );
+        toast.success("Coupen removed succesfully");
         setIsCouponsVisible(true);
         setSelectedCoupon(null);
       } else {
@@ -1678,11 +1479,11 @@ useEffect(() => {
     }
   };
 
-  
-
-  const [showMoreCancellationPolicy, setShowMoreCancellationPolicy] = useState(false);
+  const [showMoreCancellationPolicy, setShowMoreCancellationPolicy] =
+    useState(false);
   const [showMoreBookingSummary, setShowMoreBookingSummary] = useState(false);
-  const [showMoreAdditionalDetails, setShowMoreAdditionalDetails] = useState(false);
+  const [showMoreAdditionalDetails, setShowMoreAdditionalDetails] =
+    useState(false);
 
   const toggleVisibility = (type) => {
     console.log("Clicked", type);
@@ -1694,8 +1495,6 @@ useEffect(() => {
       setShowMoreAdditionalDetails(!showMoreAdditionalDetails);
     }
   };
-
-  
 
   // Function to limit text to a specific number of words
   const limitTextByWords = (text, wordLimit) => {
@@ -1720,13 +1519,10 @@ useEffect(() => {
   //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
   // });
 
-
-    const { isLoaded } = useJsApiLoader({
-      googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
-      libraries: ["places"], // Add the Places library here
-    });
-  
-
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    libraries: ["places"], // Add the Places library here
+  });
 
   // If the script is not loaded, return null or a loader.
   if (!isLoaded) {
@@ -1755,7 +1551,7 @@ useEffect(() => {
               <h1 className="booking-form-title">Booking For :</h1>
             </div>
 
-            <form style={{padding:"1rem"}}>
+            <form style={{ padding: "1rem" }}>
               <div className="booking-form-group">
                 <label className="booking-form-label" htmlFor="guestName">
                   Enter Booking Guest Name
@@ -1791,79 +1587,94 @@ useEffect(() => {
                       </LocalizationProvider>
                     </div> */}
 
-
-  <div className="booking-form flex-fill mb-4">
-  <label className="booking-form-label">Select Visit Date</label>
-  <div className="date-scroll-container">
-          {getUpcomingDates().map((date, index) => {
-            const isSelected =
-              selectedDate && selectedDate.toDateString() === date.toDateString();
-            return (
-              <div
-                key={index}
-                className={`date-item ${isSelected ? "selected" : ""}`}
-                onClick={() => handleDateChange(date)} // Handle click with div
-                role="button"
-                tabIndex={0}
-                onKeyPress={(e) => {
-                  if (e.key === "Enter" || e.key === " ") {
-                    handleDateChange(date); // Handle keyboard interaction
-                  }
-                }}
-              >
-                <span className="day">{format(date, "EEE")}</span>
-                <span className="date">{format(date, "dd")}</span>
-                <span className="month">{format(date, "MMM")}</span>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-
-
-
+                    <div className="booking-form flex-fill mb-4">
+                      <label className="booking-form-label">
+                        Select Visit Date
+                      </label>
+                      <div className="date-scroll-container">
+                        {getUpcomingDates().map((date, index) => {
+                          const isSelected =
+                            selectedDate &&
+                            selectedDate.toDateString() === date.toDateString();
+                          return (
+                            <div
+                              key={index}
+                              className={`date-item ${
+                                isSelected ? "selected" : ""
+                              }`}
+                              onClick={() => handleDateChange(date)} // Handle click with div
+                              role="button"
+                              tabIndex={0}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  handleDateChange(date); // Handle keyboard interaction
+                                }
+                              }}
+                            >
+                              <span className="day">{format(date, "EEE")}</span>
+                              <span className="date">{format(date, "dd")}</span>
+                              <span className="month">
+                                {format(date, "MMM")}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
 
                     <div className="booking-form-group">
-  <label className="booking-form-label">Select Time of Visit</label>
-  
-  <div 
-    className={`booking-time-dropdown-wrapper-time ${isTimeDropdownOpen ? "active" : ""}`} 
-    onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
-  >
-    <div className="booking-time-dropdown-button">
-      {selectedTime ? formatTimeTo12Hour(selectedTime) : "Select a time"}
-      <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
-    </div>
+                      <label className="booking-form-label">
+                        Select Time of Visit
+                      </label>
 
-    {isTimeDropdownOpen && (
-  filteredTimeOptions.length > 0 ? (
-    <div className="booking-time-options-grid">
-      {filteredTimeOptions.map((time) => (
-        <div
-          key={time}
-          className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
-          onClick={() => {
-            setSelectedTime(time);
-            setTimeDropdownOpen(false); // Close dropdown on selection
-          }}
-        >
-          {formatTimeTo12Hour(time)}
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="time-dropdown-placeholder" style={{ color: 'red', cursor: 'not-allowed', opacity: 0.7, padding: '8px', fontStyle: 'italic' }}>
-      No more time options are available for choosen date.
-    </div>
-  )
-)}
+                      <div
+                        className={`booking-time-dropdown-wrapper-time ${
+                          isTimeDropdownOpen ? "active" : ""
+                        }`}
+                        onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
+                      >
+                        <div className="booking-time-dropdown-button">
+                          {selectedTime
+                            ? formatTimeTo12Hour(selectedTime)
+                            : "Select a time"}
+                          <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
+                        </div>
 
-  </div>
-</div>
-
-
-
+                        {isTimeDropdownOpen &&
+                          (filteredTimeOptions.length > 0 ? (
+                            <div className="booking-time-options-grid">
+                              {filteredTimeOptions.map((time) => (
+                                <div
+                                  key={time}
+                                  className={`booking-time-option ${
+                                    selectedTime === time ? "selected" : ""
+                                  }`}
+                                  onClick={() => {
+                                    setSelectedTime(time);
+                                    setTimeDropdownOpen(false); // Close dropdown on selection
+                                  }}
+                                >
+                                  {formatTimeTo12Hour(time)}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div
+                              className="time-dropdown-placeholder"
+                              style={{
+                                color: "red",
+                                cursor: "not-allowed",
+                                opacity: 0.7,
+                                padding: "8px",
+                                fontStyle: "italic",
+                              }}
+                            >
+                              No more time options are available for choosen
+                              date.
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -1873,34 +1684,40 @@ useEffect(() => {
                   <div>
                     {/* Date Picker */}
                     <div className="booking-form flex-fill mb-4">
-  <label className="booking-form-label">Monthly Package Start Date</label>
-  <div className="date-scroll-container">
-    {getUpcomingDates().map((date, index) => {
-      const isSelected =
-        MonthlySubscriptionStartDate &&
-        MonthlySubscriptionStartDate.toDateString() === date.toDateString();
-      return (
-        <div
-          key={index}
-          className={`date-item ${isSelected ? "selected" : ""}`}
-          onClick={() => handleStartDateChange(date)} // Handle click with div
-          role="button"
-          tabIndex={0}
-          onKeyPress={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              handleStartDateChange(date); // Handle keyboard interaction
-            }
-          }}
-        >
-          <span className="day">{format(date, "EEE")}</span>
-          <span className="date">{format(date, "dd")}</span>
-          <span className="month">{format(date, "MMM")}</span>
-        </div>
-      );
-    })}
-  </div>
-</div>
-
+                      <label className="booking-form-label">
+                        Monthly Package Start Date
+                      </label>
+                      <div className="date-scroll-container">
+                        {getUpcomingDates().map((date, index) => {
+                          const isSelected =
+                            MonthlySubscriptionStartDate &&
+                            MonthlySubscriptionStartDate.toDateString() ===
+                              date.toDateString();
+                          return (
+                            <div
+                              key={index}
+                              className={`date-item ${
+                                isSelected ? "selected" : ""
+                              }`}
+                              onClick={() => handleStartDateChange(date)} // Handle click with div
+                              role="button"
+                              tabIndex={0}
+                              onKeyPress={(e) => {
+                                if (e.key === "Enter" || e.key === " ") {
+                                  handleStartDateChange(date); // Handle keyboard interaction
+                                }
+                              }}
+                            >
+                              <span className="day">{format(date, "EEE")}</span>
+                              <span className="date">{format(date, "dd")}</span>
+                              <span className="month">
+                                {format(date, "MMM")}
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
 
                     <div className="booking-cooking-time">
                       Your Subscription Starts From: {/* <br /> */}
@@ -1950,85 +1767,65 @@ useEffect(() => {
                       </div>
                     </div> */}
 
-<div className="booking-form-group">
-  <label className="booking-form-label">Number of People</label>
- 
-  <div className="div-people-count" >
+                    <div className="booking-form-group">
+                      <label className="booking-form-label">
+                        Number of People
+                      </label>
 
-  <div className="people-counter-container">
+                      <div className="div-people-count">
+                        <div className="people-counter-container">
+                          <span className="people-counter-label">
+                            Select Number of People
+                          </span>
+                          <div className="people-counter">
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleDecrement}
+                            >
+                              -
+                            </button>
+                            <span className="counter-value">{people}</span>
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleIncrement}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
 
-    <span className="people-counter-label">Select Number of People</span>
-    <div className="people-counter">
-      <button type="button" className="counter-button" onClick={handleDecrement}>
-        -
-      </button>
-      <span className="counter-value">{people}</span>
-      <button type="button" className="counter-button" onClick={handleIncrement}>
-        +
-      </button>
-    </div>
-    
-  </div>
-
-  <div className="cooking-time-container pt-3">
-  <span className="people-counter-label">Estimated Time</span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
-  </div>
-  </div>
-</div>
+                        <div className="cooking-time-container pt-3">
+                          <span className="people-counter-label">
+                            Estimated Time
+                          </span>{" "}
+                          <span className="cooking-time-value">
+                            {formatTime(approxTime)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </>
                 )}
 
                 {service?.category_id === 2 && (
                   <>
+                    {service.id === 6 && (
+                      <>
+                        <div className="booking-form-group">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <label className="booking-form-label mb-0">
+                              Number of Hours:
+                            </label>
+                            <span className="counter-value">
+                              Maximum{" "}
+                              {SelectedNumberOfHoursObjectForDriver?.hours}{" "}
+                              Hours
+                            </span>
+                          </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service.id === 6 && (
-<>
-                    <div className="booking-form-group">
-               
-
-                    <div className="d-flex justify-content-between align-items-center">
-  <label className="booking-form-label mb-0">
-    Number of Hours:
-  </label>
-  <span className="counter-value">
-    Maximum {SelectedNumberOfHoursObjectForDriver?.hours} Hours
-  </span>
-</div>
-
-
-
-
-                      {/* <div className="div-people-count">
+                          {/* <div className="div-people-count">
                       <div className="people-counter-container">
 
 <span className="people-counter-label">Select Number of Hours</span>
@@ -2053,313 +1850,188 @@ useEffect(() => {
                         </div>
                         </div>
                       </div> */}
-
-
-                    </div>
-                    </>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service.id !== 6 && service.id !== 7 && (
-<>
-                    <div className="booking-form-group">
-                      <label className="booking-form-label">
-                        Number of Hours
-                      </label>
-                      <div className="div-people-count">
-                      <div className="people-counter-container">
-
-<span className="people-counter-label">Select Number of Hours</span>
-                      <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForDriver}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {SelectedNumberOfHoursObjectForDriver?.hours}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForDriver}
-                        >
-                          +
-                        </button>
                         </div>
+                      </>
+                    )}
+
+                    {service.id !== 6 && service.id !== 7 && (
+                      <>
+                        <div className="booking-form-group">
+                          <label className="booking-form-label">
+                            Number of Hours
+                          </label>
+                          <div className="div-people-count">
+                            <div className="people-counter-container">
+                              <span className="people-counter-label">
+                                Select Number of Hours
+                              </span>
+                              <div className="people-counter">
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleDecrementHousForDriver}
+                                >
+                                  -
+                                </button>
+                                <span className="counter-value">
+                                  {SelectedNumberOfHoursObjectForDriver?.hours}
+                                </span>
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleIncrementHousForDriver}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    </>
-)}
+                      </>
+                    )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service?.id === 7  && (
-<>
-                    <div className="booking-form-group">
-                      <label className="booking-form-label">
-                        Number of Days
-                      </label>
-                      <div className="div-people-count">
-                      <div className="people-counter-container">
-
-<span className="people-counter-label">Select Number of Days</span>
-                      <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForDriver}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {/* {SelectedNumberOfHoursObjectForDriver?.hours} */}
-                          <span className="counter-value">
-  {SelectedNumberOfHoursObjectForDriver?.hours &&
-    `${(SelectedNumberOfHoursObjectForDriver.hours / 24).toFixed(1)} ${
-      SelectedNumberOfHoursObjectForDriver.hours > 24 ? "days" : "day"
-    }`}
-</span>
-
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForDriver}
-                        >
-                          +
-                        </button>
+                    {service?.id === 7 && (
+                      <>
+                        <div className="booking-form-group">
+                          <label className="booking-form-label">
+                            Number of Days
+                          </label>
+                          <div className="div-people-count">
+                            <div className="people-counter-container">
+                              <span className="people-counter-label">
+                                Select Number of Days
+                              </span>
+                              <div className="people-counter">
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleDecrementHousForDriver}
+                                >
+                                  -
+                                </button>
+                                <span className="counter-value">
+                                  {/* {SelectedNumberOfHoursObjectForDriver?.hours} */}
+                                  <span className="counter-value">
+                                    {SelectedNumberOfHoursObjectForDriver?.hours &&
+                                      `${(
+                                        SelectedNumberOfHoursObjectForDriver.hours /
+                                        24
+                                      ).toFixed(1)} ${
+                                        SelectedNumberOfHoursObjectForDriver.hours >
+                                        24
+                                          ? "days"
+                                          : "day"
+                                      }`}
+                                  </span>
+                                </span>
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleIncrementHousForDriver}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        </div>
-                      </div>
-                    </div>
-                    </>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                      </>
+                    )}
                   </>
                 )}
 
                 {service?.category_id === 3 && service?.id === 8 && (
-                
                   <>
                     <div className="booking-form-group">
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
-                      
-                      <div className="div-people-count" >
 
-<div className="people-counter-container">
-
-  <span className="people-counter-label">Select Number of Hours</span>
-  <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForGardner}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {SelectedNumberOfHoursObjectForGardner?.hours}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForGardner}
-                        >
-                          +
-                        </button>
-                      </div>
-                      </div>
+                      <div className="div-people-count">
+                        <div className="people-counter-container">
+                          <span className="people-counter-label">
+                            Select Number of Hours
+                          </span>
+                          <div className="people-counter">
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleDecrementHousForGardner}
+                            >
+                              -
+                            </button>
+                            <span className="counter-value">
+                              {SelectedNumberOfHoursObjectForGardner?.hours}
+                            </span>
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleIncrementHousForGardner}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </>
-                  
                 )}
 
                 {service?.category_id === 3 && service?.id === 9 && (
                   <>
-
-
-
-
-
-
-
-
-
-
-                  
-<div className="booking-form-group">
-  <label className="booking-form-label">Select Time of Visit For All Slots</label>
-  
-  <div 
-    className={`booking-time-dropdown-wrapper-time ${isTimeDropdownOpen ? "active" : ""}`} 
-    onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
-  >
-    <div className="booking-time-dropdown-button">
-      {selectedTime ? formatTimeTo12Hour(selectedTime) : "Select a time"}
-      <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
-    </div>
-
-    {isTimeDropdownOpen && (
-  filteredTimeOptions.length > 0 ? (
-    <div className="booking-time-options-grid">
-      {filteredTimeOptions.map((time) => (
-        <div
-          key={time}
-          className={`booking-time-option ${selectedTime === time ? "selected" : ""}`}
-          onClick={() => {
-            setSelectedTime(time);
-            setTimeDropdownOpen(false); // Close dropdown on selection
-          }}
-        >
-          {formatTimeTo12Hour(time)}
-        </div>
-      ))}
-    </div>
-  ) : (
-    <div className="time-dropdown-placeholder" style={{ color: 'red', cursor: 'not-allowed', opacity: 0.7, padding: '8px', fontStyle: 'italic' }}>
-      No more time options are available for choosen date.
-    </div>
-  )
-)}
-
-  </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                    <div className="booking-form-group">
+                      <label className="booking-form-label">
+                        Select Time of Visit For All Slots
+                      </label>
+
+                      <div
+                        className={`booking-time-dropdown-wrapper-time ${
+                          isTimeDropdownOpen ? "active" : ""
+                        }`}
+                        onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
+                      >
+                        <div className="booking-time-dropdown-button">
+                          {selectedTime
+                            ? formatTimeTo12Hour(selectedTime)
+                            : "Select a time"}
+                          <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
+                        </div>
+
+                        {isTimeDropdownOpen &&
+                          (filteredTimeOptions.length > 0 ? (
+                            <div className="booking-time-options-grid">
+                              {filteredTimeOptions.map((time) => (
+                                <div
+                                  key={time}
+                                  className={`booking-time-option ${
+                                    selectedTime === time ? "selected" : ""
+                                  }`}
+                                  onClick={() => {
+                                    setSelectedTime(time);
+                                    setTimeDropdownOpen(false); // Close dropdown on selection
+                                  }}
+                                >
+                                  {formatTimeTo12Hour(time)}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div
+                              className="time-dropdown-placeholder"
+                              style={{
+                                color: "red",
+                                cursor: "not-allowed",
+                                opacity: 0.7,
+                                padding: "8px",
+                                fontStyle: "italic",
+                              }}
+                            >
+                              No more time options are available for choosen
+                              date.
+                            </div>
+                          ))}
+                      </div>
+                    </div>
 
                     <div
                       style={{ marginTop: "20px" }}
@@ -2368,26 +2040,8 @@ useEffect(() => {
                       <label className="booking-form-label">
                         Number of Visiting Slots
                       </label>
-                      <div className="div-people-count" >
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* 
+                      <div className="div-people-count">
+                        {/* 
 
   <div className="people-counter-container">
 
@@ -2415,83 +2069,87 @@ useEffect(() => {
 
  */}
 
-
-
-
-
-
-
-<select
-  id="visit-select"
-  value={
-    SelectedNumberOfSlotsObjectForMonthlyGardner
-      ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit}-${SelectedNumberOfSlotsObjectForMonthlyGardner.hours}-${SelectedNumberOfSlotsObjectForMonthlyGardner.price}`
-      : ""
-  }
-  onChange={(e) => {
-    const [visit, hours, price] = e.target.value.split("-");
-    const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
-      (option) =>
-        option.visit === parseInt(visit, 10) &&
-        option.hours === parseInt(hours, 10) &&
-        option.price === price
-    );
-    if (selectedOption) {
-      setSelectedNumberOfSlotsObjectForMonthlyGardner({
-        visit: selectedOption.visit,
-        hours: selectedOption.hours,
-        price: selectedOption.price,
-      });
-    }
-  }}
-  style={{
-    width: "100%",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    fontSize: "14px",
-    cursor: "pointer",
-    appearance: "none",
-    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "calc(100% - 10px) center",
-    backgroundColor: "#fff",
-  }}
->
-  {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
-    const hours = Math.floor(option.hours / 60);
-    const minutes = option.hours % 60;
-    return (
-      <option
-        key={index}
-        value={`${option.visit}-${option.hours}-${option.price}`}
-      >
-        {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
-          hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
-        } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
-      </option>
-    );
-  })}
-</select>
-
-
-
-
-
-
-
-
-
+                        <select
+                          id="visit-select"
+                          value={
+                            SelectedNumberOfSlotsObjectForMonthlyGardner
+                              ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit}-${SelectedNumberOfSlotsObjectForMonthlyGardner.hours}-${SelectedNumberOfSlotsObjectForMonthlyGardner.price}`
+                              : ""
+                          }
+                          onChange={(e) => {
+                            const [visit, hours, price] =
+                              e.target.value.split("-");
+                            const selectedOption =
+                              OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
+                                (option) =>
+                                  option.visit === parseInt(visit, 10) &&
+                                  option.hours === parseInt(hours, 10) &&
+                                  option.price === price
+                              );
+                            if (selectedOption) {
+                              setSelectedNumberOfSlotsObjectForMonthlyGardner({
+                                visit: selectedOption.visit,
+                                hours: selectedOption.hours,
+                                price: selectedOption.price,
+                              });
+                            }
+                          }}
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            cursor: "pointer",
+                            appearance: "none",
+                            backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
+                            backgroundRepeat: "no-repeat",
+                            backgroundPosition: "calc(100% - 10px) center",
+                            backgroundColor: "#fff",
+                          }}
+                        >
+                          {OptionsForNumberOFSlotsForMonthlyGardnerArray.map(
+                            (option, index) => {
+                              const hours = Math.floor(option.hours / 60);
+                              const minutes = option.hours % 60;
+                              return (
+                                <option
+                                  key={index}
+                                  value={`${option.visit}-${option.hours}-${option.price}`}
+                                >
+                                  {`${option.visit} Visit${
+                                    option.visit > 1 ? "s" : ""
+                                  } - ${
+                                    hours
+                                      ? `${hours} hr${hours > 1 ? "s" : ""}`
+                                      : ""
+                                  } ${
+                                    minutes
+                                      ? `${minutes} min${
+                                          minutes > 1 ? "s" : ""
+                                        }`
+                                      : ""
+                                  } per visit`}
+                                </option>
+                              );
+                            }
+                          )}
+                        </select>
                       </div>
                     </div>
 
-                    { MonthlySubscriptionStartDate &&  MonthlySubscriptionEndsDate && selectedVisitDates.map((visit, index) => (
-                     <div key={index} className="booking-form-group flex-fill">
-                     <label className="booking-form-label">
-                       Select Visit Date {index + 1}
-                     </label>
-                     <div className="date-scroll-container">
-                       {/* {getUpcomingDatesToVisits(
+                    {MonthlySubscriptionStartDate &&
+                      MonthlySubscriptionEndsDate &&
+                      selectedVisitDates.map((visit, index) => (
+                        <div
+                          key={index}
+                          className="booking-form-group flex-fill"
+                        >
+                          <label className="booking-form-label">
+                            Select Visit Date {index + 1}
+                          </label>
+                          <div className="date-scroll-container">
+                            {/* {getUpcomingDatesToVisits(
                          new Date(MonthlySubscriptionStartDate),
                           new Date(MonthlySubscriptionEndsDate)
                        ).map((date, i) => {
@@ -2524,63 +2182,70 @@ useEffect(() => {
                          );
                        })} */}
 
+                            {getUpcomingDatesToVisits(
+                              new Date(MonthlySubscriptionStartDate),
+                              new Date(MonthlySubscriptionEndsDate)
+                            ).map((date, i) => {
+                              const isSelected =
+                                visit.date &&
+                                new Date(visit.date).toDateString() ===
+                                  date.toDateString();
 
+                              return (
+                                <div
+                                  key={i}
+                                  className={`date-item ${
+                                    isSelected ? "selected" : ""
+                                  }`}
+                                  onClick={() => {
+                                    const updatedDates = selectedVisitDates.map(
+                                      (visitItem, visitIndex) =>
+                                        visitIndex === index
+                                          ? {
+                                              ...visitItem,
+                                              date: date
+                                                .toISOString()
+                                                .split("T")[0],
+                                            }
+                                          : visitItem
+                                    );
+                                    setSelectedVisitDates(updatedDates);
+                                  }}
+                                  role="button"
+                                  tabIndex={0}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter" || e.key === " ") {
+                                      const updatedDates =
+                                        selectedVisitDates.map(
+                                          (visitItem, visitIndex) =>
+                                            visitIndex === index
+                                              ? {
+                                                  ...visitItem,
+                                                  date: date
+                                                    .toISOString()
+                                                    .split("T")[0],
+                                                }
+                                              : visitItem
+                                        );
+                                      setSelectedVisitDates(updatedDates);
+                                    }
+                                  }}
+                                >
+                                  <span className="day">
+                                    {format(date, "EEE")}
+                                  </span>
+                                  <span className="date">
+                                    {format(date, "dd")}
+                                  </span>
+                                  <span className="month">
+                                    {format(date, "MMM")}
+                                  </span>
+                                </div>
+                              );
+                            })}
+                          </div>
 
-
-
-
-
-
-
-
-
-
-{getUpcomingDatesToVisits(
-  new Date(MonthlySubscriptionStartDate),
-  new Date(MonthlySubscriptionEndsDate)
-).map((date, i) => {
-  const isSelected =
-    visit.date &&
-    new Date(visit.date).toDateString() === date.toDateString();
-
-  return (
-    <div
-      key={i}
-      className={`date-item ${isSelected ? "selected" : ""}`}
-      onClick={() => {
-        const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
-          visitIndex === index
-            ? { ...visitItem, date: date.toISOString().split("T")[0] }
-            : visitItem
-        );
-        setSelectedVisitDates(updatedDates);
-      }}
-      role="button"
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
-            visitIndex === index
-              ? { ...visitItem, date: date.toISOString().split("T")[0] }
-              : visitItem
-          );
-          setSelectedVisitDates(updatedDates);
-        }
-      }}
-    >
-      <span className="day">{format(date, "EEE")}</span>
-      <span className="date">{format(date, "dd")}</span>
-      <span className="month">{format(date, "MMM")}</span>
-    </div>
-  );
-})}
-
-                     </div>
-
-
-
-
-                     {/* <div className="cooking-time-container pt-3">
+                          {/* <div className="cooking-time-container pt-3">
                      <span className="people-counter-label">
                        Average Time per Slot: </span>{" "}
                        <span className="cooking-time-value">
@@ -2592,14 +2257,8 @@ useEffect(() => {
                        })()}
                        </span>
                      </div> */}
-
-
-
-
-
-                   </div>
-                   
-                    ))}
+                        </div>
+                      ))}
                   </>
                 )}
 
@@ -2615,7 +2274,8 @@ useEffect(() => {
                           Select Dishes (Optional)
                         </label>
 
-                        <div ref={dropdownRef}
+                        <div
+                          ref={dropdownRef}
                           className="dropdown-container"
                           style={{
                             display: "flex",
@@ -2623,17 +2283,6 @@ useEffect(() => {
                             gap: "4px",
                           }}
                         >
-
-
-
-
-
-
-
-
-
-
-
                           <div
                             className="dropdown-input"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -2657,23 +2306,6 @@ useEffect(() => {
                               : "Select a service"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                           {isDropdownOpen && (
                             <div
@@ -2735,7 +2367,8 @@ useEffect(() => {
                   {service?.category_id === 2 && (
                     <>
                       {/* Car Type Dropdown */}
-                      <div ref={dropdownRef}
+                      <div
+                        ref={dropdownRef}
                         style={{
                           marginTop: "15px",
                           marginBottom: "10px",
@@ -2743,22 +2376,23 @@ useEffect(() => {
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Cars Type 
+                          Select Cars Type
                         </label>
-                        <div 
+                        <div
                           className="dropdown-container"
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "4px",
                           }}
-                        > 
-                          <div ref={dropdownRef}
+                        >
+                          <div
+                            ref={dropdownRef}
                             className="dropdown-input"
                             onClick={() => {
                               setIsDropdownOpen(!isDropdownOpen);
                               setIsDropdownOpenTra(false);
-                            }}                            
+                            }}
                             style={{
                               cursor: "pointer",
                               padding: "8px",
@@ -2771,9 +2405,9 @@ useEffect(() => {
                               width: "100%",
                             }}
                           >
-                             {selectedCarType 
-  ? `Selected: ${selectedCarType}` 
-  : "Select a car type"}
+                            {selectedCarType
+                              ? `Selected: ${selectedCarType}`
+                              : "Select a car type"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
 
@@ -2832,7 +2466,7 @@ useEffect(() => {
                       </div>
 
                       {/* Transmission Type Dropdown */}
-                      <div 
+                      <div
                         style={{
                           marginTop: "15px",
                           marginBottom: "10px",
@@ -2840,9 +2474,9 @@ useEffect(() => {
                         }}
                       >
                         <label className="booking-form-label">
-                          Select Transmission Type 
+                          Select Transmission Type
                         </label>
-                        <div 
+                        <div
                           className="dropdown-container-tra"
                           style={{
                             display: "flex",
@@ -2852,12 +2486,10 @@ useEffect(() => {
                         >
                           <div
                             className="dropdown-input-tra"
-                            onClick={() =>{
-
-                              setIsDropdownOpenTra(!isDropdownOpenTra)
-                              setIsDropdownOpen(false)
-                            }
-                            }
+                            onClick={() => {
+                              setIsDropdownOpenTra(!isDropdownOpenTra);
+                              setIsDropdownOpen(false);
+                            }}
                             style={{
                               cursor: "pointer",
                               padding: "8px",
@@ -2870,9 +2502,9 @@ useEffect(() => {
                               width: "100%",
                             }}
                           >
-                            {selectedCarTransmissionType 
-  ? `Selected: ${selectedCarTransmissionType}` 
-  : "Select a transmission type"}
+                            {selectedCarTransmissionType
+                              ? `Selected: ${selectedCarTransmissionType}`
+                              : "Select a transmission type"}
                             <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
                           </div>
 
@@ -2922,7 +2554,7 @@ useEffect(() => {
                                     style={{
                                       margin: 0,
                                       cursor: "pointer",
-                                      width: "4%"
+                                      width: "4%",
                                     }}
                                   />
                                   <label
@@ -3020,44 +2652,7 @@ useEffect(() => {
                 />
               </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
               <div>
-
                 {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
@@ -3076,101 +2671,68 @@ useEffect(() => {
                 <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
-                  <div
-  dangerouslySetInnerHTML={{
-    __html: showMoreAdditionalDetails
-      ? basicDataByGet?.sub_category?.booking_details || ""
-      : limitTextByWords(basicDataByGet?.sub_category?.booking_details || "", wordLimit),
-  }}
-/>
-  <div>
-  <a
-                      onClick={() => toggleVisibility("additional")}
-                      className="view-more-btn"
-                    >
-                      {showMoreAdditionalDetails ? "View Less" : "View More"}
-                    </a>
-  </div>
-                    
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: showMoreAdditionalDetails
+                          ? basicDataByGet?.sub_category?.booking_details || ""
+                          : limitTextByWords(
+                              basicDataByGet?.sub_category?.booking_details ||
+                                "",
+                              wordLimit
+                            ),
+                      }}
+                    />
+                    <div>
+                      <a
+                        onClick={() => toggleVisibility("additional")}
+                        className="view-more-btn"
+                      >
+                        {showMoreAdditionalDetails ? "View Less" : "View More"}
+                      </a>
+                    </div>
                   </div>
-
-
-                  
                 </div>
-
-        
 
                 <div className="cancellation-policy">
                   <h3>Cancellation Policy</h3>
                   <div className="cancellation-policy-div">
-                  <div
-  dangerouslySetInnerHTML={{
-    __html: showMoreBookingSummary
-      ? basicDataByGet?.sub_category?.cancellation_policy || ""
-      : limitTextByWords(basicDataByGet?.sub_category?.cancellation_policy || "", wordLimit),
-  }}
-/>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: showMoreBookingSummary
+                          ? basicDataByGet?.sub_category?.cancellation_policy ||
+                            ""
+                          : limitTextByWords(
+                              basicDataByGet?.sub_category
+                                ?.cancellation_policy || "",
+                              wordLimit
+                            ),
+                      }}
+                    />
                     {/* <br/> */}
                     <div>
-                    <a
-                      onClick={() => toggleVisibility("cancellation")}
-                      className="view-more-btn"
-                    >
-                      {showMoreCancellationPolicy ? "View Less" : "View More"}
-                    </a>
+                      <a
+                        onClick={() => toggleVisibility("cancellation")}
+                        className="view-more-btn"
+                      >
+                        {showMoreCancellationPolicy ? "View Less" : "View More"}
+                      </a>
                     </div>
-                    
+
                     {/* <br/> */}
                     <a
-  href="/cancellation-policy"
-  className="read-policy-button"
-  target="_blank"
-  rel="noopener noreferrer"
->
-  READ CANCELLATION POLICY
-  <IoIosArrowForward className="arrow_for_cancellation" />
-</a>
-
+                      href="/cancellation-policy"
+                      className="read-policy-button"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      READ CANCELLATION POLICY
+                      <IoIosArrowForward className="arrow_for_cancellation" />
+                    </a>
                   </div>
                 </div>
               </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/*               
+              {/*               
 
               <table style={{ width: "100%", borderCollapse: "collapse" }}>
                 <tbody>
@@ -3273,10 +2835,7 @@ useEffect(() => {
               
               */}
 
-
-
-
-{/* {service?.category_id === 2 && (
+              {/* {service?.category_id === 2 && (
 <div className="d-flex align-items-center gap-2 details-item " style={{marginTop:"20px", flexDirection:"row"}}>
   <input
     type="checkbox"
@@ -3295,14 +2854,6 @@ useEffect(() => {
   </label>
 </div>
  )} */}
-
-
-
-
-
-
-
-
 
               <div className="payable-amount-section">
                 <p className="payable-amount">
@@ -3327,11 +2878,7 @@ useEffect(() => {
           <div className="location-container">
             {loading && <Loader />}
 
-         
             <div className="location-content">
-
-        
-
               <div className="add-location-header">
                 <button className="back-button" onClick={prevStep}>
                   ←
@@ -3341,35 +2888,47 @@ useEffect(() => {
                 <h2 className="header-title">Select Booking Location</h2>
               </div>
 
-
-
-
               {service?.category_id !== 2 && (
-      <>
+                <>
+                  <Button
+                    onClick={() => setIsAddingAddress(true)}
+                    className="btn btn-primary nav-buttons"
+                    style={{
+                      display: "block", // Makes the button a block element
+                      marginLeft: "auto", // Centers the button horizontally
+                      marginRight: "auto", // Centers the button horizontally
+                      textAlign: "center", // Optional: Ensures the text inside the button is centered
+                    }}
+                  >
+                    + Add New Address
+                  </Button>
 
-              <Button
-  onClick={() => setIsAddingAddress(true)}
-  className="btn btn-primary nav-buttons"
-  style={{
-    display: 'block',            // Makes the button a block element
-    marginLeft: 'auto',          // Centers the button horizontally
-    marginRight: 'auto',         // Centers the button horizontally
-    textAlign: 'center',         // Optional: Ensures the text inside the button is centered
-  }}
->
-  + Add New Address
-</Button>
-
-<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
-  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
-  <span style={{ padding: '0 10px' }}>OR</span>
-  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
-</div>
-
-</> )}
-
-
-
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      marginTop: "10px",
+                    }}
+                  >
+                    <hr
+                      style={{
+                        flexGrow: 1,
+                        border: "0",
+                        borderTop: "1px solid #000",
+                      }}
+                    />
+                    <span style={{ padding: "0 10px" }}>OR</span>
+                    <hr
+                      style={{
+                        flexGrow: 1,
+                        border: "0",
+                        borderTop: "1px solid #000",
+                      }}
+                    />
+                  </div>
+                </>
+              )}
 
               <div
                 style={{
@@ -3380,7 +2939,6 @@ useEffect(() => {
               >
                 {(service?.category_id === 1 || service?.category_id === 3) && (
                   <>
-             
                     {" "}
                     <span>Select Address :</span>
                     {addresses.map((address, index) => (
@@ -3408,24 +2966,27 @@ useEffect(() => {
                             style={{ cursor: "pointer", width: "auto" }}
                           />
                           <p className="flex-fill mb-0 address-p">
-  <span className="serial-number me-2">
-    {index + 1}.
-  </span>
-  <>
-      {address.street_address_line2 ? address.street_address_line2 + ", " : ""}
-      {address.formatted_address
-                        ? address.formatted_address + ", "
-                        : ""}
-      {address.landmark ? address.landmark + ", " : ""}
-      {address.city ? address.city + ", " : ""}
-      {address.district ? address.district + ", " : ""}
-      {address.state ? address.state + ", " : ""}
-      {address.postal_code ? address.postal_code + ", " : ""}
-      {address.country ? address.country : ""}
-    </>
-  <br />
-</p>
-
+                            <span className="serial-number me-2">
+                              {index + 1}.
+                            </span>
+                            <>
+                              {address.street_address_line2
+                                ? address.street_address_line2 + ", "
+                                : ""}
+                              {address.formatted_address
+                                ? address.formatted_address + ", "
+                                : ""}
+                              {address.landmark ? address.landmark + ", " : ""}
+                              {address.city ? address.city + ", " : ""}
+                              {address.district ? address.district + ", " : ""}
+                              {address.state ? address.state + ", " : ""}
+                              {address.postal_code
+                                ? address.postal_code + ", "
+                                : ""}
+                              {address.country ? address.country : ""}
+                            </>
+                            <br />
+                          </p>
 
                           <Dropdown className="custom-dropdown-container">
                             <Dropdown.Toggle
@@ -3439,7 +3000,7 @@ useEffect(() => {
                                 style={{ cursor: "pointer" }}
                               />
                             </Dropdown.Toggle>
-                            <Dropdown.Menu className="custom-dropdown-menu-booking" >
+                            <Dropdown.Menu className="custom-dropdown-menu-booking">
                               <Dropdown.Item
                                 className="custom-dropdown-item-booking"
                                 onClick={() => {
@@ -3455,17 +3016,19 @@ useEffect(() => {
                         </div>
                       </div>
                     ))}
-                  
                   </>
                 )}
 
-<>
-    {service?.category_id === 2 && (
-      <>
+                <>
+                  {service?.category_id === 2 && (
+                    <>
+                      <DriverBookingMap
+                        onSelectPoints={handleSelectedPoints}
+                        DriverCoordinates={DriverCoordinates}
+                        service={service}
+                      />
 
-<DriverBookingMap onSelectPoints={handleSelectedPoints} DriverCoordinates={DriverCoordinates} service={service} />
-
-        {/* <span>Select Address From:</span>
+                      {/* <span>Select Address From:</span>
         {addresses.map((address, index) => (
           <div
             key={address.address_id}
@@ -3621,19 +3184,12 @@ useEffect(() => {
           </div>
         )} */}
 
-        <>
-       
-        </>
-      </>
-    )}
-  </>
-
-
+                      <></>
+                    </>
+                  )}
+                </>
 
                 <div className="container mt-3 mb-3">
-            
-
-
                   {/* <LoadScript
                     googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
                   >
@@ -3738,7 +3294,7 @@ useEffect(() => {
                 Confirm Address
               </button>
 
-{/* <button
+              {/* <button
   className={`confirm-address-button ${
     selectedLocationFromForDriver?.address_id ===
     selectedLocationToForDriver?.address_id
@@ -3758,8 +3314,6 @@ useEffect(() => {
 >
   Confirm Address
 </button> */}
-
-
             </div>
           </div>
         )}
@@ -3852,443 +3406,473 @@ useEffect(() => {
               <h2>Booking Summary</h2>
             </div>
 
-            <div style={{padding:"1rem"}}>
-
-            <h3 className="booking-summary-label">Booking Details</h3>
-            <div className="booking-summary-details">
-              <div className="booking-detail-card">
-                <div>
-                  <strong>Booking For :</strong>
-                </div>
-                <div>{BookingForGuestName}</div>
-              </div>
-
-              {(service?.category_id === 1 || service?.category_id === 3) && (
-                <>
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address : </strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.visit_address}
-                      </p>
-                    </div>
+            <div style={{ padding: "1rem" }}>
+              <h3 className="booking-summary-label">Booking Details</h3>
+              <div className="booking-summary-details">
+                <div className="booking-detail-card">
+                  <div>
+                    <strong>Booking For :</strong>
                   </div>
-                </>
-              )}
-
-              {service?.category_id === 2 && (
-                <>
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address From:</strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.address_from}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address To:</strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.address_to}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              )}
-
-
-{service.id !== 9 && (
-  <>
-              <div className="booking-detail-card">
-                <div>
-                  <strong>
-                    {((service.category_id === 2 || service.category_id === 3  )&& service.id !== 9 )
-                      ? "Number of Hours :"
-                      : "Number of People :"}
-                  </strong>
+                  <div>{BookingForGuestName}</div>
                 </div>
-                <div>
-                  {service.category_id === 3
-                    ? SelectedNumberOfHoursObjectForGardner?.hours
-                    : service.category_id === 2
-                    ? SelectedNumberOfHoursObjectForDriver?.hours
-                    : DataForPricesAppliedGet?.people_count}
-                </div>
-              </div>
-</>
-                  )}
 
-
-
-
-
-
-
-
-
-
-{service.id === 9 && (
-  <>
-    <div className="booking-detail-card">
-      <div>
-        <strong>
-          Number of Visits :
-        </strong>
-      </div>
-      <div>
-  {DataForPricesAppliedGet?.gardener_monthly_subscription &&
-    (() => {
-      const subscriptionData = JSON.parse(DataForPricesAppliedGet.gardener_monthly_subscription);
-      const visitCount = subscriptionData?.visit;
-      const totalMinutes = subscriptionData?.hours;
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      const formattedTime = [
-        hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
-        minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : "",
-      ]
-        .filter(Boolean)
-        .join(" ");
-
-      return (
-        <>
-          {visitCount} {visitCount > 1 ? "visits" : "visit"} lasting {formattedTime} per visit
-        </>
-      );
-    })()}
-</div>
-
-
-    </div>
-
-
-
-    <div className="booking-detail-card">
-  <div>
-    <strong>
-      {service.id === 9 && "Visiting Dates"}
-    </strong>
-  </div>
-  <div>
-    {DataForPricesAppliedGet?.gardener_visiting_slots
-      ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-        {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
-        {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
-      </div>
-      
-        ))
-      : null}
-  </div>
-</div>
-
-    <div className="booking-detail-card">
-  
-
-
-
-      {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                {(service?.category_id === 1 || service?.category_id === 3) && (
                   <>
-                    <div>
-                      <strong>Time :</strong>{" "}
+                    <div className="booking-detail-card">
                       <div>
-                        {DataForPricesAppliedGet?.visit_time && (
-                          <div>
-                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
-                          </div>
-                        )}
+                        <strong>Address : </strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.visit_address}
+                        </p>
                       </div>
                     </div>
                   </>
                 )}
 
+                {service?.category_id === 2 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Address From:</strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.address_from}
+                        </p>
+                      </div>
+                    </div>
 
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Address To:</strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.address_to}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
 
+                {service.id !== 9 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>
+                          {(service.category_id === 2 ||
+                            service.category_id === 3) &&
+                          service.id !== 9
+                            ? "Number of Hours :"
+                            : "Number of People :"}
+                        </strong>
+                      </div>
+                      <div>
+                        {service.category_id === 3
+                          ? SelectedNumberOfHoursObjectForGardner?.hours
+                          : service.category_id === 2
+                          ? SelectedNumberOfHoursObjectForDriver?.hours
+                          : DataForPricesAppliedGet?.people_count}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {service.id === 9 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Number of Visits :</strong>
+                      </div>
+                      <div>
+                        {DataForPricesAppliedGet?.gardener_monthly_subscription &&
+                          (() => {
+                            const subscriptionData = JSON.parse(
+                              DataForPricesAppliedGet.gardener_monthly_subscription
+                            );
+                            const visitCount = subscriptionData?.visit;
+                            const totalMinutes = subscriptionData?.hours;
+                            const hours = Math.floor(totalMinutes / 60);
+                            const minutes = totalMinutes % 60;
+
+                            const formattedTime = [
+                              hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
+                              minutes
+                                ? `${minutes} min${minutes > 1 ? "s" : ""}`
+                                : "",
+                            ]
+                              .filter(Boolean)
+                              .join(" ");
+
+                            return (
+                              <>
+                                {visitCount}{" "}
+                                {visitCount > 1 ? "visits" : "visit"} lasting{" "}
+                                {formattedTime} per visit
+                              </>
+                            );
+                          })()}
+                      </div>
+                    </div>
+
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>{service.id === 9 && "Visiting Dates"}</strong>
+                      </div>
+                      <div>
+                        {DataForPricesAppliedGet?.gardener_visiting_slots
+                          ? JSON.parse(
+                              DataForPricesAppliedGet?.gardener_visiting_slots
+                            )?.map((slot, index) => (
+                              <div
+                                key={index}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {slot.date
+                                  ? format(new Date(slot.date), "dd MMM yyyy")
+                                  : null}
+                                {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+
+                    <div className="booking-detail-card">
+                      {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                        <>
+                          <div>
+                            <strong>Time :</strong>{" "}
+                            <div>
+                              {DataForPricesAppliedGet?.visit_time && (
+                                <div>
+                                  {convertToAmPm(
+                                    DataForPricesAppliedGet.visit_time
+                                  )}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  </>
+                )}
+
+                <div className="booking-detail-card">
+                  {service.id !== 9 && (
+                    <div>
+                      <strong>Date :</strong>{" "}
+                      <div>
+                        {new Date(
+                          DataForPricesAppliedGet?.visit_date
+                        ).toLocaleDateString("en-GB")}
+                      </div>
+                    </div>
+                  )}
+
+                  <div></div>
+                </div>
+
+                {DataForPricesAppliedGet?.category_id === 1 && (
+  <div className="booking-detail-card">
+    <div>
+      <strong>Dishes :</strong>
+    </div>
+    <div>
+      {DataForPricesAppliedGet?.sub_category_id === 3
+        ? // ✅ If sub_category_id is 3, parse menu data
+          (() => {
+            try {
+              const menuArray = JSON.parse(DataForPricesAppliedGet.menu || "[]");
+              return menuArray.length > 0
+                ? menuArray.map((item, index) => (
+                    <span key={index}>
+                      {item.name} - {item.quantity}
+                      {index !== menuArray.length - 1 && ", "}
+                      <br />
+                    </span>
+                  ))
+                : "None";
+            } catch (error) {
+              console.error("Error parsing menu:", error);
+              return "Invalid menu data";
+            }
+          })()
+        : // ✅ Otherwise, show dishes with commas
+        Array.isArray(DataForPricesAppliedGet?.dishes) &&
+          DataForPricesAppliedGet.dishes.length > 0
+        ? DataForPricesAppliedGet.dishes.map((dish, index) => (
+            <span key={index}>
+              {dish}
+              {index !== DataForPricesAppliedGet.dishes.length - 1 && ", "}
+            </span>
+          ))
+        : "None"}
+    </div>
+  </div>
+)}
+
+{DataForPricesAppliedGet?.category_id === 2 && (
+  <>
+    <div className="booking-detail-card">
+      <div>
+        <strong>Car Type :</strong>
+      </div>
+      <div>{DataForPricesAppliedGet.car_type || "None"}</div>
     </div>
 
-
-
-
-
-
+    <div className="booking-detail-card">
+      <div>
+        <strong>Transmission Type :</strong>
+      </div>
+      <div>{DataForPricesAppliedGet.transmission_type || "None"}</div>
+    </div>
   </>
 )}
 
 
 
-
-
-              <div className="booking-detail-card">
-
-                
-{service.id !== 9 && (
-                <div>
-                  <strong>Date :</strong>{" "}
+                <div className="booking-detail-card">
                   <div>
-                    {new Date(
-                      DataForPricesAppliedGet?.visit_date
-                    ).toLocaleDateString("en-GB")}
-                  </div>
+                    <strong>Special Requests / Instructions:</strong>
+                  </div>{" "}
+                  <div>{specialRequests || "None"}</div>
                 </div>
-)}
 
-             
-
-                <div></div>
-              </div>
-              <div className="booking-detail-card">
-                <div>
-                  <strong>Special Requests / Instructions:</strong>
-                </div>{" "}
-                <div>{specialRequests || "None"}</div>
-              </div>
-
-
-
-              <div className="additional-details">
+                <div className="additional-details">
                   <h3>Additional Details</h3>
                   <div className="details-item">
-                  <div
-  dangerouslySetInnerHTML={{
-    __html: showMoreBookingSummary
-      ? basicDataByGet?.sub_category?.booking_summary || ""
-      : limitTextByWords(basicDataByGet?.sub_category?.booking_summary || "", wordLimit),
-  }}
-/>
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html: showMoreBookingSummary
+                          ? basicDataByGet?.sub_category?.booking_summary || ""
+                          : limitTextByWords(
+                              basicDataByGet?.sub_category?.booking_summary ||
+                                "",
+                              wordLimit
+                            ),
+                      }}
+                    />
 
-
-  <div>
-  <a
-                      onClick={() => toggleVisibility("booking")}
-                      className="view-more-btn"
-                    >
-                      {showMoreBookingSummary ? "View Less" : "View More"}
-                    </a>
-  </div>
-                    
+                    <div>
+                      <a
+                        onClick={() => toggleVisibility("booking")}
+                        className="view-more-btn"
+                      >
+                        {showMoreBookingSummary ? "View Less" : "View More"}
+                      </a>
+                    </div>
                   </div>
                 </div>
+              </div>
 
+              {/* offer and code */}
+              <div className="booking-summary-offers">
+                <h3 className="booking-summary-label">Offers</h3>
 
-            </div>
+                <div>
+                  {/* Menu Toggle Button */}
+                  <button
+                    className="menu-toggle-button"
+                    onClick={handleCouponsVisibility}
+                    style={{
+                      padding: "10px 10px",
+                      backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "5px",
+                      cursor: "pointer",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      width: "100%",
+                      textAlign: "center",
+                      margin: "0 auto",
+                    }}
+                  >
+                    {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
+                    {isCouponsVisible ? (
+                      <ChevronDown size={16} style={{ marginLeft: "8px" }} />
+                    ) : (
+                      <ChevronRight size={16} style={{ marginLeft: "8px" }} />
+                    )}
+                  </button>
 
-            <div className="booking-summary-offers">
-              <h3 className="booking-summary-label">Offers</h3>
+                  {/* Dropdown Options (Coupons) */}
+                  {isCouponsVisible && (
+                    <div
+                      className="coupon-dropdown"
+                      style={{
+                        marginTop: "10px",
+                        backgroundColor: "#f9f9f9",
+                        borderRadius: "8px",
+                        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+                        padding: "10px",
+                        maxHeight: "300px",
+                        overflowY: "auto",
+                      }}
+                    >
+                      {!DataForPricesAppliedGet?.discount ||
+                      DataForPricesAppliedGet.discount.length === 0 ? (
+                        // Message displayed if no coupons are available
+                        <p
+                          style={{
+                            textAlign: "center",
+                            color: "#FF5722",
+                            fontWeight: "bold",
+                          }}
+                        >
+                          No coupons available.
+                        </p>
+                      ) : (
+                        // Render coupons if available
+                        DataForPricesAppliedGet?.discount?.map((coupon) => (
+                          <div
+                            key={coupon.voucher_id}
+                            className="offers-card"
+                            style={{
+                              borderBottom: "1px solid #ddd",
+                              padding: "10px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                            }}
+                          >
+                            <div>
+                              <strong>
+                                {coupon.discount_type === "fixed"
+                                  ? "Fixed Discount"
+                                  : "Percentage Discount"}
+                                :
+                              </strong>{" "}
+                              {coupon.discount_type === "fixed" ? (
+                                <>₹ {coupon.discount_value}</>
+                              ) : (
+                                <>{coupon.discount_value} %</>
+                              )}
+                              <p className="mb-0 ml-2 text-sm">
+                                Minimum Order: ₹ {coupon.minimum_order_amount}
+                              </p>
+                              <p className="mb-0 ml-2 text-sm">
+                                Voucher Code: {coupon.voucher_code}
+                              </p>
+                            </div>
 
+                            <div>
+                              <input
+                                type="radio"
+                                id={`coupon-${coupon.voucher_id}`}
+                                name="coupon"
+                                checked={selectedCoupon === coupon.voucher_id}
+                                onChange={() =>
+                                  handleRadioChange(coupon.voucher_id)
+                                }
+                                style={{
+                                  marginRight: "8px",
+                                  cursor: "pointer",
+                                }}
+                              />
+                            </div>
+                          </div>
+                        ))
+                      )}
 
+                      {selectedCoupon && (
+                        <div
+                          style={{
+                            display: "flex",
+                            width: "100%",
+                            gap: "10px",
+                          }}
+                        >
+                          {/* Remove Coupon Button */}
+                          <button
+                            onClick={() => {
+                              handleRemoveCoupen();
+                              setSelectedCoupon(null);
+                              setIsCouponsVisible(true);
+                            }}
+                            style={{
+                              width: "50%",
+                              backgroundColor: "#F44336",
+                              color: "#FFFFFF",
+                              border: "none",
+                              padding: "15px",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              transition: "background-color 0.3s ease",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.target.style.backgroundColor = "#B71C1C")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.target.style.backgroundColor = "#F44336")
+                            }
+                          >
+                            Remove Coupon
+                          </button>
 
+                          {/* Apply Coupon Button */}
+                          <button
+                            className="offer-apply-button"
+                            style={{
+                              width: "50%",
+                              backgroundColor: "#4CAF50",
+                              color: "#fff",
+                              border: "none",
+                              padding: "15px",
+                              borderRadius: "5px",
+                              cursor: "pointer",
+                              transition: "background-color 0.3s ease",
+                            }}
+                            onMouseEnter={(e) =>
+                              (e.target.style.backgroundColor = "#388E3C")
+                            }
+                            onMouseLeave={(e) =>
+                              (e.target.style.backgroundColor = "#4CAF50")
+                            }
+                            disabled={!selectedCoupon}
+                            onClick={handleApplyCoupen}
+                          >
+                            Check Coupon Validation
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
 
+              <div
+                className="d-flex align-items-center gap-2 details-item "
+                style={{ marginTop: "20px", flexDirection: "row" }}
+              >
+                <input
+                  type="checkbox"
+                  id="secureFeeCheckbox"
+                  checked={isUsePoints}
+                  onChange={() => setIsUsePoints(!isUsePoints)}
+                  style={{ width: "18px", height: "18px", cursor: "pointer" }}
+                />
+                <label
+                  className="form-check-label fw-bold"
+                  htmlFor="secureFeeCheckbox"
+                  style={{ fontSize: "16px", cursor: "pointer" }}
+                >
+                  Use Reward Points : ₹ {service?.wallet_amount}
+                </label>
+              </div>
 
-
-
-
-
-
-
-              <div>
-  {/* Menu Toggle Button */}
-  <button
-    className="menu-toggle-button"
-    onClick={handleCouponsVisibility}
-    style={{
-      padding: "10px 10px",
-      backgroundColor: isCouponsVisible ? "#FF5722" : "#4CAF50",
-      color: "white",
-      border: "none",
-      borderRadius: "5px",
-      cursor: "pointer",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      width: "100%",
-      textAlign: "center",
-      margin: "0 auto",
-    }}
-  >
-    {isCouponsVisible ? "Hide Coupons" : "See All Coupons"}
-    {isCouponsVisible ? (
-      <ChevronDown size={16} style={{ marginLeft: "8px" }} />
-    ) : (
-      <ChevronRight size={16} style={{ marginLeft: "8px" }} />
-    )}
-  </button>
-
-  {/* Dropdown Options (Coupons) */}
-  {isCouponsVisible && (
-    <div
-      className="coupon-dropdown"
-      style={{
-        marginTop: "10px",
-        backgroundColor: "#f9f9f9",
-        borderRadius: "8px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        padding: "10px",
-        maxHeight: "300px",
-        overflowY: "auto",
-      }}
-    >
-{!DataForPricesAppliedGet?.discount || DataForPricesAppliedGet.discount.length === 0 ? (
-        // Message displayed if no coupons are available
-        <p style={{ textAlign: "center", color: "#FF5722", fontWeight: "bold" }}>
-          No coupons available.
-        </p>
-      ) : (
-        // Render coupons if available
-        DataForPricesAppliedGet?.discount?.map((coupon) => (
-          <div
-            key={coupon.voucher_id}
-            className="offers-card"
-            style={{
-              borderBottom: "1px solid #ddd",
-              padding: "10px",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <div>
-              <strong>
-                {coupon.discount_type === "fixed"
-                  ? "Fixed Discount"
-                  : "Percentage Discount"}
-                :
-              </strong>{" "}
-              {coupon.discount_type === "fixed" ? (
-                <>
-                  ₹ {coupon.discount_value}
-                </>
-              ) : (
-                <>
-                  {coupon.discount_value} %
-                </>
-              )}
-              <p className="mb-0 ml-2 text-sm">
-                Minimum Order: ₹ {coupon.minimum_order_amount}
-              </p>
-              <p className="mb-0 ml-2 text-sm">
-                Voucher Code: {coupon.voucher_code}
-              </p>
-            </div>
-
-            <div>
-              <input
-                type="radio"
-                id={`coupon-${coupon.voucher_id}`}
-                name="coupon"
-                checked={selectedCoupon === coupon.voucher_id}
-                onChange={() => handleRadioChange(coupon.voucher_id)}
-                style={{ marginRight: "8px", cursor: "pointer" }}
-              />
-            </div>
-          </div>
-        ))
-      )}
-
-      {selectedCoupon && (
-        <div style={{ display: "flex", width: "100%", gap: "10px" }}>
-          {/* Remove Coupon Button */}
-          <button
-            onClick={() => {
-              handleRemoveCoupen();
-              setSelectedCoupon(null);
-              setIsCouponsVisible(true);
-            }}
-            style={{
-              width: "50%",
-              backgroundColor: "#F44336",
-              color: "#FFFFFF",
-              border: "none",
-              padding: "15px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              transition: "background-color 0.3s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.target.style.backgroundColor = "#B71C1C")
-            }
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "#F44336")
-            }
-          >
-            Remove Coupon
-          </button>
-
-          {/* Apply Coupon Button */}
-          <button
-            className="offer-apply-button"
-            style={{
-              width: "50%",
-              backgroundColor: "#4CAF50",
-              color: "#fff",
-              border: "none",
-              padding: "15px",
-              borderRadius: "5px",
-              cursor: "pointer",
-              transition: "background-color 0.3s ease",
-            }}
-            onMouseEnter={(e) =>
-              (e.target.style.backgroundColor = "#388E3C")
-            }
-            onMouseLeave={(e) =>
-              (e.target.style.backgroundColor = "#4CAF50")
-            }
-            disabled={!selectedCoupon}
-            onClick={handleApplyCoupen}
-          >
-            Check Coupon Validation
-          </button>
-        </div>
-      )}
-    </div>
-  )}
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-            </div>
-
-            <div className="d-flex align-items-center gap-2 details-item " style={{ marginTop: "20px", flexDirection: "row" }}>
-  <input
-    type="checkbox"
-    id="secureFeeCheckbox"
-    checked={isUsePoints}
-    onChange={() => setIsUsePoints(!isUsePoints)} 
-    style={{ width: "18px", height: "18px", cursor: "pointer" }}
-  />
-  <label
-    className="form-check-label fw-bold"
-    htmlFor="secureFeeCheckbox"
-    style={{ fontSize: "16px", cursor: "pointer" }}
-  >
-    Use Reward Points : ₹ {service?.wallet_amount}
-  </label>
-</div>
-
-            <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
-            <div className="fare-breakdown-section">
-              <div className="fare-breakdown-card">
-      
-
-                {/* {service.category_id === 1 && (
+              <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
+              <div className="fare-breakdown-section">
+                <div className="fare-breakdown-card">
+                  {/* {service.category_id === 1 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -4307,7 +3891,7 @@ useEffect(() => {
                   </>
                 )} */}
 
-                {/* {service.id === 8 && (
+                  {/* {service.id === 8 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -4327,7 +3911,7 @@ useEffect(() => {
                   </>
                 )} */}
 
-                {/* {service.category_id === 1 && (
+                  {/* {service.category_id === 1 && (
                   <>
                     <div className="fare-breakdown-div">
                       <div className="fare-breakdown-title">
@@ -4338,98 +3922,84 @@ useEffect(() => {
                   </>
                 )} */}
 
-                
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Amount :</div>
+                    <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+                  </div>
 
-<div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Amount :</div>
-                  <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
-                </div>
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Taxes and Fees :</div>
+                    <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
+                  </div>
 
-
-
-
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Taxes and Fees :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
-                </div>
-
-                {service?.category_id === 2 && (
-<>
-                {/* 
+                  {service?.category_id === 2 && (
+                    <>
+                      {/* 
                 <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
                 </div> 
                 */}
-</>
+                    </>
+                  )}
 
-
-)}
-
-                {/* <div className="fare-breakdown-div">
+                  {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Platform Fee:</div>
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
                 </div> */}
 
-{(DataForPricesAppliedGet?.night_charge > 0) && (
-  <>
-  
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
-                </div>
-                </>
-)}
+                  {DataForPricesAppliedGet?.night_charge > 0 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Night Charges :
+                        </div>
+                        <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                      </div>
+                    </>
+                  )}
 
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Discount :</div>
+                    <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
+                  </div>
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount :</div>
-                  <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
-                </div>
-
-
-           
-                {/* <div className="fare-breakdown-div">
+                  {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
                 </div> */}
 
-
-      
-
-
-                <div className="fare-breakdown-div mt-1">
-                  <div className="fare-breakdown-title">
-                    <h5>Grand Total:</h5>
+                  <div className="fare-breakdown-div mt-1">
+                    <div className="fare-breakdown-title">
+                      <h5>Grand Total:</h5>
+                    </div>
+                    <div>
+                      <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                    </div>
                   </div>
-                  <div>
-                    <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                  <div className="fare-saving-message-div">
+                    <p className="fare-saving-message text-center">
+                      Hurray! You saved ₹{" "}
+                      {DataForPricesAppliedGet?.discount_amount} on the final
+                      bill
+                    </p>
+
+                    {selectedCouponObject?.voucher_code && (
+                      <p
+                        style={{ color: "blue" }}
+                        className="fare-saving-message text-center"
+                      >
+                        Activated Coupon Code :{" "}
+                        <span style={{ fontWeight: "bold", color: "blue" }}>
+                          {selectedCouponObject?.voucher_code}
+                        </span>
+                      </p>
+                    )}
                   </div>
-                </div>
-                <div className="fare-saving-message-div">
-                  <p className="fare-saving-message text-center">
-                    Hurray! You saved ₹{" "}
-                    {DataForPricesAppliedGet?.discount_amount} on the final bill
-                  </p>
-
-
-
-                  {selectedCouponObject?.voucher_code && (
-  <p style={{color:"blue"}} className="fare-saving-message text-center">
-    Activated Coupon Code :{" "}
-    <span style={{ fontWeight: "bold", color: "blue" }}>
-      {selectedCouponObject?.voucher_code}
-    </span>
-  </p>
-)}
-
-
-
                 </div>
               </div>
-            </div>
-            
-            {/* <div className="additional-details">
+
+              {/* <div className="additional-details">
               <h3>Additional Details</h3>
               <div className="details-item">
                 <span className="mb-1">🌙 Night Surcharge Policy</span>
@@ -4443,27 +4013,25 @@ useEffect(() => {
 
               </div>
             </div> */}
-            
-           
 
-            <div className="booking-summary-footer ">
-              <div className="estimated-fare">
-                <div>
-                  <h4>Estimated Fare</h4>
+              <div className="booking-summary-footer ">
+                <div className="estimated-fare">
+                  <div>
+                    <h4>Estimated Fare</h4>
+                  </div>
+                  <div>
+                    <p>
+                      {" "}
+                      <h4>₹{DataForPricesAppliedGet?.billing_amount} </h4>
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <p>
-                    {" "}
-                    <h4>₹{DataForPricesAppliedGet?.billing_amount} </h4>
-                  </p>
-                </div>
+
+                <button className="checkout-button" onClick={nextStep}>
+                  Checkout
+                </button>
               </div>
-
-              <button className="checkout-button" onClick={nextStep}>
-                Checkout
-              </button>
             </div>
-          </div>
           </div>
         )}
 
@@ -4507,59 +4075,31 @@ useEffect(() => {
                   </div>
                 </button>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service.id !== 9 &&  (
-  <>
-                <button
-                  className="payment-option-button"
-                  onClick={(event) => {
-                    handlePayment("cod");
-                    setCallRazorPay(false);
-                    // event.target.disabled = true;
-                    setMakeDisable(true);
-                  }}
-                  // disabled={makeDisable}
-                >
-                  <div className="payment-option">
-                    <div className="payment-icon">
-                      <img src="/money.png" alt="Cash Icon" />
-                    </div>
-                    <div className="payment-details">
-                      <h3>Pay after booking</h3>
-                      <p>Book now, pay later</p>
-                    </div>
-                    <div className="payment-arrow">→</div>
-                  </div>
-                </button>
-
-</>
+                {service.id !== 9 && (
+                  <>
+                    <button
+                      className="payment-option-button"
+                      onClick={(event) => {
+                        handlePayment("cod");
+                        setCallRazorPay(false);
+                        // event.target.disabled = true;
+                        setMakeDisable(true);
+                      }}
+                      // disabled={makeDisable}
+                    >
+                      <div className="payment-option">
+                        <div className="payment-icon">
+                          <img src="/money.png" alt="Cash Icon" />
+                        </div>
+                        <div className="payment-details">
+                          <h3>Pay after booking</h3>
+                          <p>Book now, pay later</p>
+                        </div>
+                        <div className="payment-arrow">→</div>
+                      </div>
+                    </button>
+                  </>
                 )}
-
-
-
-
-
-
-
-
-
-
               </div>
             </div>
           </div>

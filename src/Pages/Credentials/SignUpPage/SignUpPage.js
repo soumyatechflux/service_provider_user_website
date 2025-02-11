@@ -266,7 +266,7 @@ const SignUpPage = () => {
                     className="terms-link-unique"
                     onClick={(e) => {
                       e.preventDefault(); // Prevent default anchor behavior
-                      handleTermsClick(); // Navigate to Terms & Conditions
+                      window.open("/terms-and-conditions", "_blank"); // Open in new tab
                     }}
                   >
                     Terms & Conditions
@@ -305,7 +305,6 @@ const SignUpPage = () => {
               </p>
               <div className="otp-input-container-unique">
                 {[0, 1, 2, 3].map((index) => (
-                  
                   <input
                     key={index}
                     id={`otp-${index}`}
