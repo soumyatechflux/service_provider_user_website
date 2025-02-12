@@ -462,20 +462,39 @@ const UpcomingTab = () => {
                       </div>
 
                       {bookingsIdWise?.sub_category_id === 9 && (
-                       <div className="info-group">
-                       <h4 className="booking-subtitle">Total Visiting Slots</h4>
-                       <p className="booking-info-text">
-                         {bookingsIdWise?.gardener_monthly_subscription ? (() => {
-                           const subscription = JSON.parse(bookingsIdWise.gardener_monthly_subscription);
-                           const visitText = `${subscription.visit} ${subscription.visit > 1 ? "visits" : "visit"}`;
-                           const hours = Math.floor(subscription.hours / 60);
-                           const minutes = subscription.hours % 60;
-                           const timeText = `${hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""} ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""}`;
-                           return `${visitText} lasting ${timeText} per visit`;
-                         })() : "N/A"}
-                       </p>
-                     </div>
-                     
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">
+                            Total Visiting Slots
+                          </h4>
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.gardener_monthly_subscription
+                              ? (() => {
+                                  const subscription = JSON.parse(
+                                    bookingsIdWise.gardener_monthly_subscription
+                                  );
+                                  const visitText = `${subscription.visit} ${
+                                    subscription.visit > 1 ? "visits" : "visit"
+                                  }`;
+                                  const hours = Math.floor(
+                                    subscription.hours / 60
+                                  );
+                                  const minutes = subscription.hours % 60;
+                                  const timeText = `${
+                                    hours
+                                      ? `${hours} hr${hours > 1 ? "s" : ""}`
+                                      : ""
+                                  } ${
+                                    minutes
+                                      ? `${minutes} min${
+                                          minutes > 1 ? "s" : ""
+                                        }`
+                                      : ""
+                                  }`;
+                                  return `${visitText} lasting ${timeText} per visit`;
+                                })()
+                              : "N/A"}
+                          </p>
+                        </div>
                       )}
 
                       <div className="info-group">
@@ -526,33 +545,45 @@ const UpcomingTab = () => {
                           </h4>
                         )}
 
-<p className="booking-info-text">
-  {bookingsIdWise?.category_id === 2 ? (
-    bookingsIdWise?.car_type // Show car type when category_id === 2
-  ) : bookingsIdWise?.sub_category_id === 3 ? (
-    bookingsIdWise?.menu?.length > 0 ? (
-      bookingsIdWise?.menu?.map((item, index) => (
-        <span key={index}>
-          {item.name}
-          {index !== bookingsIdWise.menu.length - 1 && ", "}
-        </span>
-      ))
-    ) : (
-      <span>No menu items selected</span>
-    )
-  ) : bookingsIdWise?.category_id !== 3 && bookingsIdWise?.dishes?.length > 0 ? (
-    bookingsIdWise?.dishes?.map((dish, index) => (
-      <span key={index}>
-        {dish}
-        {index !== bookingsIdWise.dishes.length - 1 && ", "}
-      </span>
-    ))
-  ) : bookingsIdWise?.category_id !== 3 ? (
-    <span>No Dishes Selected</span>
-  ) : null}
-</p>
-
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.category_id === 2 ? (
+                            bookingsIdWise?.car_type // Show car type when category_id === 2
+                          ) : bookingsIdWise?.sub_category_id === 3 ? (
+                            bookingsIdWise?.menu?.length > 0 ? (
+                              bookingsIdWise?.menu?.map((item, index) => (
+                                <span key={index}>
+                                  {item.name}
+                                  {index !== bookingsIdWise.menu.length - 1 &&
+                                    ", "}
+                                </span>
+                              ))
+                            ) : (
+                              <span>No menu items selected</span>
+                            )
+                          ) : bookingsIdWise?.category_id !== 3 &&
+                            bookingsIdWise?.dishes?.length > 0 ? (
+                            bookingsIdWise?.dishes?.map((dish, index) => (
+                              <span key={index}>
+                                {dish}
+                                {index !== bookingsIdWise.dishes.length - 1 &&
+                                  ", "}
+                              </span>
+                            ))
+                          ) : bookingsIdWise?.category_id !== 3 ? (
+                            <span>No Dishes Selected</span>
+                          ) : null}
+                        </p>
                       </div>
+                      {bookingsIdWise?.category_id == 2 && (
+                        <div className="info-group">
+                          <h4 className="booking-subtitle">
+                            Transmission Type
+                          </h4>
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.transmission_type}
+                          </p>
+                        </div>
+                      )}
                       {bookingsIdWise?.category_id !== 9 && (
                         <div className="info-group">
                           <h4 className="booking-subtitle">Date & Time</h4>
@@ -563,51 +594,38 @@ const UpcomingTab = () => {
                           </p>
                         </div>
                       )}
-                      {bookingsIdWise?.category_id == 2 && (
-                        <div className="info-group">
-                          <h4 className="booking-subtitle">Transmission Type</h4>
-                          <p className="booking-info-text">
-                            {
-                              bookingsIdWise?.transmission_type
-                            }
-                          </p>
-                        </div>
-                      )}
-
-                     
-                        <div className="info-group">
-                          <h4 className="booking-subtitle">
-                            Special Requests / Instructions
-                          </h4>
-                          <p className="booking-info-text">
-                            {bookingsIdWise?.instructions?.trim()
-                              ? bookingsIdWise.instructions
-                              : "N/A"}
-                          </p>
-                        </div>
                       
+
+                      <div className="info-group">
+                        <h4 className="booking-subtitle">
+                          Special Requests / Instructions
+                        </h4>
+                        <p className="booking-info-text">
+                          {bookingsIdWise?.instructions?.trim()
+                            ? bookingsIdWise.instructions
+                            : "N/A"}
+                        </p>
+                      </div>
                     </div>
                   </div>
                   <div className="column3">
                     <h3 className="heading-text mb-4">Billing Details</h3>
                     <div className="billing-info">
-                    <div className="billing-row">
-                      <span className="billing-subtitle">Amount</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.actual_price}
-                      </span>
-                    </div>
-                   
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Amount</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.actual_price}
+                        </span>
+                      </div>
 
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Taxes and Fees</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.all_taxes}
+                        </span>
+                      </div>
 
-<div className="billing-row">
-                      <span className="billing-subtitle">Taxes and Fees</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.all_taxes}
-                      </span>
-                    </div>
-
-                    {bookingsIdWise?.secure_fee > 0 && (
+                      {bookingsIdWise?.secure_fee > 0 && (
                         <div className="billing-row">
                           <span className="billing-subtitle">Secure Fee</span>
                           <span className="billing-subtitle">
@@ -616,16 +634,18 @@ const UpcomingTab = () => {
                         </div>
                       )}
 
-                    {bookingsIdWise?.night_charge > 0 && (
-                    <div className="billing-row">
-                      <span className="billing-subtitle">Night Charges</span>
-                      <span className="billing-subtitle">
-                        ₹{bookingsIdWise?.night_charge}
-                      </span>
-                    </div>
-                    )}
+                      {bookingsIdWise?.night_charge > 0 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">
+                            Night Charges
+                          </span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.night_charge}
+                          </span>
+                        </div>
+                      )}
 
-{/* <div className="billing-row">
+                      {/* <div className="billing-row">
                       <span className="billing-subtitle">Sub-Total </span>
                       <span className="billing-subtitle">
                         ₹{bookingsIdWise?.sub_total_amount}
@@ -650,8 +670,7 @@ const UpcomingTab = () => {
                           ₹{bookingsIdWise?.menu_amount || 0}
                         </span>
                       </div> */}
-                      
-                      
+
                       {/* <div className="billing-row">
                         <span className="billing-subtitle">Platform Fee</span>
                         <span className="billing-subtitle">
@@ -681,7 +700,7 @@ const UpcomingTab = () => {
 
                       <div className="billing-row total">
                         <span className="billing-subtitle text-bold">
-                        Total Amount
+                          Total Amount
                         </span>
                         <span className="final-amount">
                           ₹{bookingsIdWise?.billing_amount}
