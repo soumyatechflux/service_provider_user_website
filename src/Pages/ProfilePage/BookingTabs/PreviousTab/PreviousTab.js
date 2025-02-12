@@ -499,7 +499,7 @@ function PreviousTab() {
                       >
                         Raise a Ticket
                       </button>
-
+ 
                       <button
                         className="rating-button"
                         onClick={handleRatingButtonClick}
