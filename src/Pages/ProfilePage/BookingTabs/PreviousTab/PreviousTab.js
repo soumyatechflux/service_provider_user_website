@@ -375,7 +375,7 @@ function PreviousTab() {
                       </div>
                     )}
 
-                    {bookingsIdWise?.category_id !== 3 && (
+                    
                       <div className="info-group">
                         <h4 className="booking-subtitle">
                           Special Requests / Instructions
@@ -386,7 +386,7 @@ function PreviousTab() {
                             : "N/A"}
                         </p>
                       </div>
-                    )}
+                    
                   </div>
                 </div>
                 <div className="column3">
@@ -460,18 +460,29 @@ function PreviousTab() {
                       </span>
                     </div>
                      */}
-                    {bookingsIdWise?.final_amount != 0 && (
+
+{bookingsIdWise?.extra_charge != 0 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">
+                            Extra Charges
+                          </span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.extra_charge}
+                          </span>
+                        </div>
+                      )}
+                    {/* {bookingsIdWise?.final_amount != 0 && (
                       <div className="billing-row">
                         <span className="billing-subtitle">Extra Charges</span>
                         <span className="billing-subtitle">
                           ₹{bookingsIdWise?.final_amount}
                         </span>
                       </div>
-                    )}
+                    )} */}
 
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
-                        Grand Total
+                      Total Amount
                       </span>
                       <span className="final-amount">
                         ₹{bookingsIdWise?.billing_amount}
@@ -501,7 +512,7 @@ function PreviousTab() {
                       >
                         Raise a Ticket
                       </button>
-
+ 
                       <button
                         className="rating-button"
                         onClick={handleRatingButtonClick}

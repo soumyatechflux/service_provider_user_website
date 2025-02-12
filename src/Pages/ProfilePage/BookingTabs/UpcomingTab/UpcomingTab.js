@@ -140,10 +140,10 @@ const UpcomingTab = () => {
 
       if (response?.data?.success) {
         setCurrentModal(null); // Close the modal
-        toast.success(
-          response?.data?.message ||
-            "The booking has been successfully cancelled."
-        );
+        // toast.success(
+        //   response?.data?.message ||
+        //     "The booking has been successfully cancelled."
+        // );
         setMessage(
           response?.data?.message ||
             "The booking has been successfully cancelled."
@@ -574,7 +574,7 @@ const UpcomingTab = () => {
                         </div>
                       )}
 
-                      {bookingsIdWise?.category_id !== 3 && (
+                     
                         <div className="info-group">
                           <h4 className="booking-subtitle">
                             Special Requests / Instructions
@@ -585,7 +585,7 @@ const UpcomingTab = () => {
                               : "N/A"}
                           </p>
                         </div>
-                      )}
+                      
                     </div>
                   </div>
                   <div className="column3">
@@ -658,7 +658,17 @@ const UpcomingTab = () => {
                           ₹{bookingsIdWise?.platform_fee}
                         </span>
                       </div> */}
-                      {bookingsIdWise?.final_amount != 0 && (
+                      {bookingsIdWise?.extra_charge != 0 && (
+                        <div className="billing-row">
+                          <span className="billing-subtitle">
+                            Extra Charges
+                          </span>
+                          <span className="billing-subtitle">
+                            ₹{bookingsIdWise?.extra_charge}
+                          </span>
+                        </div>
+                      )}
+                      {/* {bookingsIdWise?.final_amount != 0 && (
                         <div className="billing-row">
                           <span className="billing-subtitle">
                             Extra Charges
@@ -667,11 +677,11 @@ const UpcomingTab = () => {
                             ₹{bookingsIdWise?.final_amount}
                           </span>
                         </div>
-                      )}
+                      )} */}
 
                       <div className="billing-row total">
                         <span className="billing-subtitle text-bold">
-                          Grand Total
+                        Total Amount
                         </span>
                         <span className="final-amount">
                           ₹{bookingsIdWise?.billing_amount}

@@ -151,7 +151,8 @@ const BookingSection = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (response?.data?.success === true) {
@@ -1349,17 +1350,7 @@ useEffect(() => {
   }, [menu, dishesOptionsArrayOri]);
 
 
-  const convertTo12HourFormat = (time) => {
-    if (!time) return "Invalid Time"; // Handle null/undefined values
-    const [hour, minute] = time.split(":").map(Number);
-  
-    if (isNaN(hour) || isNaN(minute)) return "Invalid Time"; // Handle edge cases
-  
-    const period = hour >= 12 ? "PM" : "AM";
-    const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
-  
-    return `${formattedHour}:${minute.toString().padStart(2, "0")} ${period}`;
-  };
+
 
   const formatTime = (timeInMinutes) => {
     const hours = Math.floor(timeInMinutes / 60);
@@ -1462,39 +1453,70 @@ useEffect(() => {
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
 
+  // useEffect(() => {
+  //   if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
+  //     // Calculate the hours per visit
+  //     const hoursPerVisit =
+  //       SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+  //       SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+
+  //     // Initialize the selected dates array
+  //     const newVisitDates = [];
+
+  //     // Calculate the date for each visit
+  //     let currentDate = new Date(MonthlySubscriptionStartDate);
+  //     for (
+  //       let i = 0;
+  //       i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+  //       i++
+  //     ) {
+  //       newVisitDates.push({
+  //         date: currentDate.toISOString().split("T")[0], // Format date to YYYY-MM-DD
+  //         hours: hoursPerVisit,
+  //       });
+
+  //       // Increment the date by 7 days for each visit (adjust as needed)
+  //       currentDate.setDate(currentDate.getDate() + 3); // You can change the interval as needed
+  //     }
+
+  //     // Update the state
+  //     setSelectedVisitDates(newVisitDates);
+  //   }
+  // }, [
+  //   SelectedNumberOfSlotsObjectForMonthlyGardner,
+  //   MonthlySubscriptionStartDate,
+  //   selectedVisitDates
+  // ]);
+
+
+
+
+
+
   useEffect(() => {
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
-      // Calculate the hours per visit
       const hoursPerVisit =
         SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
         SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
-
-      // Initialize the selected dates array
+  
       const newVisitDates = [];
-
-      // Calculate the date for each visit
       let currentDate = new Date(MonthlySubscriptionStartDate);
-      for (
-        let i = 0;
-        i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
-        i++
-      ) {
+      for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
         newVisitDates.push({
-          date: currentDate.toISOString().split("T")[0], // Format date to YYYY-MM-DD
+          date: currentDate.toISOString().split("T")[0],
           hours: hoursPerVisit,
         });
-
-        // Increment the date by 7 days for each visit (adjust as needed)
-        currentDate.setDate(currentDate.getDate() + 3); // You can change the interval as needed
+        currentDate.setDate(currentDate.getDate() + 3);
       }
-
-      // Update the state
+  
       setSelectedVisitDates(newVisitDates);
     }
-  }, [
-    SelectedNumberOfSlotsObjectForMonthlyGardner,
-    MonthlySubscriptionStartDate,
-  ]);
+  }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate]);
+  
+
+
+
+
 
   const convertToAmPm = (time) => {
     const [hours, minutes] = time.split(":");
@@ -1845,7 +1867,7 @@ useEffect(() => {
                   <div>
                     {/* Date Picker */}
                     <div className="booking-form flex-fill mb-4">
-  <label className="booking-form-label">Monthly Subscription Start Date</label>
+  <label className="booking-form-label">Monthly Package Start Date</label>
   <div className="date-scroll-container">
     {getUpcomingDates().map((date, index) => {
       const isSelected =
@@ -2393,57 +2415,58 @@ useEffect(() => {
 
 
 
-
-
-<div
-  className="people-counter-container"
-  style={{ position: "relative", display: "inline-block", width: "100%" }}
+<select
+  id="visit-select"
+  value={
+    SelectedNumberOfSlotsObjectForMonthlyGardner
+      ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit}-${SelectedNumberOfSlotsObjectForMonthlyGardner.hours}-${SelectedNumberOfSlotsObjectForMonthlyGardner.price}`
+      : ""
+  }
+  onChange={(e) => {
+    const [visit, hours, price] = e.target.value.split("-");
+    const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
+      (option) =>
+        option.visit === parseInt(visit, 10) &&
+        option.hours === parseInt(hours, 10) &&
+        option.price === price
+    );
+    if (selectedOption) {
+      setSelectedNumberOfSlotsObjectForMonthlyGardner({
+        visit: selectedOption.visit,
+        hours: selectedOption.hours,
+        price: selectedOption.price,
+      });
+    }
+  }}
+  style={{
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    fontSize: "14px",
+    cursor: "pointer",
+    appearance: "none",
+    backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "calc(100% - 10px) center",
+    backgroundColor: "#fff",
+  }}
 >
-  <select
-    id="visit-select"
-    value={SelectedNumberOfSlotsObjectForMonthlyGardner?.visit || ""}
-    onChange={(e) => {
-      const selectedVisit = parseInt(e.target.value, 10);
-      const selectedOption = OptionsForNumberOFSlotsForMonthlyGardnerArray.find(
-        (option) => option.visit === selectedVisit
-      );
-      if (selectedOption) {
-        setSelectedNumberOfSlotsObjectForMonthlyGardner({
-          visit: selectedOption.visit,
-          hours: selectedOption.hours,
-          price: selectedOption.price,
-        });
-      }
-    }}
-    style={{
-      width: "100%",
-      padding: "10px",
-      border: "1px solid #ddd",
-      borderRadius: "4px",
-      fontSize: "14px",
-      cursor: "pointer",
-      appearance: "none",
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666" width="18px" height="18px"><path d="M7 10l5 5 5-5z"/></svg>')`,
-      backgroundRepeat: "no-repeat",
-      backgroundPosition: "calc(100% - 10px) center",
-      backgroundColor: "#fff",
-    }}
-  >
-    {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
-      const hours = Math.floor(option.hours / 60);
-      const minutes = option.hours % 60;
-      return (
-        <option key={index} value={option.visit}>
-          {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
-            hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
-          } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
-        </option>
-      );
-    })}
-  </select>
-</div>
-
-
+  {OptionsForNumberOFSlotsForMonthlyGardnerArray.map((option, index) => {
+    const hours = Math.floor(option.hours / 60);
+    const minutes = option.hours % 60;
+    return (
+      <option
+        key={index}
+        value={`${option.visit}-${option.hours}-${option.price}`}
+      >
+        {`${option.visit} Visit${option.visit > 1 ? "s" : ""} - ${
+          hours ? `${hours} hr${hours > 1 ? "s" : ""}` : ""
+        } ${minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : ""} per visit`}
+      </option>
+    );
+  })}
+</select>
 
 
 
@@ -2462,7 +2485,7 @@ useEffect(() => {
                        Select Visit Date {index + 1}
                      </label>
                      <div className="date-scroll-container">
-                       {getUpcomingDatesToVisits(
+                       {/* {getUpcomingDatesToVisits(
                          new Date(MonthlySubscriptionStartDate),
                           new Date(MonthlySubscriptionEndsDate)
                        ).map((date, i) => {
@@ -2493,7 +2516,59 @@ useEffect(() => {
                              <span className="month">{format(date, "MMM")}</span>
                            </div>
                          );
-                       })}
+                       })} */}
+
+
+
+
+
+
+
+
+
+
+
+
+{getUpcomingDatesToVisits(
+  new Date(MonthlySubscriptionStartDate),
+  new Date(MonthlySubscriptionEndsDate)
+).map((date, i) => {
+  const isSelected =
+    visit.date &&
+    new Date(visit.date).toDateString() === date.toDateString();
+
+  return (
+    <div
+      key={i}
+      className={`date-item ${isSelected ? "selected" : ""}`}
+      onClick={() => {
+        const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+          visitIndex === index
+            ? { ...visitItem, date: date.toISOString().split("T")[0] }
+            : visitItem
+        );
+        setSelectedVisitDates(updatedDates);
+      }}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+            visitIndex === index
+              ? { ...visitItem, date: date.toISOString().split("T")[0] }
+              : visitItem
+          );
+          setSelectedVisitDates(updatedDates);
+        }
+      }}
+    >
+      <span className="day">{format(date, "EEE")}</span>
+      <span className="date">{format(date, "dd")}</span>
+      <span className="month">{format(date, "MMM")}</span>
+    </div>
+  );
+})}
+
                      </div>
 
 
@@ -4423,6 +4498,25 @@ useEffect(() => {
                   </div>
                 </button>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{service.id !== 9 &&  (
+  <>
                 <button
                   className="payment-option-button"
                   onClick={(event) => {
@@ -4444,6 +4538,19 @@ useEffect(() => {
                     <div className="payment-arrow">→</div>
                   </div>
                 </button>
+
+</>
+                )}
+
+
+
+
+
+
+
+
+
+
               </div>
             </div>
           </div>

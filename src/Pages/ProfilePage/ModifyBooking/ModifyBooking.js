@@ -239,7 +239,8 @@ useEffect(() => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_data/${service?.id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
         );
 
         if (response?.data?.success === true) {
@@ -1566,10 +1567,13 @@ const handleCheckboxChange = (id) => {
   
     useEffect(() => {
       if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
-        const hoursPerVisit =
-          SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
-          SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+        // const hoursPerVisit =
+        //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+        //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
     
+        const hoursPerVisit =
+        SelectedNumberOfSlotsObjectForMonthlyGardner.hours;
+
         const newVisitDates = [];
         let currentDate = new Date(MonthlySubscriptionStartDate);
         for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
@@ -1743,7 +1747,7 @@ const handleCheckboxChange = (id) => {
                         className="booking-form-label"
                         htmlFor="date-input"
                       >
-                        Monthly Subscription Start Date
+                        Monthly Package Start Date
                       </label>
                       <LocalizationProvider dateAdapter={AdapterDateFns}>
                         <DatePicker
@@ -3072,7 +3076,7 @@ Your Subscription Ends At:
 
                 <div className="fare-breakdown-div mt-1">
                   <div className="fare-breakdown-title">
-                    <h5>Grand Total :</h5>
+                    <h5>Total Amount :</h5>
                   </div>
                   <div>
                     <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>
@@ -3184,7 +3188,7 @@ Your Subscription Ends At:
 
 
 
-{DefaultDataOfBooking?.payment_mode === "cod" && (
+{DefaultDataOfBooking?.payment_mode === "cod" && service.id !== 9 && (
 <>
 
                 <button     
