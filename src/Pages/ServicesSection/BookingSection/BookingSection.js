@@ -4066,9 +4066,17 @@ const BookingSection = () => {
                 >
                   ←
                 </button>
+                <div>
                 <h2 className="payment-title">
                   Bill Total: ₹ {DataForPricesAppliedGet?.billing_amount}
                 </h2>
+                 
+                {DataForPricesAppliedGet?.due_payments > 0 && (
+  <p className="">
+    Amount Due: ₹ {DataForPricesAppliedGet.due_payments}
+  </p>
+)}
+</div>
               </div>
 
               <div className="payment-section-body">
