@@ -590,17 +590,18 @@ const BookingSection = () => {
   const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
   const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
-  useEffect(() => {
-    // console.log("noooooooo");
-  
-    if (basicDataByGet?.sub_category?.booking_time_before) {
-    // console.log("yesssssss");
+useEffect(() => {
+  if (basicDataByGet?.sub_category?.booking_time_before) {
+    setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
+  }
+}, [basicDataByGet]);
 
-      setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
-    }
-  }, [basicDataByGet]);
 
-    const filterTimeOptions = () => {
+
+
+
+
+  const filterTimeOptions = () => {
       if (!selectedDate || timeOptions.length === 0) return;
 
       const currentDate = new Date();
@@ -615,20 +616,17 @@ const BookingSection = () => {
       const currentTimeInMinutes = timeToMinutes(currentTime);
       let startBoundary = timeToMinutes(serviceStartTime);
 
-      console.log(
-        currentTimeInMinutes,
-        "currentTimeInMinutescurrentTimeInMinutes"
-      );
-      console.log(adjustedStartTime, "adjustedStartTimeadjustedStartTime");
-
       if (selectedDate.toDateString() === today) {
-        // Consider both current time and adjusted start time
         startBoundary = Math.max(
-          currentTimeInMinutes,
-          startBoundary,
-          adjustedStartTime
+          currentTimeInMinutes + adjustedStartTime, 
+          startBoundary
         );
       }
+
+      // startBoundary = Math.max(
+      //   currentTimeInMinutes + adjustedStartTime, 
+      //   startBoundary
+      // );
 
       const options = timeOptions.filter((time) => {
         const timeInMinutes = timeToMinutes(time);
@@ -644,15 +642,6 @@ const BookingSection = () => {
   useEffect(() => {
     filterTimeOptions();
   }, [selectedDate, basicDataByGet, adjustedStartTime]);
-
-
-
-
-
-
-
-
-
 
 
 

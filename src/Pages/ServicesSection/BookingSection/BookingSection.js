@@ -601,39 +601,68 @@ useEffect(() => {
 
 
 
-  const filterTimeOptions = () => {
-      if (!selectedDate || timeOptions.length === 0) return;
+const filterTimeOptions = () => {
+  if (!selectedDate || timeOptions.length === 0) return;
 
-      const currentDate = new Date();
-      const today = currentDate.toDateString();
-      const currentTime = getCurrentTimeInHHMM();
+  const currentDate = new Date();
+  // Convert current date to IST string and then back to Date object
+  const today = new Date(currentDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })).toDateString();
+  const currentTime = getCurrentTimeInHHMM();
 
-      const serviceStartTime =
-        basicDataByGet?.sub_category?.service_start_time || "00:00";
-      const serviceEndTime =
-        basicDataByGet?.sub_category?.service_end_time || "23:59";
+  const serviceStartTime =
+    basicDataByGet?.sub_category?.service_start_time || "00:00";
+  const serviceEndTime =
+    basicDataByGet?.sub_category?.service_end_time || "23:59";
 
-      const currentTimeInMinutes = timeToMinutes(currentTime);
-      let startBoundary = timeToMinutes(serviceStartTime);
+  // Convert current time and service times to minutes
+  const currentTimeInMinutes = timeToMinutes(currentTime);
+  let startBoundary = timeToMinutes(serviceStartTime);
+  let remainingMinutes = 0;
 
-      if (selectedDate.toDateString() === today) {
-        startBoundary = Math.max(
-          currentTimeInMinutes + adjustedStartTime, 
-          startBoundary
-        );
-      }
+  // Check if selected date is today in IST
+  if (new Date(selectedDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })).toDateString() === today) {
+    // Set the start boundary to the later of adjusted start time or current time
+    startBoundary = Math.max(
+      currentTimeInMinutes + adjustedStartTime, 
+      startBoundary
+    );
 
-      const options = timeOptions.filter((time) => {
-        const timeInMinutes = timeToMinutes(time);
-        return (
-          timeInMinutes >= startBoundary &&
-          timeInMinutes <= timeToMinutes(serviceEndTime)
-        );
-      });
+    // If current time exceeds the serviceEndTime, calculate the remaining minutes
+    if (currentTimeInMinutes > timeToMinutes(serviceEndTime)) {
+      remainingMinutes = currentTimeInMinutes - timeToMinutes(serviceEndTime);
+      startBoundary = timeToMinutes(serviceStartTime); // Reset start boundary for the next day
+    }
+  }
 
-      setFilteredTimeOptions(options);
-    };
+  // Check for next day's remaining minutes adjustment, respecting IST
+  if (remainingMinutes > 0) {
+    // Add remaining minutes to the service start time of the next day (in IST)
+    const nextDayStartTime = timeToMinutes(serviceStartTime) + remainingMinutes;
+    const nextDayServiceEndTime = timeToMinutes(serviceEndTime);
 
+    // Apply the remaining minutes to next day's start time, ensuring it doesn't exceed serviceEndTime
+    if (nextDayStartTime <= nextDayServiceEndTime) {
+      startBoundary = nextDayStartTime; // Update start boundary for the next day
+    } else {
+      startBoundary = nextDayServiceEndTime; // If it exceeds serviceEndTime, cap it at serviceEndTime
+    }
+  }
+
+  // Now filter the time options based on the start boundary
+  const options = timeOptions.filter((time) => {
+    const timeInMinutes = timeToMinutes(time);
+    return (
+      timeInMinutes >= startBoundary &&
+      timeInMinutes <= timeToMinutes(serviceEndTime)
+    );
+  });
+
+  setFilteredTimeOptions(options);
+};
+
+
+
+  
   useEffect(() => {
     filterTimeOptions();
   }, [selectedDate, basicDataByGet, adjustedStartTime]);
@@ -643,6 +672,27 @@ useEffect(() => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 
 
 
