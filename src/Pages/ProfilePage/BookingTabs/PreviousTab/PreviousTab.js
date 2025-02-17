@@ -240,11 +240,24 @@ function PreviousTab() {
                       </p>
                     </div>
                     <div className="info-group">
-                      <h4 className="booking-subtitle">Address</h4>
-                      <p className="booking-info-text">
-                        {bookingsIdWise?.visit_address}
-                      </p>
-                    </div>
+                        <h4 className="booking-subtitle">Address</h4>
+                        {bookingsIdWise?.category_id === 2 ? (
+                          <>
+                            <p className="booking-info-text">
+                              <strong>From: </strong>
+                              {bookingsIdWise?.address_from || "N/A"}
+                            </p>
+                            <p className="booking-info-text">
+                              <strong>To: </strong>
+                              {bookingsIdWise?.address_to || "N/A"}
+                            </p>
+                          </>
+                        ) : (
+                          <p className="booking-info-text">
+                            {bookingsIdWise?.visit_address || "N/A"}
+                          </p>
+                        )}
+                      </div>
                     {bookingsIdWise?.sub_category_id === 9 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">
