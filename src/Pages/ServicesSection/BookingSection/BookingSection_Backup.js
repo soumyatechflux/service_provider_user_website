@@ -153,6 +153,11 @@ const BookingSection = () => {
 
         if (response?.data?.success === true) {
           setBasicDataByGet(response?.data?.data || {});
+          filterTimeOptions();
+          // console.log(response?.data?.data?.sub_category?.booking_time_before,"response?.data?.data?.sub_category?.booking_time_before")
+      setAdjustedStartTime(response?.data?.data?.sub_category?.booking_time_before);
+
+
         } else {
           setBasicDataByGet({});
         }
@@ -453,11 +458,106 @@ const BookingSection = () => {
     return dates;
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Generate dynamic dates
   const getUpcomingDates = () => {
     const today = new Date();
-    return Array.from({ length: 60 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
+    return Array.from({ length: 60 }, (_, i) => addDays(today, i)); 
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const generateTimeIntervals = () => {
     const intervals = [];
@@ -491,12 +591,15 @@ const BookingSection = () => {
   const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
   useEffect(() => {
+    // console.log("noooooooo");
+  
     if (basicDataByGet?.sub_category?.booking_time_before) {
+    // console.log("yesssssss");
+
       setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
     }
   }, [basicDataByGet]);
 
-  useEffect(() => {
     const filterTimeOptions = () => {
       if (!selectedDate || timeOptions.length === 0) return;
 
@@ -538,8 +641,35 @@ const BookingSection = () => {
       setFilteredTimeOptions(options);
     };
 
+  useEffect(() => {
     filterTimeOptions();
   }, [selectedDate, basicDataByGet, adjustedStartTime]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const [people, setPeople] = useState(1);
 

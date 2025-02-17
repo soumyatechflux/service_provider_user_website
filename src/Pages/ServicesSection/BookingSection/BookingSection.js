@@ -153,6 +153,11 @@ const BookingSection = () => {
 
         if (response?.data?.success === true) {
           setBasicDataByGet(response?.data?.data || {});
+          filterTimeOptions();
+          // console.log(response?.data?.data?.sub_category?.booking_time_before,"response?.data?.data?.sub_category?.booking_time_before")
+      setAdjustedStartTime(response?.data?.data?.sub_category?.booking_time_before);
+
+
         } else {
           setBasicDataByGet({});
         }
@@ -453,11 +458,106 @@ const BookingSection = () => {
     return dates;
   };
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Generate dynamic dates
   const getUpcomingDates = () => {
     const today = new Date();
-    return Array.from({ length: 60 }, (_, i) => addDays(today, i)); // 7 days for performance optimization
+    return Array.from({ length: 60 }, (_, i) => addDays(today, i)); 
   };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const generateTimeIntervals = () => {
     const intervals = [];
@@ -490,14 +590,18 @@ const BookingSection = () => {
   const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
   const [adjustedStartTime, setAdjustedStartTime] = useState(0);
 
-  useEffect(() => {
-    if (basicDataByGet?.sub_category?.booking_time_before) {
-      setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
-    }
-  }, [basicDataByGet]);
+useEffect(() => {
+  if (basicDataByGet?.sub_category?.booking_time_before) {
+    setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
+  }
+}, [basicDataByGet]);
 
-  useEffect(() => {
-    const filterTimeOptions = () => {
+
+
+
+
+
+  const filterTimeOptions = () => {
       if (!selectedDate || timeOptions.length === 0) return;
 
       const currentDate = new Date();
@@ -512,18 +616,10 @@ const BookingSection = () => {
       const currentTimeInMinutes = timeToMinutes(currentTime);
       let startBoundary = timeToMinutes(serviceStartTime);
 
-      console.log(
-        currentTimeInMinutes,
-        "currentTimeInMinutescurrentTimeInMinutes"
-      );
-      console.log(adjustedStartTime, "adjustedStartTimeadjustedStartTime");
-
       if (selectedDate.toDateString() === today) {
-        // Consider both current time and adjusted start time
         startBoundary = Math.max(
-          currentTimeInMinutes,
-          startBoundary,
-          adjustedStartTime
+          currentTimeInMinutes + adjustedStartTime, 
+          startBoundary
         );
       }
 
@@ -538,8 +634,26 @@ const BookingSection = () => {
       setFilteredTimeOptions(options);
     };
 
+  useEffect(() => {
     filterTimeOptions();
   }, [selectedDate, basicDataByGet, adjustedStartTime]);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   const [people, setPeople] = useState(1);
 
