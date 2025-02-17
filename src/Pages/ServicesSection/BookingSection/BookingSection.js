@@ -67,7 +67,8 @@ const BookingSection = () => {
   const [addresses, setAddresses] = useState([]);
 
   const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
-  const [isUsePoints, setIsUsePoints] = useState(true);
+
+  const [isUsePoints, setIsUsePoints] = useState(false);
 
   const dropdownRef = useRef(null); // Reference to the dropdown container
 
@@ -313,6 +314,8 @@ const BookingSection = () => {
       setLoading(false);
     }
   };
+
+  console.log("setDataForPricesAppliedGet : ", setDataForPricesAppliedGet);
 
   const dishesArray = Array.isArray(DataForPricesAppliedGet.dishes)
     ? DataForPricesAppliedGet.dishes
@@ -1371,7 +1374,6 @@ const BookingSection = () => {
   };
 
   const handleApplyCoupen = async () => {
-    // setIsCouponsVisible(false);
     setLoading(true);
 
     const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
@@ -1384,17 +1386,12 @@ const BookingSection = () => {
 
     try {
       const body = {
-        booking_id: DataForPricesAppliedGet
-          ? DataForPricesAppliedGet.booking_id
-          : "",
-        voucher_code: voucherCode ? voucherCode : "",
+        booking_id: DataForPricesAppliedGet?.booking_id || "",
+        voucher_code: voucherCode || "",
       };
-
-      setLoading(true);
 
       const response = await axios.post(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/discount/verify`,
-
         body,
         {
           headers: {
@@ -1404,25 +1401,60 @@ const BookingSection = () => {
         }
       );
 
-      setLoading(false);
-
       if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        toast.success(response?.data?.message || "Coupen id Valid.");
+        setOriginalData(response?.data?.data); // Store the discounted data as the new base
+        toast.success(response?.data?.message || "Coupon applied successfully.");
         setIsCouponsVisible(false);
-        // handleCouponsVisibility();
       } else {
-        toast.error(
-          response?.data?.message || "Coupen id In-Valid at this time."
-        );
+        toast.error(response?.data?.message || "Invalid coupon.");
         setSelectedCoupon(null);
       }
     } catch (error) {
-      setLoading(false);
       console.error("Error:", error);
       toast.error("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-  };
+};
+
+
+  const [dataAfterUsePoint, setDataAfterUsePoint] = useState({});
+  const [originalData, setOriginalData] = useState(null); // Store original data
+
+  const toggleUsePoints = async () => {
+    const newUsePoints = !isUsePoints;
+    setIsUsePoints(newUsePoints);
+
+    const bookingId = DataForPricesAppliedGet?.booking_id;
+
+    if (newUsePoints && bookingId) {
+      // Store the latest discounted data before applying points
+      if (!originalData) {
+        setOriginalData(DataForPricesAppliedGet);
+      }
+
+      setLoading(true);
+      try {
+        const response = await axios.post(
+          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
+          { booking_id: bookingId },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setDataForPricesAppliedGet(response?.data?.data);
+        console.log("API Response after checkbox ticked:", response?.data?.data);
+      } catch (error) {
+        console.error("Error calling API:", error);
+      } finally {
+        setLoading(false);
+      }
+    } else if (!newUsePoints && originalData) {
+      setDataForPricesAppliedGet(originalData); // Restore the discounted price
+      setOriginalData(null);
+      console.log("Restored original data after unticking checkbox:", originalData);
+    }
+};
+
 
   const [DriverCoordinates, setDriverCoordinates] = useState({});
 
@@ -3567,95 +3599,100 @@ const BookingSection = () => {
                 <div className="booking-detail-card">
                   {service.id !== 9 && (
                     <>
-                   <div>
-  <strong>Date:</strong>
-  <div>
-    {DataForPricesAppliedGet?.visit_date
-      ? new Date(DataForPricesAppliedGet.visit_date).toLocaleDateString("en-GB")
-      : "N/A"}
-  </div>
-</div>
+                      <div>
+                        <strong>Date:</strong>
+                        <div>
+                          {DataForPricesAppliedGet?.visit_date
+                            ? new Date(
+                                DataForPricesAppliedGet.visit_date
+                              ).toLocaleDateString("en-GB")
+                            : "N/A"}
+                        </div>
+                      </div>
 
-<div>
-  <strong>Time:</strong>
-  <div>
-    {DataForPricesAppliedGet?.visit_time
-      ? (() => {
-          const [hours, minutes] = DataForPricesAppliedGet.visit_time.split(":");
-          const hour = parseInt(hours, 10);
-          const period = hour >= 12 ? "PM" : "AM";
-          const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
-          return `${formattedHour}:${minutes} ${period}`;
-        })()
-      : "N/A"}
-  </div>
-</div>
-
-                  </>
-                  
+                      <div>
+                        <strong>Time:</strong>
+                        <div>
+                          {DataForPricesAppliedGet?.visit_time
+                            ? (() => {
+                                const [hours, minutes] =
+                                  DataForPricesAppliedGet.visit_time.split(":");
+                                const hour = parseInt(hours, 10);
+                                const period = hour >= 12 ? "PM" : "AM";
+                                const formattedHour = hour % 12 || 12; // Convert 0 to 12 for 12-hour format
+                                return `${formattedHour}:${minutes} ${period}`;
+                              })()
+                            : "N/A"}
+                        </div>
+                      </div>
+                    </>
                   )}
 
                   <div></div>
                 </div>
 
                 {DataForPricesAppliedGet?.category_id === 1 && (
-  <div className="booking-detail-card">
-    <div>
-      <strong>Dishes :</strong>
-    </div>
-    <div>
-      {DataForPricesAppliedGet?.sub_category_id === 3
-        ? // ✅ If sub_category_id is 3, parse menu data
-          (() => {
-            try {
-              const menuArray = JSON.parse(DataForPricesAppliedGet.menu || "[]");
-              return menuArray.length > 0
-                ? menuArray.map((item, index) => (
-                    <span key={index}>
-                      {item.name} - {item.quantity}
-                      {index !== menuArray.length - 1 && ", "}
-                      <br />
-                    </span>
-                  ))
-                : "None";
-            } catch (error) {
-              console.error("Error parsing menu:", error);
-              return "Invalid menu data";
-            }
-          })()
-        : // ✅ Otherwise, show dishes with commas
-        Array.isArray(DataForPricesAppliedGet?.dishes) &&
-          DataForPricesAppliedGet.dishes.length > 0
-        ? DataForPricesAppliedGet.dishes.map((dish, index) => (
-            <span key={index}>
-              {dish}
-              {index !== DataForPricesAppliedGet.dishes.length - 1 && ", "}
-            </span>
-          ))
-        : "None"}
-    </div>
-  </div>
-)}
+                  <div className="booking-detail-card">
+                    <div>
+                      <strong>Dishes :</strong>
+                    </div>
+                    <div>
+                      {DataForPricesAppliedGet?.sub_category_id === 3
+                        ? // ✅ If sub_category_id is 3, parse menu data
+                          (() => {
+                            try {
+                              const menuArray = JSON.parse(
+                                DataForPricesAppliedGet.menu || "[]"
+                              );
+                              return menuArray.length > 0
+                                ? menuArray.map((item, index) => (
+                                    <span key={index}>
+                                      {item.name} - {item.quantity}
+                                      {index !== menuArray.length - 1 && ", "}
+                                      <br />
+                                    </span>
+                                  ))
+                                : "None";
+                            } catch (error) {
+                              console.error("Error parsing menu:", error);
+                              return "Invalid menu data";
+                            }
+                          })()
+                        : // ✅ Otherwise, show dishes with commas
+                        Array.isArray(DataForPricesAppliedGet?.dishes) &&
+                          DataForPricesAppliedGet.dishes.length > 0
+                        ? DataForPricesAppliedGet.dishes.map((dish, index) => (
+                            <span key={index}>
+                              {dish}
+                              {index !==
+                                DataForPricesAppliedGet.dishes.length - 1 &&
+                                ", "}
+                            </span>
+                          ))
+                        : "None"}
+                    </div>
+                  </div>
+                )}
 
-{DataForPricesAppliedGet?.category_id === 2 && (
-  <>
-    <div className="booking-detail-card">
-      <div>
-        <strong>Car Type :</strong>
-      </div>
-      <div>{DataForPricesAppliedGet.car_type || "None"}</div>
-    </div>
+                {DataForPricesAppliedGet?.category_id === 2 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Car Type :</strong>
+                      </div>
+                      <div>{DataForPricesAppliedGet.car_type || "None"}</div>
+                    </div>
 
-    <div className="booking-detail-card">
-      <div>
-        <strong>Transmission Type :</strong>
-      </div>
-      <div>{DataForPricesAppliedGet.transmission_type || "None"}</div>
-    </div>
-  </>
-)}
-
-
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Transmission Type :</strong>
+                      </div>
+                      <div>
+                        {DataForPricesAppliedGet.transmission_type || "None"}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <div className="booking-detail-card">
                   <div>
@@ -3868,26 +3905,6 @@ const BookingSection = () => {
                 </div>
               </div>
 
-              <div
-                className="d-flex align-items-center gap-2 details-item "
-                style={{ marginTop: "20px", flexDirection: "row" }}
-              >
-                <input
-                  type="checkbox"
-                  id="secureFeeCheckbox"
-                  checked={isUsePoints}
-                  onChange={() => setIsUsePoints(!isUsePoints)}
-                  style={{ width: "18px", height: "18px", cursor: "pointer" }}
-                />
-                <label
-                  className="form-check-label fw-bold"
-                  htmlFor="secureFeeCheckbox"
-                  style={{ fontSize: "16px", cursor: "pointer" }}
-                >
-                  Use Reward Points : ₹ {service?.wallet_amount}
-                </label>
-              </div>
-
               <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
               <div className="fare-breakdown-section">
                 <div className="fare-breakdown-card">
@@ -3982,6 +3999,18 @@ const BookingSection = () => {
                     <div className="fare-breakdown-title">Discount :</div>
                     <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                   </div>
+                  {dataAfterUsePoint?.data?.use_points_amount > 0 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Points Used :
+                        </div>
+                        <div>
+                          -₹ {dataAfterUsePoint?.data?.use_points_amount}
+                        </div>
+                      </div>
+                    </>
+                  )}
 
                   {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
@@ -4017,21 +4046,6 @@ const BookingSection = () => {
                   </div>
                 </div>
               </div>
-
-              {/* <div className="additional-details">
-              <h3>Additional Details</h3>
-              <div className="details-item">
-                <span className="mb-1">🌙 Night Surcharge Policy</span>
-                <span className="mb-1">
-  ⏰ Timing : {convertTo12HourFormat(basicDataByGet?.sub_category?.service_start_time)} to {convertTo12HourFormat(basicDataByGet?.sub_category?.service_end_time)}
-</span>
-
-<span className="mb-1">
-  💵 Surcharge : 12%
-</span>
-
-              </div>
-            </div> */}
 
               <div className="booking-summary-footer ">
                 <div className="estimated-fare">
@@ -4072,6 +4086,40 @@ const BookingSection = () => {
               </div>
 
               <div className="payment-section-body">
+              <div className="payment-option-button reward-points-option">
+  <div className="payment-option">
+    <div className="payment-icon">
+      <img src="/coin.png" alt="Reward Icon" />
+    </div>
+    <div className="payment-details">
+  <h3>Use Reward Points</h3>
+  <p>
+    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Coins 
+    <span style={{ fontSize: "14px", color: "#666" }}> (10 Coins = ₹1)</span>
+  </p>
+  {/* <p>
+    Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
+  </p> */}
+  <p>
+    Points Used: {DataForPricesAppliedGet?.use_points_amount * 10} Coins
+  </p>
+  <p>
+    Discount Applied: ₹ {DataForPricesAppliedGet?.use_points_amount}
+  </p>
+</div>
+
+    <label className="switch">
+      <input
+        type="checkbox"
+        id="secureFeeCheckbox"
+        checked={isUsePoints}
+        onChange={toggleUsePoints}
+      />
+      <span className="slider round"></span>
+    </label>
+  </div>
+</div>
+
                 <button
                   className="payment-option-button"
                   onClick={(event) => {
