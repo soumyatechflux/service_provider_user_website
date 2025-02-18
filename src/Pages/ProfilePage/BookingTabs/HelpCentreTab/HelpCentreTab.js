@@ -1,51 +1,44 @@
-import React, { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom"; // Import to get passed state
-import { toast } from "react-toastify";
 import axios from "axios";
 import { Calendar } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../Loader/Loader";
-import "./HelpCentreTab.css";
 import MessageModal from "../../../MessageModal/MessageModal";
+import "./HelpCentreTab.css";
 
 const HelpCentreTab = () => {
-
   const location = useLocation();
-  const { booking_id, sub_category_name } = location.state || {}; // Get booking details
+  const { booking_id, sub_category_name } = location.state || {};
   const [query, setQuery] = useState("");
   const [queries, setQueries] = useState([]);
   const [loading, setLoading] = useState(false);
- const [message, setMessage] = useState("");
- const [show, setShow] = useState(false);
-const handleClose = () => setShow(false);
-const handleShow = () => setShow(true);
-  
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const [attachment, setAttachment] = useState(null);
 
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
-
-  const BASE_API_URL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL; // Get base URL from env
+  const BASE_API_URL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL;
   const POST_API_URL = `${BASE_API_URL}/api/customer/help_center/add`;
-  const GET_API_URL = `${BASE_API_URL}/api/customer/help_center`; // Fetch all queries for the user
+  const GET_API_URL = `${BASE_API_URL}/api/customer/help_center`;
 
-  // Fetch previous queries when component loads
   useEffect(() => {
     const fetchQueries = async () => {
       setLoading(true);
       try {
         const token = sessionStorage.getItem("ServiceProviderUserToken");
-  
         const response = await axios.get(GET_API_URL, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         });
-  
+
         if (response.data.success && response.data.data) {
           const data = response.data.data;
-  
-          // Filter queries to only include those with matching booking_id
           const filteredQueries = data.filter(item => item.booking_id === booking_id);
-  
+
           setQueries(
             filteredQueries.map((item) => ({
               id: item.id,
@@ -62,7 +55,7 @@ const handleShow = () => setShow(true);
             }))
           );
         } else {
-          setQueries([]); // Empty state if no data found
+          setQueries([]);
         }
       } catch (error) {
         console.error("Error fetching queries:", error);
@@ -72,12 +65,16 @@ const handleShow = () => setShow(true);
         setLoading(false);
       }
     };
-  
+
     if (booking_id) {
-      fetchQueries(); // Fetch only if booking_id is available
+      fetchQueries();
     }
-  }, [booking_id]); // Re-run effect when booking_id changes
-  
+  }, [booking_id]);
+
+  const handleFileChange = (e) => {
+    setAttachment(e.target.files[0]);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (query.trim() === "") {
@@ -85,29 +82,27 @@ const handleShow = () => setShow(true);
       handleShow();
       return;
     }
-  
+
     setLoading(true);
-  
+
     try {
       const token = sessionStorage.getItem("ServiceProviderUserToken");
-  
-      const response = await axios.post(
-        POST_API_URL,
-        { 
-          description: query, 
-          booking_id : booking_id  // ✅ Sending booking_id in the payload
+      const formData = new FormData();
+      formData.append("description", query);
+      formData.append("booking_id", booking_id);
+      if (attachment) {
+        formData.append("attachment", attachment, attachment.name);
+      }
+
+      const response = await axios.post(POST_API_URL, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
         },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-  
+      });
+
       const { description } = response.data;
-  
-      // Update state with new query
+
       setQueries((prevQueries) => [
         ...prevQueries,
         {
@@ -121,11 +116,11 @@ const handleShow = () => setShow(true);
           updateddate: "Just now",
         },
       ]);
-  
-      setQuery(""); // Clear input field
+
+      setQuery("");
+      setAttachment(null);
       setMessage("Your query has been submitted successfully! 🎉");
       handleShow();
-  
     } catch (error) {
       console.error("Error submitting query:", error);
       setMessage("Failed to submit query. Please try again.");
@@ -134,7 +129,6 @@ const handleShow = () => setShow(true);
       setLoading(false);
     }
   };
-  
 
   return (
     <div className="help-center-container">
@@ -142,7 +136,7 @@ const handleShow = () => setShow(true);
 
       <form onSubmit={handleSubmit} className="query-form">
         <div className="form-group">
-        <div className="Service-Heading">
+          <div className="Service-Heading">
             {sub_category_name ? `Service Name - ${sub_category_name}  ` : "Service Name"}
           </div>
           <label htmlFor="user-query">Tell us About Your Issue !</label>
@@ -155,10 +149,19 @@ const handleShow = () => setShow(true);
             disabled={loading}
           />
         </div>
+        <div className="form-group">
+          <label htmlFor="file-upload">Attach a file (optional):</label>
+          <input
+            type="file"
+            id="file-upload"
+            onChange={handleFileChange}
+            disabled={loading}
+          />
+        </div>
         <button type="submit" className="submit-button">Submit Ticket</button>
       </form>
 
-      {loading && <Loader />} {/* Show loader while fetching */}
+      {loading && <Loader />} 
 
       <h2 className="section-title">Previous Tickets</h2>
       <div className="cards-grid">
@@ -173,9 +176,7 @@ const handleShow = () => setShow(true);
               </div>
               <div className="card-content">
                 <p className="query-text">{item.query}</p>
-                <span className={`status-badge ${item.status.toLowerCase()}`}>
-                  {item.status}
-                </span>
+                <span className={`status-badge ${item.status.toLowerCase()}`}>{item.status}</span>
               </div>
             </div>
           ))
@@ -183,12 +184,7 @@ const handleShow = () => setShow(true);
           <p className="no-queries">No previous Tickets found.</p>
         )}
       </div>
-      <MessageModal
-        show={show}
-        handleClose={handleClose}
-        handleShow={handleShow}
-        message={message}
-      />
+      <MessageModal show={show} handleClose={handleClose} handleShow={handleShow} message={message} />
     </div>
   );
 };

@@ -182,54 +182,58 @@
   letter-spacing: 0.5px;
 }
 
-/* Status Badge Colors */
-.status-badge.inprogress {
-  background-color: #d1fad1; /* Light Green for In Progress */
-  color: #2f9f2f;
+/* Status Badge and Card Background Colors for New Status */
+.status-badge.new {
+  background-color: #d1e7ff; /* Light Blue for New */
+  color: #2d5ba3;
 }
 
-.status-badge.open {
-  background-color: #fde0c9; /* Light Orange for Open */
-  color: #9a6027;
+.card-helpcentre.new {
+  background-color: #d1e7ff; /* Light Blue for New */
 }
 
-.status-badge.closed {
-  background-color: #f8d7da; /* Light Red for Closed */
+/* Status Badge and Card Background Colors for In Review */
+.status-badge.inreview {
+  background-color: #fff3cd; /* Light Yellow for In Review */
+  color: #8a6d3b;
+}
+
+.card-helpcentre.in-review {
+  background-color: #fff3cd; /* Light Yellow for In Review */
+}
+
+/* Status Badge and Card Background Colors for Rejected */
+.status-badge.rejected {
+  background-color: #f8d7da; /* Light Red for Rejected */
   color: #9b2d20;
 }
 
+.card-helpcentre.rejected {
+  background-color: #f8d7da; /* Light Red for Rejected */
+}
+
+/* Status Badge and Card Background Colors for Resolved */
 .status-badge.resolved {
-  background-color: #e0f7fa; /* Light Blue for Resolved */
-  color: #0278a0;
-}
-
-/* Status Badge Colors */
-.status-badge.pending {
-  background-color: #fef9c3; /* Light Yellow for Pending */
-  color: #a68b00;
-}
-
-/* Background color for Pending status cards */
-.card-helpcentre.pending {
-  background-color: #fef9c3; /* Light Yellow for Pending */
-}
-
-
-/* Background color for different status cards */
-.card-helpcentre.inprogress {
-  background-color: #d1fad1; /* Light Green for In Progress */
-}
-
-.card-helpcentre.open {
-  background-color: #fde0c9; /* Light Orange for Open */
-}
-
-.card-helpcentre.closed {
-  background-color: #f8d7da; /* Light Red for Closed */
+  background-color: #d1f7d6; /* Light Green for Resolved */
+  color: #2e7d32;
 }
 
 .card-helpcentre.resolved {
-  background-color: #e0f7fa; /* Light Blue for Resolved */
+  background-color: #d1f7d6; /* Light Green for Resolved */
+}
+
+/* Status Badge and Card Background Colors for Pending */
+.status-badge.pending {
+  background-color: #fff9c4; /* Light Yellow for Pending */
+  color: #a68b00;
+}
+
+.card-helpcentre.pending {
+  background-color: #fff9c4; /* Light Yellow for Pending */
+}
+
+.card-helpcentre.resolved {
+  background-color: #d1f7d6; /* Light Green for Resolved */
 }
 
 .section-title {
@@ -239,6 +243,21 @@
   margin-bottom: 10px;
   color: #1d1d1f;
   text-align: center;
+}
+
+
+.attachment-preview {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.uploaded-image {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 /* Responsive Design */
