@@ -655,61 +655,52 @@ const ProfileDetails = () => {
       </div>
 
       
-{/* <div className="container nav-container col-md-12 d-flex" style={{justifyContent:"space-evenly"}}>
 
-
-      <div className="container nav-container profile-container col-md-8 m-0">
-        <h1>
-          Share You Referral Code To Earn Points
-          
-        </h1>
-        <div className="referral-container">
-         
-          <span className="referral-code">{referralCode}</span>
-
-          
-          <button className="icon-btn copy-btn" onClick={copyToClipboard}>
-            <FaCopy />
-          </button>
-
-          
-          <a
-            href={whatsappURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="icon-btn whatsapp"
-          >
-            <FaWhatsapp />
-          </a>
-          <a
-            href={facebookURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="icon-btn facebook"
-          >
-            <FaFacebook />
-          </a>
-          <a
-            href={twitterURL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="icon-btn twitter"
-          >
-            <FaTwitter />
-          </a>
-          <a href={emailURL} className="icon-btn email">
-            <FaEnvelope />
-          </a>
-        </div>
-      </div>
-      <div className="container nav-container profile-container col-md-3 m-0">
-        <h1>Your Points</h1>
-        <div className="referral-container">
-          
-          <span className="referral-code" style={{fontSize:"32px"}}>{walletBalance}</span>
-        </div>
-      </div>
-      </div> */}
+  {/* referral code */}
+  <div className="container nav-container col-12 d-flex flex-wrap justify-content-center justify-content-md-evenly align-items-center">
+  <div className="container nav-container profile-container col-12 col-md-8 text-center text-md-start">
+    <h1 className="fs-4 fs-md-3">Share Your Referral Code To Earn Points</h1>
+    <div className="referral-container d-flex flex-wrap align-items-center justify-content-center justify-content-md-start gap-2">
+      <span className="referral-code">{referralCode}</span>
+      <button className="icon-btn copy-btn" onClick={copyToClipboard}>
+        <FaCopy />
+      </button>
+      <a
+        href={whatsappURL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="icon-btn whatsapp"
+      >
+        <FaWhatsapp />
+      </a>
+      <a
+        href={facebookURL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="icon-btn facebook"
+      >
+        <FaFacebook />
+      </a>
+      <a
+        href={twitterURL}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="icon-btn twitter"
+      >
+        <FaTwitter />
+      </a>
+      <a href={emailURL} className="icon-btn email">
+        <FaEnvelope />
+      </a>
+    </div>
+  </div>
+  <div className="container nav-container profile-container col-12 col-md-3 text-center mt-3 mt-md-0">
+    <h1 className="fs-4 fs-md-3">Your Points</h1>
+    <div className="referral-container">
+      <span className="referral-code fw-bold" style={{ fontSize: "32px" }}>{walletBalance}</span>
+    </div>
+  </div>
+</div>
 
       <MessageModal show={show} handleClose={handleClose} message={message} />
     </>
