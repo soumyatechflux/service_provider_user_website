@@ -548,6 +548,20 @@ const LocationModal = ({
               center={location}
               zoom={15}
               onClick={handleMapClick}
+
+              options={{
+                    restriction: {
+                      latLngBounds: {
+                        north: 29.5, // Top boundary (Faridabad, Meerut)
+                        south: 27.5, // Bottom boundary (Palwal, Mathura)
+                        east: 77.8, // Right boundary (Ghaziabad, Noida)
+                        west: 76.7, // Left boundary (Gurgaon, Manesar)
+                      },
+                      strictBounds: true, // Prevent users from panning outside the bounds
+                    },
+                  }}
+
+                  
             >
               <Marker
                 position={location}
@@ -559,6 +573,31 @@ const LocationModal = ({
                 }}
               />
             </GoogleMap>
+
+
+
+//             <GoogleMap
+//   mapContainerStyle={{ width: "100%", height: "400px" }}
+//   center={location || { lat: 28.6139, lng: 77.209 }}
+//   zoom={12}
+//   onClick={handleMapClick}
+//   options={{
+//     restriction: {
+//       latLngBounds: {
+//         north: 29.5, // Top boundary (Faridabad, Meerut)
+//         south: 27.5, // Bottom boundary (Palwal, Mathura)
+//         east: 77.8, // Right boundary (Ghaziabad, Noida)
+//         west: 76.7, // Left boundary (Gurgaon, Manesar)
+//       },
+//       strictBounds: true, // Prevent users from panning outside the bounds
+//     },
+//   }}
+// >
+//   {location && <Marker position={location} draggable onDragEnd={handleMarkerDragEnd} />}
+// </GoogleMap>
+
+
+
             )}
             <Form className="mt-4">
             {UseMyLocation && (

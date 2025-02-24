@@ -7,7 +7,6 @@ import {
 } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
 import Loader from "../../Loader/Loader";
-import debounce from "lodash.debounce";
 
 
 const containerStyle = {
@@ -55,12 +54,55 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
 
 
 
+  // const getCurrentLocation = useCallback(() => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       fetchAddress(latitude, longitude);
+  //       setStartCoordinates({ lat: latitude, lng: longitude });
+  //       if (service?.id === 4) {
+  //         setEndCoordinates({ lat: latitude, lng: longitude });
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error("Error fetching current location:", error);
+  //       alert("Please enable location access or set a manual location.");
+  //     }
+  //   );
+  // }, [service]);
+  
+
+
+
   const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        let { latitude, longitude } = position.coords;
+  
+        // Define Delhi NCR bounds (approximate bounding box)
+        const delhiNCRBounds = {
+          north: 28.9,
+          south: 28.4,
+          west: 76.8,
+          east: 77.4,
+        };
+  
+        // Check if coordinates are outside Delhi NCR
+        const isOutsideDelhiNCR =
+          latitude < delhiNCRBounds.south ||
+          latitude > delhiNCRBounds.north ||
+          longitude < delhiNCRBounds.west ||
+          longitude > delhiNCRBounds.east;
+  
+        if (isOutsideDelhiNCR) {
+          // console.warn("User is outside Delhi NCR. Setting default location to Connaught Place.");
+          latitude = 28.6315;
+          longitude = 77.2167;
+        }
+  
         fetchAddress(latitude, longitude);
         setStartCoordinates({ lat: latitude, lng: longitude });
+  
         if (service?.id === 4) {
           setEndCoordinates({ lat: latitude, lng: longitude });
         }
@@ -71,7 +113,10 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
       }
     );
   }, [service]);
+
   
+
+
 
   // Fetch address from coordinates
   const fetchAddress = async (latitude, longitude) => {
@@ -129,7 +174,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
         });
       }
     } catch (error) {
-      console.error("Error calculating route:", error);
+      // console.error("Error calculating route:", error);
     }
   };
 
@@ -191,7 +236,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   
 
 
-
+  
 
 
 
@@ -236,6 +281,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input
@@ -276,6 +328,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input
@@ -339,6 +398,13 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input

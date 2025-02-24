@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { GoogleMap, Marker } from "@react-google-maps/api";
-import { Spinner } from "react-bootstrap"; // Import Spinner for loading indicator
-import { FaLocationArrow } from "react-icons/fa";
+import { Spinner } from "react-bootstrap";
+import { FaBullseye, FaLocationArrow } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../Loader/Loader";
-
+import { FaCrosshairs } from "react-icons/fa";
 
 const LocationModal = ({
   show,
@@ -30,7 +30,7 @@ const LocationModal = ({
     city: "",
     district: "",
     state: "",
-    country: "",
+    country: "India",
     postalCode: "",
     formattedAddress: "",
     landmark: "", // Initialize landmark
@@ -43,8 +43,8 @@ const LocationModal = ({
 
   useEffect(() => {
     if (show) {
-      if (latitude && longitude) {
-        // Prefill data if latitude and longitude are passed as props
+      // if (latitude && longitude) {
+        if (country) {
         const initialLocation = { lat: latitude, lng: longitude };
         setLocation(initialLocation);
         setAddressDetails({
@@ -53,7 +53,7 @@ const LocationModal = ({
           city: city || "",
           district: district || "",
           state: state || "",
-          country: country || "",
+          country: country || "India",
           postalCode: postalCode || "",
           formattedAddress: formattedAddress || "",
           landmark: landmark || "", // Prefill landmark
@@ -61,7 +61,9 @@ const LocationModal = ({
         });
         setMapLoading(false); // Map is ready after pre-filling
       } else {
-        fetchCurrentLocation(); // Fetch current location if no props data
+        // fetchCurrentLocation();
+        // console.log("dsvbjnk");
+        resetState();
       }
     } else {
       resetState();
@@ -88,18 +90,20 @@ const LocationModal = ({
       city: "",
       district: "",
       state: "",
-      country: "",
+      country: "India",
       postalCode: "",
       formattedAddress: "",
       landmark: "",
       streetAddressLine2: "",
     });
     setLoading(false);
-    setMapLoading(true); // Reset map loading when the modal is closed
+    // setMapLoading(true);
+    setMapLoading(false);
   };
 
   const fetchCurrentLocation = () => {
     setLoading(true);
+    setMapLoading(true); 
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -107,6 +111,9 @@ const LocationModal = ({
           const currentLocation = { lat: latitude, lng: longitude };
           setLocation(currentLocation);
           fetchAddress(currentLocation);
+          setMapLoading(false); 
+    setLoading(false);
+
         },
         (error) => {
           console.error("Error getting location:", error.message);
@@ -195,10 +202,10 @@ const LocationModal = ({
 
   const isFormValid = () => {
     return (
-      addressDetails.latitude !== null &&
-      addressDetails.longitude !== null &&
+      // addressDetails.latitude !== null &&
+      // addressDetails.longitude !== null &&
       addressDetails.streetAddressLine2 !== "" &&
-      addressDetails.landmark !== "" &&
+      // addressDetails.landmark !== "" &&
       addressDetails.city !== "" &&
       addressDetails.state !== "" &&
       addressDetails.postalCode !== "" &&
@@ -221,8 +228,8 @@ const LocationModal = ({
     // Prepare the body for the API request
     const body = {
       address: {
-        latitude: addressDetails.latitude || null,
-        longitude: addressDetails.longitude || null,
+        latitude: addressDetails.latitude || "",
+        longitude: addressDetails.longitude || "",
         street_address_line2: addressDetails.streetAddressLine2 || "",
         landmark: addressDetails.landmark || "",
         city: addressDetails.city || "",
@@ -281,8 +288,8 @@ const LocationModal = ({
     const body = {
       address: {
         address_id: addressToEditId,
-        latitude: addressDetails.latitude || null,
-        longitude: addressDetails.longitude || null,
+        latitude: addressDetails.latitude || "",
+        longitude: addressDetails.longitude || "",
         street_address_line2: addressDetails.streetAddressLine2 || "",
         landmark: addressDetails.landmark || "",
         city: addressDetails.city || "",
@@ -291,6 +298,8 @@ const LocationModal = ({
         country: addressDetails.country || "",
         district: addressDetails.district || "",
         formatted_address: addressDetails.formattedAddress || "",
+
+
       },
     };
   
@@ -324,6 +333,162 @@ const LocationModal = ({
 
 
 
+
+
+  const [UseMyLocation, setUseMyLocation] = useState(false);
+
+  const handleGetCurrentLocation = () => {
+    setUseMyLocation((prevState) => {
+      const newState = !prevState;
+  
+      // Call handleResetLocation() only when newState (UseMyLocation) is true
+      if (newState) {
+    setLoading(true);
+
+        handleResetLocation();
+    setLoading(false);
+
+      }
+  
+      return newState;
+    });
+
+    setLoading(true);
+  
+    resetState();
+    setLoading(false);
+
+  };
+
+
+
+
+
+  useEffect(() => {
+    if (show) {
+      if (latitude && longitude) {
+        setUseMyLocation(true);
+      } else {
+     
+        setUseMyLocation(false);
+      }
+    } else {
+      resetState();
+    }
+  }, [
+    show,
+    latitude,
+    longitude,
+    city,
+    district,
+    state,
+    country,
+    postalCode,
+    formattedAddress,
+    landmark,
+    streetAddressLine2,
+  ]);
+
+
+
+
+
+
+
+    // Inline styles for the loader and overlay
+    const loaderStyle = {
+      border: '8px solid #f3f3f3',  // Light grey
+      borderTop: '8px solid #3498db', // Blue
+      borderRadius: '50%',
+      width: '50px',
+      height: '50px',
+      animation: 'spin 2s linear infinite',
+    };
+  
+    const overlayStyle = {
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      width: '100%',
+      height: '100%',
+      backgroundColor: 'rgba(0, 0, 0, 0.5)', // Semi-transparent black
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: '999', // Ensure the overlay is on top
+      backdropFilter: 'blur(5px)', // Apply the blur effect
+    };
+  
+    // Spinning animation keyframes as an inline style
+    const spinAnimation = '@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }';
+
+
+
+
+
+    const allStates = [
+      { code: 'AP', name: 'Andhra Pradesh' },
+      { code: 'AR', name: 'Arunachal Pradesh' },
+      { code: 'AS', name: 'Assam' },
+      { code: 'BR', name: 'Bihar' },
+      { code: 'CT', name: 'Chhattisgarh' },
+      { code: 'GA', name: 'Goa' },
+      { code: 'GJ', name: 'Gujarat' },
+      { code: 'HR', name: 'Haryana' },
+      { code: 'HP', name: 'Himachal Pradesh' },
+      { code: 'JK', name: 'Jammu & Kashmir' },
+      { code: 'JH', name: 'Jharkhand' },
+      { code: 'KA', name: 'Karnataka' },
+      { code: 'KL', name: 'Kerala' },
+      { code: 'MP', name: 'Madhya Pradesh' },
+      { code: 'MH', name: 'Maharashtra' },
+      { code: 'MN', name: 'Manipur' },
+      { code: 'ML', name: 'Meghalaya' },
+      { code: 'MZ', name: 'Mizoram' },
+      { code: 'NL', name: 'Nagaland' },
+      { code: 'OD', name: 'Odisha' },
+      { code: 'PB', name: 'Punjab' },
+      { code: 'RJ', name: 'Rajasthan' },
+      { code: 'SK', name: 'Sikkim' },
+      { code: 'TN', name: 'Tamil Nadu' },
+      { code: 'TS', name: 'Telangana' },
+      { code: 'UP', name: 'Uttar Pradesh' },
+      { code: 'WB', name: 'West Bengal' },
+    
+      // Union Territories
+      { code: 'AN', name: 'Andaman and Nicobar Islands' },
+      { code: 'CH', name: 'Chandigarh' },
+      { code: 'DN', name: 'Dadra and Nagar Haveli and Daman and Diu' },
+      { code: 'DL', name: 'Delhi' },
+      { code: 'LD', name: 'Lakshadweep' },
+      { code: 'PY', name: 'Puducherry' },
+      { code: 'LA', name: 'Ladakh' },
+      { code: 'LD', name: 'Lakshadweep' },
+      { code: 'ML', name: 'Mizoram' },
+    ];
+
+    
+
+
+  // Function to handle the change and allow only numbers
+  const handlePostalCodeChange = (e) => {
+    const value = e.target.value;
+    // Check if the value is numeric
+    if (/^\d*$/.test(value)) {
+      setAddressDetails((prev) => ({
+        ...prev,
+        postalCode: value,
+      }));
+    } else {
+      // Show a toast if the value is not numeric
+      toast.error('Please enter a valid number for the postal code.');
+    }
+  };
+
+
+
+
+
   return (
     <>
 
@@ -334,20 +499,52 @@ const LocationModal = ({
 
 {loading && Loader}
 
+{mapLoading && Loader}
 
-      <Modal.Header closeButton>
-        <Modal.Title>Choose Location</Modal.Title>
-      </Modal.Header>
+
+
+<Modal.Header 
+  closeButton 
+  style={{
+    marginBottom: '0px',
+    paddingBottom: '0px',
+    // backgroundColor: '#f8f9fa',
+    borderBottom: '1px solid #dee2e6',
+    marginTop:"-15px"
+  }}
+>
+<Modal.Title 
+  style={{
+    color: '#007bff', // Set color to blue (you can change it)
+    fontSize: '24px', // Adjust the font size
+    fontWeight: 'bold', // Make the text bold
+    textAlign: 'center', // Align text to the center
+    margin: '0',
+    marginTop:"-15px"
+
+  }}
+
+>
+  Address
+</Modal.Title>
+
+</Modal.Header>
+
       <Modal.Body>
  
-      {loading && <p style={{ textAlign: 'center', fontSize: '16px', color: '#007bff' }}>Loading...</p>}
+ <>
+
+      {/* {loading && <p style={{ textAlign: 'center', fontSize: '16px', color: '#007bff' }}>Loading...</p>} */}
+      {mapLoading && Loader}
+      {loading && Loader}
 
 
-
-        {!loading && !mapLoading && location && (
+     
           <>
+{UseMyLocation && (
+
             <GoogleMap
-              mapContainerStyle={{ height: "400px", width: "100%" }}
+              mapContainerStyle={{ height: "250px", width: "100%" }}
               center={location}
               zoom={15}
               onClick={handleMapClick}
@@ -362,7 +559,9 @@ const LocationModal = ({
                 }}
               />
             </GoogleMap>
+            )}
             <Form className="mt-4">
+            {UseMyLocation && (
               <Button
                 variant="outline-primary"
                 className="mt-3 d-flex justify-content-center align-items-center mx-auto"
@@ -371,15 +570,79 @@ const LocationModal = ({
                 <FaLocationArrow className="mr-2" />
                 Reset to Current Location
               </Button>
+              )}
+<Button
+  variant="outline-primary"
+  className="mt-3 d-flex justify-content-center align-items-center mx-auto"
+  onClick={handleGetCurrentLocation}
+  disabled={loading}
+  style={{ backgroundColor: 'lightgreen' , marginBottom:"10px"}}
+>
+  <FaCrosshairs className="mr-2" />
+  {UseMyLocation ? "Do not use location from the map" : "Use My Current Location"}
+</Button>
 
-              <Form.Group controlId="latitude">
+
+    <style>{spinAnimation}</style>
+
+      {(mapLoading || loading )&& (
+        <div style={overlayStyle}>
+          <div style={loaderStyle}></div>
+        </div>
+      )}
+
+
+{!UseMyLocation && (
+<div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' , marginTop:"10px"}}>
+  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
+  <span style={{ padding: '0 10px' }}>OR</span>
+  <hr style={{ flexGrow: 1, border: '0', borderTop: '1px solid #000' }} />
+</div>
+)}
+
+
+              {/* <Form.Group controlId="latitude">
                 <Form.Label>Latitude</Form.Label>
                 <Form.Control type="text" value={addressDetails.latitude} disabled />
               </Form.Group>
               <Form.Group controlId="longitude" className="mt-2">
                 <Form.Label>Longitude</Form.Label>
                 <Form.Control type="text" value={addressDetails.longitude} disabled />
-              </Form.Group>
+              </Form.Group> */}
+
+
+
+<Form.Group controlId="streetAddressLine2" className="mt-2">
+  <Form.Label>Flat No. | Building Name *</Form.Label>
+  <Form.Control
+    type="text"
+    value={addressDetails.streetAddressLine2}
+    onChange={(e) =>
+      setAddressDetails((prev) => ({
+        ...prev,
+        streetAddressLine2: e.target.value,
+      }))
+    }
+  />
+</Form.Group>
+
+
+
+
+
+<Form.Group controlId="formattedAddress" className="mt-2">
+  <Form.Label>Street | Area Name *</Form.Label>
+  <Form.Control
+    type="text"
+    value={addressDetails.formattedAddress}
+    onChange={(e) =>
+      setAddressDetails((prev) => ({
+        ...prev,
+        formattedAddress: e.target.value,
+      }))
+    }
+  />
+</Form.Group>
 
 <Form.Group controlId="landmark" className="mt-2">
   <Form.Label>Landmark</Form.Label>
@@ -395,27 +658,10 @@ const LocationModal = ({
   />
 </Form.Group>
 
-<Form.Group controlId="streetAddressLine2" className="mt-2">
-  <Form.Label>Full Address</Form.Label>
-  <Form.Control
-    type="text"
-    value={addressDetails.streetAddressLine2}
-    onChange={(e) =>
-      setAddressDetails((prev) => ({
-        ...prev,
-        streetAddressLine2: e.target.value,
-      }))
-    }
-  />
-</Form.Group>
 
-<Form.Group controlId="formattedAddress" className="mt-2">
-  <Form.Label>Formatted Address</Form.Label>
-  <Form.Control type="text" value={addressDetails.formattedAddress} disabled />
-</Form.Group>
 
 <Form.Group controlId="city" className="mt-2">
-  <Form.Label>City</Form.Label>
+  <Form.Label>City *</Form.Label>
   <Form.Control
     type="text"
     value={addressDetails.city}
@@ -429,7 +675,7 @@ const LocationModal = ({
 </Form.Group>
 
 <Form.Group controlId="district" className="mt-2">
-  <Form.Label>District</Form.Label>
+  <Form.Label>District *</Form.Label>
   <Form.Control
     type="text"
     value={addressDetails.district}
@@ -442,8 +688,8 @@ const LocationModal = ({
   />
 </Form.Group>
 
-<Form.Group controlId="state" className="mt-2">
-  <Form.Label>State</Form.Label>
+{/* <Form.Group controlId="state" className="mt-2">
+  <Form.Label>State *</Form.Label>
   <Form.Control
     type="text"
     value={addressDetails.state}
@@ -454,10 +700,42 @@ const LocationModal = ({
       }))
     }
   />
-</Form.Group>
+</Form.Group> */}
+
+
+<Form.Group controlId="state" className="mt-2">
+      <Form.Label>State *</Form.Label>
+      <Form.Control
+        as="select"
+        value={addressDetails.state}
+        style={{
+          cursor: "pointer",
+          appearance: "none", // Removes default browser styling
+          backgroundImage: 'url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 12 12%22%3E%3Cpath fill=%22none%22 stroke=%22%23333%22 stroke-width=%221.5%22 d=%22M1 4l5 5 5-5%22/%3E%3C/svg%3E")',
+          backgroundPosition: 'right 10px center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: '10px',
+          paddingRight: '30px',
+        }}
+        onChange={(e) =>
+          setAddressDetails((prev) => ({
+            ...prev,
+            state: e.target.value,
+          }))
+        }
+      >
+        <option value="">Select a state</option>
+        {allStates?.map((state) => (
+          <option key={state.code} value={state.name}>
+            {state.name}
+          </option>
+        ))}
+      </Form.Control>
+    </Form.Group>
+
 
 <Form.Group controlId="country" className="mt-2">
-  <Form.Label>Country</Form.Label>
+  <Form.Label>Country *</Form.Label>
   <Form.Control
     type="text"
     value={addressDetails.country}
@@ -467,27 +745,23 @@ const LocationModal = ({
         country: e.target.value,
       }))
     }
+    disabled
   />
 </Form.Group>
 
 <Form.Group controlId="postalCode" className="mt-2">
-  <Form.Label>Postal Code</Form.Label>
-  <Form.Control
-    type="text"
-    value={addressDetails.postalCode}
-    onChange={(e) =>
-      setAddressDetails((prev) => ({
-        ...prev,
-        postalCode: e.target.value,
-      }))
-    }
-  />
-</Form.Group>
+      <Form.Label>Postal Code *</Form.Label>
+      <Form.Control
+        type="text"
+        value={addressDetails.postalCode}
+        onChange={handlePostalCodeChange}
+      />
+    </Form.Group>
 
              
             </Form>
           </>
-        )}
+          </>
       </Modal.Body>
       <Modal.Footer>
         <Button variant="secondary" onClick={onHide}>
