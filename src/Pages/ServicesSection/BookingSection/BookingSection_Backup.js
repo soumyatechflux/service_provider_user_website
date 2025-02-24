@@ -685,7 +685,7 @@ useEffect(() => {
 
 
 const filterTimeOptions = () => {
-  if (!selectedDate || timeOptions.length === 0) return;
+  if (!selectedDate || timeOptions?.length === 0) return;
 
   const currentDate = new Date();
   const today = currentDate.toDateString();
@@ -698,7 +698,6 @@ const filterTimeOptions = () => {
     basicDataByGet?.sub_category?.service_end_time || "23:59";
 
   const currentTimeInMinutes = timeToMinutes(currentTime);
-  let totalStartTime = currentTimeInMinutes;
 
   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
@@ -714,38 +713,63 @@ const filterTimeOptions = () => {
   console.log("Available Minutes Today:", availableMinutesToday);
   console.log("Unused Adjusted Start Time:", unusedAdjustedStartTime);
 
-  const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
-    currentDate,
-    serviceStartTimeInMinutes,
-    serviceEndTimeInMinutes,
-    unusedAdjustedStartTime
+// If the adjusted start time has been fully used today, calculate the new start boundary
+if (unusedAdjustedStartTime === 0) {
+  const finalTimeInMinutes = currentTimeInMinutes + adjustedStartTime;
+  const finalHours = Math.floor(finalTimeInMinutes / 60);
+  const finalMinutes = finalTimeInMinutes % 60;
+  const finalTime = `${finalHours.toString().padStart(2, "0")}:${finalMinutes.toString().padStart(2, "0")}`;
+
+  // If the selected date is today, set the start boundary from where it ended
+  if (selectedDate.toDateString() === today) {
+    startBoundary = timeToMinutes(finalTime);
+  } else {
+    startBoundary = serviceStartTimeInMinutes; // For future dates, use service start time
+  }
+
+  setFilteredTimeOptions(
+    timeOptions.filter((time) => {
+      const timeInMinutes = timeToMinutes(time);
+      return (
+        timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
+      );
+    })
   );
+  
+  return; // Exit early since we don't need to call `findExactDateTimeWhenAdjustedTimeEnds`
+}
+
+// Now call the function only if unusedAdjustedStartTime is greater than 0
+const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
+  currentDate,
+  serviceStartTimeInMinutes,
+  serviceEndTimeInMinutes,
+  unusedAdjustedStartTime
+);
+
+
 
   console.log("Final Date and Time When Adjusted Time Ends:", finalDateTime);
 
-// If today is selected but no available minutes remain, set an empty array
 if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
   setFilteredTimeOptions([]);
   return;
 }
 
-// If the selected date is before the final adjusted date, set an empty array
-if (selectedDate < new Date(finalDateTime.date)) {
+if (selectedDate < new Date(finalDateTime?.date)) {
   setFilteredTimeOptions([]);
   return;
 }
 
-// If the selected date matches the calculated `finalDateTime.date`, start from the final adjusted time
-if (selectedDate.toISOString().split("T")[0] === finalDateTime.date) {
-  startBoundary = timeToMinutes(finalDateTime.time); // Start from the final adjusted time
+if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
+  startBoundary = timeToMinutes(finalDateTime?.time); 
 } else {
-  startBoundary = serviceStartTimeInMinutes; // For all future days, start from service start time
+  startBoundary = serviceStartTimeInMinutes;
 }
 
 
   console.log("Updated Start Boundary:", startBoundary);
 
-  // Filter time options based on the calculated startBoundary and serviceEndTime.
   const options = timeOptions.filter((time) => {
     const timeInMinutes = timeToMinutes(time);
     return timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes;
