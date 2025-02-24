@@ -606,8 +606,6 @@ const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
 
 
 
-
-
   );
 };
 

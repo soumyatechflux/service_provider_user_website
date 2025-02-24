@@ -299,6 +299,7 @@ const BookingSection = () => {
 
       if (response?.data?.success === true) {
         setDataForPricesAppliedGet(response?.data?.data);
+        setSelectedCoupon(null);
         setStep(5);
         // window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -326,7 +327,7 @@ const BookingSection = () => {
     ? DataForPricesAppliedGet.dishes
     : JSON.parse(DataForPricesAppliedGet.dishes || "[]");
 
-  const [selectedCoupon, setSelectedCoupon] = useState(null); // State to hold the selected coupon
+  const [selectedCoupon, setSelectedCoupon] = useState(null); 
   const [isCouponsVisible, setIsCouponsVisible] = useState(false); // State to toggle coupon menu visibility
 
   // Function to handle radio button change
