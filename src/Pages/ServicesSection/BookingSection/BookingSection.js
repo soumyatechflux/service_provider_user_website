@@ -727,13 +727,13 @@ if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
   return;
 }
 
-if (selectedDate < new Date(finalDateTime.date)) {
+if (selectedDate < new Date(finalDateTime?.date)) {
   setFilteredTimeOptions([]);
   return;
 }
 
-if (selectedDate.toISOString().split("T")[0] === finalDateTime.date) {
-  startBoundary = timeToMinutes(finalDateTime.time); 
+if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
+  startBoundary = timeToMinutes(finalDateTime?.time); 
 } else {
   startBoundary = serviceStartTimeInMinutes;
 }
