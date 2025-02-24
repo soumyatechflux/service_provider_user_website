@@ -32,12 +32,13 @@ import { addDays, differenceInDays } from "date-fns";
 import DriverBookingMap from "./DriverBookingMap";
 
 const BookingSection = () => {
-  const [errorMessage, setErrorMessage] = useState("");
 
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
@@ -52,8 +53,22 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
-  // const [selectedTime, setSelectedTime] = useState("");
-  const [showGrid, setShowGrid] = useState(false);
+
+
+  const handleNavigation = () => {
+    // Retrieve stored service page location
+    const storedLocation = sessionStorage.getItem('servicePageLocation');
+    
+    if (storedLocation) {
+      // Navigate to the stored URL
+      navigate(storedLocation);
+    } else {
+      // Default to home page if no location is stored
+      navigate('/');
+    }
+  };
+
+
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -1833,7 +1848,9 @@ useEffect(() => {
             <div className="booking-form-header">
               <button
                 className="booking-back-button"
-                onClick={() => navigate("/")}
+                // onClick={() => navigate("/")}
+                onClick={handleNavigation}
+
               >
                 ←
               </button>
