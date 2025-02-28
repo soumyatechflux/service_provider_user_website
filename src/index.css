@@ -1,0 +1,77 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#root, body, html {
+  margin: 0;
+  height: max-content;
+  width: 100%;
+  position: relative;
+}
+
+.swiper {
+  width: 384px;
+  height: 576px;
+  margin-left: 3rem !important;
+  margin-right: 3rem !important;
+}
+
+.swiper-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.css-1a7967t{
+  box-shadow: none !important;
+}
+
+.css-17o5nyn{
+  border-radius: 20px !important;
+}
+
+.css-1g92jzo-MuiPaper-root-MuiAccordion-root:first-of-type
+{
+  border-radius: 20px !important;
+}
+
+.css-1k6qxng-MuiPaper-root-MuiAccordion-root.Mui-expanded{
+  margin: 0 !important;
+}
+
+.css-1rxz5jq-MuiSelect-select-MuiInputBase-input-MuiInput-input{
+  z-index: 7;
+}
+
+.css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected{
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.css-48d81r-MuiPaper-root-MuiAccordion-root .css-o4b71y-MuiAccordionSummary-content
+{
+  width: 100%;
+  flex-grow: 1;
+}
+.css-48d81r-MuiPaper-root-MuiAccordion-root:first-of-type{
+  border-radius: 20px !important;
+}
+
+.css-48d81r-MuiPaper-root-MuiAccordion-root:last-of-type{
+  border-radius: 20px !important;
+  border: 0px;
+}
+
+.css-48d81r-MuiPaper-root-MuiAccordion-root{
+  box-shadow: none !important;
+}
+
+textarea:focus-visible{
+  outline: 0 !important;
+}

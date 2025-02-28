@@ -1,0 +1,72 @@
+(20) [{…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}, {…}]
+0
+: 
+averageRating
+: 
+5
+category
+: 
+"Engineering"
+certificate
+: 
+true
+courses
+: 
+['xxQwwEWnNZy7EDrHPKqe']
+description
+: 
+"Admin side internal testing"
+discount
+: 
+0
+duration
+: 
+"500 Hours"
+engineering
+: 
+true
+examBank
+: 
+false
+expiry
+: 
+"50 Days"
+finalExams
+: 
+{Version 2: '', Version 3: '', Version 1: ''}
+id
+: 
+"0crd1S0cNP6xrw13xYQj"
+image
+: 
+"data:image/jpeg;base64,/9j/4AAQSkZJRgABAgEASABIAA
+knowledgeBank
+: 
+true
+level
+: 
+"Beginner"
+name
+: 
+"Python (ML TESTING)"
+paused
+: 
+false
+prerequisites
+: 
+['4Ip45plwF9GHsqEDl1jN']
+price
+: 
+"67"
+projectManagement
+: 
+true
+teacherId
+: 
+"X0TL3q7Zz5UpPhRPy8Xv0coyXi43"
+teacherShare
+: 
+"50"
+totalFeedbacks
+: 
+0

@@ -1,0 +1,30 @@
+Country
+: 
+"Egypt"
+email
+: 
+"pravin@gmail.com"
+favoritePrograms
+: 
+[]
+friends
+: 
+(11) ['2f6zMnuxTnVnzCWYl3hhiMJzNNx1', '6GDKGSalu2eNE0Rp8BszVBP0dDP2', '90rGKD9mfPVICNeEjX1h3dYfE9v1', 'I2Wn1EBgKHfkKXQ5MZHzWSQaDSn2', 'J7b1yamzpccMtfYCPvJ1d0pxspg1', 'SdpKZqpPm1N6kABHfNXwzgTeqKq2', 'Wjsj9b7agPWVYaPb0FPa7Q9dqFk2', 'X0TL3q7Zz5UpPhRPy8Xv0coyXi43', 'h9ehQTXDCoN5QMvNx0LZ0cUqbZi1', 'pCbSEMuaLYPSBG5gYrSuCb6z4V72', 'vQrr8Vb4EEdpywBt2UBLOiQz6sS2']
+id
+: 
+"0ZsAy3nOwWaFqitS1YMJYx4WxYs2"
+image
+: 
+""
+name
+: 
+"Pravin Bhadane"
+number
+: 
+"+20 896 236 5412"
+occupation
+: 
+"Student"
+role
+: 
+"student"

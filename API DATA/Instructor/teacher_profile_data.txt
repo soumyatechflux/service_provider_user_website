@@ -1,0 +1,47 @@
+Teacher SNAPSHOT DAta1: 
+{why: 'Want to share my knowledge', image: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD…OeO/b3oorTeGpjtU06nx63BPYg4wOlMyaKKzNhdxooooA/9k=', programs: Array(0), occupation: 'Software Engineer', firstLoginLink: 'https://connect.stripe.com/setup/e/acct_1QmbBIQktuQgybTa/UrwIDXmPttTc', …}
+averageRating
+: 
+0
+email
+: 
+"anurag@techflux.in"
+firstLoginLink
+: 
+"https://connect.stripe.com/setup/e/acct_1QmbBIQktuQgybTa/UrwIDXmPttTc"
+friends
+: 
+[]
+id
+: 
+"pCbSEMuaLYPSBG5gYrSuCb6z4V72"
+image
+: 
+"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAA
+name
+: 
+"Bhagyashri Patil"
+occupation
+: 
+"Software Engineer"
+profileViews
+: 
+0
+programs
+: 
+[]
+role
+: 
+"teacher"
+stripeId
+: 
+"olWdjYOIEz6dqGB4JcNi"
+title
+: 
+"Professor in Human Biology"
+university
+: 
+"The German University in Cairo"
+why
+: 
+"Want to share my knowledge"

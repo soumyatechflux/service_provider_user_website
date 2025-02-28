@@ -1,0 +1,63 @@
+averageRating
+: 
+5
+category
+: 
+"PM"
+courses
+: 
+['8TXsrUupvc4Gtr0vWxZP']
+description
+: 
+"NO Access "
+discount
+: 
+100
+duration
+: 
+"2 Hours"
+examBank
+: 
+false
+expired
+: 
+false
+expiry
+: 
+"10 Days"
+finalExams
+: 
+{Version 1: '', Version 2: '', Version 3: ''}
+id
+: 
+"hDIKKTZLbHeYYoBdQCPy"
+image
+: 
+"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAA
+knowledgeBank
+: 
+false
+level
+: 
+"Beginner"
+name
+: 
+"Free Course "
+paused
+: 
+false
+prerequisites
+: 
+[]
+price
+: 
+"50"
+teacherId
+: 
+"Wjsj9b7agPWVYaPb0FPa7Q9dqFk2"
+teacherShare
+: 
+"50"
+totalFeedbacks
+: 
+0

@@ -1,0 +1,18 @@
+cv
+: 
+"biodata (6).pdf"
+email
+: 
+"hjk@techflux.in"
+name
+: 
+"Aboli fdjk"
+number
+: 
+"+20 890 898 9898"
+occupation
+: 
+"Student"
+why
+: 
+"rthydtrh"
