@@ -31,7 +31,7 @@ const CancellationPolicy = () => {
   return (
     <div className="cp-container">
       <div className="cp-header">
-        <h1>Cancellation Policy</h1>
+        <h1>Refund & Cancellation Policy</h1>
       </div>
 
       <div className="cp-content">

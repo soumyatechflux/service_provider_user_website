@@ -51,11 +51,11 @@ const Footer = () => {
                 <a href="/privacy-policy">Privacy Policy</a>
               </li>
               <li>
-                <a href="refund-policy">Refund Policy</a>
+                <a href="/cancellation-policy">Refund & Cancellation Policy</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/cancellation-policy">Cancellation Policy</a>
-              </li>
+              </li> */}
             </ul>
           </div>
 
