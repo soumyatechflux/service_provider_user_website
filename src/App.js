@@ -32,6 +32,7 @@ import Navbar from "./Template/Navbar/Navbar";
 import CancellationPolicy from "./Pages/CancellationPolicy/CancellationPolicy";
 import HelpCentreTab from "./Pages/ProfilePage/BookingTabs/HelpCentreTab/HelpCentreTab";
 import NotificationCenter from "./Pages/NotificationCenter/NotificationCenter";
+import RefundAndCancellation from "./Pages/RefundAndCancellation/RefundAndCancellation";
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -136,7 +137,7 @@ function App() {
 
           <Route path ="/privacy-policy" element={<PrivacyPolicy />} />
           <Route path ="/terms-and-conditions" element={<TermsAndConditions />} />
-
+          <Route path ="/refund-and-cancellation" element={<RefundAndCancellation/>} />
           <Route path="/cancellation-policy" element={<CancellationPolicy/>} />
 
           <Route path="/notification-center" element={<NotificationCenter/>}/>

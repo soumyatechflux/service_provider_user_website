@@ -50,6 +50,9 @@ const Footer = () => {
               <li>
                 <a href="/terms-and-conditions">Terms & Conditions</a>
               </li>
+              <li>
+                <a href="/refund-and-cancellation">Refund & Cancellation Policy</a>
+              </li>
             </ul>
           </div>
 
@@ -144,7 +147,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="footer-bottom">
-        <p>Copyright © 2024 Servyo</p>
+        <p>Copyright © 2024 Servyo Powered by Allify Home Solutions Private Limited</p>
       </div>
 
       {/* Modal */}
