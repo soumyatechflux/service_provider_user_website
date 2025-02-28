@@ -45,13 +45,16 @@ const Footer = () => {
                 <Link to="/join-as-partner">Contact Us</Link>
               </li>
               <li>
-                <a href="/privacy-policy">Privacy Policy</a>
-              </li>
-              <li>
                 <a href="/terms-and-conditions">Terms & Conditions</a>
               </li>
               <li>
-                <a href="/refund-and-cancellation">Refund & Cancellation Policy</a>
+                <a href="/privacy-policy">Privacy Policy</a>
+              </li>
+              <li>
+                <a href="refund-policy">Refund Policy</a>
+              </li>
+              <li>
+                <a href="/cancellation-policy">Cancellation Policy</a>
               </li>
             </ul>
           </div>

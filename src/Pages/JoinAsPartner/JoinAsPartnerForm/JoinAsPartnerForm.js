@@ -295,13 +295,13 @@ const JoinAsPartnerForm = () => {
           </Link>
         </div>
 
-        <div className="join-partner-address-section">
+        {/* <div className="join-partner-address-section">
           <h3 className="join-partner-address-title">Our office addresses</h3>
           <p className="join-partner-address-text">
             123 Connaught Place, Rajiv Chowk,
           </p>
           <p className="join-partner-address-text">New Delhi, Delhi, 110001</p>
-        </div>
+        </div> */}
       </div>
       <MessageModal
         show={show}

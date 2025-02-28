@@ -2,9 +2,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Loader from "../Loader/Loader";
-import "./RefundAndCancellation.css";
+import "./RefundPolicy.css";
 
-const RefundAndCancellation = () => {
+const RefundPolicy = () => {
   const [termsContent, setTermsContent] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -36,7 +36,7 @@ const RefundAndCancellation = () => {
   return (
     <div className="sp-container">
       <div className="sp-header">
-        <h1>Refund And Cancellation Policy</h1>
+        <h1>Refund Policy</h1>
       </div>
       
       <div
@@ -47,4 +47,4 @@ const RefundAndCancellation = () => {
   );
 };
 
-export default RefundAndCancellation;
+export default RefundPolicy;
