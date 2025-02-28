@@ -199,14 +199,30 @@ const BookingSection = () => {
       ? selectedCouponObject.voucher_code
       : null;
 
+
+      function convertToIST(utcDateString) {
+        const utcDate = new Date(utcDateString);
+        
+        // Convert UTC time to IST (UTC+5:30)
+        utcDate.setHours(utcDate.getHours() + 5);
+        utcDate.setMinutes(utcDate.getMinutes() + 30);
+    
+        // Format it back to the required ISO format
+        return utcDate.toISOString();
+    }
+
+
     try {
       const body = {
         booking: {
           category_id: service?.category_id || "",
           sub_category_id: service?.id || "",
 
-          visit_date:
-            service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
+          // visit_date:
+          //   service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
+
+            visit_date:
+            service?.id === 9 ? convertToIST(MonthlySubscriptionStartDate) : convertToIST(selectedDate),
 
           visit_time: selectedTime,
 
