@@ -7,6 +7,7 @@ const NotificationCenter = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -17,8 +18,8 @@ const NotificationCenter = () => {
         if (response?.data?.success) {
           const recentNotifications = response.data.data.filter((notification) => {
             const notificationTime = new Date(notification.created_at).getTime();
-            const twentyFourHoursAgo = Date.now() - 24 * 60 * 60 * 1000;
-            return notificationTime >= twentyFourHoursAgo;
+            const thirtyDaysAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
+            return notificationTime >= thirtyDaysAgo;
           });
 
           setNotifications(recentNotifications);
@@ -34,7 +35,7 @@ const NotificationCenter = () => {
 
     fetchNotifications();
   }, []);
-
+  
   const formatDate = (dateString) => {
     const options = {
       day: "2-digit",
