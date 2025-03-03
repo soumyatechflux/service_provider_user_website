@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import "./ReviewModal.css";
 import axios from "axios";
 
-const ReviewModal = ({ isOpen, onClose, partnerId }) => {
+const ReviewModal = ({ isOpen, onClose, partnerId,categoryId }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [error, setError] = useState(null);
@@ -97,6 +97,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId }) => {
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
         {
           partner_id: partnerId,
+          category_id: categoryId,
           rating,
           review,
         },

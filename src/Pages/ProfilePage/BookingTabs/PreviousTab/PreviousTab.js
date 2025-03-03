@@ -635,6 +635,7 @@ function PreviousTab() {
         isOpen={isRatingModalOpen}
         onClose={handleCloseRatingModal}
         partnerId={bookingsIdWise?.partner?.id}
+        categoryId={bookingsIdWise?.category?.id}
       />
     </div>
   );
