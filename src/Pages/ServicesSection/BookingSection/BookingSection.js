@@ -186,6 +186,7 @@ const BookingSection = () => {
     fetchBasicDataFun();
   }, []);
 
+
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
   const FunctionDataForPricesApplied = async () => {
@@ -240,7 +241,7 @@ const BookingSection = () => {
           //   service?.category_id === 2
           //     ? selectedLocationFromForDriver?.address_id
           //     : "",
-          // address_to:
+          // address_to:   
           //   service?.category_id === 2
           //     ? selectedLocationToForDriver?.address_id
           //     : "",
@@ -4384,6 +4385,22 @@ useEffect(() => {
               </div>
 
               <div className="payment-section-body">
+
+
+
+
+
+
+
+
+
+
+
+
+                {( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (
+                  <>
+                  
+                
               <div className="payment-option-button reward-points-option">
   <div className="payment-option">
     <div className="payment-icon">
@@ -4405,7 +4422,6 @@ useEffect(() => {
     Discount Applied: ₹ {DataForPricesAppliedGet?.use_points_amount}
   </p>
 </div>
-
     <label className="switch">
       <input
         type="checkbox"
@@ -4417,6 +4433,14 @@ useEffect(() => {
     </label>
   </div>
 </div>
+
+
+
+</>
+)}
+
+
+
 
                 <button
                   className="payment-option-button"
