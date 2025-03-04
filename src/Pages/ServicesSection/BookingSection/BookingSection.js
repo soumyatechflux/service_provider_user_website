@@ -3922,7 +3922,7 @@ useEffect(() => {
                   <div></div>
                 </div>
 
-                {DataForPricesAppliedGet?.category_id === 1 && (
+                {/* {DataForPricesAppliedGet?.category_id === 1 && (
                   <div className="booking-detail-card">
                     <div>
                       <strong>Dishes :</strong>
@@ -3963,7 +3963,55 @@ useEffect(() => {
                         : "None"}
                     </div>
                   </div>
-                )}
+                )} */}
+
+
+{DataForPricesAppliedGet?.category_id === 1 && (
+  <div className="booking-detail-card">
+    <div>
+      <strong>Dishes :</strong>
+    </div>
+    <div>
+      {DataForPricesAppliedGet?.sub_category_id === 3 ? (
+        (() => {
+          try {
+            const menuArray = JSON.parse(DataForPricesAppliedGet.menu || "[]");
+            return menuArray.length > 0
+              ? menuArray.map((item, index) => (
+                  <span key={index}>
+                    {item.name} - {item.quantity}
+                    {index !== menuArray.length - 1 && ", "}
+                    <br />
+                  </span>
+                ))
+              : "None";
+          } catch (error) {
+            console.error("Error parsing menu:", error);
+            return "Invalid menu data";
+          }
+        })()
+      ) : (
+        (() => {
+          try {
+            const parsedDishes = JSON.parse(DataForPricesAppliedGet.dishes || "[]");
+            return parsedDishes.length > 0
+              ? parsedDishes.map((dish, index) => (
+                  <span key={index}>
+                    {dish}
+                    {index !== parsedDishes.length - 1 && ", "}
+                  </span>
+                ))
+              : "None";
+          } catch (error) {
+            console.error("Error parsing dishes:", error);
+            return "Invalid dish data";
+          }
+        })()
+      )}
+    </div>
+  </div>
+)}
+
 
                 {DataForPricesAppliedGet?.category_id === 2 && (
                   <>
