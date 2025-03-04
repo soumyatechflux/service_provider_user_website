@@ -274,6 +274,18 @@ useEffect(() => {
 
 
 
+    if (service.id === 1 || service.id === 2) {
+      if (
+        SelectedNamesOfDishes === "" ||  SelectedNamesOfDishes.length === 0 
+      ) {
+        setMessage("Please fill all required fields.");
+        setShow(true);
+        handleShow();
+        return;
+      }
+    }
+
+    
     if (service.category_id === 2) {
       if (
         BookingForGuestName === "" ||
