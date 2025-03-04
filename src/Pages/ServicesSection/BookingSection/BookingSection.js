@@ -923,7 +923,7 @@ useEffect(() => {
 
 
 
-    if (service?.category_id === 1) {
+    if (service.id === 1 || service.id === 2) {
       if (
         SelectedNamesOfDishes === "" ||  SelectedNamesOfDishes.length === 0 
       ) {
