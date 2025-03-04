@@ -276,7 +276,8 @@ const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
             <div className="container mt-4 mb-4">
               <div className="mb-4">
                 <label className="form-label">
-                  Pickup  <MdLocationOn size={20} />
+                {service.id === 7 ? "Pickup and Drop location" : "Pickup"}
+              <MdLocationOn size={20} />
                 </label>
                 <div className="w-100">
                   <Autocomplete

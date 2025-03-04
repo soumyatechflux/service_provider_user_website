@@ -920,6 +920,23 @@ useEffect(() => {
     }
     // }
 
+
+
+
+    if (service?.category_id === 1) {
+      if (
+        SelectedNamesOfDishes === "" ||  SelectedNamesOfDishes.length === 0 
+      ) {
+        setMessage("Please fill all required fields.");
+        setShow(true);
+        handleShow();
+        return;
+      }
+    }
+
+
+
+
     if (service?.category_id === 2) {
       if (
         BookingForGuestName === "" ||
@@ -2594,7 +2611,7 @@ useEffect(() => {
                     (service?.id !== 8 || service?.id !== 9) && (
                       <>
                         <label className="booking-form-label">
-                          Select Dishes (Optional)
+                          Select Dishes
                         </label>
 
                         <div
