@@ -3,7 +3,7 @@ import { Star } from "lucide-react";
 import "./ReviewModal.css";
 import axios from "axios";
 
-const ReviewModal = ({ isOpen, onClose, partnerId,categoryId }) => {
+const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
   const [rating, setRating] = useState(0);
   const [review, setReview] = useState("");
   const [error, setError] = useState(null);
@@ -80,6 +80,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId }) => {
 
   const handleUpdate = async (e) => {
     e.preventDefault();
+    console.log("Booking ID:", bookingId);
 
     if (!rating) {
       setError("Please provide rating.");
@@ -98,6 +99,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId }) => {
         {
           partner_id: partnerId,
           category_id: categoryId,
+          booking_id: bookingId, 
           rating,
           review,
         },

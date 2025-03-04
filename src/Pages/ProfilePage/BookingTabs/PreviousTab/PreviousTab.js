@@ -490,7 +490,9 @@ function PreviousTab() {
                       <div className="billing-row">
                         <span className="billing-subtitle">Extra Charges</span>
                         <span className="billing-subtitle">
-                          ₹{bookingsIdWise?.extra_charge}
+                          {/* ₹{bookingsIdWise?.extra_charge} */}
+                          ₹{bookingsIdWise?.price2}
+
                         </span>
                       </div>
                     )}
@@ -636,7 +638,7 @@ function PreviousTab() {
         onClose={handleCloseRatingModal}
         partnerId={bookingsIdWise?.partner?.id}
         categoryId={bookingsIdWise?.category?.id}
-      />
+        bookingId={bookingsIdWise?.booking_id || bookingsIdWise?.id}/>
     </div>
   );
 }

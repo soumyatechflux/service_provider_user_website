@@ -96,7 +96,7 @@ const Footer = () => {
               >
                 <FaFacebook />
               </a>
-              <a
+              {/* <a
                 href="https://twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -109,7 +109,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
               >
                 <FaLinkedin />
-              </a>
+              </a> */}
               <a
                 href="https://instagram.com"
                 target="_blank"
