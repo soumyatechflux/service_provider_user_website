@@ -1709,7 +1709,6 @@ useEffect(() => {
 
       if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        setOriginalData(response?.data?.data); // Store the discounted data as the new base
         toast.success(response?.data?.message || "Coupon applied successfully.");
         setIsCouponsVisible(false);
       } else {
@@ -1725,41 +1724,62 @@ useEffect(() => {
 };
 
 
-  const [dataAfterUsePoint, setDataAfterUsePoint] = useState({});
-  const [originalData, setOriginalData] = useState(null); // Store original data
 
   const toggleUsePoints = async () => {
+    setLoading(true);
+  
     const newUsePoints = !isUsePoints;
     setIsUsePoints(newUsePoints);
 
-    const bookingId = DataForPricesAppliedGet?.booking_id;
 
-    if (newUsePoints && bookingId) {
-      // Store the latest discounted data before applying points
-      if (!originalData) {
-        setOriginalData(DataForPricesAppliedGet);
-      }
-
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
-          { booking_id: bookingId },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+  
+    const voucherCode = selectedCouponObject
+      ? selectedCouponObject.voucher_code
+      : null;
+  
+    try {
+      const body = {
+        booking_id: DataForPricesAppliedGet?.booking_id || "",
+        voucher_code: voucherCode || "",
+        is_use_points:newUsePoints,
+      };
+  
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        console.log("API Response after checkbox ticked:", response?.data?.data);
-      } catch (error) {
-        console.error("Error calling API:", error);
-      } finally {
-        setLoading(false);
+        toast.success(response?.data?.message || "Reward Points applied successfully.");
+      } else {
+        toast.error(response?.data?.message || "Invalid reward system.");
       }
-    } else if (!newUsePoints && originalData) {
-      setDataForPricesAppliedGet(originalData); // Restore the discounted price
-      setOriginalData(null);
-      console.log("Restored original data after unticking checkbox:", originalData);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-};
+  };
+  
+  
+
+
+
+
+
+
+
 
 
   const [DriverCoordinates, setDriverCoordinates] = useState({});
@@ -4355,18 +4375,7 @@ useEffect(() => {
                     <div className="fare-breakdown-title">Discount :</div>
                     <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                   </div>
-                  {dataAfterUsePoint?.data?.use_points_amount > 0 && (
-                    <>
-                      <div className="fare-breakdown-div">
-                        <div className="fare-breakdown-title">
-                          Points Used :
-                        </div>
-                        <div>
-                          -₹ {dataAfterUsePoint?.data?.use_points_amount}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                 
 
                   {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
@@ -4474,14 +4483,14 @@ useEffect(() => {
     <div className="payment-details">
   <h3>Use Reward Points</h3>
   <p>
-    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Coins 
-    <span style={{ fontSize: "14px", color: "#666" }}> (10 Coins = ₹1)</span>
+    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
+    <span style={{ fontSize: "14px", color: "#666" }}> (10 Points = ₹1)</span>
   </p>
   {/* <p>
     Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
   </p> */}
   <p>
-    Points Used: {DataForPricesAppliedGet?.use_points_amount * 10} Coins
+    Points Used: {DataForPricesAppliedGet?.use_points_amount * 10} Points
   </p>
   <p>
     Discount Applied: ₹ {DataForPricesAppliedGet?.use_points_amount}
@@ -4503,6 +4512,42 @@ useEffect(() => {
 
 </>
 )}
+
+
+
+
+
+
+      
+<div className="payment-option-button reward-points-option">
+  <div className="payment-option">
+    <div className="payment-icon">
+      <img src="/coin.png" alt="Reward Icon" />
+    </div>
+    <div className="payment-details">
+  <h3>Use Reward Points</h3>
+  <p>
+    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
+    <span style={{ fontSize: "14px", color: "#666" }}> (₹1 = {DataForPricesAppliedGet?.how_much_reward_points_equal_to_1_rupees_customer} Points)</span>
+  </p>
+  {/* <p>
+    Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
+  </p> */}
+  <p>
+    Points Used: {DataForPricesAppliedGet?.use_points} Points
+  </p>
+</div>
+    <label className="switch">
+      <input
+        type="checkbox"
+        id="secureFeeCheckbox"
+        checked={isUsePoints}
+        onChange={toggleUsePoints}
+      />
+      <span className="slider round"></span>
+    </label>
+  </div>
+</div>
 
 
 
