@@ -4474,51 +4474,7 @@ useEffect(() => {
                 {( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (
                   <>
                   
-                
-              <div className="payment-option-button reward-points-option">
-  <div className="payment-option">
-    <div className="payment-icon">
-      <img src="/coin.png" alt="Reward Icon" />
-    </div>
-    <div className="payment-details">
-  <h3>Use Reward Points</h3>
-  <p>
-    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
-    <span style={{ fontSize: "14px", color: "#666" }}> (10 Points = ₹1)</span>
-  </p>
-  {/* <p>
-    Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
-  </p> */}
-  <p>
-    Points Used: {DataForPricesAppliedGet?.use_points_amount * 10} Points
-  </p>
-  <p>
-    Discount Applied: ₹ {DataForPricesAppliedGet?.use_points_amount}
-  </p>
-</div>
-    <label className="switch">
-      <input
-        type="checkbox"
-        id="secureFeeCheckbox"
-        checked={isUsePoints}
-        onChange={toggleUsePoints}
-      />
-      <span className="slider round"></span>
-    </label>
-  </div>
-</div>
-
-
-
-</>
-)}
-
-
-
-
-
-
-      
+        
 <div className="payment-option-button reward-points-option">
   <div className="payment-option">
     <div className="payment-icon">
@@ -4545,6 +4501,17 @@ useEffect(() => {
     </label>
   </div>
 </div>
+
+
+
+</>
+)}
+
+
+
+
+
+
 
 
 
