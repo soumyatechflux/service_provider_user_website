@@ -7,14 +7,16 @@ const MeetOurTeam = () => {
       id: 1,
       name: "Riya Bansal",
       role: "Co-Founder",
-      image: "./../ServicesSection/AboutUs/ProfilePic.jpg", // Replace with the correct image path
+      // image: "./../ServicesSection/AboutUs/ProfilePic.jpg", 
+      image: "./MeetOurTeam/Riya.jpg", // Replace with the correct image path
       linkedin: "https://www.linkedin.com/in/riyabansal7/",
     },
     {
       id: 2,
       name: "Priyasha Goel",
       role: "Co-Founder",
-      image: "./../ServicesSection/AboutUs/ProfilePic.jpg", // Replace with the correct image path
+      // image: "./../ServicesSection/AboutUs/ProfilePic.jpg", 
+      image: "./MeetOurTeam/Priyasha.JPG", // Replace with the correct image path
       linkedin: "https://www.linkedin.com/in/priyasha-goel-1601/",
     },
   ];

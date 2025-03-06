@@ -15,6 +15,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
   useEffect(() => {
     const fetchExistingReview = async () => {
       if (isOpen && !isSubmitted) {
+        console.log("Fetching review for partnerId:", partnerId);
         try {
           const token = sessionStorage.getItem("ServiceProviderUserToken");
 
