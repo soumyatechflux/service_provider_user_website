@@ -1041,11 +1041,6 @@ useEffect(() => {
 
 
 
-    const newUsePoints = !isUsePoints;
-    setIsUsePoints(newUsePoints);
-
-
-
     try {
       const body = {
         booking: {
@@ -1054,7 +1049,7 @@ useEffect(() => {
             : "",
           payment_mode: mod,
           voucher_code: voucherCode ? voucherCode : "",
-          is_use_points:newUsePoints,
+          is_use_points:isUsePoints,
         },
       };
 
