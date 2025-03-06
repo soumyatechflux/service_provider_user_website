@@ -16,7 +16,7 @@ const MeetOurTeam = () => {
       name: "Priyasha Goel",
       role: "Co-Founder",
       // image: "./../ServicesSection/AboutUs/ProfilePic.jpg", 
-      image: "./MeetOurTeam/Priyasha.JPG", // Replace with the correct image path
+      image: "./MeetOurTeam/Priyasha.jpg", // Replace with the correct image path
       linkedin: "https://www.linkedin.com/in/priyasha-goel-1601/",
     },
   ];
