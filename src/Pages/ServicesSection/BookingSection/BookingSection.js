@@ -4475,7 +4475,7 @@ useEffect(() => {
 
 
 
-                {( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (
+                {(( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (Number(DataForPricesAppliedGet?.wallet_balance) !== 0) ) && (
                   <>
                   
         
