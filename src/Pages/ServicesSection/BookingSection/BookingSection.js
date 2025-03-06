@@ -4530,9 +4530,6 @@ useEffect(() => {
     Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
     <span style={{ fontSize: "14px", color: "#666" }}> (₹1 = {DataForPricesAppliedGet?.how_much_reward_points_equal_to_1_rupees_customer} Points)</span>
   </p>
-  {/* <p>
-    Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
-  </p> */}
   <p>
     Points Used: {DataForPricesAppliedGet?.use_points} Points
   </p>
