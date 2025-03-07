@@ -32,12 +32,13 @@ import { addDays, differenceInDays } from "date-fns";
 import DriverBookingMap from "./DriverBookingMap";
 
 const BookingSection = () => {
-  const [errorMessage, setErrorMessage] = useState("");
 
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+
+
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
@@ -52,8 +53,22 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
-  // const [selectedTime, setSelectedTime] = useState("");
-  const [showGrid, setShowGrid] = useState(false);
+
+
+  const handleNavigation = () => {
+    // Retrieve stored service page location
+    const storedLocation = sessionStorage.getItem('servicePageLocation');
+    
+    if (storedLocation) {
+      // Navigate to the stored URL
+      navigate(storedLocation);
+    } else {
+      // Default to home page if no location is stored
+      navigate('/');
+    }
+  };
+
+
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -171,6 +186,7 @@ const BookingSection = () => {
     fetchBasicDataFun();
   }, []);
 
+
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
   const FunctionDataForPricesApplied = async () => {
@@ -184,14 +200,30 @@ const BookingSection = () => {
       ? selectedCouponObject.voucher_code
       : null;
 
+
+      function convertToIST(utcDateString) {
+        const utcDate = new Date(utcDateString);
+        
+        // Convert UTC time to IST (UTC+5:30)
+        utcDate.setHours(utcDate.getHours() + 5);
+        utcDate.setMinutes(utcDate.getMinutes() + 30);
+    
+        // Format it back to the required ISO format
+        return utcDate.toISOString();
+    }
+
+
     try {
       const body = {
         booking: {
           category_id: service?.category_id || "",
           sub_category_id: service?.id || "",
 
-          visit_date:
-            service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
+          // visit_date:
+          //   service?.id === 9 ? MonthlySubscriptionStartDate : selectedDate,
+
+            visit_date:
+            service?.id === 9 ? convertToIST(MonthlySubscriptionStartDate) : convertToIST(selectedDate),
 
           visit_time: selectedTime,
 
@@ -209,7 +241,7 @@ const BookingSection = () => {
           //   service?.category_id === 2
           //     ? selectedLocationFromForDriver?.address_id
           //     : "",
-          // address_to:
+          // address_to:   
           //   service?.category_id === 2
           //     ? selectedLocationToForDriver?.address_id
           //     : "",
@@ -299,6 +331,7 @@ const BookingSection = () => {
 
       if (response?.data?.success === true) {
         setDataForPricesAppliedGet(response?.data?.data);
+        setSelectedCoupon(null);
         setStep(5);
         // window.scrollTo({ top: 0, behavior: "smooth" });
       } else {
@@ -326,7 +359,7 @@ const BookingSection = () => {
     ? DataForPricesAppliedGet.dishes
     : JSON.parse(DataForPricesAppliedGet.dishes || "[]");
 
-  const [selectedCoupon, setSelectedCoupon] = useState(null); // State to hold the selected coupon
+  const [selectedCoupon, setSelectedCoupon] = useState(null); 
   const [isCouponsVisible, setIsCouponsVisible] = useState(false); // State to toggle coupon menu visibility
 
   // Function to handle radio button change
@@ -887,6 +920,23 @@ useEffect(() => {
     }
     // }
 
+
+
+
+    if (service.id === 1 || service.id === 2) {
+      if (
+        SelectedNamesOfDishes === "" ||  SelectedNamesOfDishes.length === 0 
+      ) {
+        setMessage("Please fill all required fields.");
+        setShow(true);
+        handleShow();
+        return;
+      }
+    }
+
+
+
+
     if (service?.category_id === 2) {
       if (
         BookingForGuestName === "" ||
@@ -988,6 +1038,9 @@ useEffect(() => {
     //   ? selectedCouponObject.voucher_code
     //   : null;
 
+
+
+
     try {
       const body = {
         booking: {
@@ -996,6 +1049,7 @@ useEffect(() => {
             : "",
           payment_mode: mod,
           voucher_code: voucherCode ? voucherCode : "",
+          is_use_points:isUsePoints,
         },
       };
 
@@ -1591,6 +1645,9 @@ useEffect(() => {
   //   selectedVisitDates
   // ]);
 
+
+
+
   useEffect(() => {
     if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
       // const hoursPerVisit =
@@ -1620,6 +1677,9 @@ useEffect(() => {
     MonthlySubscriptionStartDate,
   ]);
 
+
+
+  
   const convertToAmPm = (time) => {
     const [hours, minutes] = time.split(":");
     let hour = parseInt(hours, 10);
@@ -1659,7 +1719,6 @@ useEffect(() => {
 
       if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        setOriginalData(response?.data?.data); // Store the discounted data as the new base
         toast.success(response?.data?.message || "Coupon applied successfully.");
         setIsCouponsVisible(false);
       } else {
@@ -1675,41 +1734,62 @@ useEffect(() => {
 };
 
 
-  const [dataAfterUsePoint, setDataAfterUsePoint] = useState({});
-  const [originalData, setOriginalData] = useState(null); // Store original data
 
   const toggleUsePoints = async () => {
+    setLoading(true);
+  
     const newUsePoints = !isUsePoints;
     setIsUsePoints(newUsePoints);
 
-    const bookingId = DataForPricesAppliedGet?.booking_id;
 
-    if (newUsePoints && bookingId) {
-      // Store the latest discounted data before applying points
-      if (!originalData) {
-        setOriginalData(DataForPricesAppliedGet);
-      }
-
-      setLoading(true);
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
-          { booking_id: bookingId },
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+    const selectedCouponObject = DataForPricesAppliedGet?.discount?.find(
+      (coupon) => coupon.voucher_id === selectedCoupon
+    );
+  
+    const voucherCode = selectedCouponObject
+      ? selectedCouponObject.voucher_code
+      : null;
+  
+    try {
+      const body = {
+        booking_id: DataForPricesAppliedGet?.booking_id || "",
+        voucher_code: voucherCode || "",
+        is_use_points:newUsePoints,
+      };
+  
+      const response = await axios.post(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
+        body,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        console.log("API Response after checkbox ticked:", response?.data?.data);
-      } catch (error) {
-        console.error("Error calling API:", error);
-      } finally {
-        setLoading(false);
+        toast.success(response?.data?.message || "Reward Points applied successfully.");
+      } else {
+        toast.error(response?.data?.message || "Invalid reward system.");
       }
-    } else if (!newUsePoints && originalData) {
-      setDataForPricesAppliedGet(originalData); // Restore the discounted price
-      setOriginalData(null);
-      console.log("Restored original data after unticking checkbox:", originalData);
+    } catch (error) {
+      console.error("Error:", error);
+      toast.error("An error occurred. Please try again later.");
+    } finally {
+      setLoading(false);
     }
-};
+  };
+  
+  
+
+
+
+
+
+
+
 
 
   const [DriverCoordinates, setDriverCoordinates] = useState({});
@@ -1832,7 +1912,9 @@ useEffect(() => {
             <div className="booking-form-header">
               <button
                 className="booking-back-button"
-                onClick={() => navigate("/")}
+                // onClick={() => navigate("/")}
+                onClick={handleNavigation}
+
               >
                 ←
               </button>
@@ -2426,6 +2508,144 @@ useEffect(() => {
                       </div>
                     </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{/*                     
+
                     {MonthlySubscriptionStartDate &&
                       MonthlySubscriptionEndsDate &&
                       selectedVisitDates.map((visit, index) => (
@@ -2437,39 +2657,7 @@ useEffect(() => {
                             Select Visit Date {index + 1}
                           </label>
                           <div className="date-scroll-container">
-                            {/* {getUpcomingDatesToVisits(
-                         new Date(MonthlySubscriptionStartDate),
-                          new Date(MonthlySubscriptionEndsDate)
-                       ).map((date, i) => {
-                         const isSelected =
-                           visit.date &&
-                           new Date(visit.date).toDateString() === date.toDateString();
-                         return (
-                           <div
-                             key={i}
-                             className={`date-item ${isSelected ? "selected" : ""}`}
-                             onClick={() => {
-                               const updatedDates = [...selectedVisitDates];
-                               updatedDates[index].date = date.toISOString().split("T")[0];
-                               setSelectedVisitDates(updatedDates);
-                             }}
-                             role="button"
-                             tabIndex={0}
-                             onKeyPress={(e) => {
-                               if (e.key === "Enter" || e.key === " ") {
-                                 const updatedDates = [...selectedVisitDates];
-                                 updatedDates[index].date = date.toISOString().split("T")[0];
-                                 setSelectedVisitDates(updatedDates);
-                               }
-                             }}
-                           >
-                             <span className="day">{format(date, "EEE")}</span>
-                             <span className="date">{format(date, "dd")}</span>
-                             <span className="month">{format(date, "MMM")}</span>
-                           </div>
-                         );
-                       })} */}
-
+                   
                             {getUpcomingDatesToVisits(
                               new Date(MonthlySubscriptionStartDate),
                               new Date(MonthlySubscriptionEndsDate)
@@ -2532,21 +2720,266 @@ useEffect(() => {
                               );
                             })}
                           </div>
-
-                          {/* <div className="cooking-time-container pt-3">
-                     <span className="people-counter-label">
-                       Average Time per Slot: </span>{" "}
-                       <span className="cooking-time-value">
-                       {(() => {
-                         const totalMinutes = visit.hours;
-                         const hours = Math.floor(totalMinutes / 60);
-                         const minutes = Math.floor(totalMinutes % 60);
-                         return `${hours} hours ${minutes} minutes`;
-                       })()}
-                       </span>
-                     </div> */}
                         </div>
                       ))}
+
+ */}
+
+
+
+
+
+
+
+
+
+
+
+
+{MonthlySubscriptionStartDate &&
+  MonthlySubscriptionEndsDate &&
+  selectedVisitDates.map((visit, index) => {
+    // Find the latest selected date from previous visits (exclude the current index)
+    const latestSelectedDate =
+      index > 0
+        ? selectedVisitDates
+            .slice(0, index) // Consider only previous visit dates
+            .map((v) => new Date(v.date))
+            .sort((a, b) => b - a)[0]
+        : null; // No restriction for the first visit
+
+    // Collect all selected dates to disable them everywhere
+    const selectedDatesSet = new Set(
+      selectedVisitDates.map((v) => new Date(v.date).toDateString())
+    );
+
+    return (
+      <div key={index} className="booking-form-group flex-fill">
+        <label className="booking-form-label">
+          Select Visit Date {index + 1}
+        </label>
+        <div className="date-scroll-container">
+
+ {getUpcomingDatesToVisits(
+            new Date(MonthlySubscriptionStartDate),
+            new Date(MonthlySubscriptionEndsDate)
+          ).map((date, i) => {
+            const dateString = date.toDateString();
+            const isSelected = visit.date && new Date(visit.date).toDateString() === dateString;
+
+            // Disable the date if:
+            // - It is already selected anywhere
+            // - It is before the latest selected date for visits > 0
+            const isDisabled = selectedDatesSet.has(dateString) && !isSelected || 
+              (latestSelectedDate && date < latestSelectedDate);
+
+            return (
+              <div
+                key={i}
+                className={`date-item ${isSelected ? "selected" : ""} ${
+                  isDisabled ? "disabled" : ""
+                }`}
+                // onClick={() => {
+                //   if (isDisabled) return; // Prevent selecting disabled dates
+                
+                //   const updatedDates = [...selectedVisitDates];
+                
+                //   // Update the selected visit date
+                //   updatedDates[index] = {
+                //     ...updatedDates[index],
+                //     date: date.toISOString().split("T")[0],
+                //   };
+                
+                //   // Auto-update subsequent visits
+                //   let nextDate = new Date(date);
+                //   for (let i = index + 1; i < updatedDates.length; i++) {
+                //     do {
+                //       nextDate.setDate(nextDate.getDate() + 3); // Increment by 3 days
+                //     } while (selectedDatesSet.has(nextDate.toDateString())); // Skip disabled dates
+                
+                //     updatedDates[i] = {
+                //       ...updatedDates[i],
+                //       date: nextDate.toISOString().split("T")[0],
+                //     };
+                
+                //     // Add the new date to the set
+                //     selectedDatesSet.add(nextDate.toDateString());
+                //   }
+                
+                //   setSelectedVisitDates(updatedDates);
+                // }}
+
+
+
+
+                onClick={() => {
+                  if (isDisabled) return; // Prevent selecting disabled dates
+                
+                  const updatedDates = [...selectedVisitDates];
+                  let nextDate = new Date(date);
+                  
+                  // Validate that the selected date is within the range
+                  if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
+                    return; // Stop if the first selection itself is out of range
+                  }
+                
+                  // Update the selected visit date
+                  updatedDates[index] = {
+                    ...updatedDates[index],
+                    date: date.toISOString().split("T")[0],
+                  };
+                
+                  // Auto-update subsequent visits
+                  for (let i = index + 1; i < updatedDates.length; i++) {
+                    do {
+                      nextDate.setDate(nextDate.getDate() + 3); // Increment by 3 days
+                    } while (selectedDatesSet.has(nextDate.toDateString())); // Skip disabled dates
+                
+                    // Stop if the next date is out of range
+                    if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
+                      break;
+                    }
+                
+                    updatedDates[i] = {
+                      ...updatedDates[i],
+                      date: nextDate.toISOString().split("T")[0],
+                    };
+                
+                    // Add the new date to the set
+                    selectedDatesSet.add(nextDate.toDateString());
+                  }
+                
+                  setSelectedVisitDates(updatedDates);
+                }}
+                
+                
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if ((e.key === "Enter" || e.key === " ") && !isDisabled) {
+                    const updatedDates = selectedVisitDates.map(
+                      (visitItem, visitIndex) =>
+                        visitIndex === index
+                          ? {
+                              ...visitItem,
+                              date: date.toISOString().split("T")[0],
+                            }
+                          : visitItem
+                    );
+                    setSelectedVisitDates(updatedDates);
+                  }
+                }}
+                style={{
+                  opacity: isDisabled ? 0.5 : 1,
+                  pointerEvents: isDisabled ? "none" : "auto",
+                }}
+              >
+                <span className="day">{format(date, "EEE")}</span>
+                <span className="date">{format(date, "dd")}</span>
+                <span className="month">{format(date, "MMM")}</span>
+              </div>
+            );
+          })} 
+
+
+
+
+        </div>
+      </div>
+    );
+  })}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   </>
                 )}
 
@@ -2559,7 +2992,7 @@ useEffect(() => {
                     (service?.id !== 8 || service?.id !== 9) && (
                       <>
                         <label className="booking-form-label">
-                          Select Dishes (Optional)
+                          Select Dishes
                         </label>
 
                         <div
@@ -3887,7 +4320,7 @@ useEffect(() => {
                   <div></div>
                 </div>
 
-                {DataForPricesAppliedGet?.category_id === 1 && (
+                {/* {DataForPricesAppliedGet?.category_id === 1 && (
                   <div className="booking-detail-card">
                     <div>
                       <strong>Dishes :</strong>
@@ -3928,7 +4361,55 @@ useEffect(() => {
                         : "None"}
                     </div>
                   </div>
-                )}
+                )} */}
+
+
+{DataForPricesAppliedGet?.category_id === 1 && (
+  <div className="booking-detail-card">
+    <div>
+      <strong>Dishes :</strong>
+    </div>
+    <div>
+      {DataForPricesAppliedGet?.sub_category_id === 3 ? (
+        (() => {
+          try {
+            const menuArray = JSON.parse(DataForPricesAppliedGet.menu || "[]");
+            return menuArray.length > 0
+              ? menuArray.map((item, index) => (
+                  <span key={index}>
+                    {item.name} - {item.quantity}
+                    {index !== menuArray.length - 1 && ", "}
+                    <br />
+                  </span>
+                ))
+              : "None";
+          } catch (error) {
+            console.error("Error parsing menu:", error);
+            return "Invalid menu data";
+          }
+        })()
+      ) : (
+        (() => {
+          try {
+            const parsedDishes = JSON.parse(DataForPricesAppliedGet.dishes || "[]");
+            return parsedDishes.length > 0
+              ? parsedDishes.map((dish, index) => (
+                  <span key={index}>
+                    {dish}
+                    {index !== parsedDishes.length - 1 && ", "}
+                  </span>
+                ))
+              : "None";
+          } catch (error) {
+            console.error("Error parsing dishes:", error);
+            return "Invalid dish data";
+          }
+        })()
+      )}
+    </div>
+  </div>
+)}
+
 
                 {DataForPricesAppliedGet?.category_id === 2 && (
                   <>
@@ -4255,18 +4736,7 @@ useEffect(() => {
                     <div className="fare-breakdown-title">Discount :</div>
                     <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
                   </div>
-                  {dataAfterUsePoint?.data?.use_points_amount > 0 && (
-                    <>
-                      <div className="fare-breakdown-div">
-                        <div className="fare-breakdown-title">
-                          Points Used :
-                        </div>
-                        <div>
-                          -₹ {dataAfterUsePoint?.data?.use_points_amount}
-                        </div>
-                      </div>
-                    </>
-                  )}
+                 
 
                   {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
@@ -4350,7 +4820,23 @@ useEffect(() => {
               </div>
 
               <div className="payment-section-body">
-              <div className="payment-option-button reward-points-option">
+
+
+
+
+
+
+
+
+
+
+
+
+                {(( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (Number(DataForPricesAppliedGet?.wallet_balance) !== 0) ) && (
+                  <>
+                  
+        
+<div className="payment-option-button reward-points-option">
   <div className="payment-option">
     <div className="payment-icon">
       <img src="/coin.png" alt="Reward Icon" />
@@ -4358,20 +4844,13 @@ useEffect(() => {
     <div className="payment-details">
   <h3>Use Reward Points</h3>
   <p>
-    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Coins 
-    <span style={{ fontSize: "14px", color: "#666" }}> (10 Coins = ₹1)</span>
-  </p>
-  {/* <p>
-    Equivalent Cash: ₹ {(DataForPricesAppliedGet?.wallet_balance / 10).toFixed(2)}
-  </p> */}
-  <p>
-    Points Used: {DataForPricesAppliedGet?.use_points_amount * 10} Coins
+    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
+    <span style={{ fontSize: "14px", color: "#666" }}> (₹1 = {DataForPricesAppliedGet?.how_much_reward_points_equal_to_1_rupees_customer} Points)</span>
   </p>
   <p>
-    Discount Applied: ₹ {DataForPricesAppliedGet?.use_points_amount}
+    Points Used: {DataForPricesAppliedGet?.use_points} Points
   </p>
 </div>
-
     <label className="switch">
       <input
         type="checkbox"
@@ -4383,6 +4862,20 @@ useEffect(() => {
     </label>
   </div>
 </div>
+
+
+
+</>
+)}
+
+
+
+
+
+
+
+
+
 
                 <button
                   className="payment-option-button"
