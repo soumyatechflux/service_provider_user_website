@@ -61,25 +61,23 @@ const LogInPage = () => {
         const regex = /OTP for (\d{10}): (\d{4})/;
         const match = message.match(regex);
 
-        if (match) {
-          const mobileNumber = match[1];
-          const otp = match[2];
-          localStorage.setItem("mobile", mobileNumber);
-          localStorage.setItem("OTP", otp);
-          setPhone(localStorage.getItem("mobile"));
-          // setOtp(localStorage.getItem("OTP"));
-          console.log("Mobile Number:", mobileNumber); // 7878787878
-          console.log("OTP:", otp);
-          setMessage(
-            response.data.message ||
-              "OTP Sended successfuly to your registered mobile number."
-          );
-          handleShow();
-        } else {
-          setMessage("No match found");
-          handleShow();
-        }
-        setStep("otp");
+        // Inside handleSendOtp
+if (match) {
+  const mobileNumber = match[1];
+  const otp = match[2];
+  localStorage.setItem("mobile", mobileNumber);
+  localStorage.setItem("OTP", otp);
+  setPhone(localStorage.getItem("mobile"));
+  console.log("Mobile Number:", mobileNumber);
+  console.log("OTP:", otp);
+  setMessage(
+    response.data.message ||
+      "OTP sent successfully to your registered mobile number."
+  );
+  handleShow();
+} 
+setStep("otp");
+
       } else {
         if (response?.data?.message === "Customer not found") {
           setMessage("User not found. Please sign up to create a new account.");
