@@ -259,20 +259,32 @@ const SignUpPage = () => {
                   checked={termsAccepted}
                   onChange={() => setTermsAccepted(!termsAccepted)}
                 />
-                <label htmlFor="terms-checkbox" className="terms-and-condition">
-                  I agree to the{" "}
-                  <a
-                    href="#"
-                    className="terms-link-unique"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default anchor behavior
-                      window.open("/terms-and-conditions", "_blank"); // Open in new tab
-                    }}
-                  >
-                    Terms & Conditions
-                  </a>{" "}
-                  & Privacy Policy.
-                </label>
+               <label htmlFor="terms-checkbox" className="terms-and-condition">
+  I agree to the{" "}
+  <a
+    href="#"
+    className="terms-link-unique"
+    onClick={(e) => {
+      e.preventDefault();
+      window.open("/terms-and-conditions", "_blank"); // Open Terms & Conditions in new tab
+    }}
+  >
+    Terms & Conditions
+  </a>{" "}
+  &{" "}
+  <a
+    href="#"
+    className="terms-link-unique"
+    onClick={(e) => {
+      e.preventDefault();
+      window.open("/privacy-policy", "_blank"); // Open Privacy Policy in new tab
+    }}
+  >
+    Privacy Policy
+  </a>
+  .
+</label>
+
               </div>
               {error && <p className="error-message-unique">{error}</p>}
               <button
