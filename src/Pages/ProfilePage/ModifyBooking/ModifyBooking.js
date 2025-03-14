@@ -2211,7 +2211,7 @@ Your Subscription Ends At:
 </select> */}
 
 
-<select
+{/* <select
   id="visit-select"
   value={
     SelectedNumberOfSlotsObjectForMonthlyGardner
@@ -2277,7 +2277,42 @@ Your Subscription Ends At:
       </option>
     );
   })}
-</select>
+</select> */}
+
+
+<div
+  style={{
+    width: "100%",
+    padding: "10px",
+    border: "1px solid #ddd",
+    borderRadius: "4px",
+    fontSize: "14px",
+    backgroundColor: "#fff",
+    display: "flex",
+    alignItems: "center", 
+    justifyContent: "space-between", 
+  }}
+>
+  <span style={{ flexGrow: 1 }}>
+    {SelectedNumberOfSlotsObjectForMonthlyGardner
+      ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit} Visit${
+          SelectedNumberOfSlotsObjectForMonthlyGardner.visit > 1 ? "s" : ""
+        } - ${
+          Math.floor(SelectedNumberOfSlotsObjectForMonthlyGardner.hours / 60)
+        } hr${
+          SelectedNumberOfSlotsObjectForMonthlyGardner.hours > 60 ? "s" : ""
+        } ${
+          SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60
+            ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60} min${
+                SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60 > 1
+                  ? "s"
+                  : ""
+              }`
+            : ""
+        } per visit`
+      : "Select a Slot"} 
+  </span>
+</div>
 
 
                       </div>
