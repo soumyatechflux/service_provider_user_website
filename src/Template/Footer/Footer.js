@@ -90,7 +90,7 @@ const Footer = () => {
             <h4>Social Links</h4>
             <div className="social-icons">
               <a
-                href="https://facebook.com"
+                href="https://www.facebook.com/profile.php?id=61573424161134"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -111,7 +111,7 @@ const Footer = () => {
                 <FaLinkedin />
               </a> */}
               <a
-                href="https://instagram.com"
+                href="https://www.instagram.com/servyoindia?igsh=MWRua2FhcWhvdzhsOQ%3D%3D&utm_source=qr"
                 target="_blank"
                 rel="noopener noreferrer"
               >

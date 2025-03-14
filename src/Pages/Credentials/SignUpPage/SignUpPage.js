@@ -56,26 +56,26 @@ const SignUpPage = () => {
       handleShow();
       return;
     }
-
+  
     const data = {
       customer: {
         full_name: name,
         country_code: countryCode,
         mobile: phone,
-        referral_code: referralCode || "", // Add referral code to payload (optional)
+        referral_code: referralCode || "",
       },
     };
-
+  
     try {
       setLoading(true);
       const response = await SignUpAPI(data);
       console.log("API Response:", response);
       if (response?.status === 200 && response?.data?.success === true) {
         const message = response?.data?.message;
-
+  
         const regex = /OTP for (\d{10}): (\d{4})/;
         const match = message.match(regex);
-
+  
         if (match) {
           const mobileNumber = match[1];
           const otp = match[2];
@@ -86,10 +86,8 @@ const SignUpPage = () => {
           console.log("OTP:", otp);
           setMessage(response.data.message || "OTP sent successfully.");
           handleShow();
-        } else {
-          setMessage("No match found");
-          handleShow();
         }
+  
         setStep("otp");
       } else {
         setMessage(response?.data?.message || "Failed to send OTP.");
@@ -104,6 +102,7 @@ const SignUpPage = () => {
       setLoading(false);
     }
   };
+  
 
   const handleOtpChange = (index, value) => {
     if (/^\d?$/.test(value)) {
