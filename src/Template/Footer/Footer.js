@@ -96,6 +96,14 @@ const Footer = () => {
               >
                 <FaFacebook />
               </a>
+
+              <a
+                href="https://www.instagram.com/servyoindia?igsh=MWRua2FhcWhvdzhsOQ%3D%3D&utm_source=qr"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram />
+              </a>
               {/* <a
                 href="https://twitter.com"
                 target="_blank"
@@ -110,13 +118,7 @@ const Footer = () => {
               >
                 <FaLinkedin />
               </a> */}
-              <a
-                href="https://www.instagram.com/servyoindia?igsh=MWRua2FhcWhvdzhsOQ%3D%3D&utm_source=qr"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <FaInstagram />
-              </a>
+             
             </div>
             <div className="app-buttons">
               <a

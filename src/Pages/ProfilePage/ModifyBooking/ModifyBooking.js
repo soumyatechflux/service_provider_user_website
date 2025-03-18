@@ -2111,7 +2111,7 @@ Your Subscription Ends At:
                           {DefaultDataOfBooking?.booking_date_time
                             ? DefaultDataOfBooking.booking_date_time
                                 .split(", ")
-                                .pop() // Extract last part (Time)
+                                .pop() 
                             : "N/A"}
                             </div>
                         </div>

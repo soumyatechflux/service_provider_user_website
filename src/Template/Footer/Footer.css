@@ -80,7 +80,8 @@
 /* Social Icons */
 .social-icons {
   display: flex;
-  gap: 30px;
+  /* gap: 30px; */
+  gap: 10px;
   justify-content: flex-start;
   margin: 15px 0;
 }
