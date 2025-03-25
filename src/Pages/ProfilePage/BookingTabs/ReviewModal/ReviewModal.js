@@ -12,7 +12,6 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   // Fetch existing review when modal opens
-  useEffect(() => {
     const fetchExistingReview = async () => {
       if (isOpen && !isSubmitted) {
         console.log("Fetching review for partnerId:", partnerId);
@@ -20,7 +19,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
           const token = sessionStorage.getItem("ServiceProviderUserToken");
 
           const response = await axios.get(
-            `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/${partnerId}`,
+            `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/${partnerId}?booking_id=${bookingId}`,
             { headers: { Authorization: `Bearer ${token}` } }
           );
 
@@ -35,6 +34,7 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
         }
       }
     };
+  useEffect(() => {
 
     fetchExistingReview();
   }, [isOpen, partnerId, isSubmitted]);
@@ -58,6 +58,8 @@ const ReviewModal = ({ isOpen, onClose, partnerId,categoryId,bookingId }) => {
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/rating/add`,
         {
           partner_id: partnerId,
+          booking_id: bookingId,
+
           rating,
           review,
         },
