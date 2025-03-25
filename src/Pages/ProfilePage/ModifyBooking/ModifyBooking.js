@@ -460,11 +460,20 @@ useEffect(() => {
 
 
   const nextStep = () => {
+    // setStep((prev) => prev + 1);
+
+    setLoading(true);
     setStep((prev) => prev + 1);
+    setCallRazorPay(false);
+    setLoading(false);
+
   };
 
   const prevStep = () => {
+   setLoading(true);
+
     setStep((prev) => prev - 1);
+    setLoading(false);
   };
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);

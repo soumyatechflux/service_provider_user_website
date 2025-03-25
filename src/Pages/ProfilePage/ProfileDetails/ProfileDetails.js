@@ -268,6 +268,7 @@ const ProfileDetails = () => {
 
         if (result.success === true) {
           const data = result.data; // Data fetched successfully
+console.log(data,"datacugbydata");
 
           setLocationData({
             latitude: data?.latitude || "",

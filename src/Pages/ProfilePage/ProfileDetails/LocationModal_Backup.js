@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { GoogleMap, Marker } from "@react-google-maps/api";
+import { GoogleMap, Marker, Polygon } from "@react-google-maps/api";
 import { Spinner } from "react-bootstrap";
 import { FaBullseye, FaLocationArrow } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../Loader/Loader";
 import { FaCrosshairs } from "react-icons/fa";
+import MessageModal from "../../MessageModal/MessageModal";
 
 const LocationModal = ({
   show,
@@ -23,7 +24,15 @@ const LocationModal = ({
   streetAddressLine2, // New props for landmark and street address
   addressToEditId
 }) => {
-  const [location, setLocation] = useState(null); // User's selected location
+
+  const DefLocCP = { lat: 28.6315, lng: 77.2167 };
+  const [location, setLocation] = useState(DefLocCP);
+
+
+  // const [location, setLocation] = useState(null); 
+
+
+
   const [addressDetails, setAddressDetails] = useState({
     latitude: "",
     longitude: "",
@@ -41,8 +50,16 @@ const LocationModal = ({
 
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
+
+
+
+  const [showMsg, setShowMsg] = useState(false);
+  const handleClose = () => setShowMsg(false);
+  const handleShow = () => setShowMsg(true);
+
+
   useEffect(() => {
-    if (show) {
+    if (showMsg) {
       // if (latitude && longitude) {
         if (country) {
         const initialLocation = { lat: latitude, lng: longitude };
@@ -101,19 +118,89 @@ const LocationModal = ({
     setMapLoading(false);
   };
 
+  // const fetchCurrentLocation = () => {
+  //   setLoading(true);
+  //   setMapLoading(true); 
+  //   if (navigator.geolocation) {
+  //     navigator.geolocation.getCurrentPosition(
+  //       (position) => {
+  //         const { latitude, longitude } = position.coords;
+  //         const currentLocation = { lat: latitude, lng: longitude };
+  //         setLocation(currentLocation);
+  //         fetchAddress(currentLocation);
+  //         setMapLoading(false); 
+  //   setLoading(false);
+
+  //       },
+  //       (error) => {
+  //         console.error("Error getting location:", error.message);
+  //         setAddressDetails((prev) => ({
+  //           ...prev,
+  //           formattedAddress:
+  //             "Unable to get location. Please enable location access.",
+  //         }));
+  //         setLoading(false);
+  //         setMapLoading(false); // Stop loading once error occurs
+  //       }
+  //     );
+  //   } else {
+  //     setAddressDetails((prev) => ({
+  //       ...prev,
+  //       formattedAddress: "Geolocation not supported by this browser.",
+  //     }));
+  //     setLoading(false);
+  //     setMapLoading(false); // Stop loading once error occurs
+  //   }
+  // };
+
+
+
+  const NCR_BOUNDARIES = [
+    { lat: 28.9, lng: 76.7 }, // Top-left (Gurgaon side)
+    { lat: 28.9, lng: 77.8 }, // Top-right (Ghaziabad side)
+    { lat: 27.5, lng: 77.8 }, // Bottom-right (Mathura side)
+    { lat: 27.5, lng: 76.7 }, // Bottom-left (Palwal side)
+  ];
+
+
+
+
   const fetchCurrentLocation = () => {
     setLoading(true);
-    setMapLoading(true); 
+    setMapLoading(true);
+  
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
-          const { latitude, longitude } = position.coords;
+          let { latitude, longitude } = position.coords;
+  
+          // Define approximate Delhi NCR boundaries
+          const delhiNCRBounds = {
+            north: 28.9,
+            south: 28.4,
+            west: 76.8,
+            east: 77.4,
+          };
+  
+          // Check if the fetched location is outside Delhi NCR
+          const isOutsideDelhiNCR =
+            latitude < delhiNCRBounds.south ||
+            latitude > delhiNCRBounds.north ||
+            longitude < delhiNCRBounds.west ||
+            longitude > delhiNCRBounds.east;
+  
+          if (isOutsideDelhiNCR) {
+            // console.warn("User is outside Delhi NCR. Setting default location to Connaught Place.");
+            latitude = 28.6315;
+            longitude = 77.2167;
+          }
+  
           const currentLocation = { lat: latitude, lng: longitude };
           setLocation(currentLocation);
           fetchAddress(currentLocation);
-          setMapLoading(false); 
-    setLoading(false);
-
+  
+          setMapLoading(false);
+          setLoading(false);
         },
         (error) => {
           console.error("Error getting location:", error.message);
@@ -136,6 +223,8 @@ const LocationModal = ({
     }
   };
 
+
+  
   const fetchAddress = async (location) => {
     setLoading(true);
     try {
@@ -188,12 +277,48 @@ const LocationModal = ({
     fetchAddress(newLocation);
   };
 
-  const handleMapClick = (e) => {
-    const clickedLocation = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-    setLocation(clickedLocation);
-    fetchAddress(clickedLocation);
+  // const handleMapClick = (e) => {
+  //   const clickedLocation = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+  //   setLocation(clickedLocation);
+  //   fetchAddress(clickedLocation);
+  // };
+
+
+
+  const NCR_BOUNDS = {
+    north: 28.9,  // Top boundary (Gurgaon, Ghaziabad)
+    south: 27.5,  // Bottom boundary (Palwal, Mathura)
+    east: 77.8,   // Right boundary (Noida, Ghaziabad)
+    west: 76.7,   // Left boundary (Gurgaon, Manesar)
   };
 
+  const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
+
+
+  const handleMapClick = (e) => {
+    const clickedLocation = { lat: e.latLng.lat(), lng: e.latLng.lng() };
+  
+    // Check if clicked location is inside NCR boundaries
+    const isInsideNCR =
+      clickedLocation.lat >= NCR_BOUNDS.south &&
+      clickedLocation.lat <= NCR_BOUNDS.north &&
+      clickedLocation.lng >= NCR_BOUNDS.west &&
+      clickedLocation.lng <= NCR_BOUNDS.east;
+  
+
+
+    if (!isInsideNCR) {
+      // alert("Location outside Delhi NCR is not allowed. Defaulting to Connaught Place.");
+      handleShow();
+      setLocation(DEFAULT_LOCATION);
+      fetchAddress(DEFAULT_LOCATION);
+    } else {
+      setLocation(clickedLocation);
+      fetchAddress(clickedLocation);
+    }
+  };
+
+  
   const handleResetLocation = () => {
     fetchCurrentLocation();
   };
@@ -543,22 +668,67 @@ const LocationModal = ({
           <>
 {UseMyLocation && (
 
-            <GoogleMap
-              mapContainerStyle={{ height: "250px", width: "100%" }}
-              center={location}
-              zoom={15}
-              onClick={handleMapClick}
-            >
-              <Marker
-                position={location}
-                draggable={true}
-                onDragEnd={handleMarkerDragEnd}
-                icon={{
-                  url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Flag_%E2%80%93_Default.png",
-                  scaledSize: new window.google.maps.Size(40, 40),
-                }}
-              />
-            </GoogleMap>
+            // <GoogleMap
+            //   mapContainerStyle={{ height: "250px", width: "100%" }}
+            //   center={location}
+            //   zoom={15}
+            //   onClick={handleMapClick}
+            // >
+            //   <Marker
+            //     position={location}
+            //     draggable={true}
+            //     onDragEnd={handleMarkerDragEnd}
+            //     icon={{
+            //       url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Flag_%E2%80%93_Default.png",
+            //       scaledSize: new window.google.maps.Size(40, 40),
+            //     }}
+            //   />
+            // </GoogleMap>
+
+
+
+<GoogleMap
+  mapContainerStyle={{ height: "250px", width: "100%" }}
+  center={location}
+  zoom={11} // Set zoom level accordingly
+  onClick={handleMapClick}
+  options={{
+    restriction: {
+      latLngBounds: {
+        north: 29.5, // Top boundary
+        south: 27.5, // Bottom boundary
+        east: 77.8, // Right boundary
+        west: 76.7, // Left boundary
+      },
+      strictBounds: true, // Prevent users from panning outside
+    },
+  }}
+>
+  {/* Polygon to highlight the selectable area */}
+  <Polygon
+    paths={NCR_BOUNDARIES}
+    options={{
+      fillColor: "#ADD8E6", // Light blue fill color for eligible area
+      fillOpacity: 0.35, // Transparency
+      strokeColor: "#0000FF", // Border color (blue)
+      strokeOpacity: 0.8,
+      strokeWeight: 2,
+    }}
+  />
+
+  {/* Draggable Marker */}
+  <Marker
+    position={location}
+    draggable={true}
+    onDragEnd={handleMarkerDragEnd}
+    icon={{
+      url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Flag_%E2%80%93_Default.png",
+      scaledSize: new window.google.maps.Size(40, 40),
+    }}
+  />
+</GoogleMap>
+
+
             )}
             <Form className="mt-4">
             {UseMyLocation && (
@@ -782,6 +952,16 @@ const LocationModal = ({
 
       </Modal.Footer>
     </Modal>
+
+    {showMsg && (
+    <MessageModal
+        show={showMsg}
+        handleClose={handleClose}
+        message={"Location outside Delhi NCR is not allowed. Defaulting to Connaught Place."}
+      />
+    )}
+
+
     </>
   );
 };

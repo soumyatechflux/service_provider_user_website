@@ -1,146 +1,162 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import MessageModal from "../../MessageModal/MessageModal";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Loader from "../../Loader/Loader";
+import MessageModal from "../../MessageModal/MessageModal";
 
-const RazorpayPayment = ({ BookingData, callRazorPay, handleConfirmBooking }) => {
-  const navigate = useNavigate();
-  const [isScriptReady, setIsScriptReady] = useState(false);
+const RAZORPAY_SCRIPT_ID = "razorpay-script";
+
+const RazorpayPayment = ({ 
+  BookingData, 
+  callRazorPay, 
+  handleConfirmBooking,
+  onPaymentComplete 
+}) => {
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isScriptReady, setIsScriptReady] = useState(!!window.Razorpay);
+  const paymentProcessedRef = useRef(false);
+  const razorpayInstance = useRef(null);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  const resetPaymentState = useCallback(() => {
+    razorpayInstance.current?.close();
+    razorpayInstance.current = null;
+    paymentProcessedRef.current = false;
+    setLoading(false);
+  }, []);
 
-  // Load Razorpay script dynamically
+  const handleClose = useCallback(() => {
+    setShow(false);
+    resetPaymentState();
+  }, [resetPaymentState]);
+
+  // Load Razorpay script
   useEffect(() => {
+    if (isScriptReady) return;
+
+    const existingScript = document.getElementById(RAZORPAY_SCRIPT_ID);
+    if (existingScript) {
+      existingScript.onload = () => setIsScriptReady(true);
+      return;
+    }
+
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;
+    script.id = RAZORPAY_SCRIPT_ID;
 
-    script.onload = () => {
-      console.log("Razorpay script loaded successfully!");
-      setIsScriptReady(true);
-    };
-
+    script.onload = () => setIsScriptReady(true);
     script.onerror = () => {
       console.error("Failed to load Razorpay script");
+      resetPaymentState();
     };
 
     document.body.appendChild(script);
 
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+    return resetPaymentState;
+  }, [isScriptReady, resetPaymentState]);
 
-  // Handle the payment process using Razorpay
-  const handlePayment = () => {
-    if (window.Razorpay && isScriptReady) {
-      const {
-        key,
-        amount,
-        currency,
-        business_name,
-        business_logo,
-        callback_url,
-        product_description,
-        customer_detail,
-        razorpayModalTheme,
-        notes,
-        id,
-      } = BookingData;
+  const handlePayment = useCallback(async () => {
+    resetPaymentState(); // Clean up any previous instances
 
+    if (!window.Razorpay) {
+      console.error("Razorpay not available");
+      return;
+    }
+
+    try {
       const options = {
-        key,
-        amount,
-        currency: currency || "INR",
-        name: business_name,
-        description: product_description,
-        image: business_logo,
-        order_id: id,
-        handler: (response) => {
-          setLoading(true);
-          fetch(callback_url, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            }),
-          })
-            .then((res) => {
-              if (!res.ok) {
-                throw new Error(`HTTP error! status: ${res.status}`);
-              }
-              return res.json();
-            })
-            .then(() => {
-              handleConfirmBooking();
-            })
-            .catch((err) => {
-              alert("Payment verification failed. Please try again.");
-              setMessage("Payment verification failed. Please try again.");
-              setShow(true);
-              handleShow();
-            })
-            .finally(() => {
-              setLoading(false);
+        key: BookingData.key,
+        amount: BookingData.amount,
+        currency: BookingData.currency || "INR",
+        name: BookingData.business_name,
+        description: BookingData.product_description,
+        image: BookingData.business_logo,
+        order_id: BookingData.id,
+        handler: async (response) => {
+          try {
+            setLoading(true);
+            const verificationResponse = await fetch(BookingData.callback_url, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              }),
             });
+
+            if (!verificationResponse.ok) {
+              throw new Error("Verification failed");
+            }
+
+            const data = await verificationResponse.json();
+            if (!data.success) {
+              throw new Error(data.message || "Payment verification failed");
+            }
+
+            handleConfirmBooking();
+            onPaymentComplete?.();
+            paymentProcessedRef.current = true;
+          } catch (error) {
+            setMessage(error.message || "Payment verification failed");
+            setShow(true);
+            throw error; // Re-throw to trigger payment.failed
+          } finally {
+            setLoading(false);
+          }
         },
-        prefill: {
-          name: customer_detail?.name,
-          email: customer_detail?.email,
-          contact: customer_detail?.contact,
-        },
-        notes: {
-          address: notes?.address,
-          order_id: id,
-          order_details: product_description,
-        },
+        prefill: BookingData.customer_detail || {},
+        notes: BookingData.notes || {},
         theme: {
-          color: razorpayModalTheme || "#F37254",
+          color: BookingData.razorpayModalTheme || "#F37254",
         },
         modal: {
           ondismiss: () => {
-            setMessage("Payment modal closed");
+            setMessage("Payment was cancelled");
             setShow(true);
-            handleShow();
+            resetPaymentState();
           },
         },
       };
 
-      const razorpay = new window.Razorpay(options);
-      razorpay.on("payment.failed", (response) => {
-        setMessage(`Payment failed! Error: ${response.error.description}`);
+      razorpayInstance.current = new window.Razorpay(options);
+      
+      razorpayInstance.current.on("payment.failed", (response) => {
+        setMessage(response.error.description || "Payment failed");
         setShow(true);
-        handleShow();
+        resetPaymentState();
       });
-      razorpay.open();
-    } else {
-      console.error("Razorpay object not found or script not ready.");
-    }
-  };
 
-  // Trigger payment on component load if `callRazorPay` is true and script is ready
-  useEffect(() => {
-    if (callRazorPay && isScriptReady) {
-      setLoading(true);
-      handlePayment();
-      setLoading(false);
+      razorpayInstance.current.open();
+    } catch (error) {
+      console.error("Payment initialization failed:", error);
+      setMessage("Payment initialization failed");
+      setShow(true);
+      resetPaymentState();
     }
-  }, [callRazorPay, isScriptReady]);
+  }, [BookingData, handleConfirmBooking, onPaymentComplete, resetPaymentState]);
+
+  useEffect(() => {
+    if (callRazorPay && isScriptReady && !paymentProcessedRef.current) {
+      paymentProcessedRef.current = true;
+      setLoading(true);
+      handlePayment().catch(() => {
+        setLoading(false);
+        paymentProcessedRef.current = false;
+      });
+    }
+  }, [callRazorPay, isScriptReady, handlePayment]);
 
   return (
     <>
       {loading && <Loader />}
-      <MessageModal show={show} handleClose={handleClose} message={message} />
+      <MessageModal
+        show={show}
+        handleClose={handleClose}
+        message={message}
+      />
     </>
   );
 };
 
-export default RazorpayPayment;
+export default React.memo(RazorpayPayment);
