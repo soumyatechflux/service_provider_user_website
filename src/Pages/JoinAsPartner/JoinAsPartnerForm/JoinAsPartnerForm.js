@@ -276,11 +276,27 @@ const JoinAsPartnerForm = () => {
             Download the Servyo app on your mobile phone and create an account to start working and earning
           </p>
           <p className="mb-1">Download Our Partner App</p>
+
+
+{/*           
           <div>
             <button className="join-partner-button-download">
               Download App
             </button>
-          </div>
+          </div> */}
+
+
+<div>
+  <button 
+    className="join-partner-button-download"
+    onClick={() => window.location.href = "https://techfluxsolutions.us/servyo.apk"}
+  >
+    Download App
+  </button>
+</div>
+
+
+
         </div>
 
         <div className="join-partner-help-section">
