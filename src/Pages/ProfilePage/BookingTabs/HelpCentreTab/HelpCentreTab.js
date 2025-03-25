@@ -1,6 +1,6 @@
 import axios from "axios";
 import { Calendar } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "../../../Loader/Loader";
@@ -24,7 +24,6 @@ const HelpCentreTab = () => {
   const POST_API_URL = `${BASE_API_URL}/api/customer/help_center/add`;
   const GET_API_URL = `${BASE_API_URL}/api/customer/help_center`;
 
-  useEffect(() => {
     const fetchQueries = async () => {
       setLoading(true);
       try {
@@ -38,12 +37,15 @@ const HelpCentreTab = () => {
         if (response.data.success && response.data.data) {
           const data = response.data.data;
           const filteredQueries = data.filter(item => item.booking_id === booking_id);
-
+          if (fileInputRef.current) {
+            fileInputRef.current.value = ""; // Clear the input field
+          }
           setQueries(
             filteredQueries.map((item) => ({
               id: item.id,
               query: item.description,
               status: item.status,
+              attachment: item.attachment,
               createddate: new Date(item.created_at).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -66,6 +68,8 @@ const HelpCentreTab = () => {
       }
     };
 
+  useEffect(() => {
+
     if (booking_id) {
       fetchQueries();
     }
@@ -74,6 +78,8 @@ const HelpCentreTab = () => {
   const handleFileChange = (e) => {
     setAttachment(e.target.files[0]);
   };
+
+  const fileInputRef = useRef(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -119,6 +125,11 @@ const HelpCentreTab = () => {
 
       setQuery("");
       setAttachment(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ""; // Clear the input field
+      }
+      fetchQueries();
+
       setMessage("Your query has been submitted successfully! 🎉");
       handleShow();
     } catch (error) {
@@ -156,7 +167,9 @@ const HelpCentreTab = () => {
             id="file-upload"
             onChange={handleFileChange}
             disabled={loading}
+            ref={fileInputRef}
           />
+
         </div>
         <button type="submit" className="submit-button">Submit Ticket</button>
       </form>
@@ -175,8 +188,39 @@ const HelpCentreTab = () => {
                 </div>
               </div>
               <div className="card-content">
+
+
+              <span className={`status-badge ${item.status.toLowerCase()}`}>{item.status}</span>
+
+<br />
+
                 <p className="query-text">{item.query}</p>
-                <span className={`status-badge ${item.status.toLowerCase()}`}>{item.status}</span>
+
+                {item?.attachment && (
+     <div style={{ marginTop: "5px", display: "flex", alignItems: "center", gap: "8px" }}>
+     <span style={{ fontWeight: "bold" }}>Attachment:</span>
+     <a
+href={item?.attachment}
+target="_blank"
+rel="noopener noreferrer"
+style={{ 
+color: "#007bff", 
+textDecoration: "none", 
+fontWeight: "bold", 
+cursor: "pointer" // Ensures pointer cursor for the entire link
+}}
+>
+<span style={{ fontSize: "16px", marginRight: "4px" }}>
+&#128065;
+</span>
+View
+</a>
+
+   </div>
+          )}
+
+
+
               </div>
             </div>
           ))
