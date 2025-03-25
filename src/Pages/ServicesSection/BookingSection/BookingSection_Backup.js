@@ -861,6 +861,7 @@ useEffect(() => {
   const nextStep = () => {
     setLoading(true);
     setStep((prev) => prev + 1);
+    setCallRazorPay(false);
     setLoading(false);
   };
 

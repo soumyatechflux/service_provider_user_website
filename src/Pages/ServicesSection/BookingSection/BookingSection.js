@@ -1705,6 +1705,7 @@ useEffect(() => {
       const body = {
         booking_id: DataForPricesAppliedGet?.booking_id || "",
         voucher_code: voucherCode || "",
+        is_use_points:isUsePoints,
       };
 
       const response = await axios.post(
@@ -1759,7 +1760,7 @@ useEffect(() => {
       };
   
       const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/booking_wallet_points_use`,
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/discount/verify`,
         body,
         {
           headers: {
@@ -1771,10 +1772,14 @@ useEffect(() => {
   
       if (response.data.success) {
         setDataForPricesAppliedGet(response?.data?.data);
-        toast.success(response?.data?.message || "Reward Points applied successfully.");
+        // toast.success(response?.data?.message || "Reward Points applied successfully.");
+        toast.success("Success");
+
       } else {
         toast.error(response?.data?.message || "Invalid reward system.");
       }
+
+
     } catch (error) {
       console.error("Error:", error);
       toast.error("An error occurred. Please try again later.");
@@ -1811,6 +1816,9 @@ useEffect(() => {
           : "",
         //  voucher_code: voucherCode ? voucherCode : "",
         voucher_code: "",
+
+        is_use_points:isUsePoints,
+
       };
 
       setLoading(true);
@@ -4643,6 +4651,70 @@ useEffect(() => {
                 </div>
               </div>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+              {(( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (Number(DataForPricesAppliedGet?.wallet_balance) !== 0) ) && (
+                  <>  
+<div className="payment-option-button reward-points-option mt-2">
+  <div className="payment-option">
+    <div className="payment-icon">
+      <img src="/coin.png" alt="Reward Icon" />
+    </div>
+    <div className="payment-details">
+  <h3>Use Reward Points</h3>
+  <p>
+    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
+    <span style={{ fontSize: "14px", color: "#666" }}> (₹1 = {DataForPricesAppliedGet?.how_much_reward_points_equal_to_1_rupees_customer} Points)</span>
+  </p>
+  <p>
+    Points Used: {DataForPricesAppliedGet?.use_points} Points
+  </p>
+</div>
+    <label className="switch">
+      <input
+        type="checkbox"
+        id="secureFeeCheckbox"
+        checked={isUsePoints}
+        onChange={toggleUsePoints}
+      />
+      <span className="slider round"></span>
+    </label>
+  </div>
+</div>
+</>
+)}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
               <h3 className="booking-summary-label mt-3">Charges Breakdown</h3>
               <div className="fare-breakdown-section">
                 <div className="fare-breakdown-card">
@@ -4826,48 +4898,6 @@ useEffect(() => {
 
 
 
-
-
-
-
-
-
-
-                {(( DataForPricesAppliedGet?.use_reward_point_button_show || DataForPricesAppliedGet?.use_reward_point_button_show ) && (Number(DataForPricesAppliedGet?.wallet_balance) !== 0) ) && (
-                  <>
-                  
-        
-<div className="payment-option-button reward-points-option">
-  <div className="payment-option">
-    <div className="payment-icon">
-      <img src="/coin.png" alt="Reward Icon" />
-    </div>
-    <div className="payment-details">
-  <h3>Use Reward Points</h3>
-  <p>
-    Available Balance: {DataForPricesAppliedGet?.wallet_balance} Points 
-    <span style={{ fontSize: "14px", color: "#666" }}> (₹1 = {DataForPricesAppliedGet?.how_much_reward_points_equal_to_1_rupees_customer} Points)</span>
-  </p>
-  <p>
-    Points Used: {DataForPricesAppliedGet?.use_points} Points
-  </p>
-</div>
-    <label className="switch">
-      <input
-        type="checkbox"
-        id="secureFeeCheckbox"
-        checked={isUsePoints}
-        onChange={toggleUsePoints}
-      />
-      <span className="slider round"></span>
-    </label>
-  </div>
-</div>
-
-
-
-</>
-)}
 
 
 
