@@ -22,7 +22,8 @@ const MeetOurTeam = () => {
   ];
 
   return (
-    <div className="container nav-container team-section">
+    <>
+    {/* <div className="container nav-container team-section">
       <h2 className="team-title">Meet Our Team</h2>
       <div className="team-container">
         {teamData.map((member) => (
@@ -44,7 +45,9 @@ const MeetOurTeam = () => {
           </div>
         ))}
       </div>
-    </div>
+    </div> */}
+    </>
+
   );
 };
 
