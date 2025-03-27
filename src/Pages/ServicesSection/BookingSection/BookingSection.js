@@ -4811,6 +4811,16 @@ useEffect(() => {
                   </div>
                  
 
+                  {DataForPricesAppliedGet?.due_payments > 0 && (
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Cancellation Charges Due Amount:</div>
+                    <div> +₹ {DataForPricesAppliedGet.due_payments}</div>
+                  </div>
+)}
+
+
+                
+
                   {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount:</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
@@ -4884,11 +4894,7 @@ useEffect(() => {
                   Bill Total: ₹ {DataForPricesAppliedGet?.billing_amount}
                 </h2>
                  
-                {DataForPricesAppliedGet?.due_payments > 0 && (
-  <p className="">
-    Amount Due: ₹ {DataForPricesAppliedGet.due_payments}
-  </p>
-)}
+             
 </div>
               </div>
 

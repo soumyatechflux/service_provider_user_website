@@ -3,7 +3,7 @@ import "./NewsLetter.css";
 
 const NewsLetter = () => {
   return (
-    <div className="container nav-container ">
+    <div className="container nav-container mt-5 ">
       <div className="newsletter-section">
         <h2 className="newsletter-heading">
           Be in the Loop! Subscribe to Our Newsletter for Exclusive Offers and
