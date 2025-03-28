@@ -3254,7 +3254,9 @@ Your Subscription Ends At:
   className="checkout-button"
   onClick={() => {
     if (DataForPricesAppliedGet?.billing_amount == 0) {
-      setStep(4); // Go directly to step 4 if billing_amount is 0
+      // setStep(4); 
+      setStep(); 
+
     } else {
       nextStep(); // Proceed normally otherwise
     }
