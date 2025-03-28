@@ -2420,33 +2420,7 @@ useEffect(() => {
                         Number of Visiting Slots
                       </label>
                       <div className="div-people-count">
-                        {/* 
-
-  <div className="people-counter-container">
-
-    <span className="people-counter-label">Select Number of Visits</span>
-    <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementVisitsForMonthlyGardner}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {SelectedNumberOfSlotsObjectForMonthlyGardner?.visit}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementVisitsForMonthlyGardner}
-                        >
-                          +
-                        </button>
-                      </div>
-                      </div>
-
- */}
+    
 
                         <select
                           id="visit-select"
