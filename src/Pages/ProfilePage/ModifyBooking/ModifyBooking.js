@@ -580,12 +580,22 @@ useEffect(() => {
       if (response.status === 200) {
         // toast.success(response?.data?.message || "Successful!");
 
+
+
+
         if (mod === "cod") {
           // toast.info("Please confirm your booking to proceed.");
-
           nextStep(true);
         }
         
+
+        if (response.data.success === true && response.data.message === "order success" && mod !== "cod") {
+          nextStep(true);
+          return;
+        }
+        
+
+
         if (response?.data?.order) {
           if (response.data.order?.success === false) {
             toast.error(response.data.order?.message || "An error occurred!");
