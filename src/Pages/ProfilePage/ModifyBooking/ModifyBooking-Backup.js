@@ -1556,8 +1556,6 @@ const handleCheckboxChange = (id) => {
 
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
-  const [isDatesChanged, setIsDatesChanged] = useState(false);
-
 
   // useEffect(() => {
   //   // if(NumOfVisitsChanged){
@@ -1599,7 +1597,7 @@ const handleCheckboxChange = (id) => {
 
   
     useEffect(() => {
-      if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0 && isDatesChanged) {
+      if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0) {
         // const hoursPerVisit =
         //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
         //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
@@ -1619,7 +1617,7 @@ const handleCheckboxChange = (id) => {
     
         setSelectedVisitDates(newVisitDates);
       }
-    }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate,NumOfVisitsChanged,isDatesChanged]);
+    }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate,NumOfVisitsChanged]);
     
   
   
@@ -1633,13 +1631,17 @@ const handleCheckboxChange = (id) => {
           ...slot,
           date: slot.date ? new Date(slot.date).toISOString().split("T")[0] : null,
         }));
-        console.log(formattedSlots,"formattedSlotsdsvjnkref")
         setSelectedVisitDates(formattedSlots);
       } catch (error) {
         console.error("Error parsing gardener_visiting_slots:", error);
       }
     }
   }, [DefaultDataOfBooking]);
+
+
+
+
+
 
 
 
@@ -2356,137 +2358,75 @@ Your Subscription Ends At:
 
 
 
-{MonthlySubscriptionStartDate &&
-  MonthlySubscriptionEndsDate &&
-  selectedVisitDates.map((visit, index) => {
-    // Find the latest selected date from previous visits (exclude the current index)
-    const latestSelectedDate =
-      index > 0
-        ? selectedVisitDates
-            .slice(0, index) // Consider only previous visit dates
-            .map((v) => new Date(v.date))
-            .sort((a, b) => b - a)[0]
-        : null; // No restriction for the first visit
-
-    // Collect all selected dates to disable them everywhere
-    const selectedDatesSet = new Set(
-      selectedVisitDates.map((v) => new Date(v.date).toDateString())
-    );
-console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
-    console.log(selectedDatesSet,"selectedDatesSetscdcsbhj")
-    return (
-      <div key={index} className="booking-form-group flex-fill">
-        <label className="booking-form-label">
-          Select Visit Date {index + 1}
-        </label>
-        <div className="date-scroll-container">
 
 
- {getUpcomingDatesToVisits(
-            new Date(MonthlySubscriptionStartDate),
-            new Date(MonthlySubscriptionEndsDate)
-          ).map((date, i) => {
-            const dateString = date.toDateString();
-            const isSelected = visit.date && new Date(visit.date).toDateString() === dateString;
+                    {MonthlySubscriptionStartDate && MonthlySubscriptionEndsDate && selectedVisitDates.map((visit, index) => (
+                      <>
 
-            // Disable the date if:
-            // - It is already selected anywhere
-            // - It is before the latest selected date for visits > 0
-            const isDisabled = selectedDatesSet.has(dateString) && (!isSelected) || 
-              (latestSelectedDate && date < latestSelectedDate);
-            return (
-              <div
-                key={i}
-                className={`date-item ${isSelected ? "selected" : ""} ${
-                  isDisabled ? "disabled" : ""
-                }`}
- 
-                onClick={() => {
-                  if (isDisabled) return; // Prevent selecting disabled dates
-                setIsDatesChanged(true);
-                  const updatedDates = [...selectedVisitDates];
-                  let nextDate = new Date(date);
-                  
-                  // Validate that the selected date is within the range
-                  if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
-                    return; // Stop if the first selection itself is out of range
-                  }
-                
-                  // Update the selected visit date
-                  updatedDates[index] = {
-                    ...updatedDates[index],
-                    date: date.toISOString().split("T")[0],
-                  };
-                
-                  // Auto-update subsequent visits
-                  for (let i = index + 1; i < updatedDates.length; i++) {
-                    do {
-                      nextDate.setDate(nextDate.getDate() + 3); // Increment by 3 days
-                    } while (selectedDatesSet.has(nextDate.toDateString())); // Skip disabled dates
-                
-                    // Stop if the next date is out of range
-                    if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
-                      break;
-                    }
-                
-                    updatedDates[i] = {
-                      ...updatedDates[i],
-                      date: nextDate.toISOString().split("T")[0],
-                    };
-                
-                    // Add the new date to the set
-                    selectedDatesSet.add(nextDate.toDateString());
-                  }
-                
-                  setSelectedVisitDates(updatedDates);
-                }}
-                
-                
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === " ") && !isDisabled) {
-                    const updatedDates = selectedVisitDates.map(
-                      (visitItem, visitIndex) =>
-                        visitIndex === index
-                          ? {
-                              ...visitItem,
-                              date: date.toISOString().split("T")[0],
-                            }
-                          : visitItem
-                    );
-                    setSelectedVisitDates(updatedDates);
-                  }
-                }}
-                style={{
-                  opacity: isDisabled ? 0.5 : 1,
-                  pointerEvents: isDisabled ? "none" : "auto",
-                }}
-              >
-                <span className="day">{format(date, "EEE")}</span>
-                <span className="date">{format(date, "dd")}</span>
-                <span className="month">{format(date, "MMM")}</span>
-              </div>
+                      {/* {console.log(selectedVisitDates,"selectedVisitDatesselectedVisitDates")} */}
+  <div key={index} className="booking-form-group flex-fill">
+    <label className="booking-form-label">Select Visit Date {index + 1}</label>
+
+    {/* Date selection scroll container */}
+    <div className="date-scroll-container">
+    
+    
+    {getUpcomingDatesToVisits(
+      new Date(MonthlySubscriptionStartDate),
+      new Date(MonthlySubscriptionEndsDate)
+    ).map((date, i) => {
+      const isSelected =
+        visit.date &&
+        new Date(visit.date).toDateString() === date.toDateString();
+    
+      return (
+        <div
+          key={i}
+          className={`date-item ${isSelected ? "selected" : ""}`}
+          onClick={() => {
+            const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+              visitIndex === index
+                ? { ...visitItem, date: date.toISOString().split("T")[0] }
+                : visitItem
             );
-          })} 
-
-
-
-
+            setSelectedVisitDates(updatedDates);
+          }}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") {
+              const updatedDates = selectedVisitDates.map((visitItem, visitIndex) =>
+                visitIndex === index
+                  ? { ...visitItem, date: date.toISOString().split("T")[0] }
+                  : visitItem
+              );
+              setSelectedVisitDates(updatedDates);
+            }
+          }}
+        >
+          <span className="day">{format(date, "EEE")}</span>
+          <span className="date">{format(date, "dd")}</span>
+          <span className="month">{format(date, "MMM")}</span>
         </div>
-      </div>
-    );
-  })}
+      );
+    })}
+    
+    </div>
 
-
-
-
-
-
-
-
-
-
+    {/* <div className="cooking-time-container pt-3">
+      <span className="people-counter-label">Average Time per Slot:</span>{" "}
+      <span className="cooking-time-value">
+        {(() => {
+          const totalMinutes = visit.hours || 0;
+          const hours = Math.floor(totalMinutes / 60);
+          const minutes = totalMinutes % 60;
+          return `${hours} hours ${minutes} minutes`;
+        })()}
+      </span>
+    </div> */}
+  </div>
+  </>
+))}
 
 
 
