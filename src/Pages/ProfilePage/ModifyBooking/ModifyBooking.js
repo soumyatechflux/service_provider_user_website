@@ -3252,15 +3252,16 @@ Your Subscription Ends At:
 
               <button
   className="checkout-button"
-  onClick={() => {
-    if (DataForPricesAppliedGet?.billing_amount == 0) {
-      // setStep(4); 
-      setStep(); 
+  // onClick={() => {
+  //   if (DataForPricesAppliedGet?.billing_amount == 0) {
+  //     // setStep(4); 
+  //     setStep(3); 
 
-    } else {
-      nextStep(); // Proceed normally otherwise
-    }
-  }}
+  //   } else {
+  //     nextStep(3); // Proceed normally otherwise
+  //   }
+  // }}
+  onClick={nextStep}
 >
   Checkout
 </button>
