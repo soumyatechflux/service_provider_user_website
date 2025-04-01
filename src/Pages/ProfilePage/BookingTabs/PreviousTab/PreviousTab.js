@@ -504,6 +504,15 @@ function PreviousTab() {
                         </span>
                       </div>
                     )} */}
+                        {bookingsIdWise?.due_payments > 0 && (
+                           <div className="billing-row">
+                           <span className="billing-subtitle">Cancellation Charges Due Amount</span>
+                           <span className="billing-subtitle">
+                           +₹{bookingsIdWise?.due_payments}
+                           </span>
+                          </div>
+                          )}
+
 
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
