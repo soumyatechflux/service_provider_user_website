@@ -4,6 +4,7 @@ import { ChevronDown, MapPin, User } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
+import ProfileFetcher from "../../ProfileFetcher";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -121,6 +122,9 @@ const Navbar = () => {
   };
 
   return (
+    <>
+            <ProfileFetcher confirmLogout={confirmLogout} />
+    
     <nav
       className="navbar navbar-expand-lg navbar-light sticky-top"
       id="except-div"
@@ -624,6 +628,8 @@ const Navbar = () => {
         </Modal>
       </div>
     </nav>
+    </>
+
   );
 };
 

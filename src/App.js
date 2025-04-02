@@ -46,14 +46,6 @@ function App() {
     }
   }, []);
 
-  const handleLogin = () => {
-    setLoggedIn(true);
-  };
-
-  const handleLogout = () => {
-    setLoggedIn(false);
-  };
-
   const [isOffline, setIsOffline] = useState(false);
 
   useEffect(() => {
