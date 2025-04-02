@@ -36,13 +36,24 @@ import MessageModal from "../../MessageModal/MessageModal";
 
 const NewsLetter = () => {
   const [email, setEmail] = useState("");
-   const [message, setMessage] = useState("");
-    const [show, setShow] = useState(false);
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+  const [message, setMessage] = useState("");
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateEmail(email)) {
+      setMessage("Invalid email format. Please enter a valid email address.");
+      setShow(true);
+      return;
+    }
     
     try {
       const response = await axios.post(
@@ -51,14 +62,12 @@ const NewsLetter = () => {
       );
       
       if (response.status === 200) {
-        // toast.success("Subscription successful! Thank you for subscribing.");
         setMessage("Subscription successful! Thank you for subscribing.");
         setShow(true);
         handleShow();
         setEmail("");
       }
     } catch (error) {
-      // toast.error("Subscription failed. Please try again later.");
       setMessage("Subscription failed. Please try again later.");
       setShow(true);
       handleShow();
