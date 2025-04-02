@@ -16,11 +16,9 @@ import Loader from "../../Loader/Loader";
 import MessageModal from "../../MessageModal/MessageModal";
 import RazorpayPayment from "../../ServicesSection/BookingSection/RazorpayPayment";
 import "./ModifyBooking.css";
-import { addDays, differenceInDays } from 'date-fns';
-
+import { addDays, differenceInDays } from "date-fns";
 
 const ModifyBooking = () => {
-
   const getUpcomingDates = (startDate, numDays) => {
     const dates = [];
     for (let i = 0; i < numDays; i++) {
@@ -30,108 +28,75 @@ const ModifyBooking = () => {
     }
     return dates;
   };
-  
-
 
   const getUpcomingDatesToVisits = (startDate, endDate) => {
     if (!(startDate instanceof Date) || !(endDate instanceof Date)) {
-      console.error('Invalid date parameters');
+      console.error("Invalid date parameters");
       return [];
     }
-  
+
     // Calculate the total number of days between start and end dates
     const totalDays = differenceInDays(endDate, startDate);
-  
+
     // Generate dates array
-    const dates = Array.from({ length: totalDays + 1 }, (_, i) => addDays(startDate, i));
-  
-    console.log('Generated Dates:', dates); // Log for debugging
+    const dates = Array.from({ length: totalDays + 1 }, (_, i) =>
+      addDays(startDate, i)
+    );
+
+    console.log("Generated Dates:", dates); // Log for debugging
     return dates;
   };
 
-
-
-  
   const token = sessionStorage.getItem("ServiceProviderUserToken");
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { service } = location.state || {}; 
+  const { service } = location.state || {};
 
+  const [DefaultDataOfBooking, setDefaultDataOfBooking] = useState({});
 
+  const handleViewMore = async () => {
+    try {
+      setLoading(true);
 
+      const response = await axios.get(
+        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/bookings/${service?.booking_id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-    
-  const [DefaultDataOfBooking, setDefaultDataOfBooking] =
-  useState({});
-  
-const handleViewMore = async () => {
-  try {
-    setLoading(true);
-
-    const response = await axios.get(
-      `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/bookings/${service?.booking_id}`,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
-
-
-    if (response.status === 200 && response.data.success === true) {
-
-      setDefaultDataOfBooking(response?.data?.data);
-
-    } else{
-      setDefaultDataOfBooking({});
+      if (response.status === 200 && response.data.success === true) {
+        setDefaultDataOfBooking(response?.data?.data);
+      } else {
+        setDefaultDataOfBooking({});
+      }
+    } catch (error) {
+      console.error("Failed to fetch upcoming bookings:", error);
+    } finally {
+      setLoading(false);
     }
-    
-  } catch (error) {
-    console.error("Failed to fetch upcoming bookings:", error);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
-useEffect(() => {
-  handleViewMore();
-}, [service]);
+  useEffect(() => {
+    handleViewMore();
+  }, [service]);
 
+  useEffect(() => {
+    setSelectedCarType(DefaultDataOfBooking?.car_type);
+    setSelectedCarTransmissionType(DefaultDataOfBooking?.transmission_type);
+    setBasePrice(DefaultDataOfBooking?.actual_price);
+  }, [DefaultDataOfBooking]);
 
+  useEffect(() => {
+    if (DefaultDataOfBooking?.visit_date) {
+      const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
+      setMonthlySubscriptionStartDate(visitDate);
+    }
 
-
-
-
-
-useEffect(() => {
-
-  setSelectedCarType(DefaultDataOfBooking?.car_type);
-  setSelectedCarTransmissionType(DefaultDataOfBooking?.transmission_type);
-  setBasePrice(DefaultDataOfBooking?.actual_price);
-}, [DefaultDataOfBooking]);
-
-
-useEffect(() => {
-  if (DefaultDataOfBooking?.visit_date) {
-    const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
-    setMonthlySubscriptionStartDate(visitDate);
-  }
-
-  // if (DefaultDataOfBooking?.visit_date) {
-  //   const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
-  //   setMonthlySubscriptionEndsDate(visitDate);
-  // }
-
-  
-}, [DefaultDataOfBooking]);
-
-
-
-
-
-
-
-
-
-
-
+    // if (DefaultDataOfBooking?.visit_date) {
+    //   const visitDate = new Date(DefaultDataOfBooking.visit_date); // Convert to Date object
+    //   setMonthlySubscriptionEndsDate(visitDate);
+    // }
+  }, [DefaultDataOfBooking]);
 
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.menu) {
@@ -150,21 +115,6 @@ useEffect(() => {
   //   }
   // }, [DefaultDataOfBooking]);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
   const [menuItems, setMenuItems] = useState([]);
@@ -181,7 +131,6 @@ useEffect(() => {
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const [makeDisable, setMakeDisable] = useState(false);
-
 
   const [addresses, setAddresses] = useState([]);
 
@@ -201,8 +150,6 @@ useEffect(() => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
-
 
   // Fetch profile data
   const fetchProfile = async () => {
@@ -258,26 +205,11 @@ useEffect(() => {
     fetchBasicDataFun();
   }, []);
 
-
-
-
-
-
-
-
-
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
-  const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
-
   const FunctionDataForPricesApplied = async () => {
-
-
-
     if (service.id === 1 || service.id === 2) {
-      if (
-        SelectedNamesOfDishes === "" ||  SelectedNamesOfDishes.length === 0 
-      ) {
+      if (SelectedNamesOfDishes === "" || SelectedNamesOfDishes.length === 0) {
         setMessage("Please fill all required fields.");
         setShow(true);
         handleShow();
@@ -285,11 +217,11 @@ useEffect(() => {
       }
     }
 
-    
     if (service.category_id === 2) {
       if (
         BookingForGuestName === "" ||
-        (service?.category_id === 2 && (selectedCarTransmissionType === "" || selectedCarType === ""))
+        (service?.category_id === 2 &&
+          (selectedCarTransmissionType === "" || selectedCarType === ""))
       ) {
         setMessage("Please fill all required fields.");
         setShow(true);
@@ -297,17 +229,14 @@ useEffect(() => {
         return;
       }
     }
-    
-
 
     setLoading(true);
-  
 
     try {
       const body = {
         booking: {
           voucher_code: "",
-          modify:false,
+          modify: false,
           payment_mode: DefaultDataOfBooking?.payment_mode,
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
@@ -316,39 +245,51 @@ useEffect(() => {
           // is_secure_fee:
           //  service?.category_id === 2 ? isSecureFeeChecked : false,
 
+
+
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
-          dishes: 
-            service?.id === 1 || service?.id === 2 
-              ? SelectedNamesOfDishes || [] 
+          dishes:
+            service?.id === 1 || service?.id === 2
+              ? SelectedNamesOfDishes || []
               : [],
-          driver_time_duration: 
-            service?.category_id === 2 
-              ? SelectedNumberOfHoursObjectForDriver || {} 
+          driver_time_duration:
+            service?.category_id === 2
+              ? SelectedNumberOfHoursObjectForDriver || {}
               : {},
-          transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
+          transmission_type:
+            service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
           car_type: service?.category_id === 2 ? selectedCarType || "" : "",
-          gardener_time_duration: 
-            service?.id === 8 
-              ? SelectedNumberOfHoursObjectForGardner || {} 
+          gardener_time_duration:
+            service?.id === 8
+              ? SelectedNumberOfHoursObjectForGardner || {}
               : {},
-          gardener_monthly_subscription: 
-            service?.id === 9 
-              ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
+          gardener_monthly_subscription:
+            service?.id === 9
+              ? SelectedNumberOfSlotsObjectForMonthlyGardner || {}
               : {},
-          gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
-          menu: service?.id === 3 
-            ? (selectedMenuItemsForChefForParty || [])
-                .filter((item) => item.quantity > 0)
-                .map((item) => ({
-                  ...item,
-                  price: parseFloat(item.price),
-                }))
-            : [],
+          gardener_visiting_slots:
+            service?.id === 9 ? selectedVisitDates || [] : [],
+          menu:
+            service?.id === 3
+              ? (selectedMenuItemsForChefForParty || [])
+                  .filter((item) => item.quantity > 0)
+                  .map((item) => ({
+                    ...item,
+                    price: parseFloat(item.price),
+                  }))
+              : [],
+
+
+              ...(service?.id === 9 && selectedTime
+                ? { visit_time: selectedTime }
+                : {}),
+
+                
         },
       };
-  
+
       const response = await axios.patch(
         `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/update_booking`,
         body,
@@ -359,7 +300,7 @@ useEffect(() => {
           },
         }
       );
-  
+
       if (response?.data?.success) {
         setDataForPricesAppliedGet(response?.data?.data);
         setStep(2);
@@ -378,29 +319,18 @@ useEffect(() => {
     }
   };
 
-  
+  const [step, setStep] = useState(1);
 
-
-
- 
-
-  const [step, setStep] = useState(1); 
-
-
-  const [BookingForGuestName, setBookingForGuestName] = useState(DefaultDataOfBooking?.guest_name);
+  const [BookingForGuestName, setBookingForGuestName] = useState(
+    DefaultDataOfBooking?.guest_name
+  );
 
   useEffect(() => {
     if (DefaultDataOfBooking) {
-      
       setBookingForGuestName(DefaultDataOfBooking?.guest_name);
       setSpecialRequests(DefaultDataOfBooking?.instructions);
-
-      
-
     }
   }, [DefaultDataOfBooking]);
-
-
 
   const [minTime, setMinTime] = useState("");
 
@@ -425,7 +355,6 @@ useEffect(() => {
     setMinTime(isToday ? getCurrentTimeInDelhi() : "00:00");
   };
 
-
   const [people, setPeople] = useState(1);
 
   // const [SelectedObjectOfPeople, setSelectedObjectOfPeople] = useState({});
@@ -434,8 +363,6 @@ useEffect(() => {
   const [totalPrice, setTotalPrice] = useState();
   const [approxTime, setApproxTime] = useState();
   const [basePrice, setBasePrice] = useState();
-
-
 
   const [specialRequests, setSpecialRequests] = useState();
 
@@ -456,9 +383,6 @@ useEffect(() => {
     }
   }, [addresses]);
 
-
-
-
   const nextStep = () => {
     // setStep((prev) => prev + 1);
 
@@ -466,11 +390,10 @@ useEffect(() => {
     setStep((prev) => prev + 1);
     setCallRazorPay(false);
     setLoading(false);
-
   };
 
   const prevStep = () => {
-   setLoading(true);
+    setLoading(true);
 
     setStep((prev) => prev - 1);
     setLoading(false);
@@ -508,49 +431,44 @@ useEffect(() => {
     setIsDropdownOpenTra(false);
   };
 
-
-
-
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
   const handlePayment = async (mod) => {
     setLoading(true);
 
-
     try {
- 
       const body = {
         booking: {
           payment_mode: mod,
           voucher_code: "",
-          modify:true,
+          modify: true,
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
           // sub_category_id: service?.id || "",
           // number_of_people: SelectedObjectOfPeople || {},
           // guest_name: BookingForGuestName || "Guest",
           // instructions: specialRequests || "",
-          // dishes: 
-          //   service?.id === 1 || service?.id === 2 
-          //     ? SelectedNamesOfDishes || [] 
+          // dishes:
+          //   service?.id === 1 || service?.id === 2
+          //     ? SelectedNamesOfDishes || []
           //     : [],
-          // driver_time_duration: 
-          //   service?.category_id === 2 
-          //     ? SelectedNumberOfHoursObjectForDriver || {} 
+          // driver_time_duration:
+          //   service?.category_id === 2
+          //     ? SelectedNumberOfHoursObjectForDriver || {}
           //     : {},
           // transmission_type: service?.category_id === 2 ? selectedCarTransmissionType || "" : "",
           // car_type: service?.category_id === 2 ? selectedCarType || "" : "",
-          // gardener_time_duration: 
-          //   service?.id === 8 
-          //     ? SelectedNumberOfHoursObjectForGardner || {} 
+          // gardener_time_duration:
+          //   service?.id === 8
+          //     ? SelectedNumberOfHoursObjectForGardner || {}
           //     : {},
-          // gardener_monthly_subscription: 
-          //   service?.id === 9 
-          //     ? SelectedNumberOfSlotsObjectForMonthlyGardner || {} 
+          // gardener_monthly_subscription:
+          //   service?.id === 9
+          //     ? SelectedNumberOfSlotsObjectForMonthlyGardner || {}
           //     : {},
           // gardener_visiting_slots: service?.id === 9 ? selectedVisitDates || [] : [],
-          // menu: service?.id === 3 
+          // menu: service?.id === 3
           //   ? (selectedMenuItemsForChefForParty || [])
           //       .filter((item) => item.quantity > 0)
           //       .map((item) => ({
@@ -580,21 +498,19 @@ useEffect(() => {
       if (response.status === 200) {
         // toast.success(response?.data?.message || "Successful!");
 
-
-
-
         if (mod === "cod") {
           // toast.info("Please confirm your booking to proceed.");
           nextStep(true);
         }
-        
 
-        if (response.data.success === true && response.data.message === "order success" && mod !== "cod") {
+        if (
+          response.data.success === true &&
+          response.data.message === "order success" &&
+          mod !== "cod"
+        ) {
           nextStep(true);
           return;
         }
-        
-
 
         if (response?.data?.order) {
           if (response.data.order?.success === false) {
@@ -607,9 +523,6 @@ useEffect(() => {
           setBookingData(null);
           setCallRazorPay(false);
         }
-        
-
-
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
@@ -623,14 +536,6 @@ useEffect(() => {
     }
   };
 
-
-
-
-
-
-
-
-
   const [
     OptionsForNumberOFHoursForGardnerArray,
     setOptionsForNumberOFHoursForGardnerArray,
@@ -639,10 +544,6 @@ useEffect(() => {
     SelectedNumberOfHoursObjectForGardner,
     setSelectedNumberOfHoursObjectForGardner,
   ] = useState({ hours: 0, price: 0 });
-
-
-
-
 
   // useEffect(() => {
   //   if (basicDataByGet?.gardener_time_durations?.length) {
@@ -658,12 +559,6 @@ useEffect(() => {
   //   }
   // }, [basicDataByGet]);
 
-
-
-
-
-
-
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.gardener_time_durations?.length) {
   //     setOptionsForNumberOFHoursForGardnerArray(
@@ -678,19 +573,19 @@ useEffect(() => {
   //   }
   // }, [DefaultDataOfBooking]);
 
-
-
-
-
   useEffect(() => {
     // Check if gardener_time_durations exists in both sources
     if (basicDataByGet?.gardener_time_durations?.length) {
-      setOptionsForNumberOFHoursForGardnerArray(basicDataByGet?.gardener_time_durations);
-  
+      setOptionsForNumberOFHoursForGardnerArray(
+        basicDataByGet?.gardener_time_durations
+      );
+
       // If DefaultDataOfBooking has a gardener_time_duration, parse it and merge with the options
       if (DefaultDataOfBooking?.gardener_time_duration) {
-        const parsedDuration = JSON.parse(DefaultDataOfBooking?.gardener_time_duration);
-  
+        const parsedDuration = JSON.parse(
+          DefaultDataOfBooking?.gardener_time_duration
+        );
+
         // Set the selected number of hours object with the parsed duration
         setSelectedNumberOfHoursObjectForGardner({
           hours: parsedDuration.hours,
@@ -706,12 +601,6 @@ useEffect(() => {
       }
     }
   }, [basicDataByGet, DefaultDataOfBooking]);
-  
-
-
-
-
-
 
   // // Handle decrement
   // const handleDecrementHousForGardner = () => {
@@ -733,32 +622,35 @@ useEffect(() => {
   //   }
   // };
 
-
-
   // Handle decrement
-const handleDecrementHousForGardner = () => {
-  // Parse the incoming value from DefaultDataOfBooking or a predefined min value (if available)
-  const incomingHours = JSON.parse(DefaultDataOfBooking?.gardener_time_duration)?.hours || 1; // Default min hours can be 1
+  const handleDecrementHousForGardner = () => {
+    // Parse the incoming value from DefaultDataOfBooking or a predefined min value (if available)
+    const incomingHours =
+      JSON.parse(DefaultDataOfBooking?.gardener_time_duration)?.hours || 1; // Default min hours can be 1
 
-  // Get the current index from the available options
-  const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
-    (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
-  );
+    // Get the current index from the available options
+    const currentIndex = OptionsForNumberOFHoursForGardnerArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForGardner?.hours
+    );
 
-  // Check if decrementing is allowed (should not go below incomingHours)
-  if (currentIndex > 0 && SelectedNumberOfHoursObjectForGardner?.hours > incomingHours) {
-    const previousOption = OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
-    setSelectedNumberOfHoursObjectForGardner({
-      hours: previousOption.hours,
-      price: previousOption.price,
-    });
-  } else {
-    // Show a toast notification if decrementing below the incoming hours
-    toast.error(`You cannot reduce the number of hours below ${incomingHours} hours.`);
-  }
-};
-
-
+    // Check if decrementing is allowed (should not go below incomingHours)
+    if (
+      currentIndex > 0 &&
+      SelectedNumberOfHoursObjectForGardner?.hours > incomingHours
+    ) {
+      const previousOption =
+        OptionsForNumberOFHoursForGardnerArray[currentIndex - 1];
+      setSelectedNumberOfHoursObjectForGardner({
+        hours: previousOption.hours,
+        price: previousOption.price,
+      });
+    } else {
+      // Show a toast notification if decrementing below the incoming hours
+      toast.error(
+        `You cannot reduce the number of hours below ${incomingHours} hours.`
+      );
+    }
+  };
 
   // Handle increment
   const handleIncrementHousForGardner = () => {
@@ -802,7 +694,6 @@ const handleDecrementHousForGardner = () => {
   //   }
   // }, [basicDataByGet]);
 
-
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.driver_time_durations?.length) {
   //     setOptionsForNumberOFHoursForDriverArray(
@@ -820,12 +711,16 @@ const handleDecrementHousForGardner = () => {
   useEffect(() => {
     // Check if driver_time_durations exists in basicDataByGet
     if (basicDataByGet?.driver_time_durations?.length) {
-      setOptionsForNumberOFHoursForDriverArray(basicDataByGet?.driver_time_durations);
-  
+      setOptionsForNumberOFHoursForDriverArray(
+        basicDataByGet?.driver_time_durations
+      );
+
       // Check if DefaultDataOfBooking has a driver_time_duration and parse it
       if (DefaultDataOfBooking?.driver_time_duration) {
-        const parsedDuration = JSON.parse(DefaultDataOfBooking?.driver_time_duration);
-  
+        const parsedDuration = JSON.parse(
+          DefaultDataOfBooking?.driver_time_duration
+        );
+
         // Set the selected number of hours object with the parsed duration
         setSelectedNumberOfHoursObjectForDriver({
           hours: parsedDuration.hours,
@@ -841,8 +736,6 @@ const handleDecrementHousForGardner = () => {
       }
     }
   }, [basicDataByGet, DefaultDataOfBooking]);
-  
-
 
   // // Handle decrement
   // const handleDecrementHousForDriver = () => {
@@ -864,31 +757,35 @@ const handleDecrementHousForGardner = () => {
   //   }
   // };
 
-
   // Handle decrement
-const handleDecrementHousForDriver = () => {
-  const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
-    (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
-  );
+  const handleDecrementHousForDriver = () => {
+    const currentIndex = OptionsForNumberOFHoursForDriverArray.findIndex(
+      (option) => option.hours === SelectedNumberOfHoursObjectForDriver?.hours
+    );
 
-  // Get the incoming (minimum) hours value from DefaultDataOfBooking
-  const incomingHours = DefaultDataOfBooking?.driver_time_duration
-    ? JSON.parse(DefaultDataOfBooking?.driver_time_duration).hours
-    : 1; // Default to 1 hour if no incoming value is found
+    // Get the incoming (minimum) hours value from DefaultDataOfBooking
+    const incomingHours = DefaultDataOfBooking?.driver_time_duration
+      ? JSON.parse(DefaultDataOfBooking?.driver_time_duration).hours
+      : 1; // Default to 1 hour if no incoming value is found
 
-  // Check if the current hours is greater than the minimum incoming hours
-  if (currentIndex > 0 && SelectedNumberOfHoursObjectForDriver?.hours > incomingHours) {
-    const previousOption = OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
-    setSelectedNumberOfHoursObjectForDriver({
-      hours: previousOption.hours,
-      price: previousOption.price,
-    });
-  } else {
-    // Prevent reducing below the incoming hours
-    toast.error(`You cannot reduce the number of hours below the minimum of ${incomingHours} hours.`);
-  }
-};
-
+    // Check if the current hours is greater than the minimum incoming hours
+    if (
+      currentIndex > 0 &&
+      SelectedNumberOfHoursObjectForDriver?.hours > incomingHours
+    ) {
+      const previousOption =
+        OptionsForNumberOFHoursForDriverArray[currentIndex - 1];
+      setSelectedNumberOfHoursObjectForDriver({
+        hours: previousOption.hours,
+        price: previousOption.price,
+      });
+    } else {
+      // Prevent reducing below the incoming hours
+      toast.error(
+        `You cannot reduce the number of hours below the minimum of ${incomingHours} hours.`
+      );
+    }
+  };
 
   // Handle increment
   const handleIncrementHousForDriver = () => {
@@ -918,10 +815,6 @@ const handleDecrementHousForDriver = () => {
     setSelectedNumberOfSlotsObjectForMonthlyGardner,
   ] = useState({ hours: 0, price: 0 });
 
-
-
-
-
   // useEffect(() => {
   //   if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
   //     setOptionsForNumberOFSlotsForMonthlyGardnerArray(
@@ -937,19 +830,18 @@ const handleDecrementHousForDriver = () => {
   //   }
   // }, [basicDataByGet]);
 
-
-
-
-
-
   useEffect(() => {
     // Check if both basicDataByGet and DefaultDataOfBooking have subscriptions
     if (basicDataByGet?.gardener_monthly_subscriptions?.length) {
-      setOptionsForNumberOFSlotsForMonthlyGardnerArray(basicDataByGet?.gardener_monthly_subscriptions);
-  
+      setOptionsForNumberOFSlotsForMonthlyGardnerArray(
+        basicDataByGet?.gardener_monthly_subscriptions
+      );
+
       // If DefaultDataOfBooking has a gardener_monthly_subscription, parse it
       if (DefaultDataOfBooking?.gardener_monthly_subscription) {
-        const parsedSubscription = JSON.parse(DefaultDataOfBooking?.gardener_monthly_subscription);
+        const parsedSubscription = JSON.parse(
+          DefaultDataOfBooking?.gardener_monthly_subscription
+        );
         setSelectedNumberOfSlotsObjectForMonthlyGardner({
           visit: parsedSubscription.visit,
           hours: parsedSubscription.hours,
@@ -965,11 +857,7 @@ const handleDecrementHousForDriver = () => {
         });
       }
     }
-  }, [basicDataByGet, DefaultDataOfBooking]); 
-  
-
-
-
+  }, [basicDataByGet, DefaultDataOfBooking]);
 
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.gardener_monthly_subscriptions?.length) {
@@ -985,13 +873,6 @@ const handleDecrementHousForDriver = () => {
   //     });
   //   }
   // }, [DefaultDataOfBooking]);
-
-
-
-
-
-
-
 
   // const handleDecrementVisitsForMonthlyGardner = () => {
   //   const currentIndex =
@@ -1017,18 +898,22 @@ const handleDecrementHousForDriver = () => {
 
   const [NumOfVisitsChanged, setNumOfVisitsChanged] = useState(false); // Renamed state
 
-
   const handleDecrementVisitsForMonthlyGardner = () => {
-    const currentIndex = OptionsForNumberOFSlotsForMonthlyGardnerArray.findIndex(
-      (option) => option.visit === SelectedNumberOfSlotsObjectForMonthlyGardner?.visit
-    );
-  
+    const currentIndex =
+      OptionsForNumberOFSlotsForMonthlyGardnerArray.findIndex(
+        (option) =>
+          option.visit === SelectedNumberOfSlotsObjectForMonthlyGardner?.visit
+      );
+
     // Get the default minimum visit value
-    const defaultVisit = JSON.parse(DefaultDataOfBooking?.gardener_monthly_subscription || "{}")?.visit;
-  
+    const defaultVisit = JSON.parse(
+      DefaultDataOfBooking?.gardener_monthly_subscription || "{}"
+    )?.visit;
+
     if (currentIndex > 0) {
-      const previousOption = OptionsForNumberOFSlotsForMonthlyGardnerArray[currentIndex - 1];
-  
+      const previousOption =
+        OptionsForNumberOFSlotsForMonthlyGardnerArray[currentIndex - 1];
+
       // Prevent decrementing below the default visit value
       if (previousOption.visit >= defaultVisit) {
         setSelectedNumberOfSlotsObjectForMonthlyGardner({
@@ -1038,22 +923,20 @@ const handleDecrementHousForDriver = () => {
         });
 
         setNumOfVisitsChanged(true);
-
       } else {
-        toast.error("You cannot reduce the number of visits below the minimum allowed.");
+        toast.error(
+          "You cannot reduce the number of visits below the minimum allowed."
+        );
         setNumOfVisitsChanged(false);
-
       }
     } else {
       // Notify user about the minimum visit limit
-      toast.error("You cannot reduce the number of visits below the minimum allowed.");
+      toast.error(
+        "You cannot reduce the number of visits below the minimum allowed."
+      );
       setNumOfVisitsChanged(false);
-
     }
   };
-
-  
-
 
   const handleIncrementVisitsForMonthlyGardner = () => {
     const currentIndex =
@@ -1074,11 +957,9 @@ const handleDecrementHousForDriver = () => {
         price: nextOption.price,
       });
       setNumOfVisitsChanged(true);
-
     } else {
       toast.error("You've reached the maximum number of visits.");
       setNumOfVisitsChanged(false);
-
     }
   };
 
@@ -1086,18 +967,13 @@ const handleDecrementHousForDriver = () => {
 
   const minPeople = DefaultDataOfBooking?.people_count;
 
-
   const maxPeople =
     basicDataByGet?.no_of_people[basicDataByGet?.no_of_people.length - 1]
       ?.people_count;
 
-
   useEffect(() => {
     setdishesOptionsArray(basicDataByGet?.dishes);
   }, [basicDataByGet]);
-
-
-
 
   // useEffect(() => {
   //   if (basicDataByGet?.menu) {
@@ -1115,10 +991,6 @@ const handleDecrementHousForDriver = () => {
   //     setSelectedMenuItemsForChefForParty(initialSelectedItems);
   //   }
   // }, [basicDataByGet]);
-
-
-
-
 
   // useEffect(() => {
   //   if (DefaultDataOfBooking?.menu) {
@@ -1138,37 +1010,30 @@ const handleDecrementHousForDriver = () => {
   //   }
   // }, [DefaultDataOfBooking]);
 
-
-
   useEffect(() => {
     if (basicDataByGet?.menu) {
       // Create a map of selected menu items for quick lookup by name
       const selectedMenuMap = new Map(
-        (DefaultDataOfBooking?.menu || []).map((item) => [item.name, item.quantity])
+        (DefaultDataOfBooking?.menu || []).map((item) => [
+          item.name,
+          item.quantity,
+        ])
       );
-  
+
       // Merge both arrays into a single array
       const mergedMenu = basicDataByGet.menu.map((item) => ({
         name: item.name,
         price: parseFloat(item.price), // Ensure price is a number
         quantity: selectedMenuMap.get(item.name) || 0, // Use selected quantity or default to 0
       }));
-  
+
       // Update the state with the merged array for menu items
       setMenuItems(mergedMenu);
-  
+
       // Set the merged array in selected menu items for Chef for Party
       setSelectedMenuItemsForChefForParty(mergedMenu);
     }
   }, [basicDataByGet, DefaultDataOfBooking]);
-  
-  
-  
-  
-  
-
-
-
 
   // Calculate the total quantity of all selected items
   const calculateTotalQuantityForChefForParty = () => {
@@ -1188,7 +1053,6 @@ const handleDecrementHousForDriver = () => {
   const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
     const totalQuantity = calculateTotalQuantityForChefForParty();
 
-
     // if (
     //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
     //   4
@@ -1196,8 +1060,6 @@ const handleDecrementHousForDriver = () => {
     //   toast.error("Maximum total quantity reached (4).");
     //   return;
     // }
-
-
 
     // Prevent negative quantities for individual items
     if (value < 0) value = 0;
@@ -1217,53 +1079,34 @@ const handleDecrementHousForDriver = () => {
   };
 
   // Calculate the total price for each item
-  const calculateTotalForMenuItemForChefForParty = (price, quantity) => price * quantity;
+  const calculateTotalForMenuItemForChefForParty = (price, quantity) =>
+    price * quantity;
 
+  const [dishesOptionsArrayOri, setDishesOptionsArrayOri] = useState([]);
 
+  // Set dishesOptionsArrayOri in useEffect
+  useEffect(() => {
+    if (basicDataByGet?.dishes) {
+      const options = basicDataByGet.dishes.map((dish) => ({
+        id: String(dish?.dish_id), // Ensure IDs are strings
+        name: dish?.dish_name || "Unnamed Dish",
+      }));
+      setDishesOptionsArrayOri(options); // Update state
+    } else {
+      setDishesOptionsArrayOri([]); // Set an empty array if dishes are undefined
+    }
+  }, [basicDataByGet]); // Re-run when basicDataByGet changes
 
+  const handleCheckboxChange = (id) => {
+    // console.log("Checkbox Toggled:", id);
+    // console.log("Current Menu:", menu);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const [dishesOptionsArrayOri, setDishesOptionsArrayOri] = useState([]);
-
-// Set dishesOptionsArrayOri in useEffect
-useEffect(() => {
-  if (basicDataByGet?.dishes) {
-    const options = basicDataByGet.dishes.map((dish) => ({
-      id: String(dish?.dish_id), // Ensure IDs are strings
-      name: dish?.dish_name || "Unnamed Dish",
-    }));
-    setDishesOptionsArrayOri(options); // Update state
-  } else {
-    setDishesOptionsArrayOri([]); // Set an empty array if dishes are undefined
-  }
-}, [basicDataByGet]); // Re-run when basicDataByGet changes
-
-const handleCheckboxChange = (id) => {
-  // console.log("Checkbox Toggled:", id);
-  // console.log("Current Menu:", menu);
-
-  if (menu.includes(id)) {
-    setMenu((prevMenu) => prevMenu.filter((item) => item !== id));
-  } else {
-    setMenu((prevMenu) => [...prevMenu, id]);
-  }
-};
-
+    if (menu.includes(id)) {
+      setMenu((prevMenu) => prevMenu.filter((item) => item !== id));
+    } else {
+      setMenu((prevMenu) => [...prevMenu, id]);
+    }
+  };
 
   useEffect(() => {
     if (dishesOptionsArrayOri && dishesOptionsArrayOri.length > 0) {
@@ -1276,60 +1119,37 @@ const handleCheckboxChange = (id) => {
     }
   }, [menu, dishesOptionsArrayOri]);
 
-
   useEffect(() => {
     if (DefaultDataOfBooking?.dishes && dishesOptionsArrayOri.length > 0) {
       // Map dish names from DefaultDataOfBooking to corresponding IDs
       const defaultSelectedIds = DefaultDataOfBooking.dishes
-        .map((dishName) =>
-          dishesOptionsArrayOri.find((option) => option.name === dishName)?.id
+        .map(
+          (dishName) =>
+            dishesOptionsArrayOri.find((option) => option.name === dishName)?.id
         )
         .filter((id) => id !== undefined); // Filter out undefined IDs
-  
+
       // console.log("Default Selected IDs:", defaultSelectedIds);
-  
+
       // Update the menu state with the default selected IDs
       setMenu(defaultSelectedIds);
-  
+
       // Set the names of the selected dishes based on the selected IDs
       const selectedDishNames = dishesOptionsArrayOri
         .filter((option) => defaultSelectedIds.includes(option.id))
         .map((option) => option.name);
-  
+
       setSelectedNamesOfDishes(selectedDishNames);
     }
   }, [DefaultDataOfBooking, dishesOptionsArrayOri]);
-  
-  
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   const getDateAfter30Days = (startDate) => {
     if (!startDate) return "Not selected";
-  
+
     const thirtyDaysLater = new Date(startDate);
     thirtyDaysLater.setDate(thirtyDaysLater.getDate() + 30);
     return thirtyDaysLater.toDateString();
   };
-
-  
 
   useEffect(() => {
     setPeople(minPeople);
@@ -1375,8 +1195,9 @@ const handleCheckboxChange = (id) => {
       setPeople(people - 1);
     } else {
       // toast.error(`Minimum limit reached: ${minPeople} people`);
-      toast.error("Cannot reduce below the minimum number of people for booking.");
-
+      toast.error(
+        "Cannot reduce below the minimum number of people for booking."
+      );
     }
   };
 
@@ -1492,35 +1313,37 @@ const handleCheckboxChange = (id) => {
     const utcDate = date.getTime() + date.getTimezoneOffset() * 60 * 1000;
     return new Date(utcDate + istOffset * 60 * 1000);
   };
-  
-  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] = useState(getISTDate());
-  
-  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] = useState(() => {
-    const initialEndDate = getISTDate();
-    initialEndDate.setDate(initialEndDate.getDate() + 30);
-    return initialEndDate;
-  });
+
+  const [MonthlySubscriptionStartDate, setMonthlySubscriptionStartDate] =
+    useState(getISTDate());
+
+  const [MonthlySubscriptionEndsDate, setMonthlySubscriptionEndsDate] =
+    useState(() => {
+      const initialEndDate = getISTDate();
+      initialEndDate.setDate(initialEndDate.getDate() + 43);
+      return initialEndDate;
+    });
 
   const handleStartDateChange = (newDate) => {
     console.log("New Date:", newDate); // Log the value of newDate
-  
+
     if (!newDate) {
       console.error("Invalid date selected:", newDate);
       return;
     }
-  
+
     // Convert newDate to IST
     const delhiDate = new Date(
       newDate.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
     );
-    
+
     console.log("Delhi Date:", delhiDate); // Log the computed Delhi date
     // setSelectedDate(delhiDate);
     setMonthlySubscriptionStartDate(delhiDate);
-  
+
     // Check if the selected date is today
     const isToday = delhiDate.toDateString() === new Date().toDateString();
-  
+
     if (isToday) {
       const currentISTTime = new Date().toLocaleTimeString("en-US", {
         timeZone: "Asia/Kolkata",
@@ -1531,7 +1354,7 @@ const handleCheckboxChange = (id) => {
     } else {
       setMinTime("00:00"); // Reset minTime for future dates
     }
-  
+
     // Calculate the end date in IST timezone
     if (newDate) {
       const calculatedEndDate = new Date(
@@ -1540,24 +1363,12 @@ const handleCheckboxChange = (id) => {
       calculatedEndDate.setDate(calculatedEndDate.getDate() + 30);
       setMonthlySubscriptionEndsDate(calculatedEndDate);
     }
-  
-    // setSelectedTime(""); 
+
+    // setSelectedTime("");
   };
-
-
-
-
-
-
-
-
-
-
-
 
   const [selectedVisitDates, setSelectedVisitDates] = useState([]);
   const [isDatesChanged, setIsDatesChanged] = useState(false);
-
 
   // useEffect(() => {
   //   // if(NumOfVisitsChanged){
@@ -1596,44 +1407,54 @@ const handleCheckboxChange = (id) => {
   //   NumOfVisitsChanged,
   // ]);
 
+  useEffect(() => {
+    if (
+      SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0 &&
+      isDatesChanged
+    ) {
+      // const hoursPerVisit =
+      //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+      //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
 
-  
-    useEffect(() => {
-      if (SelectedNumberOfSlotsObjectForMonthlyGardner?.visit > 0 && isDatesChanged) {
-        // const hoursPerVisit =
-        //   SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
-        //   SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
-    
-        const hoursPerVisit =
-        SelectedNumberOfSlotsObjectForMonthlyGardner.hours;
+      const hoursPerVisit = SelectedNumberOfSlotsObjectForMonthlyGardner.hours;
 
-        const newVisitDates = [];
-        let currentDate = new Date(MonthlySubscriptionStartDate);
-        for (let i = 0; i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit; i++) {
-          newVisitDates.push({
-            date: currentDate.toISOString().split("T")[0],
-            hours: hoursPerVisit,
-          });
-          currentDate.setDate(currentDate.getDate() + 3);
-        }
-    
-        setSelectedVisitDates(newVisitDates);
+      const newVisitDates = [];
+      let currentDate = new Date(MonthlySubscriptionStartDate);
+      for (
+        let i = 0;
+        i < SelectedNumberOfSlotsObjectForMonthlyGardner.visit;
+        i++
+      ) {
+        newVisitDates.push({
+          date: currentDate.toISOString().split("T")[0],
+          hours: hoursPerVisit,
+        });
+        currentDate.setDate(currentDate.getDate() + 3);
       }
-    }, [SelectedNumberOfSlotsObjectForMonthlyGardner, MonthlySubscriptionStartDate,NumOfVisitsChanged,isDatesChanged]);
-    
-  
-  
+
+      setSelectedVisitDates(newVisitDates);
+    }
+  }, [
+    SelectedNumberOfSlotsObjectForMonthlyGardner,
+    MonthlySubscriptionStartDate,
+    NumOfVisitsChanged,
+    isDatesChanged,
+  ]);
 
   useEffect(() => {
     if (DefaultDataOfBooking?.gardener_visiting_slots) {
       try {
         // Parse and format dates
-        const parsedSlots = JSON.parse(DefaultDataOfBooking.gardener_visiting_slots);
+        const parsedSlots = JSON.parse(
+          DefaultDataOfBooking.gardener_visiting_slots
+        );
         const formattedSlots = parsedSlots.map((slot) => ({
           ...slot,
-          date: slot.date ? new Date(slot.date).toISOString().split("T")[0] : null,
+          date: slot.date
+            ? new Date(slot.date).toISOString().split("T")[0]
+            : null,
         }));
-        console.log(formattedSlots,"formattedSlotsdsvjnkref")
+        console.log(formattedSlots, "formattedSlotsdsvjnkref");
         setSelectedVisitDates(formattedSlots);
       } catch (error) {
         console.error("Error parsing gardener_visiting_slots:", error);
@@ -1641,14 +1462,227 @@ const handleCheckboxChange = (id) => {
     }
   }, [DefaultDataOfBooking]);
 
+  const [isTimeDropdownOpen, setTimeDropdownOpen] = useState(false);
+  const [selectedTime, setSelectedTime] = useState("");
 
+  const [filteredTimeOptions, setFilteredTimeOptions] = useState([]);
+  const [adjustedStartTime, setAdjustedStartTime] = useState(0);
+  const [selectedDate, setSelectedDate] = useState(() => {
+    const now = new Date();
+    return new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
+  });
 
+  const generateTimeIntervals = () => {
+    const intervals = [];
+    for (let hour = 0; hour < 24; hour++) {
+      for (let minute = 0; minute < 60; minute += 15) {
+        intervals.push(
+          `${hour.toString().padStart(2, "0")}:${minute
+            .toString()
+            .padStart(2, "0")}`
+        );
+      }
+    }
+    return intervals;
+  };
 
+  const timeOptions = generateTimeIntervals();
 
+  useEffect(() => {
+    updateMinTime(new Date());
+  }, []);
 
+  useEffect(() => {
+    if (basicDataByGet?.sub_category?.booking_time_before) {
+      setAdjustedStartTime(basicDataByGet.sub_category.booking_time_before);
+    }
+  }, [basicDataByGet]);
 
+  const formatTimeTo12Hour = (time) => {
+    const [hours, minutes] = time.split(":").map(Number);
 
+    // Convert hours to 12-hour format
+    const adjustedHours = hours % 12 || 12; // If hours is 0 or 12, it should display 12 (AM/PM format)
+    const period = hours < 12 ? "AM" : "PM";
 
+    // Return the formatted time
+    return `${adjustedHours}:${String(minutes).padStart(2, "0")} ${period}`;
+  };
+
+  function findExactDateTimeWhenAdjustedTimeEnds(
+    currentDate,
+    serviceStartTimeInMinutes,
+    serviceEndTimeInMinutes,
+    unusedAdjustedStartTime
+  ) {
+    let date = new Date(currentDate); // Start from today
+    date.setDate(date.getDate() + 1); // Move to tomorrow
+
+    while (unusedAdjustedStartTime > 0) {
+      const availableMinutesInNextDay =
+        serviceEndTimeInMinutes - serviceStartTimeInMinutes;
+      const actualTimeUsed = Math.min(
+        unusedAdjustedStartTime,
+        availableMinutesInNextDay
+      );
+
+      // Deduct the used minutes from unusedAdjustedStartTime
+      unusedAdjustedStartTime -= actualTimeUsed;
+
+      if (unusedAdjustedStartTime === 0) {
+        const finalTimeInMinutes = serviceStartTimeInMinutes + actualTimeUsed;
+        const finalHours = Math.floor(finalTimeInMinutes / 60);
+        const finalMinutes = finalTimeInMinutes % 60;
+
+        return {
+          date: date.toISOString().split("T")[0], // Return the final date in YYYY-MM-DD format
+          time: `${finalHours.toString().padStart(2, "0")}:${finalMinutes
+            .toString()
+            .padStart(2, "0")}`, // HH:MM format
+        };
+      }
+
+      // Move to the next day
+      date.setDate(date.getDate() + 1);
+    }
+  }
+
+  const getCurrentTimeInHHMM = () => {
+    const now = new Date();
+    return `${now.getHours().toString().padStart(2, "0")}:${now
+      .getMinutes()
+      .toString()
+      .padStart(2, "0")}`;
+  };
+  const currentTime = getCurrentTimeInHHMM();
+
+  const filterTimeOptions = () => {
+    if (!selectedDate || timeOptions?.length === 0) return;
+
+    const currentDate = new Date();
+    const today = currentDate.toDateString();
+
+    const serviceStartTime =
+      basicDataByGet?.sub_category?.service_start_time || "00:00";
+    const serviceEndTime =
+      basicDataByGet?.sub_category?.service_end_time || "23:59";
+
+    const currentTimeInMinutes = timeToMinutes(currentTime);
+
+    const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+    const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+
+    let startBoundary = serviceStartTimeInMinutes;
+
+    const remainingMinutesUntilServiceEnds = Math.max(
+      serviceEndTimeInMinutes - currentTimeInMinutes,
+      0
+    );
+    const actualAdjustedStartTimeUsed = Math.min(
+      adjustedStartTime,
+      remainingMinutesUntilServiceEnds
+    );
+    const availableMinutesToday = Math.max(
+      serviceEndTimeInMinutes -
+        (currentTimeInMinutes + actualAdjustedStartTimeUsed),
+      0
+    );
+    const unusedAdjustedStartTime =
+      adjustedStartTime - actualAdjustedStartTimeUsed;
+
+    // If the adjusted start time has been fully used today, calculate the new start boundary
+    if (unusedAdjustedStartTime === 0) {
+      const finalTimeInMinutes = currentTimeInMinutes + adjustedStartTime;
+      const finalHours = Math.floor(finalTimeInMinutes / 60);
+      const finalMinutes = finalTimeInMinutes % 60;
+      const finalTime = `${finalHours
+        .toString()
+        .padStart(2, "0")}:${finalMinutes.toString().padStart(2, "0")}`;
+
+      // If the selected date is today, set the start boundary from where it ended
+      if (selectedDate.toDateString() === today) {
+        startBoundary = timeToMinutes(finalTime);
+      } else {
+        startBoundary = serviceStartTimeInMinutes; // For future dates, use service start time
+      }
+
+      setFilteredTimeOptions(
+        timeOptions.filter((time) => {
+          const timeInMinutes = timeToMinutes(time);
+          return (
+            timeInMinutes >= startBoundary &&
+            timeInMinutes <= serviceEndTimeInMinutes
+          );
+        })
+      );
+
+      return; // Exit early since we don't need to call `findExactDateTimeWhenAdjustedTimeEnds`
+    }
+
+    // Now call the function only if unusedAdjustedStartTime is greater than 0
+    const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
+      currentDate,
+      serviceStartTimeInMinutes,
+      serviceEndTimeInMinutes,
+      unusedAdjustedStartTime
+    );
+
+    if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
+      setFilteredTimeOptions([]);
+      return;
+    }
+
+    if (selectedDate < new Date(finalDateTime?.date)) {
+      setFilteredTimeOptions([]);
+      return;
+    }
+
+    if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
+      startBoundary = timeToMinutes(finalDateTime?.time);
+    } else {
+      startBoundary = serviceStartTimeInMinutes;
+    }
+
+    const options = timeOptions.filter((time) => {
+      const timeInMinutes = timeToMinutes(time);
+      return (
+        timeInMinutes >= startBoundary &&
+        timeInMinutes <= serviceEndTimeInMinutes
+      );
+    });
+
+    setFilteredTimeOptions(options);
+  };
+
+  const timeToMinutes = (time) => {
+    const [hour, minute] = time.split(":").map(Number);
+    return hour * 60 + minute;
+  };
+
+  useEffect(() => {
+    filterTimeOptions();
+  }, [selectedDate, basicDataByGet, adjustedStartTime]);
+
+  // useEffect(() => {
+  //   setSelectedTime(DefaultDataOfBooking?.visit_time);
+
+  // }, [DefaultDataOfBooking]);
+
+  useEffect(() => {
+    if (DefaultDataOfBooking?.visit_time) {
+      const formattedTime = DefaultDataOfBooking.visit_time.slice(0, 5); // Extracts only HH:mm
+      setSelectedTime(formattedTime);
+    }
+  }, [DefaultDataOfBooking]);
+
+  useEffect(() => {
+    if (!DefaultDataOfBooking?.visit_date) return;
+
+    // Convert visit_date to a Date object
+    const visitDate = new Date(DefaultDataOfBooking.visit_date);
+
+    setSelectedDate(visitDate);
+  }, [DefaultDataOfBooking]);
 
   const convertToAmPm = (time) => {
     const [hours, minutes] = time.split(":");
@@ -1659,19 +1693,15 @@ const handleCheckboxChange = (id) => {
     return `${hour}:${minutes} ${amPm}`;
   };
 
-
-
   // const { isLoaded } = useJsApiLoader({
   //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
   // });
 
+  const { isLoaded } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    libraries: ["places"], // Add the Places library here
+  });
 
-    const { isLoaded } = useJsApiLoader({
-      googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
-      libraries: ["places"], // Add the Places library here
-    });
-  
-    
   // If the script is not loaded, return null or a loader.
   if (!isLoaded) {
     return null; // Or show a custom loader component.
@@ -1699,13 +1729,16 @@ const handleCheckboxChange = (id) => {
               <h1 className="booking-form-title">Modify Booking :</h1>
             </div>
 
-            <form style={{padding:"1rem"}} onSubmit={(e) => {
-    e.preventDefault();
-    // FunctionDataForPricesApplied();
-  }} >
+            <form
+              style={{ padding: "1rem" }}
+              onSubmit={(e) => {
+                e.preventDefault();
+                // FunctionDataForPricesApplied();
+              }}
+            >
               <div className="booking-form-group">
                 <label className="booking-form-label" htmlFor="guestName">
-             Guest Name
+                  Guest Name
                 </label>
                 <input
                   type="text"
@@ -1719,26 +1752,27 @@ const handleCheckboxChange = (id) => {
 
               {service?.id !== 9 && (
                 <>
-
-
-<div>
-  <div className="booking-form-group flex-fill">
-    <label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
-      Visit Date :
-    </label>
-    <div className="previous_time_selected">
-      <span>
-        {DefaultDataOfBooking?.booking_date_time
-          ? DefaultDataOfBooking.booking_date_time.split(", ").slice(0, 2).join(", ") 
-          : "N/A"}
-      </span>
-    </div>
-  </div>
-</div>
-
-
-
-
+                  <div>
+                    <div className="booking-form-group flex-fill">
+                      <label
+                        className="booking-form-label"
+                        htmlFor="date-input"
+                        style={{ margin: 0 }}
+                      >
+                        Visit Date :
+                      </label>
+                      <div className="previous_time_selected">
+                        <span>
+                          {DefaultDataOfBooking?.booking_date_time
+                            ? DefaultDataOfBooking.booking_date_time
+                                .split(", ")
+                                .slice(0, 2)
+                                .join(", ")
+                            : "N/A"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
 
                   <div>
                     <div className="booking-form-group flex-fill">
@@ -1751,15 +1785,15 @@ const handleCheckboxChange = (id) => {
                       </label>
                       <div className="previous_time_selected1">
                         <div className="previous_time_selected_child">
+                          <div>Visit Time</div>
                           <div>
-                          Visit Time 
-                          </div><div>{" "}
-                          {DefaultDataOfBooking?.booking_date_time
-                            ? DefaultDataOfBooking.booking_date_time
-                                .split(", ")
-                                .pop() // Extract last part (Time)
-                            : "N/A"}
-                            </div>
+                            {" "}
+                            {DefaultDataOfBooking?.booking_date_time
+                              ? DefaultDataOfBooking.booking_date_time
+                                  .split(", ")
+                                  .pop() // Extract last part (Time)
+                              : "N/A"}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -1770,7 +1804,6 @@ const handleCheckboxChange = (id) => {
               {service?.id === 9 && (
                 <>
                   <div>
-                 
                     {/* <div className="booking-form-group flex-fill">
                       <label
                         className="booking-form-label"
@@ -1788,41 +1821,48 @@ const handleCheckboxChange = (id) => {
                       </LocalizationProvider>
                     </div> */}
 
-<div className="booking-form-group flex-fill">
-<label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
-Your Subscription Starts From:
-</label>
-<div className="previous_time_selected">
-      <span>
-      {MonthlySubscriptionStartDate
-                          ? MonthlySubscriptionStartDate.toDateString()
-                          : "Not selected"}
-      </span>
-    </div>
-  </div>
+                    <div className="booking-form-group flex-fill">
+                      <label
+                        className="booking-form-label"
+                        htmlFor="date-input"
+                        style={{ margin: 0 }}
+                      >
+                        Your Subscription Starts From:
+                      </label>
+                      <div className="previous_time_selected">
+                        <span>
+                          {MonthlySubscriptionStartDate
+                            ? MonthlySubscriptionStartDate.toDateString()
+                            : "Not selected"}
+                        </span>
+                      </div>
+                    </div>
 
-
-  <div className="booking-form-group flex-fill">
-<label className="booking-form-label" htmlFor="date-input" style={{ margin: 0 }}>
-Your Subscription Ends At:
-</label>
-<div className="previous_time_selected">
-      <span>
-      {/* {MonthlySubscriptionEndsDate
+                    <div className="booking-form-group flex-fill">
+                      <label
+                        className="booking-form-label"
+                        htmlFor="date-input"
+                        style={{ margin: 0 }}
+                      >
+                        Your Subscription Ends At:
+                      </label>
+                      <div className="previous_time_selected">
+                        <span>
+                          {/* {MonthlySubscriptionEndsDate
                           ? MonthlySubscriptionEndsDate.toDateString()
                           : "Not calculated"} */}
 
-{MonthlySubscriptionStartDate ? (
-  <div>
-    {/* Start Date: {MonthlySubscriptionStartDate.toDateString()} <br /> */}
-{getDateAfter30Days(MonthlySubscriptionStartDate)}
-  </div>
-) : (
-  "Not selected"
-)}
-      </span>
-    </div>
-  </div>
+                          {MonthlySubscriptionStartDate ? (
+                            <div>
+                              {/* Start Date: {MonthlySubscriptionStartDate.toDateString()} <br /> */}
+                              {getDateAfter30Days(MonthlySubscriptionStartDate)}
+                            </div>
+                          ) : (
+                            "Not selected"
+                          )}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </>
               )}
@@ -1834,84 +1874,61 @@ Your Subscription Ends At:
                       <label className="booking-form-label">
                         Number of People
                       </label>
-                      <div className="div-people-count" >
+                      <div className="div-people-count">
+                        <div className="people-counter-container">
+                          <span className="people-counter-label">
+                            Select Number of People
+                          </span>
 
-  <div className="people-counter-container">
+                          <div className="people-counter">
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleDecrement}
+                            >
+                              -
+                            </button>
+                            <span className="counter-value">{people}</span>
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleIncrement}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
 
-    <span className="people-counter-label">Select Number of People</span>
-
-
-<div className="people-counter">
-      <button type="button" className="counter-button" onClick={handleDecrement}>
-        -
-      </button>
-      <span className="counter-value">{people}</span>
-      <button type="button" className="counter-button" onClick={handleIncrement}>
-        +
-      </button>
-    </div>
-    
-  </div>
-
-  <div className="cooking-time-container pt-3">
-  <span className="people-counter-label">Estimated Time </span> <span className="cooking-time-value">{formatTime(approxTime)}</span>
-  </div>
-  </div>
-</div>
+                        <div className="cooking-time-container pt-3">
+                          <span className="people-counter-label">
+                            Estimated Time{" "}
+                          </span>{" "}
+                          <span className="cooking-time-value">
+                            {formatTime(approxTime)}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
                   </>
                 )}
 
-{service?.category_id === 2 && (
+                {service?.category_id === 2 && (
                   <>
+                    {service.id === 6 && (
+                      <>
+                        <div className="booking-form-group">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <label className="booking-form-label mb-0">
+                              Number of Hours:
+                            </label>
+                            <span className="counter-value">
+                              Maximum{" "}
+                              {SelectedNumberOfHoursObjectForDriver?.hours}{" "}
+                              Hours
+                            </span>
+                          </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service.id === 6 && (
-<>
-                    <div className="booking-form-group">
-               
-
-                    <div className="d-flex justify-content-between align-items-center">
-  <label className="booking-form-label mb-0">
-    Number of Hours:
-  </label>
-  <span className="counter-value">
-    Maximum {SelectedNumberOfHoursObjectForDriver?.hours} Hours
-  </span>
-</div>
-
-
-
-
-                      {/* <div className="div-people-count">
+                          {/* <div className="div-people-count">
                       <div className="people-counter-container">
 
 <span className="people-counter-label">Select Number of Hours</span>
@@ -1936,135 +1953,93 @@ Your Subscription Ends At:
                         </div>
                         </div>
                       </div> */}
-
-
-                    </div>
-                    </>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service.id !== 6 && service.id !== 7 && (
-<>
-                    <div className="booking-form-group">
-                      <label className="booking-form-label">
-                        Number of Hours
-                      </label>
-                      <div className="div-people-count">
-                      <div className="people-counter-container">
-
-<span className="people-counter-label">Select Number of Hours</span>
-                      <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForDriver}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {SelectedNumberOfHoursObjectForDriver?.hours}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForDriver}
-                        >
-                          +
-                        </button>
                         </div>
+                      </>
+                    )}
+
+                    {service.id !== 6 && service.id !== 7 && (
+                      <>
+                        <div className="booking-form-group">
+                          <label className="booking-form-label">
+                            Number of Hours
+                          </label>
+                          <div className="div-people-count">
+                            <div className="people-counter-container">
+                              <span className="people-counter-label">
+                                Select Number of Hours
+                              </span>
+                              <div className="people-counter">
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleDecrementHousForDriver}
+                                >
+                                  -
+                                </button>
+                                <span className="counter-value">
+                                  {SelectedNumberOfHoursObjectForDriver?.hours}
+                                </span>
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleIncrementHousForDriver}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                    </div>
-                    </>
-)}
+                      </>
+                    )}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{service?.id === 7  && (
-<>
-                    <div className="booking-form-group">
-                      <label className="booking-form-label">
-                        Number of Days
-                      </label>
-                      <div className="div-people-count">
-                      <div className="people-counter-container">
-
-<span className="people-counter-label">Select Number of Days</span>
-                      <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForDriver}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {/* {SelectedNumberOfHoursObjectForDriver?.hours} */}
-                          <span className="counter-value">
-  {SelectedNumberOfHoursObjectForDriver?.hours &&
-    `${(SelectedNumberOfHoursObjectForDriver.hours / 24).toFixed(1)} ${
-      SelectedNumberOfHoursObjectForDriver.hours > 24 ? "days" : "day"
-    }`}
-</span>
-
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForDriver}
-                        >
-                          +
-                        </button>
+                    {service?.id === 7 && (
+                      <>
+                        <div className="booking-form-group">
+                          <label className="booking-form-label">
+                            Number of Days
+                          </label>
+                          <div className="div-people-count">
+                            <div className="people-counter-container">
+                              <span className="people-counter-label">
+                                Select Number of Days
+                              </span>
+                              <div className="people-counter">
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleDecrementHousForDriver}
+                                >
+                                  -
+                                </button>
+                                <span className="counter-value">
+                                  {/* {SelectedNumberOfHoursObjectForDriver?.hours} */}
+                                  <span className="counter-value">
+                                    {SelectedNumberOfHoursObjectForDriver?.hours &&
+                                      `${(
+                                        SelectedNumberOfHoursObjectForDriver.hours /
+                                        24
+                                      ).toFixed(1)} ${
+                                        SelectedNumberOfHoursObjectForDriver.hours >
+                                        24
+                                          ? "days"
+                                          : "day"
+                                      }`}
+                                  </span>
+                                </span>
+                                <button
+                                  type="button"
+                                  className="counter-button"
+                                  onClick={handleIncrementHousForDriver}
+                                >
+                                  +
+                                </button>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                        </div>
-                      </div>
-                    </div>
-                    </>
-)}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                      </>
+                    )}
                   </>
                 )}
 
@@ -2074,31 +2049,31 @@ Your Subscription Ends At:
                       <label className="booking-form-label">
                         Number of Hours
                       </label>
-                      <div className="div-people-count" >
-
-  <div className="people-counter-container">
-
-    <span className="people-counter-label">Select Number of Hours</span>
-    <div className="people-counter">
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleDecrementHousForGardner}
-                        >
-                          -
-                        </button>
-                        <span className="counter-value">
-                          {SelectedNumberOfHoursObjectForGardner?.hours}
-                        </span>
-                        <button
-                          type="button"
-                          className="counter-button"
-                          onClick={handleIncrementHousForGardner}
-                        >
-                          +
-                        </button>
-                      </div>
-                      </div>
+                      <div className="div-people-count">
+                        <div className="people-counter-container">
+                          <span className="people-counter-label">
+                            Select Number of Hours
+                          </span>
+                          <div className="people-counter">
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleDecrementHousForGardner}
+                            >
+                              -
+                            </button>
+                            <span className="counter-value">
+                              {SelectedNumberOfHoursObjectForGardner?.hours}
+                            </span>
+                            <button
+                              type="button"
+                              className="counter-button"
+                              onClick={handleIncrementHousForGardner}
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </>
@@ -2106,36 +2081,59 @@ Your Subscription Ends At:
 
                 {service?.category_id === 3 && service?.id === 9 && (
                   <>
-
-
-
-
-
-<div>
-                    <div className="booking-form-group flex-fill">
-                      <label
-                        className="booking-form-label"
-                        htmlFor="date-input"
-                        style={{ margin: 0 }}
-                      >
-                        Visit Time:
+                    <div className="booking-form-group">
+                      <label className="booking-form-label">
+                        Select Time of Visit For All Slots
                       </label>
-                      <div className="previous_time_selected1">
-                        <div className="previous_time_selected_child">
-                          <div>
-                          Visit Time 
-                          </div><div>{" "}
-                          {DefaultDataOfBooking?.booking_date_time
-                            ? DefaultDataOfBooking.booking_date_time
-                                .split(", ")
-                                .pop() 
-                            : "N/A"}
-                            </div>
+                      <div
+                        className={`booking-time-dropdown-wrapper-time ${
+                          isTimeDropdownOpen ? "active" : ""
+                        }`}
+                        onClick={() => setTimeDropdownOpen(!isTimeDropdownOpen)}
+                      >
+                        <div className="booking-time-dropdown-button">
+                          {selectedTime
+                            ? formatTimeTo12Hour(selectedTime)
+                            : "Select a time"}
+                          <span>{isTimeDropdownOpen ? "▲" : "▼"}</span>
                         </div>
+
+                        {isTimeDropdownOpen &&
+                          DefaultDataOfBooking &&
+                          (filteredTimeOptions.length > 0 ? (
+                            <div className="booking-time-options-grid">
+                              {filteredTimeOptions.map((time) => (
+                                <div
+                                  key={time}
+                                  className={`booking-time-option ${
+                                    selectedTime === time ? "selected" : ""
+                                  }`}
+                                  onClick={() => {
+                                    setSelectedTime(time);
+                                    setTimeDropdownOpen(false); // Close dropdown on selection
+                                  }}
+                                >
+                                  {formatTimeTo12Hour(time)}
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div
+                              className="time-dropdown-placeholder"
+                              style={{
+                                color: "red",
+                                cursor: "not-allowed",
+                                opacity: 0.7,
+                                padding: "8px",
+                                fontStyle: "italic",
+                              }}
+                            >
+                              No more time options are available for choosen
+                              date.
+                            </div>
+                          ))}
                       </div>
                     </div>
-                  </div>
-
 
                     <div
                       style={{ marginTop: "20px" }}
@@ -2144,8 +2142,8 @@ Your Subscription Ends At:
                       <label className="booking-form-label">
                         Number of Visiting Slots
                       </label>
-                      <div className="div-people-count" >
-{/* 
+                      <div className="div-people-count">
+                        {/* 
   <div className="people-counter-container">
 
     <span className="people-counter-label">Select Number of Visits</span>
@@ -2170,10 +2168,7 @@ Your Subscription Ends At:
                       </div>
                       </div> */}
 
-
-
-
-{/* 
+                        {/* 
 <select
   id="visit-select"
   value={
@@ -2227,8 +2222,7 @@ Your Subscription Ends At:
   })}
 </select> */}
 
-
-{/* <select
+                        {/* <select
   id="visit-select"
   value={
     SelectedNumberOfSlotsObjectForMonthlyGardner
@@ -2296,200 +2290,222 @@ Your Subscription Ends At:
   })}
 </select> */}
 
-
-<div
-  style={{
-    width: "100%",
-    padding: "10px",
-    border: "1px solid #ddd",
-    borderRadius: "4px",
-    fontSize: "14px",
-    backgroundColor: "#fff",
-    display: "flex",
-    alignItems: "center", 
-    justifyContent: "space-between", 
-  }}
->
-  <span style={{ flexGrow: 1 }}>
-    {SelectedNumberOfSlotsObjectForMonthlyGardner
-      ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.visit} Visit${
-          SelectedNumberOfSlotsObjectForMonthlyGardner.visit > 1 ? "s" : ""
-        } - ${
-          Math.floor(SelectedNumberOfSlotsObjectForMonthlyGardner.hours / 60)
-        } hr${
-          SelectedNumberOfSlotsObjectForMonthlyGardner.hours > 60 ? "s" : ""
-        } ${
-          SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60
-            ? `${SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60} min${
-                SelectedNumberOfSlotsObjectForMonthlyGardner.hours % 60 > 1
-                  ? "s"
-                  : ""
-              }`
-            : ""
-        } per visit`
-      : "Select a Slot"} 
-  </span>
-</div>
-
-
+                        <div
+                          style={{
+                            width: "100%",
+                            padding: "10px",
+                            border: "1px solid #ddd",
+                            borderRadius: "4px",
+                            fontSize: "14px",
+                            backgroundColor: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <span style={{ flexGrow: 1 }}>
+                            {SelectedNumberOfSlotsObjectForMonthlyGardner
+                              ? `${
+                                  SelectedNumberOfSlotsObjectForMonthlyGardner.visit
+                                } Visit${
+                                  SelectedNumberOfSlotsObjectForMonthlyGardner.visit >
+                                  1
+                                    ? "s"
+                                    : ""
+                                } - ${Math.floor(
+                                  SelectedNumberOfSlotsObjectForMonthlyGardner.hours /
+                                    60
+                                )} hr${
+                                  SelectedNumberOfSlotsObjectForMonthlyGardner.hours >
+                                  60
+                                    ? "s"
+                                    : ""
+                                } ${
+                                  SelectedNumberOfSlotsObjectForMonthlyGardner.hours %
+                                  60
+                                    ? `${
+                                        SelectedNumberOfSlotsObjectForMonthlyGardner.hours %
+                                        60
+                                      } min${
+                                        SelectedNumberOfSlotsObjectForMonthlyGardner.hours %
+                                          60 >
+                                        1
+                                          ? "s"
+                                          : ""
+                                      }`
+                                    : ""
+                                } per visit`
+                              : "Select a Slot"}
+                          </span>
+                        </div>
                       </div>
                     </div>
 
+                    {MonthlySubscriptionStartDate &&
+                      MonthlySubscriptionEndsDate &&
+                      selectedVisitDates.map((visit, index) => {
+                        // Find the latest selected date from previous visits (exclude the current index)
+                        const latestSelectedDate =
+                          index > 0
+                            ? selectedVisitDates
+                                .slice(0, index) // Consider only previous visit dates
+                                .map((v) => new Date(v.date))
+                                .sort((a, b) => b - a)[0]
+                            : null; // No restriction for the first visit
 
+                        // Collect all selected dates to disable them everywhere
+                        const selectedDatesSet = new Set(
+                          selectedVisitDates.map((v) =>
+                            new Date(v.date).toDateString()
+                          )
+                        );
+                        console.log(
+                          selectedVisitDates,
+                          "selectedVisitDateskjnskdjvhk"
+                        );
+                        console.log(
+                          selectedDatesSet,
+                          "selectedDatesSetscdcsbhj"
+                        );
+                        return (
+                          <div
+                            key={index}
+                            className="booking-form-group flex-fill"
+                          >
+                            <label className="booking-form-label">
+                              Select Visit Date {index + 1}
+                            </label>
+                            <div className="date-scroll-container">
+                              {getUpcomingDatesToVisits(
+                                new Date(MonthlySubscriptionStartDate),
+                                new Date(MonthlySubscriptionEndsDate)
+                              ).map((date, i) => {
+                                const dateString = date.toDateString();
+                                const isSelected =
+                                  visit.date &&
+                                  new Date(visit.date).toDateString() ===
+                                    dateString;
 
+                                // Disable the date if:
+                                // - It is already selected anywhere
+                                // - It is before the latest selected date for visits > 0
+                                const isDisabled =
+                                  (selectedDatesSet.has(dateString) &&
+                                    !isSelected) ||
+                                  (latestSelectedDate &&
+                                    date < latestSelectedDate);
+                                return (
+                                  <div
+                                    key={i}
+                                    className={`date-item ${
+                                      isSelected ? "selected" : ""
+                                    } ${isDisabled ? "disabled" : ""}`}
+                                    onClick={() => {
+                                      if (isDisabled) return; // Prevent selecting disabled dates
+                                      setIsDatesChanged(true);
+                                      const updatedDates = [
+                                        ...selectedVisitDates,
+                                      ];
+                                      let nextDate = new Date(date);
 
+                                      // Validate that the selected date is within the range
+                                      if (
+                                        nextDate >
+                                        new Date(MonthlySubscriptionEndsDate)
+                                      ) {
+                                        return; // Stop if the first selection itself is out of range
+                                      }
 
+                                      // Update the selected visit date
+                                      updatedDates[index] = {
+                                        ...updatedDates[index],
+                                        date: date.toISOString().split("T")[0],
+                                      };
 
+                                      // Auto-update subsequent visits
+                                      for (
+                                        let i = index + 1;
+                                        i < updatedDates.length;
+                                        i++
+                                      ) {
+                                        do {
+                                          nextDate.setDate(
+                                            nextDate.getDate() + 3
+                                          ); // Increment by 3 days
+                                        } while (
+                                          selectedDatesSet.has(
+                                            nextDate.toDateString()
+                                          )
+                                        ); // Skip disabled dates
 
+                                        // Stop if the next date is out of range
+                                        if (
+                                          nextDate >
+                                          new Date(MonthlySubscriptionEndsDate)
+                                        ) {
+                                          break;
+                                        }
 
+                                        updatedDates[i] = {
+                                          ...updatedDates[i],
+                                          date: nextDate
+                                            .toISOString()
+                                            .split("T")[0],
+                                        };
 
+                                        // Add the new date to the set
+                                        selectedDatesSet.add(
+                                          nextDate.toDateString()
+                                        );
+                                      }
 
-
-
-
-
-
-
-
-
-
-
-
-
-{MonthlySubscriptionStartDate &&
-  MonthlySubscriptionEndsDate &&
-  selectedVisitDates.map((visit, index) => {
-    // Find the latest selected date from previous visits (exclude the current index)
-    const latestSelectedDate =
-      index > 0
-        ? selectedVisitDates
-            .slice(0, index) // Consider only previous visit dates
-            .map((v) => new Date(v.date))
-            .sort((a, b) => b - a)[0]
-        : null; // No restriction for the first visit
-
-    // Collect all selected dates to disable them everywhere
-    const selectedDatesSet = new Set(
-      selectedVisitDates.map((v) => new Date(v.date).toDateString())
-    );
-console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
-    console.log(selectedDatesSet,"selectedDatesSetscdcsbhj")
-    return (
-      <div key={index} className="booking-form-group flex-fill">
-        <label className="booking-form-label">
-          Select Visit Date {index + 1}
-        </label>
-        <div className="date-scroll-container">
-
-
- {getUpcomingDatesToVisits(
-            new Date(MonthlySubscriptionStartDate),
-            new Date(MonthlySubscriptionEndsDate)
-          ).map((date, i) => {
-            const dateString = date.toDateString();
-            const isSelected = visit.date && new Date(visit.date).toDateString() === dateString;
-
-            // Disable the date if:
-            // - It is already selected anywhere
-            // - It is before the latest selected date for visits > 0
-            const isDisabled = selectedDatesSet.has(dateString) && (!isSelected) || 
-              (latestSelectedDate && date < latestSelectedDate);
-            return (
-              <div
-                key={i}
-                className={`date-item ${isSelected ? "selected" : ""} ${
-                  isDisabled ? "disabled" : ""
-                }`}
- 
-                onClick={() => {
-                  if (isDisabled) return; // Prevent selecting disabled dates
-                setIsDatesChanged(true);
-                  const updatedDates = [...selectedVisitDates];
-                  let nextDate = new Date(date);
-                  
-                  // Validate that the selected date is within the range
-                  if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
-                    return; // Stop if the first selection itself is out of range
-                  }
-                
-                  // Update the selected visit date
-                  updatedDates[index] = {
-                    ...updatedDates[index],
-                    date: date.toISOString().split("T")[0],
-                  };
-                
-                  // Auto-update subsequent visits
-                  for (let i = index + 1; i < updatedDates.length; i++) {
-                    do {
-                      nextDate.setDate(nextDate.getDate() + 3); // Increment by 3 days
-                    } while (selectedDatesSet.has(nextDate.toDateString())); // Skip disabled dates
-                
-                    // Stop if the next date is out of range
-                    if (nextDate > new Date(MonthlySubscriptionEndsDate)) {
-                      break;
-                    }
-                
-                    updatedDates[i] = {
-                      ...updatedDates[i],
-                      date: nextDate.toISOString().split("T")[0],
-                    };
-                
-                    // Add the new date to the set
-                    selectedDatesSet.add(nextDate.toDateString());
-                  }
-                
-                  setSelectedVisitDates(updatedDates);
-                }}
-                
-                
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if ((e.key === "Enter" || e.key === " ") && !isDisabled) {
-                    const updatedDates = selectedVisitDates.map(
-                      (visitItem, visitIndex) =>
-                        visitIndex === index
-                          ? {
-                              ...visitItem,
-                              date: date.toISOString().split("T")[0],
-                            }
-                          : visitItem
-                    );
-                    setSelectedVisitDates(updatedDates);
-                  }
-                }}
-                style={{
-                  opacity: isDisabled ? 0.5 : 1,
-                  pointerEvents: isDisabled ? "none" : "auto",
-                }}
-              >
-                <span className="day">{format(date, "EEE")}</span>
-                <span className="date">{format(date, "dd")}</span>
-                <span className="month">{format(date, "MMM")}</span>
-              </div>
-            );
-          })} 
-
-
-
-
-        </div>
-      </div>
-    );
-  })}
-
-
-
-
-
-
-
-
-
-
-
-
-
+                                      setSelectedVisitDates(updatedDates);
+                                    }}
+                                    role="button"
+                                    tabIndex={0}
+                                    onKeyDown={(e) => {
+                                      if (
+                                        (e.key === "Enter" || e.key === " ") &&
+                                        !isDisabled
+                                      ) {
+                                        const updatedDates =
+                                          selectedVisitDates.map(
+                                            (visitItem, visitIndex) =>
+                                              visitIndex === index
+                                                ? {
+                                                    ...visitItem,
+                                                    date: date
+                                                      .toISOString()
+                                                      .split("T")[0],
+                                                  }
+                                                : visitItem
+                                          );
+                                        setSelectedVisitDates(updatedDates);
+                                      }
+                                    }}
+                                    style={{
+                                      opacity: isDisabled ? 0.5 : 1,
+                                      pointerEvents: isDisabled
+                                        ? "none"
+                                        : "auto",
+                                    }}
+                                  >
+                                    <span className="day">
+                                      {format(date, "EEE")}
+                                    </span>
+                                    <span className="date">
+                                      {format(date, "dd")}
+                                    </span>
+                                    <span className="month">
+                                      {format(date, "MMM")}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        );
+                      })}
                   </>
                 )}
 
@@ -2505,142 +2521,18 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                           Select Dishes
                         </label>
 
-             
-
-
-
-
-
-
                         <div
-    ref={dropdownRef}
-    className="dropdown-container"
-    style={{
-      display: "flex",
-      flexDirection: "column",
-      gap: "4px",
-    }}
-  >
-    <div
-      className="dropdown-input"
-      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-      style={{
-        cursor: "pointer",
-        padding: "8px",
-        fontSize: "16px",
-        border: "1px solid #ccc",
-        borderRadius: "4px",
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "center",
-        width: "100%",
-      }}
-    >
-      {menu.length > 0
-        ? `Selected: ${dishesOptionsArrayOri
-            .filter((option) => menu.includes(option.id))
-            .map((option) => option.name)
-            .join(", ")}`
-        : "Select a service"}
-      <span>{isDropdownOpen ? "▲" : "▼"}</span>
-    </div>
-
-    {isDropdownOpen && (
-      <div
-        className="dropdown-options"
-        style={{
-          position: "absolute",
-          top: "100%",
-          left: 0,
-          right: 0,
-          border: "1px solid #ccc",
-          borderRadius: "4px",
-          backgroundColor: "white",
-          width: "100%",
-          maxHeight: "200px",
-          overflowY: "auto",
-          zIndex: 10,
-          padding: "0",
-        }}
-      >
-        {dishesOptionsArrayOri.map((option) => (
-          <div
-            key={option.id}
-            className="dropdown-option"
-            style={{
-              padding: "8px",
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-            }}
-          >
-            <input
-              type="checkbox"
-              className="menu-checkbox"
-              id={`service-${option.id}`}
-              value={option.id}
-              checked={menu.includes(option.id)} // Properly compare IDs
-              onChange={() => handleCheckboxChange(option.id)} // Toggle selection
-              style={{
-                margin: 0,
-                cursor: "pointer",
-              }}
-            />
-            <label
-              htmlFor={`service-${option.id}`}
-              style={{ margin: 0 }}
-            >
-              {option.name}
-            </label>
-          </div>
-        ))}
-      </div>
-    )}
-  </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                      </>
-                    )}
-
-                  {service?.category_id === 2 && (
-                    <>
-                      {/* Car Type Dropdown */}
-                      <div ref={dropdownRef}
-                        style={{
-                          marginTop: "15px",
-                          marginBottom: "10px",
-                          position: "relative",
-                        }}
-                      >
-                        <label className="booking-form-label">
-                          Select Cars Type
-                        </label>
-                        <div 
+                          ref={dropdownRef}
                           className="dropdown-container"
                           style={{
                             display: "flex",
                             flexDirection: "column",
                             gap: "4px",
                           }}
-                        > 
-                          <div ref={dropdownRef}
+                        >
+                          <div
                             className="dropdown-input"
-                            onClick={() => {
-                              setIsDropdownOpen(!isDropdownOpen);
-                              setIsDropdownOpenTra(false);
-                            }}                            
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                             style={{
                               cursor: "pointer",
                               padding: "8px",
@@ -2653,9 +2545,116 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                               width: "100%",
                             }}
                           >
-                       {selectedCarType 
-  ? `Selected: ${selectedCarType}` 
-  : "Select a car type"}
+                            {menu.length > 0
+                              ? `Selected: ${dishesOptionsArrayOri
+                                  .filter((option) => menu.includes(option.id))
+                                  .map((option) => option.name)
+                                  .join(", ")}`
+                              : "Select a service"}
+                            <span>{isDropdownOpen ? "▲" : "▼"}</span>
+                          </div>
+
+                          {isDropdownOpen && (
+                            <div
+                              className="dropdown-options"
+                              style={{
+                                position: "absolute",
+                                top: "100%",
+                                left: 0,
+                                right: 0,
+                                border: "1px solid #ccc",
+                                borderRadius: "4px",
+                                backgroundColor: "white",
+                                width: "100%",
+                                maxHeight: "200px",
+                                overflowY: "auto",
+                                zIndex: 10,
+                                padding: "0",
+                              }}
+                            >
+                              {dishesOptionsArrayOri.map((option) => (
+                                <div
+                                  key={option.id}
+                                  className="dropdown-option"
+                                  style={{
+                                    padding: "8px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    gap: "8px",
+                                  }}
+                                >
+                                  <input
+                                    type="checkbox"
+                                    className="menu-checkbox"
+                                    id={`service-${option.id}`}
+                                    value={option.id}
+                                    checked={menu.includes(option.id)} // Properly compare IDs
+                                    onChange={() =>
+                                      handleCheckboxChange(option.id)
+                                    } // Toggle selection
+                                    style={{
+                                      margin: 0,
+                                      cursor: "pointer",
+                                    }}
+                                  />
+                                  <label
+                                    htmlFor={`service-${option.id}`}
+                                    style={{ margin: 0 }}
+                                  >
+                                    {option.name}
+                                  </label>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </>
+                    )}
+
+                  {service?.category_id === 2 && (
+                    <>
+                      {/* Car Type Dropdown */}
+                      <div
+                        ref={dropdownRef}
+                        style={{
+                          marginTop: "15px",
+                          marginBottom: "10px",
+                          position: "relative",
+                        }}
+                      >
+                        <label className="booking-form-label">
+                          Select Cars Type
+                        </label>
+                        <div
+                          className="dropdown-container"
+                          style={{
+                            display: "flex",
+                            flexDirection: "column",
+                            gap: "4px",
+                          }}
+                        >
+                          <div
+                            ref={dropdownRef}
+                            className="dropdown-input"
+                            onClick={() => {
+                              setIsDropdownOpen(!isDropdownOpen);
+                              setIsDropdownOpenTra(false);
+                            }}
+                            style={{
+                              cursor: "pointer",
+                              padding: "8px",
+                              fontSize: "16px",
+                              border: "1px solid #ccc",
+                              borderRadius: "4px",
+                              display: "flex",
+                              justifyContent: "space-between",
+                              alignItems: "center",
+                              width: "100%",
+                            }}
+                          >
+                            {selectedCarType
+                              ? `Selected: ${selectedCarType}`
+                              : "Select a car type"}
                             <span>{isDropdownOpen ? "▲" : "▼"}</span>
                           </div>
 
@@ -2714,7 +2713,7 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                       </div>
 
                       {/* Transmission Type Dropdown */}
-                      <div 
+                      <div
                         style={{
                           marginTop: "15px",
                           marginBottom: "10px",
@@ -2724,7 +2723,7 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                         <label className="booking-form-label">
                           Select Transmission Type
                         </label>
-                        <div 
+                        <div
                           className="dropdown-container-tra"
                           style={{
                             display: "flex",
@@ -2734,12 +2733,10 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                         >
                           <div
                             className="dropdown-input-tra"
-                            onClick={() =>{
-
-                              setIsDropdownOpenTra(!isDropdownOpenTra)
-                              setIsDropdownOpen(false)
-                            }
-                            }
+                            onClick={() => {
+                              setIsDropdownOpenTra(!isDropdownOpenTra);
+                              setIsDropdownOpen(false);
+                            }}
                             style={{
                               cursor: "pointer",
                               padding: "8px",
@@ -2752,9 +2749,9 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                               width: "100%",
                             }}
                           >
-                           {selectedCarTransmissionType 
-  ? `Selected: ${selectedCarTransmissionType}` 
-  : "Select a transmission type"}
+                            {selectedCarTransmissionType
+                              ? `Selected: ${selectedCarTransmissionType}`
+                              : "Select a transmission type"}
                             <span>{isDropdownOpenTra ? "▲" : "▼"}</span>
                           </div>
 
@@ -2804,7 +2801,7 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                                     style={{
                                       margin: 0,
                                       cursor: "pointer",
-                                      width: "4%"
+                                      width: "4%",
                                     }}
                                   />
                                   <label
@@ -2863,19 +2860,23 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
 
                                       onChange={(e) => {
                                         // Check if the new quantity is less than the initial quantity
-                                        const newQuantity = parseInt(e.target.value) || 0;
-                              
+                                        const newQuantity =
+                                          parseInt(e.target.value) || 0;
+
                                         if (newQuantity < item?.quantity) {
                                           // Show toast notification if quantity is being reduced
-                                          toast.error("You cannot reduce the quantity below the initial selection.");
+                                          toast.error(
+                                            "You cannot reduce the quantity below the initial selection."
+                                          );
                                           return; // Prevent the change
                                         }
-                              
+
                                         // Otherwise, update the quantity
-                                        handleQuantityChangeForMenuItemsForChefForParty(index, newQuantity);
+                                        handleQuantityChangeForMenuItemsForChefForParty(
+                                          index,
+                                          newQuantity
+                                        );
                                       }}
-
-
                                       style={{
                                         width: "50px",
                                         padding: "5px",
@@ -2938,7 +2939,6 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
 </div>
  )} */}
 
-
               <div className="payable-amount-section">
                 <p className="payable-amount">
                   ₹ {basePrice} <br />
@@ -2950,7 +2950,7 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                   className="continue-button"
                   // onClick={nextStep}
                   onClick={(e) => {
-                    e.preventDefault(); 
+                    e.preventDefault();
                     FunctionDataForPricesApplied();
                   }}
                   // onClick={validateFieldsStepOne}
@@ -2961,11 +2961,6 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
             </form>
           </div>
         )}
-
-   
-
-
-    
 
         {step === 2 && (
           <div className="booking-booking-form">
@@ -2980,337 +2975,302 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
               <h2>Booking Summary</h2>
             </div>
 
-<div style={{padding:"1rem"}}>
-            <h3 className="booking-summary-label">Booking Details</h3>
-            <div className="booking-summary-details">
-              <div className="booking-detail-card">
-                <div>
-                  <strong>Booking For :</strong>
-                </div>
-                <div>{BookingForGuestName}</div>
-              </div>
-
-              {(service?.category_id === 1 || service?.category_id === 3) && (
-                <>
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address : </strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.visit_address}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              )}
-
-              {service?.category_id === 2 && (
-                <>
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address From:</strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.address_from}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="booking-detail-card">
-                    <div>
-                      <strong>Address To:</strong>
-                    </div>
-                    <div>
-                      <p className="flex-fill mb-0 address-p">
-                        {DataForPricesAppliedGet?.address_to}
-                      </p>
-                    </div>
-                  </div>
-                </>
-              )}
-
-
-
-{service.id === 9 && (
-  <>
- <div className="booking-detail-card">
-      <div>
-        <strong>
-          Number of Visits :
-        </strong>
-      </div>
-      <div>
-  {DataForPricesAppliedGet?.gardener_monthly_subscription &&
-    (() => {
-      const subscriptionData = JSON.parse(DataForPricesAppliedGet.gardener_monthly_subscription);
-      const visitCount = subscriptionData?.visit;
-      const totalMinutes = subscriptionData?.hours;
-      const hours = Math.floor(totalMinutes / 60);
-      const minutes = totalMinutes % 60;
-
-      const formattedTime = [
-        hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
-        minutes ? `${minutes} min${minutes > 1 ? "s" : ""}` : "",
-      ]
-        .filter(Boolean)
-        .join(" ");
-
-      return (
-        <>
-          {visitCount} {visitCount > 1 ? "visits" : "visit"} lasting {formattedTime} per visit
-        </>
-      );
-    })()}
-</div>
-
-
-    </div>
-
-
-
-    <div className="booking-detail-card">
-  <div>
-    <strong>
-      {service.id === 9 && "Visiting Dates"}
-    </strong>
-  </div>
-  <div>
-    {DataForPricesAppliedGet?.gardener_visiting_slots
-      ? JSON.parse(DataForPricesAppliedGet?.gardener_visiting_slots)?.map((slot, index) => (
-        <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-        {slot.date ? format(new Date(slot.date), 'dd MMM yyyy') : null}
-        {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
-      </div>
-      
-        ))
-      : null}
-  </div>
-</div>
-
-
-
-
-
-
-
-
-  </>
-)}
-
-
-
-              <div className="booking-detail-card">
-                             
-{service.id !== 9 && (
-                <div>
-                  <strong>Date :</strong>{" "}
+            <div style={{ padding: "1rem" }}>
+              <h3 className="booking-summary-label">Booking Details</h3>
+              <div className="booking-summary-details">
+                <div className="booking-detail-card">
                   <div>
-                    {new Date(
-                      DataForPricesAppliedGet?.visit_date
-                    ).toLocaleDateString("en-GB")}
+                    <strong>Booking For :</strong>
                   </div>
+                  <div>{BookingForGuestName}</div>
                 </div>
-)}
 
-                {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                {(service?.category_id === 1 || service?.category_id === 3) && (
                   <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Address : </strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.visit_address}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {service?.category_id === 2 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Address From:</strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.address_from}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Address To:</strong>
+                      </div>
+                      <div>
+                        <p className="flex-fill mb-0 address-p">
+                          {DataForPricesAppliedGet?.address_to}
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {service.id === 9 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>Number of Visits :</strong>
+                      </div>
+                      <div>
+                        {DataForPricesAppliedGet?.gardener_monthly_subscription &&
+                          (() => {
+                            const subscriptionData = JSON.parse(
+                              DataForPricesAppliedGet.gardener_monthly_subscription
+                            );
+                            const visitCount = subscriptionData?.visit;
+                            const totalMinutes = subscriptionData?.hours;
+                            const hours = Math.floor(totalMinutes / 60);
+                            const minutes = totalMinutes % 60;
+
+                            const formattedTime = [
+                              hours ? `${hours} hr${hours > 1 ? "s" : ""}` : "",
+                              minutes
+                                ? `${minutes} min${minutes > 1 ? "s" : ""}`
+                                : "",
+                            ]
+                              .filter(Boolean)
+                              .join(" ");
+
+                            return (
+                              <>
+                                {visitCount}{" "}
+                                {visitCount > 1 ? "visits" : "visit"} lasting{" "}
+                                {formattedTime} per visit
+                              </>
+                            );
+                          })()}
+                      </div>
+                    </div>
+
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>{service.id === 9 && "Visiting Dates"}</strong>
+                      </div>
+                      <div>
+                        {DataForPricesAppliedGet?.gardener_visiting_slots
+                          ? JSON.parse(
+                              DataForPricesAppliedGet?.gardener_visiting_slots
+                            )?.map((slot, index) => (
+                              <div
+                                key={index}
+                                style={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                {slot.date
+                                  ? format(new Date(slot.date), "dd MMM yyyy")
+                                  : null}
+                                {/* <div style={{ marginLeft: '10px' }}>:({slot.hours} hours approx)</div> */}
+                              </div>
+                            ))
+                          : null}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                <div className="booking-detail-card">
+                  {service.id !== 9 && (
                     <div>
-                      <strong>Time :</strong>{" "}
+                      <strong>Date :</strong>{" "}
                       <div>
-                        {DataForPricesAppliedGet?.visit_time && (
-                          <div>
-                            {convertToAmPm(DataForPricesAppliedGet.visit_time)}
-                          </div>
-                        )}
+                        {new Date(
+                          DataForPricesAppliedGet?.visit_date
+                        ).toLocaleDateString("en-GB")}
                       </div>
                     </div>
-                  </>
-                )}
+                  )}
 
-                <div></div>
-              </div>
-              <div className="booking-detail-card">
-                <div>
-                  <strong>Special Requests / Instructions:</strong>
-                </div>{" "}
-                <div>{specialRequests || "None"}</div>
-              </div>
-            </div>
-
-
-            <h3 className="booking-summary-label">Charges Breakdown</h3>
-            <div className="fare-breakdown-section">
-              <div className="fare-breakdown-card">
-    
-
-                {service.category_id === 1 && (
-                  <>
-                    <div className="fare-breakdown-div">
-                      <div className="fare-breakdown-title">
-              Service Charges:
-                      </div>
+                  {DataForPricesAppliedGet?.visit_time !== "00:00:00" && (
+                    <>
                       <div>
-                        {(() => {
-                          const numberOfPeople = JSON.parse(
-                            DataForPricesAppliedGet?.number_of_people || "{}"
-                          );
-                          const { people_count, price } = numberOfPeople;
-                          return `For ${people_count} person = ₹ ${price}`;
-                        })()}
+                        <strong>Time :</strong>{" "}
+                        <div>
+                          {DataForPricesAppliedGet?.visit_time && (
+                            <div>
+                              {convertToAmPm(
+                                DataForPricesAppliedGet.visit_time
+                              )}
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </>
-                )}
+                    </>
+                  )}
 
-                {service.id === 8 && (
-                  <>
-                    <div className="fare-breakdown-div">
-                      <div className="fare-breakdown-title">
-                        Service Charges:
-                      </div>
-                      <div>
-                        {(() => {
-                          const numberOfHours = JSON.parse(
-                            DataForPricesAppliedGet?.gardener_time_duration ||
-                              "{}"
-                          );
-                          const { hours, price } = numberOfHours;
-                          return `For ${hours} hours = ₹ ${price}`;
-                        })()}
-                      </div>
-                    </div>
-                  </>
-                )}
-
-                {service.category_id === 1 && (
-                  <>
-                    <div className="fare-breakdown-div">
-                      <div className="fare-breakdown-title">
-                        Charges for dishes/menu items:
-                      </div>
-                      <div>+₹ {DataForPricesAppliedGet?.menu_amount}</div>
-                    </div>
-                  </>
-                )}
-
-
-
-<div className="fare-breakdown-div">
-<div className="fare-breakdown-title">Base Price :</div>
-<div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+                  <div></div>
                 </div>
-                {(DataForPricesAppliedGet?.night_charge > 0) && (
-  <>
-  
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Night Charges :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                <div className="booking-detail-card">
+                  <div>
+                    <strong>Special Requests / Instructions:</strong>
+                  </div>{" "}
+                  <div>{specialRequests || "None"}</div>
                 </div>
-                </>
-)}
-{/* <div className="fare-breakdown-div">
+              </div>
+
+              <h3 className="booking-summary-label">Charges Breakdown</h3>
+              <div className="fare-breakdown-section">
+                <div className="fare-breakdown-card">
+                  {service.category_id === 1 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Service Charges:
+                        </div>
+                        <div>
+                          {(() => {
+                            const numberOfPeople = JSON.parse(
+                              DataForPricesAppliedGet?.number_of_people || "{}"
+                            );
+                            const { people_count, price } = numberOfPeople;
+                            return `For ${people_count} person = ₹ ${price}`;
+                          })()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {service.id === 8 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Service Charges:
+                        </div>
+                        <div>
+                          {(() => {
+                            const numberOfHours = JSON.parse(
+                              DataForPricesAppliedGet?.gardener_time_duration ||
+                                "{}"
+                            );
+                            const { hours, price } = numberOfHours;
+                            return `For ${hours} hours = ₹ ${price}`;
+                          })()}
+                        </div>
+                      </div>
+                    </>
+                  )}
+
+                  {service.category_id === 1 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Charges for dishes/menu items:
+                        </div>
+                        <div>+₹ {DataForPricesAppliedGet?.menu_amount}</div>
+                      </div>
+                    </>
+                  )}
+
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Base Price :</div>
+                    <div>₹ {DataForPricesAppliedGet?.actual_price}</div>
+                  </div>
+                  {DataForPricesAppliedGet?.night_charge > 0 && (
+                    <>
+                      <div className="fare-breakdown-div">
+                        <div className="fare-breakdown-title">
+                          Night Charges :
+                        </div>
+                        <div>+₹ {DataForPricesAppliedGet?.night_charge}</div>
+                      </div>
+                    </>
+                  )}
+                  {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Sub-Total :</div>
                   <div> ₹ {DataForPricesAppliedGet?.sub_total_amount}</div>
                 </div> */}
 
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Discount :</div>
+                    <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
+                  </div>
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Discount :</div>
-                  <div> -₹ {DataForPricesAppliedGet?.discount_amount}</div>
-                </div>
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Total Amount :</div>
+                    <div>₹ {DataForPricesAppliedGet?.total_amount}</div>
+                  </div>
 
-                <div className="fare-breakdown-div">
-                  <div className="fare-breakdown-title">Total Amount :</div>
-                  <div>₹ {DataForPricesAppliedGet?.total_amount}</div>
-                </div>
-
-
-
-            
-
-
-                <div className="fare-breakdown-div">
-                <div className="fare-breakdown-title">Taxes and Fees :</div>
-                  <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
-                </div>
-                {service.category_id === 2 && (
-                  <>
-                {/* <div className="fare-breakdown-div">
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Taxes and Fees :</div>
+                    <div>+₹ {DataForPricesAppliedGet?.all_taxes}</div>
+                  </div>
+                  {service.category_id === 2 && (
+                    <>
+                      {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Secure Fee :</div>
                   <div>+₹ {DataForPricesAppliedGet?.secure_fee}</div>
                 </div> */}
-                </>
+                    </>
+                  )}
 
-                )}
-
-                {/* <div className="fare-breakdown-div">
+                  {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Platform Fee:</div>
                   <div>+₹ {DataForPricesAppliedGet?.platform_fee}</div>
                 </div> */}
 
-                
-
-
-                
-                {/* <div className="fare-breakdown-div">
+                  {/* <div className="fare-breakdown-div">
                   <div className="fare-breakdown-title">Price After Discount :</div>
                   <div>₹ {DataForPricesAppliedGet?.price}</div>
                 </div> */}
-           
-           
 
+                  <hr />
 
-
-<hr />
-
-
-                <div className="fare-breakdown-div mt-1">
-                  <div className="fare-breakdown-title">
-                    <h5>Total Amount :</h5>
+                  <div className="fare-breakdown-div mt-1">
+                    <div className="fare-breakdown-title">
+                      <h5>Total Amount :</h5>
+                    </div>
+                    <div>
+                      <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>
+                    </div>
                   </div>
-                  <div>
-                    <h5>₹ {DataForPricesAppliedGet?.new_total}</h5>
-                  </div>
-                </div> 
 
+                  <div className="fare-breakdown-div mt-1">
+                    <div className="fare-breakdown-title">
+                      <h5>Previous Amount: </h5>
+                    </div>
+                    <div>
+                      <h5>-₹ {DataForPricesAppliedGet?.collected_amount}</h5>
+                    </div>
+                  </div>
 
-          
-                <div className="fare-breakdown-div mt-1">
-                  <div className="fare-breakdown-title">
-                    <h5>Previous Amount:  </h5>
+                  <div className="fare-breakdown-div mt-1">
+                    <div className="fare-breakdown-title">
+                      <h5>Extra/Final Amount To Be Paid :</h5>
+                    </div>
+                    <div>
+                      <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
+                    </div>
                   </div>
-                  <div>
-                    <h5>-₹ {DataForPricesAppliedGet?.collected_amount}</h5>
-                  </div>
-                </div> 
-             
-
-
-                <div className="fare-breakdown-div mt-1">
-                  <div className="fare-breakdown-title">
-                    <h5>Extra/Final Amount To Be Paid :</h5>
-                  </div>
-                  <div>
-                    <h5>₹ {DataForPricesAppliedGet?.billing_amount}</h5>
-                  </div>
-                </div> 
-                
-             
+                </div>
               </div>
             </div>
-
-            </div>
-
-
-            
-        
 
             <div className="booking-summary-footer ">
               <div className="estimated-fare">
                 <div>
-                <h4>Estimated Extra Fare</h4>
+                  <h4>Estimated Extra Fare</h4>
                 </div>
                 <div>
                   <p>
@@ -3321,21 +3281,20 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
               </div>
 
               <button
-  className="checkout-button"
-  // onClick={() => {
-  //   if (DataForPricesAppliedGet?.billing_amount == 0) {
-  //     // setStep(4); 
-  //     setStep(3); 
+                className="checkout-button"
+                // onClick={() => {
+                //   if (DataForPricesAppliedGet?.billing_amount == 0) {
+                //     // setStep(4);
+                //     setStep(3);
 
-  //   } else {
-  //     nextStep(3); // Proceed normally otherwise
-  //   }
-  // }}
-  onClick={nextStep}
->
-  Checkout
-</button>
-
+                //   } else {
+                //     nextStep(3); // Proceed normally otherwise
+                //   }
+                // }}
+                onClick={nextStep}
+              >
+                Checkout
+              </button>
             </div>
           </div>
         )}
@@ -3380,46 +3339,32 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                   </div>
                 </button>
 
-
-
-
-{DefaultDataOfBooking?.payment_mode === "cod" && service.id !== 9 && (
-<>
-
-                <button     
-                  className="payment-option-button"
-                  onClick={(event) => {
-                    handlePayment("cod");
-                    setCallRazorPay(false);
-                    // event.target.disabled = true;
-                    setMakeDisable(true);
-                  }}
-                  // disabled={makeDisable}
-                >
-                  <div className="payment-option">
-                    <div className="payment-icon">
-                      <img src="/money.png" alt="Cash Icon" />
-                    </div>
-                    <div className="payment-details">
-                      <h3>Pay after booking</h3>
-                      <p>Book now, pay later</p>
-                    </div>
-                    <div className="payment-arrow">→</div>
-                  </div>
-                </button>
-
-
-</>
-                )}
-
-
-
-
-
-
-
-
-
+                {DefaultDataOfBooking?.payment_mode === "cod" &&
+                  service.id !== 9 && (
+                    <>
+                      <button
+                        className="payment-option-button"
+                        onClick={(event) => {
+                          handlePayment("cod");
+                          setCallRazorPay(false);
+                          // event.target.disabled = true;
+                          setMakeDisable(true);
+                        }}
+                        // disabled={makeDisable}
+                      >
+                        <div className="payment-option">
+                          <div className="payment-icon">
+                            <img src="/money.png" alt="Cash Icon" />
+                          </div>
+                          <div className="payment-details">
+                            <h3>Pay after booking</h3>
+                            <p>Book now, pay later</p>
+                          </div>
+                          <div className="payment-arrow">→</div>
+                        </div>
+                      </button>
+                    </>
+                  )}
               </div>
             </div>
           </div>
@@ -3462,7 +3407,8 @@ console.log(selectedVisitDates,"selectedVisitDateskjnskdjvhk")
                   fontWeight: "bold",
                 }}
               >
-             Your booking has been successfully modified. We will notify you once it is confirmed by the service provider!
+                Your booking has been successfully modified. We will notify you
+                once it is confirmed by the service provider!
               </p>
 
               <button

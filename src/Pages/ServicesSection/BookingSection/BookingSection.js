@@ -742,9 +742,6 @@ const filterTimeOptions = () => {
   const availableMinutesToday = Math.max(serviceEndTimeInMinutes - (currentTimeInMinutes + actualAdjustedStartTimeUsed), 0);
   const unusedAdjustedStartTime = adjustedStartTime - actualAdjustedStartTimeUsed;
 
-  console.log("Actual Adjusted Start Time Used:", actualAdjustedStartTimeUsed);
-  console.log("Available Minutes Today:", availableMinutesToday);
-  console.log("Unused Adjusted Start Time:", unusedAdjustedStartTime);
 
 // If the adjusted start time has been fully used today, calculate the new start boundary
 if (unusedAdjustedStartTime === 0) {
@@ -782,8 +779,6 @@ const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
 
 
 
-  console.log("Final Date and Time When Adjusted Time Ends:", finalDateTime);
-
 if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
   setFilteredTimeOptions([]);
   return;
@@ -801,7 +796,7 @@ if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
 }
 
 
-  console.log("Updated Start Boundary:", startBoundary);
+
 
   const options = timeOptions.filter((time) => {
     const timeInMinutes = timeToMinutes(time);
