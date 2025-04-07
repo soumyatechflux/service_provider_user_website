@@ -701,7 +701,7 @@ const UpcomingTab = () => {
   <div className="billing-row">
     <span className="billing-subtitle">Reward Points</span>
     <span className="billing-subtitle">
-      ₹{bookingsIdWise?.use_points_amount}
+      -₹{bookingsIdWise?.use_points_amount}
     </span>
   </div>
 )}
