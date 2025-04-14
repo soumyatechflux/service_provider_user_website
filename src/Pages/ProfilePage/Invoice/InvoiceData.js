@@ -125,13 +125,13 @@ const getFormattedDate = (rawDate) => {
           <View style={styles.address}>
             <Text style={styles.bold}>{data?.guest_name || "Customer Name"}</Text>
             <Text>Booking ID: {data?.booking_id || "N/A"}</Text>
-            <Text>Pick up address: {data?.visit_address || "N/A"}</Text>
+            <Text>Customer address: {data?.visit_address || "N/A"}</Text>
           </View>
-          <View style={styles.invoiceMeta}>
+          {/* <View style={styles.invoiceMeta}>
             <Text>Invoice issued by {data?.issuer_name || " Servyo Powered by Allify Home Solutions Private Limited"}</Text>
             <Text>On behalf of: {data?.partner?.name || " Servyo Partner"}</Text>
             <Text>{data?.state || "Delhi, IN-DL, India"}</Text>
-          </View>
+          </View> */}
         </View>
 
         <View style={styles.section}>
