@@ -5,8 +5,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Loader from "../../../Loader/Loader";
 import ReviewModal from "../ReviewModal/ReviewModal";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import InvoiceData from "../../Invoice/InvoiceData";
 
 function PreviousTab() {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -242,24 +240,24 @@ function PreviousTab() {
                       </p>
                     </div>
                     <div className="info-group">
-                      <h4 className="booking-subtitle">Address</h4>
-                      {bookingsIdWise?.category_id === 2 ? (
-                        <>
+                        <h4 className="booking-subtitle">Address</h4>
+                        {bookingsIdWise?.category_id === 2 ? (
+                          <>
+                            <p className="booking-info-text">
+                              <strong>From: </strong>
+                              {bookingsIdWise?.address_from || "N/A"}
+                            </p>
+                            <p className="booking-info-text">
+                              <strong>To: </strong>
+                              {bookingsIdWise?.address_to || "N/A"}
+                            </p>
+                          </>
+                        ) : (
                           <p className="booking-info-text">
-                            <strong>From: </strong>
-                            {bookingsIdWise?.address_from || "N/A"}
+                            {bookingsIdWise?.visit_address || "N/A"}
                           </p>
-                          <p className="booking-info-text">
-                            <strong>To: </strong>
-                            {bookingsIdWise?.address_to || "N/A"}
-                          </p>
-                        </>
-                      ) : (
-                        <p className="booking-info-text">
-                          {bookingsIdWise?.visit_address || "N/A"}
-                        </p>
-                      )}
-                    </div>
+                        )}
+                      </div>
                     {bookingsIdWise?.sub_category_id === 9 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">
@@ -385,7 +383,7 @@ function PreviousTab() {
                         </p>
                       </div>
                     )}
-
+                    
                     {bookingsIdWise?.sub_category_id !== 9 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">Date & Time</h4>
@@ -453,42 +451,76 @@ function PreviousTab() {
                       </div>
                     )}
 
+                    {/* <div className="billing-row">
+                      <span className="billing-subtitle">Sub-Total </span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.sub_total_amount}
+                      </span>
+                    </div> */}
+
                     <div className="billing-row discount">
                       <span className="billing-subtitle">Discount</span>
                       <span className="billing-subtitle">
                         -₹{bookingsIdWise?.discount_amount}
                       </span>
                     </div>
+                    {/* <div className="billing-row">
+                      <span className="billing-subtitle">Total</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.price}
+                      </span>
+                    </div> */}
+
+                    {/* <div className="billing-row ">
+                        <span className="billing-subtitle">Menu Price</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.menu_amount || 0}
+                        </span>
+                      </div> */}
+
+                    {/* <div className="billing-row">
+                      <span className="billing-subtitle">Platform Fee</span>
+                      <span className="billing-subtitle">
+                        ₹{bookingsIdWise?.platform_fee}
+                      </span>
+                    </div>
+                     */}
 
                     {bookingsIdWise?.extra_charge != 0 && (
                       <div className="billing-row">
                         <span className="billing-subtitle">Extra Charges</span>
                         <span className="billing-subtitle">
-                          {/* ₹{bookingsIdWise?.extra_charge} */}₹
-                          {bookingsIdWise?.price2}
-                        </span>
-                      </div>
-                    )}
+                          {/* ₹{bookingsIdWise?.extra_charge} */}
+                          ₹{bookingsIdWise?.price2}
 
-                    {bookingsIdWise?.due_payments > 0 && (
-                      <div className="billing-row">
-                        <span className="billing-subtitle">
-                          Cancellation Charges Due Amount
-                        </span>
-                        <span className="billing-subtitle">
-                          +₹{bookingsIdWise?.due_payments}
                         </span>
                       </div>
                     )}
+                    {/* {bookingsIdWise?.final_amount != 0 && (
+                      <div className="billing-row">
+                        <span className="billing-subtitle">Extra Charges</span>
+                        <span className="billing-subtitle">
+                          ₹{bookingsIdWise?.final_amount}
+                        </span>
+                      </div>
+                    )} */}
+                        {bookingsIdWise?.due_payments > 0 && (
+                           <div className="billing-row">
+                           <span className="billing-subtitle">Cancellation Charges Due Amount</span>
+                           <span className="billing-subtitle">
+                           +₹{bookingsIdWise?.due_payments}
+                           </span>
+                          </div>
+                          )}
 
-                    {bookingsIdWise?.use_points_amount > 0 && (
-                      <div className="billing-row">
-                        <span className="billing-subtitle">Reward Points</span>
-                        <span className="billing-subtitle">
-                          -₹{bookingsIdWise?.use_points_amount}
-                        </span>
-                      </div>
-                    )}
+{bookingsIdWise?.use_points_amount > 0 && (
+  <div className="billing-row">
+    <span className="billing-subtitle">Reward Points</span>
+    <span className="billing-subtitle">
+      -₹{bookingsIdWise?.use_points_amount}
+    </span>
+  </div>
+)}
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
                         Total Amount
@@ -508,7 +540,7 @@ function PreviousTab() {
                       </span>
                     </div>
                   </div>
-                  {/* {bookingsIdWise?.booking_status === "completed" ? (
+                  {bookingsIdWise?.booking_status === "completed" ? (
                     <div>
                       <button
                         className="rating-button"
@@ -534,73 +566,15 @@ function PreviousTab() {
                       Rating Unavailable
                     </button>
                   )}
- {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 ? (
-  <PDFDownloadLink
-  document={<InvoiceData data={bookingsIdWise} />}
-  fileName={`Invoice-${bookingsIdWise.booking_id || bookingsIdWise.id}.pdf`}
-  style={{ textDecoration: 'none' }}
->
-  {({ blob, url, loading, error }) => (
-    <button className="rating-button">
-      {loading ? 'Generating Invoice...' : 'Download Invoice'}
-    </button>
-  )}
-</PDFDownloadLink>
 
-) : (
-  <button className="rating-button" disabled>
+{bookingsIdWise?.booking_status === "completed" && (
+  <button className="rating-button" onClick={handleRatingButtonClick}>
     Download Invoice
   </button>
-)} */}
-
-
-
-{bookingsIdWise?.booking_status === "completed" ? (
-  <div>
-    <button
-      className="rating-button"
-      onClick={() =>
-        handleHelpCentreButtonClick(
-          bookingsIdWise.booking_id,
-          bookingsIdWise?.sub_category?.sub_category_name
-        )
-      }
-    >
-      Raise a Ticket
-    </button>
-
-    <button
-      className="rating-button"
-      onClick={handleRatingButtonClick}
-    >
-      Give Rating to Partner
-    </button>
-
-    {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
-      <PDFDownloadLink
-        document={<InvoiceData data={bookingsIdWise} />}
-        fileName={`Invoice-${bookingsIdWise.booking_id || bookingsIdWise.id}.pdf`}
-        style={{ textDecoration: 'none' }}
-      >
-        {({ blob, url, loading, error }) => (
-          <button className="rating-button">
-            {loading ? 'Generating Invoice...' : 'Download Invoice'}
-          </button>
-        )}
-      </PDFDownloadLink>
-    )}
-  </div>
-) : (
-  <div>
-    <button className="rating-button disabled" disabled>
-      Rating Unavailable
-    </button>
-  </div>
 )}
 
-          
-                  </div>
-
+            </div>
+               
                 <button
                   className="btn-view-less"
                   onClick={() => setOpenBookingIndex(null)}
@@ -687,8 +661,7 @@ function PreviousTab() {
         onClose={handleCloseRatingModal}
         partnerId={bookingsIdWise?.partner?.id}
         categoryId={bookingsIdWise?.category?.id}
-        bookingId={bookingsIdWise?.booking_id || bookingsIdWise?.id}
-      />
+        bookingId={bookingsIdWise?.booking_id || bookingsIdWise?.id}/>
     </div>
   );
 }
