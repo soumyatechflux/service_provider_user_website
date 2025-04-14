@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
 import { useLocation } from "react-router-dom";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import InvoiceData from "../../Invoice/InvoiceData";
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -762,7 +764,11 @@ const UpcomingTab = () => {
                 </button> 
                 
                 */}
+
+                
                         </>
+
+                        
                       )}
 
                       {callRazorPay && BookingData && (
@@ -779,7 +785,26 @@ const UpcomingTab = () => {
                         </>
                       )}
                     </div>
+                    {/* {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 ? (
+                  <PDFDownloadLink
+                    document={<InvoiceData bookingData={bookingsIdWise} />}
+                    fileName={`Invoice-${bookingsIdWise.booking_id || bookingsIdWise.id}.pdf`}
+                    style={{ textDecoration: 'none' }}
+                  >
+                    {({ blob, url, loading, error }) => (
+                      <button className="rating-button">
+                        {loading ? 'Generating Invoice...' : 'Download Invoice'}
+                      </button>
+                    )}
+                  </PDFDownloadLink>
+                ) : (
+                  <button className="rating-button" disabled>
+                    Download Invoice
+                  </button>
+                )} */}
                   </div>
+
+                  
                   <button
                     className="btn-view-less"
                     onClick={() => setOpenBookingIndex(null)}

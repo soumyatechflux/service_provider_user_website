@@ -135,8 +135,6 @@ function App() {
           <Route path="/notification-center" element={<NotificationCenter/>}/>
 
 
-
-
           {/* Login Page */}
           <Route path="/login" element={<LogInPage />} />
           <Route path="/sign-up" element={<SignUpPage/>}/>

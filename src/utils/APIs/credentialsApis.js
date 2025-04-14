@@ -20,7 +20,6 @@ const baseURL = process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL
 
 export async function SignUpAPI(data) {
   // return withAuthorization(async () => {
-    // const response = await axiosInstanceNoAuth.post("https://api-serviceprovider.techfluxsolutions.com/api/customer/register", data);
     const response = await axiosInstanceNoAuth.post(`${baseURL}/api/customer/register`, data);
     return response;
   // });
