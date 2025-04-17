@@ -9,7 +9,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
 
   useEffect(() => {
     if (isOpen && bookingId?.booking_id) {
-      fetchCancelDetails(bookingId.booking_id);
+      fetchCancelDetails(bookingId?.booking_id);
     }
   }, [isOpen, bookingId]);
 
@@ -76,13 +76,13 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
                   {cancelDetails.cancelAmount > 0 && (
                     <div className="d-flex justify-content-between mb-2">
                       <span>Cancellation Charge:</span>
-                      <span className="text-danger">₹{cancelDetails.cancelAmount}</span>
+                      <span className="text-danger">₹{cancelDetails?.cancelAmount}</span>
                     </div>
                   )}
                   {cancelDetails.refund_amount > 0 && (
                     <div className="d-flex justify-content-between">
                       <span>Refund Amount:</span>
-                      <span className="text-success">₹{cancelDetails.refund_amount}</span>
+                      <span className="text-success">₹{cancelDetails?.refund_amount}</span>
                     </div>
                   )}
                 </div>

@@ -117,8 +117,31 @@ const UpcomingTab = () => {
     fetchUpcommingBookings();
   }, []);
 
+
+
+
+
+
+
+
+
+
+  const handleConfirmBooking = () => {
+    setBookingData(null);
+    setCallRazorPay(false);
+    setCurrentModal(null);
+    setMessage("The booking has been successfully cancelled.");
+    setIsSuccess(true); 
+    setCurrentModal("success"); 
+  };
+
+
+  const [callRazorPay, setCallRazorPay] = useState(false);
+  const [BookingData, setBookingData] = useState();
+
   const handleConfirmationNext = async () => {
     setLoading(true);
+    setBookingData(null);
     const cancelDetails = {
       booking: {
         booking_id: cancelId,
@@ -140,23 +163,31 @@ const UpcomingTab = () => {
 
       setLoading(false);
 
-      if (response?.data?.success) {
-        setCurrentModal(null); // Close the modal
-        // toast.success(
-        //   response?.data?.message ||
-        //     "The booking has been successfully cancelled."
-        // );
-        setMessage(
-          response?.data?.message ||
-            "The booking has been successfully cancelled."
-        );
-        setIsSuccess(true); // Set to true for success
-        setCurrentModal("success"); // Show success modal
+
+      if (response.status === 200) {
+        // toast.success(response?.data?.message || "Successful!");
+
+        if (response?.data?.order && response?.data?.order !== null) {
+
+          setBookingData(response?.data?.order);
+          setCallRazorPay(true);
+
+        } else {
+
+          setBookingData();
+          setCallRazorPay(false);
+          handleConfirmBooking();
+
+        }
+
       } else {
+        toast.error(response.data.error_msg || "Please try again.");
         setMessage(response?.data?.message || "Failed to cancel booking!");
         setIsSuccess(false); // Set to false for error
         setCurrentModal("error"); // Optionally create an error modal
       }
+
+      
     } catch (error) {
       setLoading(false);
       setMessage(error.response?.data?.message || "Failed to cancel booking.");
@@ -165,63 +196,20 @@ const UpcomingTab = () => {
     }
   };
 
+
+
+
+
+
+
+
+
   const passDataToNext = (reason) => {
     setSelectedReason(reason);
   };
 
-  const [callRazorPay, setCallRazorPay] = useState(false);
-  const [BookingData, setBookingData] = useState();
 
-  const handlePayment = async (mod, ID) => {
-    setLoading(true);
 
-    try {
-      const body = {
-        booking: {
-          booking_id: ID,
-          payment_mode: mod,
-        },
-      };
-
-      setLoading(true);
-
-      const response = await axios.post(
-        `${process.env.REACT_APP_SERVICE_PROVIDER_USER_WEBSITE_BASE_API_URL}/api/customer/book_service`,
-
-        body,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      setLoading(false);
-
-      if (response.status === 200) {
-        // toast.success(response?.data?.message || "Successful!");
-
-        if (response?.data?.order) {
-          setBookingData(response?.data?.order);
-          setCallRazorPay(true);
-          console.log("sdjnkc6754dsgvhfrtynsdcbj");
-        } else {
-          setBookingData();
-          setCallRazorPay(false);
-        }
-      } else {
-        toast.error(response.data.error_msg || "Please try again.");
-        // setModalMessage(response.data.error_msg || "Please try again.");
-        // setShowModal(true);
-      }
-    } catch (error) {
-      setLoading(false);
-      console.error("Error:", error);
-      toast.error("An error occurred. Please try again later.");
-      // setModalMessage("An error occurred. Please try again later.");
-    }
-  };
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -945,6 +933,21 @@ const UpcomingTab = () => {
           isSuccess={isSuccess} // Pass isSuccess flag
         />
       </div>
+
+
+
+
+
+
+              {callRazorPay && BookingData && (
+                <RazorpayPayment
+                  BookingData={BookingData}
+                  callRazorPay={callRazorPay}
+                  handleConfirmBooking={handleConfirmBooking}
+                />
+              )}
+
+
     </>
   );
 };
