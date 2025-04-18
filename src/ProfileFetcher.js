@@ -38,7 +38,7 @@ const ProfileFetcher = ({confirmLogout}) => {
     };
 
     fetchProfile();
-    const interval = setInterval(fetchProfile, 3000);
+    const interval = setInterval(fetchProfile, 10000);
 
     return () => clearInterval(interval);
   }, [navigate]);

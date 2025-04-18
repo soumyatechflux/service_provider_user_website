@@ -301,17 +301,21 @@ console.log(data,"datacugbydata");
   };
 
   // const { isLoaded } = useJsApiLoader({
-  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
   // });
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY, // Your API key
     libraries: ["places"], // Add the Places library here
   });
 
   if (!isLoaded) {
     return null; // Or show a custom loader component.
   }
+
+  
+if (!isLoaded)  return <Loader />; 
+
 
   return (
     <>
@@ -578,7 +582,7 @@ console.log(data,"datacugbydata");
             {/* Modal for Editing Address */}
 
             <div>
-              {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}>
+              {/* <LoadScript googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}>
 {isEditingAddress && (
      <LocationModal
         show={isEditingAddress}
@@ -610,7 +614,7 @@ console.log(data,"datacugbydata");
                 }}
                 latitude={Number(locationData.latitude)}
                 longitude={Number(locationData.longitude)}
-                city={locationData.city}
+                city={locationData.city}  
                 district={locationData.district}
                 state={locationData.state}
                 country={locationData.country}

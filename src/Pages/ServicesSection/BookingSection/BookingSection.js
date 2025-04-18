@@ -1888,11 +1888,11 @@ useEffect(() => {
   const wordLimit = 50; // Specify the number of words to display
 
   // const { isLoaded } = useJsApiLoader({
-  //   googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
   // });
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY, // Your API key
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY, // Your API key
     libraries: ["places"], // Add the Places library here
   });
 
@@ -3890,7 +3890,7 @@ useEffect(() => {
 
                 <div className="container mt-3 mb-3">
                   {/* <LoadScript
-                    googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
+                    googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
                   >
                     <LocationModal
                       show={isAddingAddress}
@@ -3934,7 +3934,7 @@ useEffect(() => {
 
                 <div>
                   {/* <LoadScript
-                    googleMapsApiKey={process.env.REACT_APP_MAPS_API_KEY}
+                    googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_API_KEY}
                   >
                  
                       <LocationModal

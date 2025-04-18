@@ -214,7 +214,7 @@ const LocationModal = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.REACT_APP_GEOLOCATION_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}`
       );
 
       const data = await response.json();

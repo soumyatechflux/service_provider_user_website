@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
-import { GoogleMap, Marker, Polygon } from "@react-google-maps/api";
-import {  FaLocationArrow } from "react-icons/fa";
+import { GoogleMap, Marker, Polygon, useJsApiLoader } from "@react-google-maps/api";
+import { FaLocationArrow } from "react-icons/fa";
 import { toast } from "react-toastify";
 import axios from "axios";
 import Loader from "../../Loader/Loader";
@@ -23,8 +23,22 @@ const LocationModal = ({
   streetAddressLine2,
   addressToEditId,
 }) => {
-  const DefLocCP = { lat: 28.6315, lng: 77.2167 };
-  const [location, setLocation] = useState(DefLocCP);
+  // const DefLocCP = { lat: 28.6315, lng: 77.2167 };
+  // const [location, setLocation] = useState(DefLocCP);
+
+  const { isLoaded, loadError } = useJsApiLoader({
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
+    libraries: ['places']
+  });
+
+  const DEFAULT_CENTER = { lat: 28.6315, lng: 77.2167 };
+  const [location, setLocation] = useState(
+    latitude && longitude
+      ? { lat: latitude, lng: longitude }
+      : DEFAULT_CENTER
+  );
+
+
 
   const [addressDetails, setAddressDetails] = useState({
     latitude: "",
@@ -36,7 +50,7 @@ const LocationModal = ({
     postalCode: "",
     formattedAddress: "",
     landmark: "",
-    streetAddressLine2: "", 
+    streetAddressLine2: "",
   });
   const [loading, setLoading] = useState(false);
   const [mapLoading, setMapLoading] = useState(true);
@@ -107,7 +121,6 @@ const LocationModal = ({
     setMapLoading(false);
   };
 
-
   const NCR_BOUNDARIES = [
     { lat: 28.9, lng: 76.7 }, // Top-left (Gurgaon side)
     { lat: 28.9, lng: 77.8 }, // Top-right (Ghaziabad side)
@@ -177,7 +190,7 @@ const LocationModal = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.REACT_APP_GEOLOCATION_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.lat},${location.lng}&key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}`
       );
 
       const data = await response.json();
@@ -503,6 +516,27 @@ const LocationModal = ({
     }
   };
 
+
+
+
+
+
+
+
+
+
+
+  
+  if (loadError) {
+    console.error('Google Maps JS API failed to load', loadError);
+    return <div>Error loading map</div>;
+  }
+  if (!isLoaded) {
+    return <Loader />;
+  }
+
+
+
   return (
     <>
       <Modal show={show} onHide={onHide} size="lg">
@@ -542,8 +576,6 @@ const LocationModal = ({
 
             <>
               {UseMyLocation && (
-        
-
                 <GoogleMap
                   mapContainerStyle={{ height: "250px", width: "100%" }}
                   center={location}
@@ -565,18 +597,16 @@ const LocationModal = ({
                   <Polygon
                     paths={NCR_BOUNDARIES}
                     options={{
-                      fillColor: "#ADD8E6", // Light blue fill color for eligible area
-                      fillOpacity: 0.35, // Transparency
-                      strokeColor: "#0000FF", // Border color (blue)
-                      strokeOpacity: 0.8,
-                      strokeWeight: 2,
+                      fillColor: '#ADD8E6', fillOpacity: 0.35,
+                      strokeColor: '#0000FF', strokeOpacity: 0.8,
+                      strokeWeight: 2
                     }}
                   />
 
                   {/* Draggable Marker */}
                   <Marker
                     position={location}
-                    draggable={true}
+                    draggable
                     onDragEnd={handleMarkerDragEnd}
                     icon={{
                       url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Flag_%E2%80%93_Default.png",
@@ -646,8 +676,6 @@ const LocationModal = ({
                     />
                   </div>
                 )}
-
-          
 
                 <Form.Group controlId="streetAddressLine2" className="mt-2">
                   <Form.Label>Flat No. | Building Name *</Form.Label>

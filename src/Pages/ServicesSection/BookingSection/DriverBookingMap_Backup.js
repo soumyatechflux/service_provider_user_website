@@ -25,7 +25,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   const { isLoaded } =
    useJsApiLoader({
 
-    googleMapsApiKey: process.env.REACT_APP_MAPS_API_KEY,
+    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
     libraries: ["places"],
   });
 
@@ -78,7 +78,7 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GEOLOCATION_API_KEY}`
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAP_API_KEY}`
       );
       const data = await response.json();
 
