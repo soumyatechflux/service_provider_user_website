@@ -44,11 +44,15 @@
     background-color: #fff;
     border-radius: 12px;
     width: 100%;
-    max-width: 600px;
+    /* max-width: 600px; */
+    max-width: 550px;
     padding: 2.5rem;
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
     position: relative;
     animation: slideUp 0.5s ease-out;
+
+    max-height: 84vh;
+    top: 40px;
   }
   
   @keyframes slideUp {
@@ -67,7 +71,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0.5rem;
   }
   
   .review-modal-header h2 {
