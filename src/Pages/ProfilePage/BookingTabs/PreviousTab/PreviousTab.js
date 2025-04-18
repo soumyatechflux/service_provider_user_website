@@ -6,7 +6,10 @@ import axios from "axios";
 import Loader from "../../../Loader/Loader";
 import ReviewModal from "../ReviewModal/ReviewModal";
 import { PDFDownloadLink } from "@react-pdf/renderer";
-import InvoiceData from "../../Invoice/InvoiceData";
+import CustomerInvoiceData from "../../Invoice/CustomerInvoiceData";
+import { pdf } from '@react-pdf/renderer';
+import PartnerInvoiceData from "../../Invoice/PartnerInvoiceData";
+
 
 function PreviousTab() {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -22,6 +25,34 @@ function PreviousTab() {
 
   const handleModifyButton = () => {
     navigate("/my-profile");
+  };
+
+  const handleDownloadBothInvoices = async (data) => {
+    if (!data) return;
+  
+    // Generate Customer Invoice Blob
+    const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
+    const customerUrl = URL.createObjectURL(customerBlob);
+  
+    // Generate Partner Invoice Blob
+    const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+    const partnerUrl = URL.createObjectURL(partnerBlob);
+  
+    // Download Customer Invoice
+    const customerLink = document.createElement('a');
+    customerLink.href = customerUrl;
+    customerLink.download = `Customer-Invoice-${data.booking_id || data.id}.pdf`;
+    customerLink.click();
+  
+    // Download Partner Invoice
+    const partnerLink = document.createElement('a');
+    partnerLink.href = partnerUrl;
+    partnerLink.download = `Partner-Invoice-${data.booking_id || data.id}.pdf`;
+    partnerLink.click();
+  
+    // Cleanup
+    URL.revokeObjectURL(customerUrl);
+    URL.revokeObjectURL(partnerUrl);
   };
 
   const handleViewMore = async (id) => {
@@ -576,9 +607,9 @@ function PreviousTab() {
       Give Rating to Partner
     </button>
 
-    {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
+    {/* {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
       <PDFDownloadLink
-        document={<InvoiceData data={bookingsIdWise} />}
+        document={<CustomerInvoiceData data={bookingsIdWise} />}
         fileName={`Invoice-${bookingsIdWise.booking_id || bookingsIdWise.id}.pdf`}
         style={{ textDecoration: 'none' }}
       >
@@ -588,7 +619,17 @@ function PreviousTab() {
           </button>
         )}
       </PDFDownloadLink>
-    )}
+    )} */}
+
+{bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
+  <button
+    className="rating-button"
+    onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
+  >
+    Download Invoice
+  </button>
+)}
+
   </div>
 ) : (
   <div>

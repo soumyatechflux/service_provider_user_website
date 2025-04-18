@@ -105,7 +105,7 @@ const numberToWords = (num) => {
 };
 
 
-const InvoiceData = ({ data }) => {
+const CustomerInvoiceData = ({ data }) => {
   if (!data) return null;
 
 const getFormattedDate = (rawDate) => {
@@ -124,7 +124,7 @@ const getFormattedDate = (rawDate) => {
         <View style={styles.row}>
           <View style={styles.address}>
             <Text style={styles.bold}>{data?.guest_name || "Customer Name"}</Text>
-            <Text>Booking ID: {data?.booking_id || "N/A"}</Text>
+            {/* <Text>Booking ID: {data?.booking_id || "N/A"}</Text> */}
             <Text>Customer address: {data?.visit_address || "N/A"}</Text>
           </View>
           {/* <View style={styles.invoiceMeta}>
@@ -137,8 +137,8 @@ const getFormattedDate = (rawDate) => {
         <View style={styles.section}>
           <Text>Invoice number: {data?.invoice_number_customer || "N/A"}</Text>
           <Text>Invoice date: {data?.booking_date_time || "N/A"}</Text>
-          <Text>Place of supply (Name of state): {data?.state || "N/A"}</Text>
-          <Text>SAC Code: {data?.sac_code || "N/A"}</Text>
+          <Text>Place of supply (Name of state): {data?.company_to_customer?.state || "N/A"}</Text>
+          <Text>SAC Code: {data?.company_to_customer?.sac_code || "N/A"}</Text>
           <Text>Category of service: {data?.category?.category_name || "Services"}</Text>
           <Text>
             Tax is payable on reverse charge basis: {data?.reverse_charge ? "Yes" : "No"}
@@ -158,7 +158,7 @@ const getFormattedDate = (rawDate) => {
       date: data?.tax_date || 'xxx',
       description: 'Service Fees',
       qty: 1,
-      amount: data?.total_amount,
+      amount: data?.company_to_customer?.net_amount,
     },
     {
       date: data?.tax_date || 'xxx',
@@ -166,23 +166,23 @@ const getFormattedDate = (rawDate) => {
       qty: 1,
       amount: data?.sub_category?.platform_fee,
     },
-    data?.igst && {
+    data?.company_to_customer?.tax?.igst && {
       date: data?.tax_date || 'xxx',
       description: 'IGST',
       qty: '',
-      amount: data.igst,
+      amount: data?.company_to_customer?.tax?.igst,
     },
-    data?.sgst && {
+    data?.company_to_customer?.tax?.sgst && {
       date: data?.tax_date || 'xxx',
       description: 'SGST',
       qty: '',
-      amount: data.sgst,
+      amount: data?.company_to_customer?.tax?.sgst,
     },
-    data?.cgst && {
+    data?.company_to_customer?.tax?.cgst && {
       date: data?.tax_date || 'xxx',
       description: 'CGST',
       qty: '',
-      amount: data.cgst,
+      amount: data?.company_to_customer?.tax?.cgst,
     },
   ]
     .filter(Boolean) 
@@ -200,13 +200,13 @@ const getFormattedDate = (rawDate) => {
 </View>
 
 <View style={styles.totalSection}>
-  <Text>Total net amount: {formatCurrency(data?.sub_total_amount)}</Text>
-  <Text>Total Tax: {formatCurrency(data?.all_taxes)}</Text>
+  <Text>Total net amount: {formatCurrency(data?.company_to_customer?.net_amount)}</Text>
+  <Text>Total Tax: {formatCurrency(data?.company_to_customer?.gst)}</Text>
   <Text style={styles.bold}>
-    Total amount payable: {formatCurrency(data?.billing_amount)}
+    Total amount payable: {formatCurrency(data?.company_to_customer?.total_amount)}
   </Text>
   {data?.billing_amount && (
-    <Text>({numberToWords(data.billing_amount)} Rupees Only)</Text>
+    <Text>({numberToWords(data?.company_to_customer?.total_amount)} Rupees Only)</Text>
   )}
 </View>
 
@@ -223,4 +223,4 @@ const getFormattedDate = (rawDate) => {
   );
 };
 
-export default InvoiceData;
+export default CustomerInvoiceData;
