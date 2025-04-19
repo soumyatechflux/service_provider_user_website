@@ -501,28 +501,28 @@ const ModifyBooking = () => {
         if (mod === "cod") {
           // toast.info("Please confirm your booking to proceed.");
           nextStep(true);
+          return;
         }
 
         if (
           response.data.success === true &&
           response.data.message === "order success" &&
-          mod !== "cod"
+          mod !== "cod" && response?.data?.order
         ) {
-          nextStep(true);
-          return;
+          // nextStep(true);
+          // return;
+
+          setBookingData(response?.data?.order);
+          setCallRazorPay(true);
+          
         }
 
-        if (response?.data?.order) {
-          if (response.data.order?.success === false) {
-            toast.error(response.data.order?.message || "An error occurred!");
-          } else {
-            setBookingData(response?.data?.order);
-            setCallRazorPay(true);
-          }
-        } else {
+     else {
           setBookingData(null);
           setCallRazorPay(false);
         }
+
+        
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
