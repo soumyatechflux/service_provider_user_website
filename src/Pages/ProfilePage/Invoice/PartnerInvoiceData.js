@@ -99,7 +99,7 @@ const numberToWords = (num) => {
     str += (Number(nNum[4]) !== 0) ? (a[Number(nNum[4])] || b[nNum[4][0]] + ' ' + a[nNum[4][1]]) + ' Hundred ' : '';
     str += (Number(nNum[5]) !== 0) ? ((str !== '') ? 'and ' : '') +
       (a[Number(nNum[5])] || b[nNum[5][0]] + ' ' + a[nNum[5][1]]) + ' ' : '';
-    return str.trim() + 'Rupees Only';
+    return str.trim();
   };
 
   return inWords(Math.floor(num));
