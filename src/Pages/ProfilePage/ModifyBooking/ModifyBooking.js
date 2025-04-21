@@ -245,8 +245,6 @@ const ModifyBooking = () => {
           // is_secure_fee:
           //  service?.category_id === 2 ? isSecureFeeChecked : false,
 
-
-
           number_of_people: SelectedObjectOfPeople || {},
           guest_name: BookingForGuestName || "Guest",
           instructions: specialRequests || "",
@@ -281,12 +279,9 @@ const ModifyBooking = () => {
                   }))
               : [],
 
-
-              ...(service?.id === 9 && selectedTime
-                ? { visit_time: selectedTime }
-                : {}),
-
-                
+          ...(service?.id === 9 && selectedTime
+            ? { visit_time: selectedTime }
+            : {}),
         },
       };
 
@@ -507,22 +502,19 @@ const ModifyBooking = () => {
         if (
           response.data.success === true &&
           response.data.message === "order success" &&
-          mod !== "cod" && response?.data?.order
+          mod !== "cod" &&
+          response?.data?.order
         ) {
           // nextStep(true);
           // return;
 
           setBookingData(response?.data?.order);
           setCallRazorPay(true);
-          
-        }
-
-     else {
+        } else {
+          nextStep(true);
           setBookingData(null);
           setCallRazorPay(false);
         }
-
-        
       } else {
         // toast.error(response.data.error_msg || "Please try again.");
         // setModalMessage(response.data.error_msg || "Please try again.");
