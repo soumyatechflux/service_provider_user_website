@@ -160,12 +160,12 @@ const getFormattedDate = (rawDate) => {
       qty: 1,
       amount: data?.company_to_customer?.net_amount,
     },
-    {
-      date: data?.tax_date || 'xxx',
-      description: 'Platform Fees',
-      qty: 1,
-      amount: data?.sub_category?.platform_fee,
-    },
+    // {
+    //   date: data?.tax_date || 'xxx',
+    //   description: 'Platform Fees',
+    //   qty: 1,
+    //   amount: data?.sub_category?.platform_fee,
+    // },
     data?.company_to_customer?.tax?.igst && {
       date: data?.tax_date || 'xxx',
       description: 'IGST',
