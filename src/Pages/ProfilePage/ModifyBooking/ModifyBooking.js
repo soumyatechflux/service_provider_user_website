@@ -236,7 +236,7 @@ const ModifyBooking = () => {
       const body = {
         booking: {
           voucher_code: "",
-          modify: false,
+          modify: true,
           payment_mode: DefaultDataOfBooking?.payment_mode,
           booking_id: service?.booking_id || "",
           // category_id: service?.category_id || "",
