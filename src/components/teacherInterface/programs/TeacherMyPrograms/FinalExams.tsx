@@ -1,29 +1,29 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {  useQuery } from "@tanstack/react-query";
 import ProgramProps from "../../../../interfaces/ProgramProps";
 import { getProgramFinalExams } from "../../../helpers/getProgramFinalExams";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import FinalExamCard from "./FinalExamCard";
-import { Box, Button, CircularProgress, Dialog, Stack, SvgIcon, Typography } from "@mui/material";
-import { setProgramFinalExam } from "../../../helpers/setProgramFinalExam";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
-import { db } from "../../../../firebase/firebaseConfig";
+import { Box, Button,Stack, SvgIcon, Typography } from "@mui/material";
+// import { setProgramFinalExam } from "../../../helpers/setProgramFinalExam";
+// import { collection, onSnapshot, query, where } from "firebase/firestore";
+// import { db } from "../../../../firebase/firebaseConfig";
 import { AuthContext } from "../../../authentication/auth/AuthProvider";
 import FinalExamCardEdit from "./FinalExamCardEdit";
+import AddFinalExamModal from "./AddFinalExamModal";
+import { FinalExamProps } from "../../../../interfaces/FinalExamProps";
 
 export default function FinalExams( program: ProgramProps ) {
-
-    const queryClient = useQueryClient()
+    const [openModal, setOpenModal] = useState(false);
+    // const queryClient = useQueryClient()
 
     //@ts-expect-error context
     const { userData } = useContext(AuthContext)
 
     const [edit, setEdited] = useState('')
-    const [loading, setLoading] = useState(false)
-
+    // const [loading, setLoading] = useState(false)
+    const [selectedExam, setSelectedExam] = useState<FinalExamProps | null>(null);
     const { data: finalExams, isLoading: isFinalExamsLoading } = useQuery({
         queryKey: ['finalExams', program?._id],
-        // queryFn: () => getProgramFinalExams(String(program._id))
-        // enabled: !!program?._id,
         queryFn: () => {
             if (!program?._id) {
                 throw new Error("Program ID is undefined");
@@ -32,64 +32,65 @@ export default function FinalExams( program: ProgramProps ) {
         },
 
     })
-    console.log("PROGRAM ID FINAL EXAM",program?._id)
+    console.log("PROGRAM ID FINAL EXAM",program?._id, userData?._id)
+    console.log("Final Exam",finalExams)
   
-    useEffect(() => {
+    // useEffect(() => {
 
-        const finalExamsRef = collection(db, 'finalExams')
-        const queryFinalExams = query(finalExamsRef, where('programId', '==', program?._id))
+    //     const finalExamsRef = collection(db, 'finalExams')
+    //     const queryFinalExams = query(finalExamsRef, where('programId', '==', program?._id))
 
-        const unsub = onSnapshot(queryFinalExams, async () => {
-            await queryClient.invalidateQueries({ queryKey: ['finalExams', program?._id] })
-        })
+    //     const unsub = onSnapshot(queryFinalExams, async () => {
+    //         await queryClient.invalidateQueries({ queryKey: ['finalExams', program?._id] })
+    //     })
 
-        return () => {
-            unsub()
-        }
-        //eslint-disable-next-line
-    }, [])
+    //     return () => {
+    //         unsub()
+    //     }
+    //     //eslint-disable-next-line
+    // }, [])
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const programsRef = collection(db, 'programs')
-        const queryPrograms = query(programsRef, where('teacherId', '==', program?.teacherId))
+    //     const programsRef = collection(db, 'programs')
+    //     const queryPrograms = query(programsRef, where('teacherId', '==', program?.teacherId))
 
-        const unsub = onSnapshot(queryPrograms, async () => {
-            await queryClient.invalidateQueries({ queryKey: ['teacherPrograms', userData?._id] })
-        })
+    //     const unsub = onSnapshot(queryPrograms, async () => {
+    //         await queryClient.invalidateQueries({ queryKey: ['teacherPrograms', userData?._id] })
+    //     })
 
-        return () => {
-            unsub()
-        }
-        //eslint-disable-next-line
-    }, [])
+    //     return () => {
+    //         unsub()
+    //     }
+    //     //eslint-disable-next-line
+    // }, [])
 
    
-    const sortedVersions = program?.finalExams
-    ? Object.keys(program?.finalExams).sort((a, b) => Number(a.split(" ")[1]) - Number(b.split(" ")[1]))
-    : [];
+    // const sortedVersions = program?.finalExams
+    // ? Object.keys(program?.finalExams).sort((a, b) => Number(a.split(" ")[1]) - Number(b.split(" ")[1]))
+    // : [];
+
+    // console.log("SORTED VERSION", program)
 
     // const sortedVersions = Object.keys(program?.finalExams).sort((a, b) => Number(a.split(" ")[1]) - Number(b.split(" ")[1]))
 
     // const sortedVersions = Object.keys(program?.finalExams).sort((a, b) => Number(a.split(" ")[1]) - Number(b.split(" ")[1]))
 
-    const displayedFinalExams = sortedVersions.map((version: string) => {
-        //@ts-expect-error program
-        const versionExam = finalExams?.find(exam => exam?.id === program?.finalExams[version])
+    const displayedFinalExams = () => {
+      
+    if (!finalExams || finalExams.length === 0) return <p>No exams available.</p>;
+        return <FinalExamCard setEdited={setEdited} program={program} finalExam={finalExams} selectedExam={selectedExam} setSelectedExam={setSelectedExam} />
+    }
 
-        if (versionExam) return <FinalExamCard key={version} setEdited={setEdited} program={program} version={version} finalExam={versionExam} />
-        return <></>
-    })
-
-    const { mutate } = useMutation({
-        onMutate: () => {
-            setLoading(true)
-        },
-        onSettled: () => {
-            setLoading(false)
-        },
-        mutationFn: (version: string) => setProgramFinalExam(version, program)
-    })
+    // const { mutate } = useMutation({
+    //     onMutate: () => {
+    //         setLoading(true)
+    //     },
+    //     onSettled: () => {
+    //         setLoading(false)
+    //     },
+    //     mutationFn: () => setProgramFinalExam(program)
+    // })
 
     if (isFinalExamsLoading) return <></>
     else return (
@@ -136,25 +137,20 @@ export default function FinalExams( program: ProgramProps ) {
                         </svg>
                     </SvgIcon>
                     <Typography
-                        onClick={() => {
-                            //@ts-expect-error version
-                            if (program?.finalExams['Version 1']?.length === 0) {
-                                mutate('Version 1')
-                            }
-                            //@ts-expect-error version
-                            else if (program?.finalExams['Version 2']?.length === 0) {
-                                mutate('Version 2')
-                            }
-                            //@ts-expect-error version
-                            else if (program?.finalExams['Version 3']?.length === 0) {
-                                mutate('Version 3')
-                            }
-                        }}
-                        fontFamily='Inter'
-                        fontSize={14}
-                    >
-                        Add New Exam
-                    </Typography>
+                onClick={() => setOpenModal(true)} // Open modal
+                fontFamily="Inter"
+                fontSize={14}
+                sx={{ cursor: "pointer", color: "#" }}
+            >
+                Add New Exam
+            </Typography>
+
+            {/* AddFinalExamModal */}
+            <AddFinalExamModal
+                program={program}
+                open={openModal}
+                handleClose={() => setOpenModal(false)}
+            />
                 </Button>
             </Stack>
             <Stack
@@ -163,30 +159,25 @@ export default function FinalExams( program: ProgramProps ) {
                 justifyContent='center'
                 gap={2}
             >
-                {displayedFinalExams}
+                {displayedFinalExams()}
             </Stack>
             {
                 edit !== '' &&
                 //@ts-expect-error exam
                     finalExams?.find(exam => exam?._id === edit) ?
                     <FinalExamCardEdit
-                        version={
-                            sortedVersions.find((version: string) => {
-                                //@ts-expect-error program
-                                program?.finalExams[version] === edit
-                            })
-                        }
                         program={program}
                         setEdited={setEdited}
+                        selectedExam={selectedExam}
                          //@ts-expect-error exam
                         finalExam={finalExams?.find(exam => exam?._id === edit)}
                     />
                     :
                     <></>
             }
-            <Dialog open={loading} PaperProps={{ style: { background: 'transparent', backgroundColor: 'transparent', overflow: 'hidden', boxShadow: 'none' } }}>
+            {/* <Dialog open={loading} PaperProps={{ style: { background: 'transparent', backgroundColor: 'transparent', overflow: 'hidden', boxShadow: 'none' } }}>
                 <CircularProgress size='46px' sx={{ color: '#FF7E00' }} />
-            </Dialog>
+            </Dialog> */}
         </Box>
     )
 }

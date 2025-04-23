@@ -18,7 +18,6 @@ export default function AddCourseModal({ program, open, handleClose }: CourseAdd
     const [courseName, setCourseName] = useState("");
     const [error,setError]=useState("");
     const [reset,setReset]=useState("");
-
     async function addCourse(course: { programId: string; courseName: string }) {
 
     
@@ -72,7 +71,8 @@ export default function AddCourseModal({ program, open, handleClose }: CourseAdd
     };
    
     return (
-        <Modal open={open} onClose={handleClose}>
+        <>
+             <Modal open={open} onClose={handleClose}>
             <Box
                 sx={{
                     position: "absolute",
@@ -111,6 +111,11 @@ export default function AddCourseModal({ program, open, handleClose }: CourseAdd
                     {reset && !error && <Alert severity="success">{reset}</Alert>}
                 </Box>
             </Box>
+            
         </Modal>
+
+       
+        </>
+       
     );
 }

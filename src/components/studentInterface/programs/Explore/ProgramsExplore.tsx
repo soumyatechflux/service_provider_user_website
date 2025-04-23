@@ -186,7 +186,7 @@ export default function ProgramsExplore({ setTab }: ProgramsExplore) {
         if (pageShowed !== 'home') {
             // const programFound = explorePrograms?.find(program => program.id === pageShowed)
             const programFound = explorePrograms?.find((program: ProgramProps) => program.id === pageShowed);
-
+            console.log("pageShowed",pageShowed)
             if (!programFound) setTab('Explore')
         }
         //eslint-disable-next-line

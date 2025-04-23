@@ -111,7 +111,7 @@ function EditFiveOptionQuestion({ program, finalExam, index, question }) {
                             inputProps={{ style: { textAlign: 'center', fontSize: 22 } }}
                             value={question.question}
                             onChange={(e) => {
-                                queryClient.setQueryData(['finalExamEdit', finalExam?.id ?? '', program.id], (oldData: unknown) => {
+                                queryClient.setQueryData(['finalExamEdit', finalExam?._id ?? '', program._id], (oldData: unknown) => {
                                     //@ts-expect-error oldata
                                     const newData = [...oldData]
                                     const oldQuestion = newData[index]

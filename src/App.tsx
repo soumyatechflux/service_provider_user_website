@@ -35,6 +35,7 @@
 
 // export default App
 
+import "bootstrap/dist/css/bootstrap.min.css";
 
 import { Navigate, Route, Routes } from "react-router-dom"
 import { Suspense, lazy, useState } from "react"

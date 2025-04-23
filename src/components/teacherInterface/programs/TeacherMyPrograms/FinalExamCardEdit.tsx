@@ -1,71 +1,171 @@
+
 import { Box, Stack, Button, SvgIcon, Typography, Alert } from "@mui/material";
-import { useMemo, memo, lazy, createContext, Suspense, useState } from "react";
+import { useMemo, memo, lazy, createContext, Suspense, useState, useCallback } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { setProgramFinalExam } from "../../../helpers/setProgramFinalExam";
+import axios from "axios";
+import { QuestionProps } from "../../../../interfaces/QuestionProps";
+import Loader from "../../../Loader";
 // import { setProgramFinalExam } from "../../../helpers/setProgramFinalExam";
 const EditOptionQuestion = lazy(() => import("./EditOptionQuestionFinalExam"))
-const EditSelectQuestion = lazy(() => import("./EditSelectQuestionFinalExam"))
-const EditFiveOptionQuestion = lazy(() => import("./EditFiveOptionQuestionFinalExam"))
+// const EditSelectQuestion = lazy(() => import("./EditSelectQuestionFinalExam"))
+// const EditFiveOptionQuestion = lazy(() => import("./EditFiveOptionQuestionFinalExam"))
 
 //@ts-expect-error context
 export const EditFinalExamContext = createContext()
 
 //@ts-expect-error anytype
-function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
+function FinalExamCardEdit({ program, setEdited, finalExam,selectedExam }) {
+    console.log("SET EDITED",setEdited)
+    console.log("SELECTED EXAM",selectedExam)
+    const [loading,setLoading]=useState(false)
     const queryClient = useQueryClient()
     const [selectedQuestion, setSelectedQuestion] = useState(-1)
-    const [duration, setDuration] = useState(parseInt(finalExam.duration.split(' ')[0]))
+    const [duration, setDuration] = useState(() => {
+        if (!finalExam?.duration) return 0; // ✅ Default value if duration is undefined
+        return parseInt(finalExam.duration.split(" ")[0]);
+    });
+    
 
     const [error, setError] = useState('')
 
-    const { data: questions } = useQuery({
-        queryKey: ['finalExamEdit', finalExam?.id, program?.id],
-        queryFn: () => {
-            return finalExam?.questions.slice()
+    const fetchQuestions = async (finalExamId: string) => {
+        const token = sessionStorage.getItem("token");
+        const role = sessionStorage.getItem("role");
+    
+        const BASE_URL = import.meta.env.VITE_APP_ENGME_LMS_PORTAL_BASE_API_URL;
+    
+        try {
+            const response = await axios.get(`${BASE_URL}/${role}/questions/${finalExamId}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                },
+            });
+    
+            console.log("Question Response:", response?.data?.data);
+            return response?.data?.data || []; // Ensure array return
+        } catch (error) {
+            console.error("Error fetching questions:", error);
+            return []; // Return empty array to prevent crashes
         }
-    })
-
-    const { mutate } = useMutation({
-        onMutate: () => {
-            const previousData = queryClient.getQueryData(['finalExams', program?.id])
-
-            queryClient.setQueryData(['finalExams', program?.id], (oldData: []) => {
-                //@ts-expect-error lesson
-                const filteredArray = oldData.slice().filter(finalExamData => finalExamData?.id !== finalExam?.id)
-                const newArray = [...filteredArray, finalExam ? { ...finalExam, questions } : { title: 'FinalExam', questions }]
-
-                return newArray
-            })
-
-            return () => queryClient.setQueryData(['finalExams', program?.id], previousData)
+    };
+    
+    const { data: questions = [] } = useQuery({
+        queryKey: ["finalExamEdit", selectedExam?._id, program?._id], // Ensure keys are correct
+        queryFn: () => {
+            if (!selectedExam?._id) {
+                throw new Error("Final Exam ID is missing");
+            }
+            return fetchQuestions(selectedExam._id);
         },
-        mutationFn: () => setProgramFinalExam(version, program, finalExam?.id, questions, duration)
-    })
+        enabled: !!selectedExam?._id, // Prevents fetching when ID is missing
+    });
+    
+    console.log("Final Exam Card Edit QUESTION", questions);
+    
+    console.log("Final Exam Card Edit QUESTION",questions)
+    // const { mutate } = useMutation({
 
-    // const memoizedQuestions = useMemo(() => questions, [questions])
+        
+    //     onMutate: async () => {
+    //         const previousData = queryClient.getQueryData(['finalExams', program?._id]);
 
-    //@ts-expect-error question
-    const displayedQuestions = useMemo(() => questions?.map((question, index) => (
-        question.type === 'options' ?
-            <Suspense key={index}>
-                <EditOptionQuestion program={program} finalExam={finalExam} index={index} question={question} key={index} />
-            </Suspense>
-            :
-            question.type === 'fiveOptions' ?
-                <Suspense>
-                    <EditFiveOptionQuestion program={program} finalExam={finalExam} index={index} question={question} key={index} />
-                </Suspense>
-                :
-                <Suspense key={index}>
-                    <EditSelectQuestion program={program} finalExam={finalExam} index={index} question={question} key={index} />
-                </Suspense>
-        //eslint-disable-next-line
-    )), [questions])
+    //         console.log("hello");
+    //         console.log("Question",questions)
+    
+    //         queryClient.setQueryData(['finalExams', program?._id], (oldData: unknown) => {
+    //             if (!Array.isArray(oldData)) return [];
+    
+    //             const filteredArray = oldData.filter(finalExamData => finalExamData?.id !== finalExam?.id);
+    //             return [
+    //                 ...filteredArray,
+    //                 finalExam ? { ...finalExam, questions } : { title: "FinalExam", questions },
+    //             ];
+    //         });
+    
+    //         return () => queryClient.setQueryData(['finalExams', program?._id], previousData);
+    //     },
+    //     mutationFn: () => setProgramFinalExam(program, questions, duration, selectedExam),
+    // });
+    
+
+    const mutation = useMutation({
+        mutationFn: () => setProgramFinalExam(program, questions, duration, selectedExam,setLoading),
+    
+        onMutate: async () => {
+            const previousData = queryClient.getQueryData(['finalExams', program?._id]);
+    
+            console.log("hello");
+            console.log("Question", questions);
+    
+            queryClient.setQueryData(['finalExams', program?._id], (oldData: unknown) => {
+                if (!Array.isArray(oldData)) return [];
+    
+                const filteredArray = oldData.filter(finalExamData => finalExamData?.id !== finalExam?.id);
+                return [
+                    ...filteredArray,
+                    finalExam ? { ...finalExam, questions } : { title: "FinalExam", questions },
+                ];
+            });
+    
+            return () => queryClient.setQueryData(['finalExams', program?._id], previousData);
+        },
+    });
+    
+    const handleAddQuestion = useCallback(() => {
+        // Create a default question object
+        const defaultQuestion = {
+            question: "",
+            options: [
+                { option: "", is_correct: true },
+                { option: "", is_correct: false },
+                { option: "", is_correct: false },
+                { option: "", is_correct: false },
+            ],
+            type: "options",
+        };
+
+        // Update query client data
+        queryClient.setQueryData(
+            ["finalExamEdit", selectedExam?._id, program?._id],
+            
+            (oldData: any[]) => {
+                const newData = oldData ? [...oldData, defaultQuestion] : [defaultQuestion];
+                return newData;
+            }
+        );
+
+        // Update selected question to the new question
+        setSelectedQuestion(questions.length);
+
+        // Optional: Refetch to ensure data consistency
+        // refetch();
+    }, [queryClient, selectedExam?._id, program?._id, questions.length]);
+    
+    
+    
+    const displayedQuestions = useMemo(() => {
+        if (!questions || !Array.isArray(questions)) return []; // ✅ Prevents undefined errors
+      
+        return questions.map((question: QuestionProps, index: number) => (
+          <Suspense key={index}>
+            <EditOptionQuestion 
+              program={program} 
+              finalExam={selectedExam} 
+              index={index} 
+              question={question} 
+            />
+          </Suspense>
+        ));
+      }, [questions, selectedQuestion]); // ✅ Add `selectedQuestion` dependency
+      
+    
 
     const canSave =
         questions?.length > 0
             ?
-            //@ts-expect-error question
+            //@ts-expect-error questionnpm i
             !(questions?.find(question => {
                 if (question?.type === 'options') {
                     return question?.question?.length === 0 || question?.options[0]?.length === 0 || question?.options[1]?.length === 0 || question?.options[2]?.length === 0 || question?.options[3]?.length === 0
@@ -82,6 +182,10 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
 
     // const contextValue = useMemo(() => ({ handleQuestionChange }), [handleQuestionChange]);
 
+
+    if(loading){
+        return <Loader/>
+    }
     return (
 
         <Box
@@ -96,7 +200,7 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
             <div className='flex flex-row items-center justify-center gap-4 ml-auto'>
                 <p className='font-[Inter] font-semibold text-base'>Duration: </p>
                 <input
-                    value={duration}
+                    value={questions?.duration}
                     onChange={(e) => setDuration(parseInt(e.target.value))}
                     placeholder="Duration in Minutes"
                     type="number"
@@ -163,6 +267,7 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
                         </Button>
                     </Stack>
                 }
+
                 <Button
                     sx={{
                         background: 'linear-gradient(95deg, #226E9F 5.94%, #6A9DBC 95.69%)',
@@ -171,7 +276,6 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
                         fontSize: 18,
                         textTransform: 'none',
                         fontWeight: 500,
-                        border: '1px solid linear-gradient(95deg, #226E9F 5.94%, #6A9DBC 95.69%)',
                         borderRadius: '8px',
                         '&:hover': {
                             background: 'linear-gradient(95deg, #226E9F 5.94%, #6A9DBC 95.69%)',
@@ -185,22 +289,16 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
                         width: '160px',
                         alignSelf: 'flex-end'
                     }}
-                    onClick={() => {
-                        setSelectedQuestion(prev => prev + 1)
-                        queryClient.setQueryData(['finalExamEdit', finalExam?.id, program.id], (oldData: unknown) => {
-                            //@ts-expect-error oldata
-                            const newData = oldData ? [...oldData, { correctOption: '0', question: '', options: ['', '', '', ''], type: 'options' }] : [{ correctOption: '0', question: '', options: ['', '', '', ''], type: 'options' }]
-                            return newData
-                        })
-                    }}
+                    onClick={handleAddQuestion}
                 >
                     <SvgIcon sx={{ fontSize: 20, fontWeight: 400 }}>
                         <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" viewBox="0 0 19 19" fill="none">
-                            <path fillRule="evenodd" clipRule="evenodd" d="M8.17479 0H10.8252C11.4319 0 11.9109 0.478992 11.9109 1.05378V7.12101H17.9462C18.521 7.12101 19 7.6 19 8.17479V10.8252C19 11.4319 18.521 11.9109 17.9462 11.9109H11.9109V17.9462C11.9109 18.521 11.4319 19 10.8252 19H8.17479C7.6 19 7.12101 18.521 7.12101 17.9462V11.9109H1.05378C0.478992 11.9109 0 11.4319 0 10.8252V8.17479C0 7.6 0.478992 7.12101 1.05378 7.12101H7.12101V1.05378C7.12101 0.478992 7.6 0 8.17479 0Z" fill="white" />
+                            <path d="M9.5 0V19M0 9.5H19" stroke="white" strokeWidth="2" />
                         </svg>
                     </SvgIcon>
                     <Typography noWrap fontFamily='Inter' fontSize={14}>Add Question</Typography>
                 </Button>
+
             </Stack>
             <Stack
                 flex={1}
@@ -265,14 +363,15 @@ function FinalExamCardEdit({ version, program, setEdited, finalExam }) {
                         onClick={() => {
                             if (canSave) {
                                 setEdited('')
-                                mutate()
+                               mutation.mutate()
                             }
                             else {
                                 setError('Please Enter All Details!')
                             }
                         }}
+                        disabled={mutation.isPending} // Disable button while loading
                     >
-                        Confirm
+                        {mutation.isPending ? "confirming..." : "Confirm"}
                     </Button>
                 </Stack>
             </Stack>

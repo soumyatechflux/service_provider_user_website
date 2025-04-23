@@ -3,6 +3,13 @@ import { getTeachers } from "../../../helpers/getTeachers";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 
+
+interface TeacherPrompts{
+    name:string
+    title:string
+    _id:string
+}
+
 export default function StudentInstructors({ disabled }: { disabled?: boolean }) 
 {
     const navigate = useNavigate()
@@ -44,9 +51,9 @@ export default function StudentInstructors({ disabled }: { disabled?: boolean })
                 py={2}
                 gap={{xs: 4, sm: 6, lg: 12}}
             >
-                {teachers?.map((teacher) => (
+                {teachers?.map((teacher :TeacherPrompts) => (
                     <Stack
-                        key={teacher.id}
+                        key={teacher._id}
                         direction='column'
                         gap={1}
                         alignItems='center'
@@ -57,7 +64,7 @@ export default function StudentInstructors({ disabled }: { disabled?: boolean })
                                 backgroundColor: '#fcfcfc',
                             }
                         }}
-                        onClick={() => !disabled && navigate(`/teacherprofile/${teacher.id}`)}
+                        onClick={() => !disabled && navigate(`/teacherprofile/${teacher._id}`)}
                     >
                         {/*//@ts-expect-error image */}
                         <Avatar src={teacher?.image} sx={{ width: {xs: 50, sm: 65, lg: 81}, height: {xs: 50, sm: 65, lg: 81} }} />
@@ -67,7 +74,6 @@ export default function StudentInstructors({ disabled }: { disabled?: boolean })
                             fontSize={18}
                             textAlign='center'
                         >
-                            {/*//@ts-expect-error image */}
                             {teacher?.name}
                         </Typography>
                         <Typography
@@ -76,7 +82,6 @@ export default function StudentInstructors({ disabled }: { disabled?: boolean })
                             fontSize={14}
                             textAlign='center'
                         >
-                            {/*//@ts-expect-error image */}
                             {teacher?.title}
                         </Typography>
                     </Stack>
