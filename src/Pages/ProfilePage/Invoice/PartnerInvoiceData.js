@@ -1,7 +1,7 @@
 
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
-import React from 'react';
+import { Document, Image, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
 import { format, parse } from 'date-fns';
+import React from 'react';
 
 const styles = StyleSheet.create({
   page: {
@@ -27,6 +27,9 @@ const styles = StyleSheet.create({
   address: {
     width: '50%',
     paddingRight: 10,
+  },
+  smallText: {
+    fontSize: 8, // or any size you prefer
   },
   invoiceMeta: {
     width: '50%',
@@ -72,6 +75,19 @@ const styles = StyleSheet.create({
     fontSize: 8,
     borderTop: '1 solid #000',
     paddingTop: 4,
+  },
+  signatureContainer: {
+    alignItems: 'flex-end',
+    marginTop: 20,
+  },
+  signatureImage: {
+    width: 100,
+    height: 50,
+    marginBottom: 5,
+  },
+  signatureText: {
+    fontSize: 10,
+    textAlign: 'right',
   },
 });
 const formatCurrency = (value) => {
@@ -126,7 +142,7 @@ const getFormattedDate = (rawDate) => {
           <View style={styles.address}>
             <Text style={styles.bold}>{data?.guest_name || "Customer Name"}</Text>
             {/* <Text>Booking ID: {data?.booking_id || "N/A"}</Text> */}
-            <Text>Customer address: {data?.visit_address || "N/A"}</Text>
+            <Text  style={styles.smallText}>Address: {data?.visit_address || "N/A"}</Text>
           </View>
           <View style={styles.invoiceMeta}>
             <Text>Invoice issued by {data?.issuer_name || " Servyo Powered by Allify Home Solutions Private Limited"}</Text>
@@ -137,7 +153,7 @@ const getFormattedDate = (rawDate) => {
 
         <View style={styles.section}>
           <Text>Invoice number: {data?.invoice_number_partner || "N/A"}</Text>
-          <Text>Invoice date: {data?.booking_date_time || "N/A"}</Text>
+          <Text>Invoice date: {data?.booking_date_time?.split(',').slice(0, 2).join(',') || "N/A"}</Text>
           <Text>Place of supply (Name of state): {data?.state_customer || "N/A"}</Text>
           <Text>SAC Code: {data?.partner_to_customer?.sac_code || "N/A"}</Text>
           {/* <Text>Category of service: {data?.category?.category_name || "Services"}</Text> */}
@@ -211,7 +227,13 @@ const getFormattedDate = (rawDate) => {
   )}
 </View>
 
-        <Text style={styles.signature}>Authorized Signature</Text>
+<View style={styles.signatureContainer}>
+    <Image
+      style={styles.signatureImage}
+      src="/Signature/Signature.jpg"
+    />
+    <Text style={styles.signatureText}>Authorized Signature</Text>
+  </View>
 
         <Text style={styles.footer}>
         Allify Home Solutions Private Limited / GST: xxxxx

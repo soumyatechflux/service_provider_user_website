@@ -41,13 +41,13 @@ function PreviousTab() {
     // Download Customer Invoice
     const customerLink = document.createElement('a');
     customerLink.href = customerUrl;
-    customerLink.download = `Customer-Invoice-${data.booking_id || data.id}.pdf`;
+    customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
     customerLink.click();
   
     // Download Partner Invoice
     const partnerLink = document.createElement('a');
     partnerLink.href = partnerUrl;
-    partnerLink.download = `Partner-Invoice-${data.booking_id || data.id}.pdf`;
+    partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
     partnerLink.click();
   
     // Cleanup
@@ -586,58 +586,51 @@ function PreviousTab() {
 
 
 
-{bookingsIdWise?.booking_status === "completed" ? (
+{(bookingsIdWise?.booking_status === "completed" || bookingsIdWise?.booking_status === "cancelled") && (
   <div>
-    <button
-      className="rating-button"
-      onClick={() =>
-        handleHelpCentreButtonClick(
-          bookingsIdWise.booking_id,
-          bookingsIdWise?.sub_category?.sub_category_name
-        )
-      }
-    >
-      Raise a Ticket
-    </button>
+    {bookingsIdWise?.booking_status === "completed" && (
+      <>
+        <button
+          className="rating-button"
+          onClick={() =>
+            handleHelpCentreButtonClick(
+              bookingsIdWise.booking_id,
+              bookingsIdWise?.sub_category?.sub_category_name
+            )
+          }
+        >
+          Raise a Ticket
+        </button>
 
-    <button
-      className="rating-button"
-      onClick={handleRatingButtonClick}
-    >
-      Give Rating to Partner
-    </button>
+        <button
+          className="rating-button"
+          onClick={handleRatingButtonClick}
+        >
+          Give Rating to Partner
+        </button>
+      </>
+    )}
 
-    {/* {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
-      <PDFDownloadLink
-        document={<CustomerInvoiceData data={bookingsIdWise} />}
-        fileName={`Invoice-${bookingsIdWise.booking_id || bookingsIdWise.id}.pdf`}
-        style={{ textDecoration: 'none' }}
+    {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
+      <button
+        className="rating-button"
+        onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
       >
-        {({ blob, url, loading, error }) => (
-          <button className="rating-button">
-            {loading ? 'Generating Invoice...' : 'Download Invoice'}
-          </button>
-        )}
-      </PDFDownloadLink>
-    )} */}
-
-{bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
-  <button
-    className="rating-button"
-    onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
-  >
-    Download Invoice
-  </button>
+        Download Invoice
+      </button>
+    )}
+  </div>
 )}
 
-  </div>
-) : (
+{bookingsIdWise?.booking_status !== "completed" &&
+ bookingsIdWise?.booking_status !== "cancelled" && (
   <div>
     <button className="rating-button disabled" disabled>
       Rating Unavailable
     </button>
   </div>
 )}
+
 
           
                   </div>
