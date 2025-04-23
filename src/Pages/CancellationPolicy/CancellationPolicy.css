@@ -1,0 +1,85 @@
+/* Container for the cancellation policy page */
+.cp-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Header section with a gradient background */
+  .cp-header {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .cp-header h1 {
+    color: white;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  
+  /* Main content area with a clean background and subtle shadow */
+  .cp-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .cp-section {
+    margin-bottom: 30px;
+  }
+  
+  .cp-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .cp-section h3 {
+    color: #2d3748;
+    font-size: 24px;
+    margin: 0 0 15px 0;
+  }
+  
+  .cp-section p,
+  .cp-section ul {
+    color: #4a5568;
+    line-height: 1.6;
+    font-size: 16px;
+    margin: 0;
+  }
+  
+  .cp-section ul {
+    padding-left: 20px;
+    list-style-type: disc;
+  }
+  
+  .cp-section ul li {
+    margin-bottom: 10px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .cp-container {
+      padding: 15px;
+    }
+  
+    .cp-header {
+      padding: 30px 15px;
+    }
+  
+    .cp-header h1 {
+      font-size: 28px;
+    }
+  
+    .cp-content {
+      padding: 20px;
+    }
+  
+    .cp-section h3 {
+      font-size: 20px;
+    }
+  }
+  

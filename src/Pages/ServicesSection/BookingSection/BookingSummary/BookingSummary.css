@@ -1,0 +1,131 @@
+.booking-summary-container {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background: #f9f9f9;
+  }
+  
+  .booking-summary-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .booking-summary-label{
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 18px !important;
+    font-weight: 600;
+  }
+  .booking-summary-header button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+    padding: 0px;
+  }
+  
+  .booking-summary-header h2 {
+    font-size: 20px;
+    margin: 0;
+  }
+  
+  .booking-summary-details,
+  .fare-breakdown-section,
+  .additional-details-section {
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .booking-detail-card p,
+  .fare-breakdown-card p,
+  .additional-details-card p {
+    margin: 5px 0;
+  }
+  .booking-detail-card{
+    display: flex
+    ;
+        flex-direction: column;
+        margin-bottom: 10px;
+  }
+  .offers-card {
+    display: flex;
+    justify-content: space-between;
+    /* align-items: baseline; */
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .offer-apply-button {
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  .fare-breakdown-div{
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 7px;
+  }
+  .offer-apply-button:hover {
+    background: #388e3c;
+  }
+  
+  .fare-breakdown-card {
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
+
+  }
+  
+  .fare-saving-message {
+    color: #4caf50;
+    font-size: 14px;
+    /* font-weight: bold; */
+    
+  }
+  .fare-saving-message-div{
+    background-color: #dfefe0;
+    margin-top: 10px;
+    border-radius: 5px;
+    padding: 5px;
+  }
+  
+  .booking-summary-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+  
+  .estimated-fare {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .checkout-button {
+    background: #6200ea;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .checkout-button:hover {
+    background: #4a00b0;
+  }
+  

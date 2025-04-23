@@ -1,0 +1,73 @@
+.location-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.95);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .location-content {
+    width: 100%;
+    max-width: 500px;
+    padding: 24px;
+  }
+  
+  .location-title {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 24px;
+  }
+  
+  .address-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 16px;
+  }
+  
+  .address-icon {
+    font-size: 20px;
+  }
+  
+  .address-text {
+    flex: 1;
+    font-size: 16px;
+    color: #374151;
+  }
+  
+  .add-address-link {
+    display: block;
+    width: 100%;
+    text-align: center;
+    color: #6366f1;
+    background: none;
+    border: none;
+    padding: 12px;
+    margin-bottom: 16px;
+    cursor: pointer;
+  }
+  
+  .confirm-address-button {
+    width: 100%;
+    padding: 12px;
+    background-color: #6366f1;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .confirm-address-button:hover {
+    background-color: #4f46e5;
+  }
+  
+  

@@ -1,0 +1,260 @@
+.cook-services {
+  /* padding: 60px 0; */
+  background-color: #F8F8FF;
+  min-height: calc(100vh - 80px);
+  font-family: "DM Sans" !important;
+}
+
+.container-bg-color{
+  background-color: #F8F8FF;
+}
+
+.view-more-button {
+  background: none;
+  border: none;
+  color: #6979F8;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-left: 5px;
+  font-size: 0.9rem;
+}
+
+.view-more-button:hover {
+  color: #6366f1;
+}
+
+.section-title {
+  text-align: center;
+  margin-bottom: 30px !important;
+  font-size: 36px !important;
+  font-weight: bold;
+}
+
+/* Service Cards Wrapper */
+.service-cards-wrapper {
+  display: flex;
+  justify-content: flex-start;
+  gap: 30px; /* Space between cards */
+}
+
+.service-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  height: auto;
+  flex: 0 1 calc(33.333% - 20px); /* 3 cards per row, with spacing */
+  padding: 18px;
+}
+
+
+
+.card-image {
+  width: 100% !important;
+  height: 200px !important;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  object-fit: cover;
+}
+
+/* Card Content */
+.card-content {
+  /* padding: 20px; */
+}
+
+.card-content h3 {
+  margin: 0 0 10px;
+  font-size: 20px;
+  font-weight: 700;
+  transition: color 0.3s ease; /* Smooth color change */
+}
+
+/* Hover effect for card content */
+.service-card:hover .card-content h3 {
+  color: #6366f1; /* Change text color on hover */
+}
+
+.rating-cook {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.stars {
+  color: #ffd700;
+  margin-right: 5px;
+}
+
+.reviews {
+  color: #666;
+  font-size: 14px;
+}
+
+
+.features {
+  margin-bottom: 0px !important;
+  padding-left: 0px;
+  list-style-type: none;
+  list-style: none;
+}
+
+.features li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.checklist {
+  list-style: none;
+  padding: 0;
+  margin: 10px 0;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #555; /* Text color */
+}
+
+.circle-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 13px; /* Diameter of the circle */
+  height: 13px; /* Diameter of the circle */
+  border-radius: 50%; /* Makes the element circular */
+  background-color: #4caf50; /* Green background */
+  color: #fff; /* White checkmark */
+  margin-right: 10px; /* Spacing between icon and text */
+  font-size: 8px; /* Size of the check icon */
+  font-weight: bold;
+}
+
+.check-icon {
+  /* line-height: 1; */
+}
+
+.features .check-icon {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  background-color: #28a745; /* Green background */
+  color: white;
+  font-weight: bold;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 15px; /* Centers the checkmark */
+  margin-right: 10px;
+  font-size: 9px; /* Adjust as per the size of the circle */
+}
+
+.view-details {
+  display: inline-block;
+  color: #6979F8;
+  text-decoration: none;
+  font-size: 14px;
+  margin-bottom: 15px;
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Hover effect for "View Details" */
+.view-details:hover {
+  color: #6366f1; /* Change color on hover */
+}
+
+.price-section {
+  /* border-top: 1px solid #eee; */
+  /* padding-top: 15px; */
+}
+
+.price {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.amount {
+  display: flex;
+  align-items: baseline;
+}
+
+.currency {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.value {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0 2px;
+}
+
+.period {
+  font-size: 14px;
+  color: #666;
+}
+
+.book-now {
+  padding: 5px 10px;
+  background-color: #EFEFEF;
+  border: none;
+  border-radius: 4px;
+  color: #6366f1;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Hover effect for book button */
+.book-now:hover {
+  background-color: #6366f1; /* Change background color */
+  color: white !important; /* Change text color */
+}
+
+.book-icon {
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .cook-services {
+      padding: 0px 0;
+  }
+
+  .section-title {
+      font-size: 28px;
+      margin-bottom: 20px;
+      padding-top: 20px;
+  }
+
+  .service-cards-wrapper {
+      flex-direction: column; /* Stack cards vertically on smaller screens */
+      align-items: center; /* Center cards */
+  }
+
+  .service-card {
+      flex: 1 1 100%; /* Stack all cards in a single column */
+      margin-bottom: 20px; /* Add space between stacked cards */
+  }
+}
+
+@media (max-width: 576px) {
+  .card-content {
+      padding: 15px;
+  }
+
+  .card-content h3 {
+      font-size: 18px;
+  }
+}

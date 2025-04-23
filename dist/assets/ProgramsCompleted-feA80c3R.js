@@ -1,0 +1,7 @@
+import{r,A as n,f as d,j as t,B as i,_ as u}from"./index-BLDXZsNf.js";import{g as l}from"./getStudentCompletedPrograms-uqssEJBm.js";const m=r.lazy(()=>u(()=>import("./ProgramCurrentCard-6Z16ht3D.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16])));function c(){const{userData:s}=r.useContext(n),{data:e}=d({queryKey:["completedPrograms",s.id],queryFn:()=>l(s.id)}),a=e==null?void 0:e.map(o=>t.jsx(r.Suspense,{children:t.jsx(m,{completed:!0,program:o})},o.id));return t.jsx(i,{px:4,py:4,display:"flex",flex:1,alignItems:"stretch",flexDirection:"column",gap:6,children:a})}export{c as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/ProgramCurrentCard-6Z16ht3D.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css","assets/getStudentLessons-9oxf_aXv.js","assets/index-_pDSIHrO.js","assets/getTeacherDataFromProgram-st-c01_H.js","assets/setStudentProgramFavorite-WRttFheY.js","assets/getQuizzesData-LrFtBJND.js","assets/getCoursesData-bKJQ8hIk.js","assets/getProgramFinalExams-5NZ9maXk.js","assets/getStudentProgramFinalExams-vPSFFfCN.js","assets/getStudentProgramComment-6TgU_WlX.js","assets/setStudentProgramComment-_VEOSJGc.js","assets/AccordionSummary-zqxAlL-z.js","assets/StarRate-oODS2RVk.js","assets/StarOutline-9Bdg8jvp.js","assets/Snackbar-qwGm_4Bu.js"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}

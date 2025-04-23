@@ -1,0 +1,24 @@
+{
+  "default_branch": "main",
+  "branches": [
+    "anurag",
+    "localDevelopment",
+    "main",
+    "radhesha",
+    "soumya-engme"
+  ],
+  "parent": {
+    "anurag": "main",
+    "localDevelopment": "main",
+    "main": null,
+    "radhesha": "main",
+    "soumya-engme": "main"
+  },
+  "order": [
+    "main",
+    "anurag",
+    "localDevelopment",
+    "radhesha",
+    "soumya-engme"
+  ]
+}
