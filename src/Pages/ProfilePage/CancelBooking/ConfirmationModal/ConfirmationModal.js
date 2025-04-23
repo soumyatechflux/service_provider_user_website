@@ -23,14 +23,16 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
         { headers: { Authorization: `Bearer ${token}` } }
       );
 
-      if (response.data.success) {
-        setCancelDetails(response.data);
+      if (response?.data?.success) {
+        setCancelDetails(response?.data);
       } else {
-        setError('Failed to fetch cancellation details');
+        setError(response?.data?.message);
       }
     } catch (err) {
       console.error('Error fetching cancellation details:', err);
-      setError('Error fetching cancellation details. Please try again.');
+      const errorMessage =
+        err.response?.data?.message || 'Error fetching cancellation details. Please try again.';
+      setError(errorMessage);
     }
   };
 

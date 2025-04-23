@@ -125,7 +125,7 @@ const getFormattedDate = (rawDate) => {
           <View style={styles.address}>
             <Text style={styles.bold}>{data?.guest_name || "Customer Name"}</Text>
             {/* <Text>Booking ID: {data?.booking_id || "N/A"}</Text> */}
-            <Text>Customer address: {data?.visit_address || "N/A"}</Text>
+            <Text>Address: {data?.visit_address || "N/A"}</Text>
           </View>
           {/* <View style={styles.invoiceMeta}>
             <Text>Invoice issued by {data?.issuer_name || " Servyo Powered by Allify Home Solutions Private Limited"}</Text>
@@ -156,7 +156,7 @@ const getFormattedDate = (rawDate) => {
   {[
     {
       date: data?.tax_date || 'xxx',
-      description: 'Service Fees',
+      description: 'Convenience and platform fees',
       qty: 1,
       amount: data?.company_to_customer?.net_amount,
     },
@@ -172,17 +172,17 @@ const getFormattedDate = (rawDate) => {
       qty: '',
       amount: data?.company_to_customer?.tax?.igst,
     },
-    data?.company_to_customer?.tax?.sgst && {
-      date: data?.tax_date || 'xxx',
-      description: 'SGST',
-      qty: '',
-      amount: data?.company_to_customer?.tax?.sgst,
-    },
     data?.company_to_customer?.tax?.cgst && {
       date: data?.tax_date || 'xxx',
       description: 'CGST',
       qty: '',
       amount: data?.company_to_customer?.tax?.cgst,
+    },
+    data?.company_to_customer?.tax?.sgst && {
+      date: data?.tax_date || 'xxx',
+      description: 'SGST/UTGST',
+      qty: '',
+      amount: data?.company_to_customer?.tax?.sgst,
     },
   ]
     .filter(Boolean) 
