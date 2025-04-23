@@ -1,0 +1,7 @@
+import{r as i,A as s,f as a,j as n,B as r,T as l,_ as h}from"./index-BLDXZsNf.js";import{g as p}from"./getStudentFollowing-n7VD3qnJ.js";const c=i.lazy(()=>h(()=>import("./LetterCard-B9ul8gKt.js"),__vite__mapDeps([0,1,2])));function g(){const{userData:e}=i.useContext(s),{data:o}=a({queryKey:["studentFollowing",e==null?void 0:e.id],queryFn:()=>p(e==null?void 0:e.id),enabled:!!(e!=null&&e.id)}),t=o==null?void 0:o.map(x=>n.jsx(i.Suspense,{children:n.jsx(c,{teacherId:x.teacherId})},x.teacherId));return n.jsxs(r,{mx:14,borderRadius:"20px",overflow:"hidden",height:"auto",boxShadow:"0px 4px 4px 0px rgba(0, 0, 0, 0.25)",mb:5,children:[n.jsx(r,{p:2,px:4,bgcolor:"#D0EBFC",children:n.jsx(l,{fontWeight:900,fontFamily:"Inter",fontSize:24,children:"Followings"})}),n.jsx(r,{py:3,px:2,height:"auto",display:"flex",gap:8,flexDirection:"row",flexWrap:"wrap",justifyContent:t!=null&&t.length?"":"center",children:t!=null&&t.length?t:n.jsx(l,{fontSize:16,fontWeight:500,fontFamily:"Inter",textAlign:"center",alignSelf:"center",sx:{p:8},children:"No letters yet."})})]})}export{g as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/LetterCard-B9ul8gKt.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}

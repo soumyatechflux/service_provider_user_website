@@ -1,0 +1,1 @@
+import{C as c,D as e,af as i,F as l,ag as u}from"./index-BLDXZsNf.js";const d=async t=>{const a=c(e,"consultationSessions",t);await i(a)},C=async t=>{var o,n;const a=c(e,"consultationSessions",t),s=await l(a);await u((o=s.data())==null?void 0:o.studentId,(n=s.data())==null?void 0:n.teacherId),await d(t)};export{C as a,d as s};

@@ -1,0 +1,7 @@
+import{r as o,A as u,f as a,h as c,j as n,B as s,T as x,_ as l}from"./index-BLDXZsNf.js";const d=o.lazy(()=>l(()=>import("./CurrentCourseCard-AwB8egfs.js"),__vite__mapDeps([0,1,2,3,4,5,6,7,8,9,10,11])));function h(){const{userData:t}=o.useContext(u),{data:r}=a({queryKey:["currentPrograms",t==null?void 0:t.id],queryFn:()=>c(t.id),enabled:!!(t!=null&&t.id)}),e=r==null?void 0:r.map(i=>n.jsx(o.Suspense,{children:n.jsx(d,{...i})}));return n.jsxs(s,{mx:14,borderRadius:"20px",bgcolor:"#FEF4EB",overflow:"hidden",boxShadow:"0px 4px 4px 0px rgba(0, 0, 0, 0.25)",sx:{},justifyContent:e!=null&&e.length?"":"center",children:[n.jsx(s,{px:3,bgcolor:"#FEF4EB",py:3,children:n.jsx(x,{fontWeight:900,fontFamily:"Inter",fontSize:24,children:"Current Programs"})}),e!=null&&e.length?e:n.jsx(x,{fontSize:16,fontWeight:500,fontFamily:"Inter",textAlign:"center",alignSelf:"center",sx:{p:8},children:"No programs yet."})]})}export{h as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/CurrentCourseCard-AwB8egfs.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css","assets/getStudentLessons-9oxf_aXv.js","assets/index-_pDSIHrO.js","assets/setStudentProgramFavorite-WRttFheY.js","assets/getTeacherDataFromProgram-st-c01_H.js","assets/getQuizzesData-LrFtBJND.js","assets/getCoursesData-bKJQ8hIk.js","assets/getProgramFinalExams-5NZ9maXk.js","assets/getStudentProgramFinalExams-vPSFFfCN.js","assets/AccordionSummary-zqxAlL-z.js"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}

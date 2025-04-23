@@ -1,0 +1,71 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px); /* Apply blur effect */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+  }
+  
+  .modal-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .success-modal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  
+  .checkmark-circle {
+    width: 72px;
+    height: 72px;
+    background: #4CAF50;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .success-title {
+    color: #4CAF50;
+    font-size: 24px;
+    margin: 0;
+  }
+  
+  .success-message {
+    color: #333;
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0;
+    max-width: 300px;
+  }
+  
+  .back-home-btn {
+    background-color: #6366F1 !important;
+    border: none !important;
+    padding: 12px 24px !important;
+    width: 100%;
+    border-radius: 8px !important;
+    font-size: 16px !important;
+    transition: background-color 0.3s ease !important;
+    color :white !important;
+  }
+  
+  .back-home-btn:hover {
+    background-color: #4F46E5 !important;
+  }
+  
+  

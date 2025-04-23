@@ -1,0 +1,324 @@
+/* Initial styles (no animation by default) */
+.hero-container {
+  position: relative;
+  min-height: calc(100vh + 84px);
+  /* min-height: 100vh; */
+  /* min-height: calc(100vh - 60px); */
+  background: linear-gradient(105.74deg, #6979F8 2.5%, #9BA6FA 35%, #CDD2FD 67.5%, #6979F8 100%);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  padding: 20px 100px;
+  font-family: "DM Sans";
+}
+
+.content {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 600px;
+}
+
+.subtitle-app,
+.title-app,
+.badges {
+  opacity: 0;
+}
+
+/* Default state: No animation */
+.hero-container:not(.animate) .phone,
+.hero-container:not(.animate) .path-shadow,
+.hero-container:not(.animate) .door-container,
+.hero-container:not(.animate) .subtitle-app,
+.hero-container:not(.animate) .title-app,
+.hero-container:not(.animate) .badges {
+  animation: none !important;
+  opacity: 0; /* Ensure it's invisible before animation */
+}
+
+/* Content animation triggered when .animate class is added */
+.subtitle-app {
+  font-size: 20px;
+  margin-bottom: 0.7rem;
+  color: white;
+  font-weight: 600;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.title-app {
+  font-size: 38px;
+  line-height: 44px;
+  margin-bottom: 2rem;
+  font-weight: 600;
+  color: #012141;
+  animation: fadeIn 0.5s ease-out 0.3s forwards;
+}
+
+.badges {
+  display: flex;
+  gap: 1rem;
+  animation: fadeIn 0.5s ease-out 0.6s forwards;
+  flex-wrap: wrap;
+}
+
+.rating-div {
+  display: flex;
+  flex-direction: column;
+}
+
+.rating-sub-text {
+  color: #0054A5;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.rating-badge,
+.feature-badge {
+  background-color: white;
+  color: black;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rating-app {
+  font-weight: 600;
+  font-size: 20px;
+  color: #012141;
+}
+
+.phone-container {
+  position: absolute;
+  right: 0%;
+  top: 50%;
+  transform: translateY(-50%);
+  perspective: 1000px;
+  z-index: 999;
+}
+
+.phone {
+  position: relative;
+  border-radius: 40px;
+  transform: scale(0.2) translateX(600px) translateY(300px); /* Initial Position */
+  opacity: 0;
+  animation: phoneAnimation 3s ease-out 1s forwards;
+}
+
+.phone-screen {
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.door-container {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0;
+  animation: fadeIn 0.5s ease-out 0.9s forwards;
+}
+
+.door-image {
+  height: auto;
+  max-height: 80vh;
+  width: auto;
+  position: relative;
+  top: -360px;
+}
+
+.path-shadow {
+  position: absolute;
+  right: 350px; /* Match the phone's starting position */
+  top: 50%; /* Match the phone's starting vertical position */
+  transform: translate(150%, -150%) scale(0.2) rotate(0deg); /* Start small */
+  width: 200px; /* Initial width */
+  height: 100px; /* Initial height */
+  border-radius: 50%;
+  z-index: 1;
+  opacity: 0;
+  animation: shadowAnimation 3s ease-out 1s forwards; /* Same duration and delay as phone animation */
+}
+
+/* Keyframes for the shadow animation */
+@keyframes shadowAnimation {
+  0% {
+    transform: translateX(250px) translateY(-80px) scale(0.2) rotate(0deg); /* Start small and behind phone */
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(-220px) translateY(-40px) scale(1) rotate(0deg); /* End position with full size */
+    opacity: 1;
+  }
+}
+
+/* Keyframes for the animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0.5;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes phoneAnimation {
+  0% {
+    transform: translateX(350px) translateY(-100px) scale(0.2); /* Starting point: forward and upward */
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0) translateY(40px) scale(1); /* Ending point: forward and downward */
+    opacity: 1;
+  }
+}
+
+/* For tablets and smaller devices */
+@media (max-width: 768px) {
+  .hero-container {
+    padding: 20px;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .content {
+    max-width: 100%; /* Allow full width */
+    margin-bottom: 2rem; /* Add spacing between content and phone */
+  }
+
+  .title-app {
+    font-size: 28px; /* Reduce font size */
+    line-height: 34px;
+  }
+
+  .subtitle-app {
+    font-size: 16px;
+  }
+
+  .badges {
+    justify-content: center;
+  }
+
+  .phone-container {
+    position: relative;
+    transform: none; /* Remove animation transform */
+    margin: 0 auto;
+    top: auto;
+  }
+
+  .phone {
+    transform: scale(0.8); /* Static size */
+    opacity: 1; /* Ensure visibility */
+    animation: none; /* Disable animations */
+  }
+
+  .door-container {
+    /* display: none;  */
+  }
+
+  .path-shadow {
+    transform: scale(0.8); /* Static size */
+    opacity: 1; /* Ensure visibility */
+    animation: none; /* Disable animations */
+  }
+}
+
+/* For very small screens (mobile) */
+@media (max-width: 480px) {
+  .hero-container {
+    padding: 10px;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* Ensures no content spills out */
+    min-height: 800px !important;
+  }
+  .mobile-margin {
+    margin-top: 165px;
+  }
+
+  .content {
+    text-align: center;
+  }
+
+  .title-app {
+    font-size: 22px;
+    line-height: 28px;
+  }
+
+  .subtitle-app {
+    font-size: 14px;
+  }
+
+  .badges {
+    gap: 0.5rem; /* Reduce spacing between badges */
+  }
+
+  .phone-container {
+    position: absolute;
+    right: -165px;
+    top: 50%;
+    transform: translateY(-50%);
+    perspective: 1000px;
+    z-index: 999;
+  }
+
+  .phone {
+    position: relative;
+    transform: scale(0.15) translateX(400px) translateY(250px); /* Smaller size */
+    opacity: 0;
+    animation: phoneAnimationMobile 3s ease-out 1s forwards; /* Mobile animation */
+  }
+
+  .path-shadow {
+    position: absolute;
+    right: 259px;
+    top: 50%;
+    transform: translate(150%, -150%) scale(0.15) rotate(0deg); /* Smaller shadow */
+    opacity: 0;
+    animation: shadowAnimationMobile 3s ease-out 1s forwards; /* Mobile animation */
+  }
+
+  .door-container {
+    position: absolute;
+    right: -14px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.9s forwards;
+  }
+
+  .door-image {
+    height: auto;
+    max-height: 40vh; /* Make the door image smaller */
+    width: auto;
+    position: relative;
+    top: -237px;
+    transform: scale(0.5); /* Smaller door image */
+  }
+}
+
+/* Mobile-specific animations */
+@keyframes phoneAnimationMobile {
+  0% {
+    transform: translateX(200px) translateY(-50px) scale(0.15); /* Start smaller */
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0) translateY(30px) scale(0.6); /* End position */
+    opacity: 1;
+  }
+}
+
+@keyframes shadowAnimationMobile {
+  0% {
+    transform: translateX(150px) translateY(-50px) scale(0.15); /* Start smaller */
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateX(-80px) translateY(-20px) scale(0.6); /* End position */
+    opacity: 1;
+  }
+}

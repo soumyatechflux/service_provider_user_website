@@ -1,0 +1,1 @@
+import{U as i,V as o,a8 as m,W as t,X as u,D as c}from"./index-BLDXZsNf.js";const E=async(n,s)=>{const e=i(c,"studentFinalExam"),d=o(e,m(t("studentId","==",n),t("finalExamId","in",s)));return(await u(d)).docs.map(a=>({...a.data(),id:a.id}))};export{E as g};

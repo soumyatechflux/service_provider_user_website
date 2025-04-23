@@ -1,0 +1,7 @@
+import{r as i,A as s,f as x,j as n,B as a,T as r,k as c,_ as l}from"./index-BLDXZsNf.js";import{g as m}from"./getStudentCompletedPrograms-uqssEJBm.js";const d=i.lazy(()=>l(()=>import("./StudentCompletedCard-ji6qYgt9.js"),__vite__mapDeps([0,1,2,3,4,5,6])));function u(){const{userData:e}=i.useContext(s),{data:o}=x({queryKey:["completedPrograms",e==null?void 0:e.id],queryFn:()=>m(e==null?void 0:e.id)}),t=o==null?void 0:o.map(p=>n.jsx(d,{...p}));return n.jsxs(a,{display:"flex",flexDirection:"column",gap:2,mx:14,py:4,bgcolor:"#FEF4EB",boxShadow:"0px 4px 4px 0px rgba(0, 0, 0, 0.25)",borderRadius:"20px",children:[n.jsx(r,{fontFamily:"Inter",fontSize:26,fontWeight:900,px:6,sx:{wordSpacing:8},mb:3,children:"Completed Programs"}),n.jsx(c,{direction:"row",gap:3,mx:15,flexWrap:"wrap",justifyContent:{xs:"center !important",sm:"center !important",lg:t!=null&&t.length?"space-between":"center"},children:t!=null&&t.length?t:n.jsx(r,{fontSize:16,fontWeight:500,fontFamily:"Inter",textAlign:"center",alignSelf:"center",sx:{p:8},children:"No programs yet."})})]})}export{u as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/StudentCompletedCard-ji6qYgt9.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css","assets/getProgramFinalExams-5NZ9maXk.js","assets/getStudentProgramFinalExams-vPSFFfCN.js","assets/getStudentProgramComment-6TgU_WlX.js","assets/setStudentProgramFavorite-WRttFheY.js"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}
