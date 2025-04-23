@@ -1,0 +1,1 @@
+import{C as r,D as f,F as d,Q as l}from"./index-BLDXZsNf.js";const w=async(c,e)=>{const o=r(f,"students",c),s=await d(o),t=(s==null?void 0:s.data().favoritePrograms)??[];let a;t!=null&&t.length?a=t.includes(e)?t.slice().filter(i=>i!==e):[...t,e]:a=[e];const n={...s.data(),favoritePrograms:a};await l(o,n)};export{w as s};

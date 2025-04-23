@@ -1,0 +1,386 @@
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -97%; /* Start off-screen */
+  width: 78%; /* Adjust width as needed */
+  /* max-width: 300px; */
+  height: 100%;
+  background-color: white;
+  box-shadow: -2px 0px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1050;
+  transition: transform 0.3s ease-in-out;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notification-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: red;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+
+.sidebar-close-btn {
+  /* position: absolute; */
+  top: 1rem;
+  right: 1rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+/* Optional: Add focus style for accessibility */
+.sidebar-close-btn:focus {
+  outline: 2px solid #6c63ff !important;
+  outline-offset: 2px;
+}
+
+.sidebar-close-btn:hover {
+  color: #6c63ff !important;
+}
+
+/* Update sidebar padding to accommodate close button */
+.sidebar {
+  padding-top: 1rem; /* Increased top padding */
+}
+
+.sidebar.show {
+  transform: translateX(-100%);
+}
+
+.sidebar .nav-link {
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+}
+
+.sidebar .location-dropdown,
+.sidebar .nav-buttons {
+  margin: 1rem 0;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1049;
+  display: none;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.overlay.show {
+  display: block;
+  opacity: 1;
+}
+
+/* Custom styles */
+.navbar {
+  padding: 1rem 0;
+  background: white;
+  box-shadow: 0px 4px 20px 0px #9ba6fa33;
+  z-index: 1000;
+  justify-content: center !important;
+  height: 84px;
+  font-family: "DM Sans" !important;
+  width: 100vw;
+}
+/* .navbar-expand-lg .navbar-nav .dropdown-menu{
+    width: 199px;
+  } */
+
+.logo {
+  font-family: "WindSong", cursive !important;
+  font-weight: 500;
+  font-size: 40px !important;
+  line-height: 24px;
+  color: #000000;
+  /* margin-right: 20px; */
+}
+.nav-buttons {
+  width: 179px;
+  height: 50px;
+  border-radius: 5px;
+}
+.btn-primary {
+  background-color: #6c63ff !important;
+  border-color: #6c63ff !important;
+  color: #ffffff !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: #5a52d5 !important;
+  border-color: #5a52d5 !important;
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+.btn-primary:hover {
+  background-color: #8b85e9 !important;
+  color: white !important;
+}
+.container-nav {
+  max-width: 100% !important;
+  margin-left: 25px !important;
+  margin-right: 35px !important;
+}
+
+.profile-icon-navbar {
+  padding: 0 !important;
+}
+.container-navbar {
+  display: flex;
+}
+.navbar-expand-lg .navbar-collapse {
+  justify-content: end;
+  gap: 20px;
+}
+.nav-link {
+  color: #333 !important;
+  font-size: 16px;
+  padding: 0.5rem 1rem !important;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-weight: 400 !important;
+}
+
+.dropdown-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.location-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 4px;
+}
+.dropdown-toggle::after {
+  display: none !important;
+}
+.location-dropdown .nav-link {
+  border: 1px solid #e0e0e0;
+  width: 199px;
+  display: flex;
+  border-radius: 5px;
+  padding: 0.5rem 1rem !important;
+  /* margin-right: 1rem; */
+  justify-content: space-between;
+}
+.location-drop {
+  height: 50px;
+}
+
+.location-dropdown {
+  position: relative; /* Ensures the dropdown menu is positioned relative to the trigger */
+}
+
+.location-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%; /* Position below the trigger */
+  left: 0; /* Align with the left edge of the trigger */
+  width: 100%; /* Take the same width as the parent */
+  background-color: #fff; /* White background */
+  border: 1px solid #ddd;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  z-index: 999;
+  padding: 0;
+  overflow: hidden; /* Ensure no extra space */
+}
+
+.location-dropdown .dropdown-item {
+  padding: 0.5rem 1rem;
+  color: #333;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.download-btn {
+  background-color: #6c5ce7 !important;
+  border: none !important;
+  padding: 0.5rem 1.5rem !important;
+  border-radius: 4px;
+  color: white !important;
+  margin-right: 1rem;
+}
+
+.download-btn:hover {
+  background-color: #5b4cc4 !important;
+}
+.nav-link:hover {
+  color: #6c63ff !important;
+}
+
+.right-items {
+  display: flex;
+  align-items: center;
+}
+.navbar .dropdown-item:hover {
+  background-color: #6c63ff !important;
+  color: #fff !important;
+}
+.navbar .dropdown-item {
+  font-size: 16px;
+  padding: 0.5rem 1rem;
+}
+.user-icon-navbar {
+  font-size: 25px;
+  color: black;
+  transition: color 0.3s ease, transform 0.3s ease; /* Smooth hover effect */
+}
+
+.user-icon-navbar:hover {
+  color: #6c63ff; /* Change color on hover */
+  transform: scale(1.2); /* Slightly enlarge the icon on hover */
+  cursor: pointer; /* Show a pointer to indicate interactivity */
+}
+.dropdown-menu-start {
+  left: 0 !important; /* Ensures the dropdown aligns perfectly to the left */
+  right: auto !important; /* Overrides any conflicting right alignment */
+}
+.services-drop {
+  min-width: 131px !important;
+}
+.custom-dropdown-menu {
+  position: absolute;
+  top: 160%;
+  left: -110px !important;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  width: 143px;
+  padding: 0.5rem 0;
+  z-index: 1000;
+}
+
+.disabled-label {
+  color: gray;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.disabled-label:hover{
+  background-color: white !important;
+  color: gray !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+
+.custom-dropdown-item {
+  display: block;
+  padding: 0.5rem 1rem;
+  font-size: 16px;
+  font-weight: 400 !important;
+  color: #333; /* Text color */
+  text-decoration: none;
+}
+
+.custom-dropdown-item:hover {
+  color: white;
+  background-color: #6c63ff;
+  text-decoration: none;
+}
+
+.LOGO_SP{
+  width: 198px;
+  height: 60px;
+}
+
+@media (max-width: 768px) {
+  .navbar-nav .dropdown-menu {
+    min-width: 200px;
+  }
+  .dropdown-menu-w {
+    width: 64% !important;
+  }
+  .container-nav {
+    margin-left: 5px !important;
+    margin-right: 5px !important;
+  }
+
+  .LOGO_SP{
+    width: 170px;
+    height: 50px;
+  }
+}
+@media (min-width: 992px) {
+  .sidebar {
+    display: none; /* Hide sidebar on desktop */
+  }
+
+  .navbar-collapse {
+    justify-content: space-between;
+  }
+
+  .right-items {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+}
+
+/* Responsive styles */
+@media (max-width: 991px) {
+  .right-items {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+  .navbar-light {
+    padding: 0 10px !important;
+  }
+
+  .location-dropdown {
+    width: 30%;
+    margin: 0px !important;
+  }
+
+  .location-dropdown .nav-link {
+    margin-right: 0;
+  }
+
+  .download-btn {
+    width: 100%;
+    text-align: center;
+    margin-right: 0;
+  }
+
+  .user-icon {
+    margin-top: 0.5rem;
+  }
+
+  .navbar-collapse {
+    display: none;
+    padding-top: 1rem;
+    background-color: white;
+  }
+  .navbar-collapse.show {
+    display: none; /* Ensure it stays hidden on mobile */
+  }
+  .custom-dropdown-menu {
+    left: 1px !important;
+    /* top: 0; */
+    width: auto;
+    padding: 5px;
+    width: 110px;
+  }
+  .services-drop {
+    /* max-width: 100% !important; */
+  }
+}

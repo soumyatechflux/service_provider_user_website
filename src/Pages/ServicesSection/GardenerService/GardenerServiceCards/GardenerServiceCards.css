@@ -1,0 +1,47 @@
+General Card Styling
+.service-card-gardener {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    height: 100%;
+    padding: 18px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    flex: 1; 
+    max-width: 300px; 
+}
+
+.service-card-gardener:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.service-cards-wrapper-gardener {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: flex-start; 
+    gap: 30px;
+}
+@media (max-width: 768px) {
+    .service-card-gardener {
+        max-width: 100%; 
+    }
+    .service-cards-wrapper-gardener{
+        flex-direction: column;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-cards-wrapper-gardener {
+        gap: 15px; 
+        flex-direction: column;
+
+    }
+
+    .service-card-gardener {
+        padding: 12px;
+    }
+    .dotted-line-image{
+        display: none;
+    }
+}

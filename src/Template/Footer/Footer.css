@@ -1,0 +1,159 @@
+/* Footer Base Styles */
+.footer {
+  background-color: #151522;
+  color: #ffffff;
+  padding: 40px 20px;
+  font-family: "DM Sans";
+  font-weight: 600;
+  font-size: 20.8px;
+  line-height: 20.8px;
+}
+
+.Footer-logo{
+  width: 186px;
+  height: 54px;
+}
+
+.footer-subContent {
+  font-weight: 400;
+}
+
+.footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: left;
+}
+
+.footer-brand h2 {
+  font-family: "WindSong", cursive;
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  font-weight: 500  ;
+  /* width: 100vw; */
+  color: white !important;
+}
+
+/* Footer Columns */
+.footer-columns {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 150px !important;  
+  width: 100%;
+  max-width: 1200px;
+  margin: 20px auto;
+}
+
+.footer-column h4 {
+  margin-bottom: 15px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 20.8px;
+  font-weight: 600;
+  line-height: 20.8px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin-bottom: 10px;
+}
+
+.footer-column ul li a {
+  font-family: "DM Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: left;
+  color: white;
+  text-decoration: none;
+}
+
+.footer-column ul li a:hover {
+  text-decoration: underline;
+}
+
+/* Social Icons */
+.social-icons {
+  display: flex;
+  /* gap: 30px; */
+  gap: 10px;
+  justify-content: flex-start;
+  margin: 15px 0;
+}
+
+.social-icons a {
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.social-icons a:hover {
+  color: #6c63ff;
+}
+
+/* App Buttons */
+.app-buttons img {
+  width: 130px;
+  margin: 10px 5px;
+}
+
+/* Footer Bottom */
+.footer-bottom {
+  /* margin-top: 20px; */
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 24px;
+  text-align: center;
+}
+
+.app-buttons {
+  display: flex;
+  flex-direction: column;
+}
+
+.store-button-footer {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.store-button-footer:hover {
+  transform: translateX(-2px);
+}
+
+/* Small Laptops (1366px and below) */
+@media (max-width: 1366px) {
+  .footer-columns {
+    gap: 100px !important;
+    flex-direction: row;
+    align-items: center;
+    /* text-align: center; */
+  }
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .footer-columns {
+    gap: 30px !important;
+    flex-direction: column;
+    align-items: center;
+    /* text-align: center; */
+  }
+
+  .Footer-logo{
+    width: 156px;
+    height: 44px;
+  }
+
+  .footer-column {
+    width: 100%;
+  }
+
+  .social-icons {
+    /* justify-content: center; */
+  }
+}

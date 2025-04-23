@@ -1,0 +1,1 @@
+import{U as n,V as s,a8 as d,W as o,X as g,D as c}from"./index-BLDXZsNf.js";const D=async(a,m)=>{const r=n(c,"programComments"),e=s(r,d(o("studentId","==",a),o("programId","==",m)));return(await g(e)).docs.map(t=>({...t.data(),id:t.id}))};export{D as g};

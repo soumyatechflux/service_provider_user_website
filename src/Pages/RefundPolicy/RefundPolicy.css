@@ -1,0 +1,72 @@
+/* Simple, clean layout matching the homepage style */
+.sp-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .sp-header {
+    background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+    padding: 40px 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  
+  .sp-header h1 {
+    color: white;
+    margin: 0;
+    font-size: 32px;
+    font-weight: 600;
+  }
+  
+  .sp-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .sp-section {
+    margin-bottom: 30px;
+  }
+  
+  .sp-section:last-child {
+    margin-bottom: 0;
+  }
+  
+  .sp-section h2 {
+    color: #2d3748;
+    font-size: 24px;
+    margin: 0 0 15px 0;
+  }
+  
+  .sp-section p {
+    color: #4a5568;
+    line-height: 1.6;
+    margin: 0;
+    font-size: 16px;
+  }
+  
+  /* Simple responsive adjustments */
+  @media (max-width: 768px) {
+    .sp-container {
+      padding: 15px;
+    }
+    
+    .sp-header {
+      padding: 30px 15px;
+    }
+    
+    .sp-header h1 {
+      font-size: 28px;
+    }
+    
+    .sp-content {
+      padding: 20px;
+    }
+    
+    .sp-section h2 {
+      font-size: 20px;
+    }
+  }

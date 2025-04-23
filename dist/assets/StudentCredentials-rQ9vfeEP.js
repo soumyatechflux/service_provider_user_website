@@ -1,0 +1,7 @@
+import{r as s,A as p,f as x,R as l,j as r,B as a,T as c,_ as f}from"./index-BLDXZsNf.js";import{g as d}from"./getStudentProgramCertificate-sYL5VS3x.js";const h=s.lazy(()=>f(()=>import("./CredentialCard-OVSSifm2.js").then(e=>e.C),__vite__mapDeps([0,1,2])));function m(){const{userData:e}=s.useContext(p),{data:o}=x({queryKey:["studentProgramCertificate",e==null?void 0:e.id],queryFn:()=>d(e==null?void 0:e.id)}),{data:i}=x({queryKey:["programsCertificate",e==null?void 0:e.id],queryFn:()=>l(o==null?void 0:o.slice().filter(n=>n.status==="accepted").map(n=>n.programId)),enabled:!!o}),t=i==null?void 0:i.map(n=>r.jsx(s.Suspense,{children:r.jsx(h,{...n})}));return r.jsxs(a,{mx:14,borderRadius:"20px",overflow:"hidden",height:"auto",boxShadow:"0px 4px 4px 0px rgba(0, 0, 0, 0.25)",children:[r.jsx(a,{p:2,px:4,bgcolor:"#D0EBFC",children:r.jsx(c,{fontWeight:900,fontFamily:"Inter",fontSize:24,children:"Certificates"})}),r.jsx(a,{py:3,px:2,height:"auto",display:"flex",gap:8,flexDirection:"row",flexWrap:"wrap",justifyContent:t!=null&&t.length?"":"center",children:t!=null&&t.length?t:r.jsx(c,{fontSize:16,fontWeight:500,fontFamily:"Inter",textAlign:"center",alignSelf:"center",sx:{p:8},children:"No certificates yet."})})]})}export{m as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/CredentialCard-OVSSifm2.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}

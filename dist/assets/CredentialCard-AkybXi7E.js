@@ -1,0 +1,1 @@
+import{j as t,k as r,a6 as n,T as s}from"./index-BLDXZsNf.js";function o({credential:a,image:e}){return t.jsxs(r,{alignItems:"center",width:"fit-content",gap:1.5,children:[t.jsx(n,{src:e,sx:{width:"82px",height:"82px"}}),t.jsx(s,{fontSize:18,fontFamily:"Inter",fontWeight:800,sx:{color:"#226E9F"},children:a})]})}export{o as default};
