@@ -1,0 +1,304 @@
+.Service-Heading {
+  font-family: "DM Sans", sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1d1d1f;
+  /* text-align: center; */
+}
+
+.help-center-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+  /* background-color: #f8f9fa; */
+  min-height: 100vh;
+}
+
+.help-center-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1d1d1f;
+  text-align: center;
+}
+
+.help-center-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 4px;
+  /* background-color: #2563eb; */
+  border-radius: 2px;
+}
+
+/* Enhanced Form Styling */
+.query-form {
+  margin: 32px auto;
+  background: white;
+  padding: 32px;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-group label {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+
+.form-group textarea {
+  width: 100%;
+  padding: 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 15px;
+  min-height: 120px;
+  transition: all 0.3s ease;
+  background-color: #f8fafc;
+}
+
+.form-group textarea:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+  background-color: white;
+}
+
+.form-group textarea::placeholder {
+  color: #94a3b8;
+}
+
+.submit-button {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  padding: 14px 28px;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.submit-button:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+.submit-button:active {
+  transform: translateY(0);
+}
+
+/* Cards Grid Styling */
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  padding: 24px 0;
+}
+
+.card-helpcentre {
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-helpcentre:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.card-header {
+  padding: 20px;
+  border-bottom: 1px solid #f0f0f0;
+  background-color: #f8fafc;
+}
+
+.card-date {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 8px 0;
+  color: #1a1a1a;
+}
+
+.card-time {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.calendar-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  color: #64748b;
+}
+
+.card-content {
+  padding: 20px;
+}
+
+.query-text {
+  color: #334155;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  font-size: 15px;
+}
+
+/* Updated Status Badge with Square Background */
+.status-badge {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 6px;  /* Slightly rounded corners for the square shape */
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Status Badge and Card Background Colors for New Status */
+.status-badge.new {
+  background-color: #d1e7ff; /* Light Blue for New */
+  color: #2d5ba3;
+}
+
+.card-helpcentre.new {
+  background-color: #d1e7ff; /* Light Blue for New */
+}
+
+/* Status Badge and Card Background Colors for In Review */
+.status-badge.inreview {
+  background-color: #fff3cd; /* Light Yellow for In Review */
+  color: #8a6d3b;
+}
+
+.card-helpcentre.in-review {
+  background-color: #fff3cd; /* Light Yellow for In Review */
+}
+
+/* Status Badge and Card Background Colors for Rejected */
+.status-badge.rejected {
+  background-color: #f8d7da; /* Light Red for Rejected */
+  color: #9b2d20;
+}
+
+.card-helpcentre.rejected {
+  background-color: #f8d7da; /* Light Red for Rejected */
+}
+
+/* Status Badge and Card Background Colors for Resolved */
+.status-badge.resolved {
+  background-color: #d1f7d6; /* Light Green for Resolved */
+  color: #2e7d32;
+}
+
+.card-helpcentre.resolved {
+  background-color: #d1f7d6; /* Light Green for Resolved */
+}
+
+/* Status Badge and Card Background Colors for Pending */
+.status-badge.pending {
+  background-color: #fff9c4; /* Light Yellow for Pending */
+  color: #a68b00;
+}
+
+.card-helpcentre.pending {
+  background-color: #fff9c4; /* Light Yellow for Pending */
+}
+
+.card-helpcentre.resolved {
+  background-color: #d1f7d6; /* Light Green for Resolved */
+}
+
+.section-title {
+  font-family: "DM Sans", sans-serif;
+  font-size: 64px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #1d1d1f;
+  text-align: center;
+}
+
+
+.attachment-preview {
+  margin-top: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.uploaded-image {
+  max-width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .help-center-container {
+    padding: 16px;
+  }
+
+  .query-form {
+    padding: 20px;
+    margin: 20px auto;
+  }
+
+  .cards-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .help-center-title {
+    font-size: 24px;
+  }
+
+  .submit-button {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+/* Animation for form submission */
+@keyframes submitPulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.98);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.submit-button:active {
+  animation: submitPulse 0.3s ease;
+}

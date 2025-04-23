@@ -1,0 +1,7 @@
+import{p as x,f as l,j as e,r as s,B as n,T as o,_ as p}from"./index-BLDXZsNf.js";import{g as c}from"./getTeacherCredentials-9JjDQI0V.js";const d=s.lazy(()=>p(()=>import("./CredentialCard-AkybXi7E.js"),__vite__mapDeps([0,1,2])));function u(){const{id:t}=x(),{data:a}=l({queryKey:["teacherCredentials",t],queryFn:()=>c(t),enabled:!!t}),r=a==null?void 0:a.map(i=>e.jsx(s.Suspense,{children:e.jsx(d,{...i})}));return e.jsxs(n,{mx:14,borderRadius:"20px",overflow:"hidden",height:"auto",boxShadow:"0px 4px 4px 0px rgba(0, 0, 0, 0.25)",children:[e.jsx(n,{p:2,px:4,bgcolor:"#D0EBFC",children:e.jsx(o,{fontWeight:900,fontFamily:"Inter",fontSize:24,children:"Credentials"})}),e.jsx(n,{py:3,px:2,height:"auto",display:"flex",gap:8,flexDirection:"row",flexWrap:"wrap",children:r!=null&&r.length?r:e.jsx(o,{fontSize:16,fontWeight:500,fontFamily:"Inter",textAlign:"center",alignSelf:"center",sx:{p:8},children:"No certificates yet."})})]})}export{u as default};
+function __vite__mapDeps(indexes) {
+  if (!__vite__mapDeps.viteFileDeps) {
+    __vite__mapDeps.viteFileDeps = ["assets/CredentialCard-AkybXi7E.js","assets/index-BLDXZsNf.js","assets/index-sAHsY2w0.css"]
+  }
+  return indexes.map((i) => __vite__mapDeps.viteFileDeps[i])
+}

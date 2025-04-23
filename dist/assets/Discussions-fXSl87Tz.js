@@ -1,0 +1,1 @@
+import{j as r}from"./index-BLDXZsNf.js";import s from"./ProgramExploreCourseComments-s8XDSZc_.js";import"./setStudentProgramComment-_VEOSJGc.js";import"./getProgramComments-xVe8_zdH.js";function p(o){return r.jsx(s,{program:o})}export{p as default};

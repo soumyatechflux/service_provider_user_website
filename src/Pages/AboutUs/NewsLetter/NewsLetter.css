@@ -1,0 +1,128 @@
+/* Newsletter Section */
+.newsletter-section {
+  background-color: #2a4e51;
+  color: white;
+  text-align: center;
+  padding: 20px 165px !important;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  margin-left: 35px;
+  margin-right: 35px;
+}
+
+.newsletter-heading {
+  font-size: 36px !important;
+  font-weight: 700 !important;
+  margin-bottom: 20px !important;
+  line-height: 56px !important;
+  /* margin: 0px 130px 20px 130px; */
+  color: white;
+}
+
+.newsletter-form {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 600px;
+  margin: 0 auto;
+  gap: 10px;
+  border-radius: 6px;
+  background-color: white;
+}
+
+.newsletter-input {
+  flex: 1;
+  padding: 10px 15px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 6px;
+  outline: none;
+}
+
+.newsletter-button {
+  background-color: #1a1a1a;
+  color: white;
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin: 5px;
+}
+
+.newsletter-button:hover {
+  background-color: #333333;
+}
+
+/* Responsive Design */
+
+/* Medium Screens (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .newsletter-heading {
+    margin: 0px 50px 20px 50px; /* Reduce horizontal margin for medium screens */
+  }
+}
+
+/* Tablet Screens (max-width: 768px) */
+@media (max-width: 768px) {
+  .newsletter-section {
+    padding: 20px 40px !important; /* Reduce side padding */
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .newsletter-heading {
+    font-size: 24px; /* Adjust font size */
+    line-height: 36px; /* Adjust line height */
+    margin-bottom: 15px;
+  }
+
+  .newsletter-form {
+    flex-direction: column; /* Stack form vertically */
+    gap: 15px; /* Add spacing between stacked items */
+  }
+
+  .newsletter-input {
+    width: 100%; /* Full width for input */
+    font-size: 0.9rem; /* Adjust font size */
+    padding: 10px; /* Adjust padding */
+  }
+
+  .newsletter-button {
+    width: 100%; /* Full-width button */
+    font-size: 0.9rem; /* Adjust font size */
+    padding: 10px; /* Adjust padding */
+  }
+}
+
+/* Mobile Screens (max-width: 576px) */
+@media (max-width: 576px) {
+  .newsletter-section {
+    padding: 15px !important; /* Reduce overall padding */
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .newsletter-heading {
+    font-size: 20px !important; /* Smaller font size for headings */
+    line-height: 25px !important; /* Adjust line height */
+    margin: 0px 20px 15px 20px !important; /* Add spacing for better readability */
+  }
+
+  .newsletter-form {
+   
+   padding: 5px 10px;
+    gap: 10px; /* Adjust spacing between form elements */
+  }
+
+  .newsletter-input {
+    padding: 8px; /* Smaller padding */
+    font-size: 0.8rem; /* Smaller font size */
+  }
+
+  .newsletter-button {
+    padding: 8px; /* Smaller padding for buttons */
+    font-size: 0.8rem; /* Reduce button font size */
+  }
+}

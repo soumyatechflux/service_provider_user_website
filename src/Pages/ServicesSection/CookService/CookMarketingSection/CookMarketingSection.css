@@ -1,0 +1,233 @@
+
+.services-section {
+  padding: 60px 0;
+  background-color: #fff;
+  font-family: "DM Sans";
+}
+
+.service-item {
+  display: flex;
+  margin-bottom: 100px;
+  align-items: center;
+  gap: 40px;
+  opacity: 0;
+  /* transform: translateX(-100px);
+  transition: opacity 0.8s ease, transform 0.8s ease; */
+}
+
+.service-item:nth-child(even) {
+  /* transform: translateX(100px); */
+}
+
+.service-item.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.service-item:last-child {
+  margin-bottom: 0;
+}
+
+.service-content {
+  flex: 1;
+  padding: 20px;
+}
+
+.service-image {
+  flex: 1;
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.content-left {
+  order: 1;
+}
+
+.content-right {
+  order: 2;
+}
+
+.image-left {
+  order: 1;
+}
+
+.image-right {
+  order: 2;
+}
+
+.service-content.content-left {
+  text-align: left;
+}
+
+.service-content.content-right {
+  /* text-align: right; */
+}
+
+.service-image.image-left {
+  float: left;
+}
+
+.service-image.image-right {
+  float: right;
+}
+
+
+.marketing-title{
+  font-size: 36px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: #1a1a1a;
+}
+
+.marketing-description{
+  font-size: 20px;
+  line-height: 1.6;
+  color: #666;
+  margin-bottom: 15px;
+}
+.book-now-marketing {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c77ff; /* Initial text color */
+  background-color: transparent; /* No background initially */
+  border: none;
+  font-size:23px;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 8px 16px;
+  border-radius: 6px;
+  transition: all 0.3s ease; /* Smooth transition */
+}
+
+.book-now-marketing .book-icon {
+  margin-right: 8px; /* Space between icon and text */
+  color: #6c77ff; /* Initial icon color */
+  transition: transform 0.2s ease; /* Smooth movement for the icon */
+}
+
+.book-now-marketing:hover {
+  background-color: #a8b4ff; /* Light purple background on hover */
+  color: #ffffff; /* White text color on hover */
+  transform: translateY(3px); /* Button moves slightly down */
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+
+.book-now-marketing:hover .book-icon {
+  color: #ffffff; /* White icon color on hover */
+  transform: translateX(3px); /* Icon moves slightly right */
+}
+
+
+/* Responsive styles */
+@media (max-width: 991px) {
+  .service-item {
+    flex-direction: column;
+    margin-bottom: 60px;
+    gap: 30px;
+  }
+
+  .service-image {
+    width: 100%;
+    height: 300px;
+    margin-bottom: 30px;
+  }
+
+  .service-content {
+    order: 2;
+    /* padding: 10px   20px; */
+  }
+
+  .service-image {
+    order: 1;
+  }
+}
+/* Styles for larger screens remain unchanged */
+
+/* Main styles remain unchanged for laptop screens and above */
+
+/* Responsive styles for tablets and smaller devices */
+@media (max-width: 768px) {
+  .services-section {
+    padding: 30px 15px; /* Adjust padding for smaller screens */
+    overflow-x: hidden;
+  }
+
+  .service-item {
+    flex-direction: column; /* Stack items vertically */
+    margin-bottom: 50px; /* Reduce spacing between items */
+    gap: 0px; /* Smaller gap between elements */
+  }
+
+  .service-content {
+    /* padding: 0px; */
+    padding-top: 0;
+    text-align: center !important; /* Center-align text for better readability */
+  }
+
+  .service-image {
+    width: 100%;
+    height: 220px; /* Reduce height for smaller screens */
+    margin-bottom: 20px; /* Add spacing below the image */
+    order: -1; /* Place image above the content */
+  }
+
+  .marketing-title {
+    font-size: 32px; /* Adjust font size for titles */
+    margin-bottom: 12px;
+  }
+
+  .marketing-description {
+    font-size: 16px; /* Adjust font size for descriptions */
+    line-height: 1.5; /* Improve readability */
+    margin-bottom: 15px;
+  }
+
+  .book-now-marketing {
+    font-size: 16px; /* Adjust button font size */
+    padding: 8px 16px; /* Adjust padding for smaller buttons */
+  }
+}
+
+/* Mobile-specific adjustments (max-width: 576px) */
+@media (max-width: 576px) {
+  .service-item {
+    margin-bottom: 30px; /* Further reduce spacing */
+    overflow-x: hidden;
+  }
+
+  .service-image {
+    height: 180px; /* Adjust image height for smaller screens */
+  }
+
+  .marketing-title {
+    font-size: 28px; /* Further reduce title font size */
+    margin-bottom: 8px;
+  }
+
+  .marketing-description {
+    font-size: 16px; /* Further reduce description font size */
+    line-height: 1.4; /* Maintain readability */
+  }
+
+  .book-now-marketing {
+    font-size: 18px; /* Adjust button size */
+    padding: 6px 12px; /* Smaller padding for buttons */
+  }
+
+  .services-section {
+    padding: 20px 10px; /* Compact padding for mobile screens */
+    overflow-y: hidden;
+  }
+}

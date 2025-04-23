@@ -1,0 +1,1 @@
+import{r as t,j as s,a6 as r}from"./index-BLDXZsNf.js";const e="/assets/Ellipse 3-OQ5X6F8U.png";function o({image:a}){return s.jsx(r,{src:a??e,sx:{width:"70px",height:"70px"}})}const x=t.memo(o);export{x as default};

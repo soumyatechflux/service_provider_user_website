@@ -1,0 +1,196 @@
+.Download-container {
+  background-color: #6979f8 !important;
+  font-family: "DM Sans";
+  /* padding: 20px 20px 0px 20px; */
+}
+.download-section {
+  /* padding: 80px 0; */
+  overflow: hidden;
+}
+
+.content-col {
+  padding: 0 25px;
+}
+
+h2 {
+  font-size: 42px;
+  font-weight: bold;
+  margin-bottom: 24px;
+  color: #1a1a1a;
+}
+
+p .download-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #1a1a1a !important;
+  margin-bottom: 32px;
+}
+
+.store-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.store-button {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.store-button:hover {
+  transform: translateY(-2px);
+}
+
+.store-img {
+  width: 150px;
+  /* height: 50px; */
+  display: block;
+}
+.store-img2 {
+  width: 130px;
+  height: 80px;
+  display: block;
+}
+
+.phones-container {
+  position: relative;
+  height: 400px;
+  /* transform: rotate(27deg); */
+}
+
+.phone-outline {
+  position: absolute;
+  width: 100px;
+  height: 200px;
+  border: 2px solid #000000;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.img-phone {
+  display: flex;
+  justify-content: center; /* Center the image horizontally */
+  align-items: center; /* Center the image vertically */
+  width: 100%; /* Ensure the container spans full width */
+  max-width: 400px; /* Set a maximum width for the container */
+  margin: 0 auto; /* Center the container on the page */
+}
+
+.img-phone img {
+  width: 633px;
+  /* max-width: 200px; */
+  height: 430px;
+  object-fit: cover;
+}
+
+/* Responsive styles */
+@media (max-width: 991px) {
+  .content-col {
+    padding-right: 15px;
+    /* margin-bottom: 40px; */
+    text-align: center;
+  }
+
+  .store-buttons {
+    justify-content: center;
+    flex-wrap: nowrap;
+  }
+
+  .phones-container {
+    transform: rotate(32deg) scale(0.6);
+    height: 400px;
+  }
+  .phone-outline {
+    position: absolute;
+    width: 125px;
+    height: 250px;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .download-text {
+    padding: 20px;
+    margin-bottom: 0px !important;
+    color: #fff !important;
+  }
+  .download-title {
+    margin-top: 25px;
+    margin-bottom: 0 !important;
+    font-weight: 700 !important;
+    font-size: 36px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .Download-container {
+    background-color: #f8f8f8;
+    font-family: "DM Sans";
+    padding: 20px 20px 0px 20px;
+  }
+  .download-section {
+    /* padding: 60px 0; */
+  }
+
+  h2 {
+    font-size: 32px;
+  }
+
+  .phones-container {
+    transform: rotate(32deg) scale(0.6);
+    height: 300px;
+  }
+  .phone-outline {
+    position: absolute;
+    width: 125px;
+    height: 250px;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .download-text {
+    padding: 20px;
+    margin-bottom: 0px !important;
+    color: white !important;
+  }
+  .download-title {
+    margin-bottom: 0 !important;
+    font-size: 35px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .Download-container {
+    background-color: #f8f8f8;
+    font-family: "DM Sans";
+    padding: 30px 0px 0px 0px;
+  }
+  .img-phone img {
+    /* width: 600px; */
+    /* max-width: 200px; */
+    height: 300px;
+    object-fit: cover;
+  }
+
+  .phones-container {
+    transform: rotate(32deg) scale(0.5);
+    height: 250px;
+  }
+  .phone-outline {
+    position: absolute;
+    width: 125px;
+    height: 250px;
+    border: 2px solid #000000;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .download-text {
+    padding: 20px 0px 0px 0px;
+    margin-bottom: 0px !important;
+    color: white !important;
+    text-align: justify;
+  }
+}
