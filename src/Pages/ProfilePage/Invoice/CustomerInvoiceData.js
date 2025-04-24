@@ -152,7 +152,7 @@ const getFormattedDate = (rawDate) => {
 
         <View style={styles.section}>
           <Text>Invoice number: {data?.invoice_number_customer || "N/A"}</Text>
-          <Text>Invoice date: {data?.booking_date_time?.split(',').slice(0, 2).join(',') || "N/A"}</Text>
+          <Text>Invoice date: {data?.invoice_date || "N/A"}</Text>
           <Text>Place of supply (Name of state): {data?.company_to_customer?.state || "N/A"}</Text>
           <Text>SAC Code: {data?.company_to_customer?.sac_code || "N/A"}</Text>
           {/* <Text>Category of service: {data?.category?.category_name || "Services"}</Text> */}
@@ -205,7 +205,7 @@ const getFormattedDate = (rawDate) => {
     .map((item, index) => (
       <View style={styles.tableRow} key={index}>
 <Text style={[styles.cell, { flex: 2 }]}>
-  {getFormattedDate(data?.booking_date_time)}
+  {data?.invoice_date}
 </Text>
 
         <Text style={[styles.cell, { flex: 3 }]}>{item.description}</Text>
