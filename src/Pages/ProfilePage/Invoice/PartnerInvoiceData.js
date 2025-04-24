@@ -142,7 +142,7 @@ const getFormattedDate = (rawDate) => {
           <View style={styles.address}>
             <Text style={styles.bold}>{data?.guest_name || "Customer Name"}</Text>
             {/* <Text>Booking ID: {data?.booking_id || "N/A"}</Text> */}
-            <Text  style={styles.smallText}>Address: {data?.visit_address || "N/A"}</Text>
+            <Text>Address: {data?.visit_address || "N/A"}</Text>
           </View>
           <View style={styles.invoiceMeta}>
             <Text>Invoice issued by {data?.issuer_name || " Servyo Powered by Allify Home Solutions Private Limited"}</Text>
@@ -235,12 +235,16 @@ const getFormattedDate = (rawDate) => {
     <Text style={styles.signatureText}>Authorized Signature</Text>
   </View>
 
-        <Text style={styles.footer}>
-        Allify Home Solutions Private Limited / GST: xxxxx
-        {/* <Text style={styles.header}> Allify Home Solutions Private Limited / GST: xxxxx</Text> */}
-          {"\n"}
-          H no. 5/43, second floor, punjabi bagh road no. 43,punjabi bagh sec-3, west delhi, new delhi, delhi, india, 110026 
-        </Text>
+  <Text style={styles.footer}>
+  <Text style={{ fontWeight: 'bold' }}>
+    Allify Home Solutions Private Limited / GST: 07ABCCA1486E1ZW
+  </Text>
+  {"\n"}
+  <Text style={styles.smallText}>
+    H no. 5/43, second floor, punjabi bagh road no. 43, punjabi bagh sec-3, west delhi, new delhi, delhi, india, 110026
+  </Text>
+</Text>
+
       </Page>
     </Document>
   );

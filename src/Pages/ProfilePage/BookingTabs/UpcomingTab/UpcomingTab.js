@@ -15,6 +15,10 @@ import "react-toastify/dist/ReactToastify.css";
 import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
 import { useLocation } from "react-router-dom";
 import { PDFDownloadLink } from "@react-pdf/renderer";
+import PartnerInvoiceData from "../../Invoice/PartnerInvoiceData";
+import CustomerInvoiceData from "../../Invoice/CustomerInvoiceData";
+import { pdf } from '@react-pdf/renderer';
+
 
 const UpcomingTab = () => {
   const [openBookingIndex, setOpenBookingIndex] = useState(null);
@@ -138,6 +142,33 @@ const UpcomingTab = () => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
+   const handleDownloadBothInvoices = async (data) => {
+      if (!data) return;
+    
+      // Generate Customer Invoice Blob
+      const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
+      const customerUrl = URL.createObjectURL(customerBlob);
+    
+      // Generate Partner Invoice Blob
+      const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+      const partnerUrl = URL.createObjectURL(partnerBlob);
+    
+      // Download Customer Invoice
+      const customerLink = document.createElement('a');
+      customerLink.href = customerUrl;
+      customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
+      customerLink.click();
+    
+      // Download Partner Invoice
+      const partnerLink = document.createElement('a');
+      partnerLink.href = partnerUrl;
+      partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
+      partnerLink.click();
+    
+      // Cleanup
+      URL.revokeObjectURL(customerUrl);
+      URL.revokeObjectURL(partnerUrl);
+    };
   const handleConfirmationNext = async () => {
     setLoading(true);
     setBookingData(null);
@@ -752,10 +783,16 @@ const UpcomingTab = () => {
                 
                 */}
 
-                
-                        </>
+              {['completed', 'cancelled'].includes(bookingsIdWise?.booking_status?.toLowerCase?.()) && (
+                <button
+                  className="rating-button"
+                  onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
+                >
+                  Download Invoice
+                </button>
+              )}
 
-                        
+                        </>
                       )}
 
                       {callRazorPay && BookingData && (
@@ -772,6 +809,7 @@ const UpcomingTab = () => {
                         </>
                       )}
                     </div>
+                    
                     
                   </div>
 

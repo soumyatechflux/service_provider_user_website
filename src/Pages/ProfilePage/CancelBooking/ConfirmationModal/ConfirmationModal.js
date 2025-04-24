@@ -92,12 +92,25 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
             )}
 
             <div className="d-flex justify-content-center gap-2 mt-4">
-              <button
+              {/* <button
                 className="btn btn-danger px-4"
                 onClick={onConfirm}
               >
                 Yes, Cancel Booking
-              </button>
+              </button> */}
+
+<button
+  className="btn btn-danger px-4"
+  onClick={onConfirm}
+  disabled={!!error}
+  style={{
+    cursor: error ? 'not-allowed' : 'pointer',
+    opacity: error ? 0.6 : 1,
+  }}
+>
+  Yes, Cancel Booking
+</button>
+
             </div>
           </div>
         </div>

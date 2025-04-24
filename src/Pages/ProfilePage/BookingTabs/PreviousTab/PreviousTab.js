@@ -428,14 +428,14 @@ function PreviousTab() {
                       </div>
                     )}
 
-                    {bookingsIdWise?.category_id == 2 && (
+                    {/* {bookingsIdWise?.category_id == 2 && (
                       <div className="info-group">
                         <h4 className="booking-subtitle">Transmission Type</h4>
                         <p className="booking-info-text">
                           {bookingsIdWise?.transmission_type}
                         </p>
                       </div>
-                    )}
+                    )} */}
 
                     <div className="info-group">
                       <h4 className="booking-subtitle">
