@@ -155,7 +155,7 @@ const getFormattedDate = (rawDate) => {
           <Text>Invoice date: {data?.booking_date_time?.split(',').slice(0, 2).join(',') || "N/A"}</Text>
           <Text>Place of supply (Name of state): {data?.company_to_customer?.state || "N/A"}</Text>
           <Text>SAC Code: {data?.company_to_customer?.sac_code || "N/A"}</Text>
-          <Text>Category of service: {data?.category?.category_name || "Services"}</Text>
+          {/* <Text>Category of service: {data?.category?.category_name || "Services"}</Text> */}
           <Text>
             Tax is payable on reverse charge basis: {data?.reverse_charge ? "Yes" : "No"}
           </Text>
