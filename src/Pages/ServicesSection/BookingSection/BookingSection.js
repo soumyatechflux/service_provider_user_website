@@ -1998,7 +1998,8 @@ useEffect(() => {
 
                     <div className="booking-form-group">
                       <label className="booking-form-label">
-                        Select Time of Visit
+                        {/* Select Time of Visit */}
+                        {service?.id === 3 ? 'Party Start Time' : 'Select Time of Visit'}
                       </label>
 
                       <div

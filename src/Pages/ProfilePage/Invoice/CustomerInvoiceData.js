@@ -184,19 +184,19 @@ const getFormattedDate = (rawDate) => {
     // },
     data?.company_to_customer?.tax?.igst && {
       date: data?.tax_date || 'xxx',
-      description: 'IGST',
+      description: 'IGST (18%)',
       qty: '',
       amount: data?.company_to_customer?.tax?.igst,
     },
     data?.company_to_customer?.tax?.cgst && {
       date: data?.tax_date || 'xxx',
-      description: 'CGST',
+      description: 'CGST (9%)',
       qty: '',
       amount: data?.company_to_customer?.tax?.cgst,
     },
     data?.company_to_customer?.tax?.sgst && {
       date: data?.tax_date || 'xxx',
-      description: 'SGST/UTGST',
+      description: 'SGST/UTGST (9%)',
       qty: '',
       amount: data?.company_to_customer?.tax?.sgst,
     },
