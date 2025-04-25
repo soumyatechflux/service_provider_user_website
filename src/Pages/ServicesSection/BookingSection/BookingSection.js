@@ -4781,6 +4781,13 @@ useEffect(() => {
                   </div>
                  
 
+                  <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Reward Points :</div>
+                    <div> -₹ {DataForPricesAppliedGet?.use_points_amount}</div>
+                  </div>
+
+
+
                   {DataForPricesAppliedGet?.due_payments > 0 && (
                   <div className="fare-breakdown-div">
                     <div className="fare-breakdown-title">Cancellation Charges Due Amount:</div>

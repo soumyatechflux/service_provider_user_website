@@ -7,8 +7,7 @@ import {
 } from "@react-google-maps/api";
 import { MdLocationOn } from "react-icons/md";
 import Loader from "../../Loader/Loader";
-import debounce from "lodash.debounce";
-
+import MessageModal from "../../MessageModal/MessageModal";
 
 const containerStyle = {
   width: "100%",
@@ -21,16 +20,16 @@ const center = {
   lng: 77.209,
 };
 
-const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
-  const { isLoaded } =
-   useJsApiLoader({
-
+const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
+  const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAP_API_KEY,
     libraries: ["places"],
   });
 
+  const [showMsg, setShowMsg] = useState(false);
+  const handleClose = () => setShowMsg(false);
+  const handleShow = () => setShowMsg(true);
 
-  
   const [map, setMap] = useState(null);
   const [startPoint, setStartPoint] = useState("My Current Location");
   const [endPoint, setEndPoint] = useState("");
@@ -52,15 +51,52 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   const handleLoadEndAutocomplete = (autocomplete) =>
     setEndAutocomplete(autocomplete);
 
-
-
+  // const getCurrentLocation = useCallback(() => {
+  //   navigator.geolocation.getCurrentPosition(
+  //     (position) => {
+  //       const { latitude, longitude } = position.coords;
+  //       fetchAddress(latitude, longitude);
+  //       setStartCoordinates({ lat: latitude, lng: longitude });
+  //       if (service?.id === 4) {
+  //         setEndCoordinates({ lat: latitude, lng: longitude });
+  //       }
+  //     },
+  //     (error) => {
+  //       console.error("Error fetching current location:", error);
+  //       alert("Please enable location access or set a manual location.");
+  //     }
+  //   );
+  // }, [service]);
 
   const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        let { latitude, longitude } = position.coords;
+
+        // Define Delhi NCR bounds (approximate bounding box)
+        const delhiNCRBounds = {
+          north: 28.9,
+          south: 28.4,
+          west: 76.8,
+          east: 77.4,
+        };
+
+        // Check if coordinates are outside Delhi NCR
+        const isOutsideDelhiNCR =
+          latitude < delhiNCRBounds.south ||
+          latitude > delhiNCRBounds.north ||
+          longitude < delhiNCRBounds.west ||
+          longitude > delhiNCRBounds.east;
+
+        if (isOutsideDelhiNCR) {
+          // console.warn("User is outside Delhi NCR. Setting default location to Connaught Place.");
+          latitude = 28.6315;
+          longitude = 77.2167;
+        }
+
         fetchAddress(latitude, longitude);
         setStartCoordinates({ lat: latitude, lng: longitude });
+
         if (service?.id === 4) {
           setEndCoordinates({ lat: latitude, lng: longitude });
         }
@@ -71,7 +107,6 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
       }
     );
   }, [service]);
-  
 
   // Fetch address from coordinates
   const fetchAddress = async (latitude, longitude) => {
@@ -129,14 +164,9 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
         });
       }
     } catch (error) {
-      console.error("Error calculating route:", error);
+      // console.error("Error calculating route:", error);
     }
   };
-
-
-
-
-
 
   // useEffect(() => {
   //   if (startPoint !== "My Current Location" && endPoint && startCoordinates && endCoordinates) {
@@ -144,12 +174,9 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
   //   }
   // }, [startPoint, endPoint, startCoordinates, endCoordinates,distance,duration]);
 
-  
-
-
   const debounceTime = 600;
   let debounceTimer = null;
-  
+
   useEffect(() => {
     if (
       startPoint !== "My Current Location" &&
@@ -159,27 +186,26 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
     ) {
       // Clear previous debounce timer
       clearTimeout(debounceTimer);
-  
+
       // Set a new debounce timer
       debounceTimer = setTimeout(() => {
         calculateRoute();
       }, debounceTime);
     }
-  
+
     return () => clearTimeout(debounceTimer);
   }, [startPoint, endPoint, startCoordinates, endCoordinates]);
 
-  
-
   useEffect(() => {
     if (DriverCoordinates) {
-      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
-  
+      const { startPoint, endPoint, startCoordinates, endCoordinates } =
+        DriverCoordinates;
+
       setStartPoint(startPoint || "");
       setEndPoint(endPoint || "");
       setStartCoordinates(startCoordinates || null);
       setEndCoordinates(endCoordinates || null);
-  
+
       // Fetch location only if required values are missing
       if (!(startPoint && endPoint && startCoordinates && endCoordinates)) {
         getCurrentLocation();
@@ -188,25 +214,26 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
       getCurrentLocation();
     }
   }, [DriverCoordinates, getCurrentLocation]);
-  
 
+  const NCR_BOUNDS = {
+    north: 28.9, // Top boundary (Gurgaon, Ghaziabad)
+    south: 27.5, // Bottom boundary (Palwal, Mathura)
+    east: 77.8, // Right boundary (Noida, Ghaziabad)
+    west: 76.7, // Left boundary (Gurgaon, Manesar)
+  };
 
-
-
-
-
+  // Default to Connaught Place, Delhi
+  const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
 
   if (!isLoaded || loading) {
     return <Loader />;
   }
-  
-
 
   return (
     <>
-      {(loading || !isLoaded )&& (
+      {(loading || !isLoaded) && (
         <div>
-               <Loader />
+          <Loader />
         </div>
       )}
 
@@ -216,26 +243,64 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
             <div className="container mt-4 mb-4">
               <div className="mb-4">
                 <label className="form-label">
-                  Pickup  <MdLocationOn size={20} />
+                  {service.id === 7 ? "Pickup and Drop location" : "Pickup"}
+                  <MdLocationOn size={20} />
                 </label>
                 <div className="w-100">
                   <Autocomplete
                     onLoad={handleLoadStartAutocomplete}
+                    // onPlaceChanged={() => {
+                    //   if (startAutocomplete) {
+                    //     const place = startAutocomplete.getPlace();
+                    //     const location = place.geometry?.location;
+                    //     if (location) {
+                    //       setStartPoint(place.formatted_address);
+                    //       setStartCoordinates({
+                    //         lat: location.lat(),
+                    //         lng: location.lng(),
+                    //       });
+                    //     }
+                    //   }
+                    // }}
+
                     onPlaceChanged={() => {
                       if (startAutocomplete) {
                         const place = startAutocomplete.getPlace();
                         const location = place.geometry?.location;
+
                         if (location) {
-                          setStartPoint(place.formatted_address);
-                          setStartCoordinates({
+                          const selectedCoordinates = {
                             lat: location.lat(),
                             lng: location.lng(),
-                          });
+                          };
+
+                          // Check if the selected location is within NCR bounds
+                          const isInsideNCR =
+                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                            selectedCoordinates.lng <= NCR_BOUNDS.east;
+
+                          if (!isInsideNCR) {
+                            handleShow(); // Show the alert modal
+                            setStartPoint("Connaught Place, Delhi"); // Set default address
+                            setStartCoordinates(DEFAULT_LOCATION); // Set default coordinates
+                          } else {
+                            setStartPoint(place.formatted_address);
+                            setStartCoordinates(selectedCoordinates);
+                          }
                         }
                       }
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input
@@ -261,21 +326,58 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
                 <div className="w-100">
                   <Autocomplete
                     onLoad={handleLoadEndAutocomplete}
+                    // onPlaceChanged={() => {
+                    //   if (endAutocomplete) {
+                    //     const place = endAutocomplete.getPlace();
+                    //     const location = place.geometry?.location;
+                    //     if (location) {
+                    //       setEndPoint(place.formatted_address);
+                    //       setEndCoordinates({
+                    //         lat: location.lat(),
+                    //         lng: location.lng(),
+                    //       });
+                    //     }
+                    //   }
+                    // }}
+
                     onPlaceChanged={() => {
                       if (endAutocomplete) {
                         const place = endAutocomplete.getPlace();
                         const location = place.geometry?.location;
+
                         if (location) {
-                          setEndPoint(place.formatted_address);
-                          setEndCoordinates({
+                          const selectedCoordinates = {
                             lat: location.lat(),
                             lng: location.lng(),
-                          });
+                          };
+
+                          // Check if the selected location is within NCR bounds
+                          const isInsideNCR =
+                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                            selectedCoordinates.lng <= NCR_BOUNDS.east;
+
+                          if (!isInsideNCR) {
+                            handleShow(); // Show the alert modal
+                            setEndPoint("Connaught Place, Delhi"); // Set default address
+                            setEndCoordinates(DEFAULT_LOCATION); // Set default coordinates
+                          } else {
+                            setEndPoint(place.formatted_address);
+                            setEndCoordinates(selectedCoordinates);
+                          }
                         }
                       }
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input
@@ -292,7 +394,9 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
               {distance && startPoint && endPoint && (
                 <p style={{ marginTop: "10px" }}>Distance: {distance}</p>
               )}
-              {duration && startPoint && endPoint && <p>Duration: {duration}</p>}
+              {duration && startPoint && endPoint && (
+                <p>Duration: {duration}</p>
+              )}
 
               {startPoint && endPoint && (
                 <GoogleMap
@@ -318,27 +422,70 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
                 <div className="w-100">
                   <Autocomplete
                     onLoad={handleLoadStartAutocomplete}
+                    // onPlaceChanged={() => {
+                    //   if (startAutocomplete) {
+                    //     const place = startAutocomplete.getPlace();
+                    //     const location = place.geometry?.location;
+                    //     if (location) {
+                    //       const formattedAddress = place.formatted_address;
+                    //       const coordinates = {
+                    //         lat: location.lat(),
+                    //         lng: location.lng(),
+                    //       };
+
+                    //       setStartPoint(formattedAddress);
+                    //       setStartCoordinates(coordinates);
+
+                    //       setEndPoint(formattedAddress);
+                    //       setEndCoordinates(coordinates);
+                    //     }
+                    //   }
+                    // }}
+
                     onPlaceChanged={() => {
                       if (startAutocomplete) {
                         const place = startAutocomplete.getPlace();
                         const location = place.geometry?.location;
+
                         if (location) {
-                          const formattedAddress = place.formatted_address;
-                          const coordinates = {
+                          const selectedCoordinates = {
                             lat: location.lat(),
                             lng: location.lng(),
                           };
 
-                          setStartPoint(formattedAddress);
-                          setStartCoordinates(coordinates);
+                          // Check if the selected location is within NCR bounds
+                          const isInsideNCR =
+                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                            selectedCoordinates.lng <= NCR_BOUNDS.east;
 
-                          setEndPoint(formattedAddress);
-                          setEndCoordinates(coordinates);
+                          if (!isInsideNCR) {
+                            handleShow(); // Show the alert modal
+                            setStartPoint("Connaught Place, Delhi"); // Set default address
+                            setStartCoordinates(DEFAULT_LOCATION); // Set default coordinates
+
+                            setEndPoint("Connaught Place, Delhi"); // Set default address
+                            setEndCoordinates(DEFAULT_LOCATION); // Set default coordinates
+                          } else {
+                            setStartPoint(place.formatted_address);
+                            setStartCoordinates(selectedCoordinates);
+
+                            setEndPoint(place.formatted_address);
+                            setEndCoordinates(selectedCoordinates);
+                          }
                         }
                       }
                     }}
                     options={{
                       componentRestrictions: { country: "IN" },
+                      bounds: {
+                        east: 77.5, // Eastern boundary of NCR
+                        west: 76.7, // Western boundary of NCR
+                        north: 28.9, // Northern boundary of NCR
+                        south: 28.2, // Southern boundary of NCR
+                      },
+                      strictBounds: true, // Ensures only results within the bounds
                     }}
                   >
                     <input
@@ -377,10 +524,18 @@ const DriverBookingMap = ({ onSelectPoints, service ,DriverCoordinates}) => {
         </>
       ) : (
         <>
-
-        <Loader />
-
+          <Loader />
         </>
+      )}
+
+      {showMsg && (
+        <MessageModal
+          show={showMsg}
+          handleClose={handleClose}
+          message={
+            "Location outside Delhi NCR is not allowed. Defaulting to Connaught Place."
+          }
+        />
       )}
     </>
   );

@@ -3200,6 +3200,11 @@ const ModifyBooking = () => {
                   </div>
 
                   <div className="fare-breakdown-div">
+                    <div className="fare-breakdown-title">Reward Points :</div>
+                    <div> -₹ {DataForPricesAppliedGet?.use_points_amount}</div>
+                  </div>
+
+                  <div className="fare-breakdown-div">
                     <div className="fare-breakdown-title">Total Amount :</div>
                     <div>₹ {DataForPricesAppliedGet?.total_amount}</div>
                   </div>
