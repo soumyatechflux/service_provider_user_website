@@ -507,11 +507,14 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             setEndPoint("Connaught Place, Delhi"); // Set default address
                             setEndCoordinates(DEFAULT_LOCATION); // Set default coordinates
                           } else {
-                            setStartPoint(place.formatted_address);
+
+
+                            setStartPoint(`${place.name}, ${place.formatted_address}`);
                             setStartCoordinates(selectedCoordinates);
 
-                            setEndPoint(place.formatted_address);
+                            setEndPoint(`${place.name}, ${place.formatted_address}`);
                             setEndCoordinates(selectedCoordinates);
+                            
                           }
                         }
                       }
