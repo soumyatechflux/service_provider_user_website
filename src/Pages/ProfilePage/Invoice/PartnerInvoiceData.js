@@ -173,7 +173,8 @@ const getFormattedDate = (rawDate) => {
   {[
     {
       date: data?.tax_date || 'xxx',
-      description: `${data?.category?.category_name || ''}${data?.sub_category?.sub_category_name ? ' - ' + data.sub_category.sub_category_name : ''}`,
+      // description: `${data?.category?.category_name || ''}${data?.sub_category?.sub_category_name ? ' - ' + data.sub_category.sub_category_name : ''}`,
+      description: `Service fee - ${data?.category?.category_name || ''}`,
       qty: 1,
       amount: data?.partner_to_customer?.total_amount,
     },

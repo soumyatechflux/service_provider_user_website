@@ -2,10 +2,14 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import axios from 'axios';
+import Loader from '../../../Loader/Loader';
+
 
 const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
   const [cancelDetails, setCancelDetails] = useState(null);
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false); // <-- Step 1: Add loading state
+
 
   useEffect(() => {
     if (isOpen && bookingId?.booking_id) {
@@ -15,6 +19,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
 
   const fetchCancelDetails = async (id) => {
     setError(null);
+    setLoading(true);
 
     try {
       const token = sessionStorage.getItem('ServiceProviderUserToken');
@@ -33,6 +38,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
       const errorMessage =
         err.response?.data?.message || 'Error fetching cancellation details. Please try again.';
       setError(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -54,6 +61,8 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
               <FaTimes />
             </button>
           </div>
+          {loading ? (
+             <Loader/>   ) : (
           <div className="modal-body text-center py-4">
             <div className="mb-3">
               <span role="img" aria-label="thinking" style={{ fontSize: '2rem' }}>🤔</span>
@@ -113,6 +122,7 @@ const ConfirmationModal = ({ isOpen, onClose, onConfirm, bookingId }) => {
 
             </div>
           </div>
+        )}
         </div>
       </div>
     </div>
