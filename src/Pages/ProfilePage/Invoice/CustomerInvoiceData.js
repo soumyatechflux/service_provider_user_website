@@ -228,7 +228,9 @@ const getFormattedDate = (rawDate) => {
         ? 'Cancellation Fees'
         : 'Convenience and platform fees',
     qty: 1,
-    amount: data?.company_to_customer?.net_amount,
+    amount: data?.booking_status === "cancelled"
+    ? data?.company_to_customer_cancelled_booking?.net_amount
+    : data?.company_to_customer?.net_amount,
   },
 
   // 2. IGST (Conditional on booking status)
