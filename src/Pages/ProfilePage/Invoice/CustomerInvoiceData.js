@@ -333,8 +333,13 @@ const getFormattedDate = (rawDate) => {
 </Text>
 
   {data?.billing_amount && (
-    <Text>({numberToWords(data?.company_to_customer?.total_amount)} Rupees Only)</Text>
-  )}
+    <Text>(
+  {numberToWords(
+    customer?.booking_status === "completed" 
+      ? data?.company_to_customer?.total_amount
+      : data?.company_to_customer_cancelled_booking?.total_amount
+  )} Rupees Only
+)</Text>  )}
 </View>
 
 <View style={styles.signatureContainer}>
