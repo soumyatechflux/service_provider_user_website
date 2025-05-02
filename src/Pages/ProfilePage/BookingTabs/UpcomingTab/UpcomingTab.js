@@ -142,33 +142,41 @@ const UpcomingTab = () => {
   const [callRazorPay, setCallRazorPay] = useState(false);
   const [BookingData, setBookingData] = useState();
 
-   const handleDownloadBothInvoices = async (data) => {
-      if (!data) return;
+  const handleDownloadBothInvoices = async (data) => {
+    if (!data) return;
     
-      // Generate Customer Invoice Blob
-      const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
-      const customerUrl = URL.createObjectURL(customerBlob);
+    const status = data.booking_status?.toLowerCase();
+    const isCancelled = status === 'cancelled';
     
-      // Generate Partner Invoice Blob
-      const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
-      const partnerUrl = URL.createObjectURL(partnerBlob);
+    // Always generate Customer Invoice
+    const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
+    const customerUrl = URL.createObjectURL(customerBlob);
     
-      // Download Customer Invoice
-      const customerLink = document.createElement('a');
-      customerLink.href = customerUrl;
-      customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
-      customerLink.click();
+    // Download Customer Invoice
+    const customerLink = document.createElement('a');
+    customerLink.href = customerUrl;
+    customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
+    customerLink.click();
     
-      // Download Partner Invoice
-      const partnerLink = document.createElement('a');
-      partnerLink.href = partnerUrl;
-      partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
-      partnerLink.click();
+    // Only generate Partner Invoice if status is not cancelled
+    if (!isCancelled) {
+        const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+        const partnerUrl = URL.createObjectURL(partnerBlob);
+        
+        // Download Partner Invoice
+        const partnerLink = document.createElement('a');
+        partnerLink.href = partnerUrl;
+        partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
+        partnerLink.click();
+        
+        // Cleanup Partner URL
+        URL.revokeObjectURL(partnerUrl);
+    }
     
-      // Cleanup
-      URL.revokeObjectURL(customerUrl);
-      URL.revokeObjectURL(partnerUrl);
-    };
+    // Cleanup Customer URL
+    URL.revokeObjectURL(customerUrl);
+};
+
   const handleConfirmationNext = async () => {
     setLoading(true);
     setBookingData(null);
@@ -565,7 +573,7 @@ const UpcomingTab = () => {
                           </h4>
                         )}
 
-                        <p className="booking-info-text">
+                        {/* <p className="booking-info-text">
                           {bookingsIdWise?.category_id === 2 ? (
                             bookingsIdWise?.car_type // Show car type when category_id === 2
                           ) : bookingsIdWise?.sub_category_id === 3 ? (
@@ -592,7 +600,34 @@ const UpcomingTab = () => {
                           ) : bookingsIdWise?.category_id !== 3 ? (
                             <span>No Dishes Selected</span>
                           ) : null}
-                        </p>
+                        </p> */}
+
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.category_id === 2 ? (
+                          bookingsIdWise?.car_type // Show car type when category_id === 2
+                        ) : bookingsIdWise?.sub_category_id === 3 ? (
+                          bookingsIdWise?.menu?.length > 0 ? (
+                            bookingsIdWise?.menu?.map((item, index) => (
+                              <span key={index}>
+                                {item.name}-{item.quantity}
+                                {index !== bookingsIdWise.menu.length - 1 && <br />}
+                              </span>
+                            ))
+                          ) : (
+                            <span>No menu items selected</span>
+                          )
+                        ) : bookingsIdWise?.category_id !== 3 &&
+                          bookingsIdWise?.dishes?.length > 0 ? (
+                          bookingsIdWise?.dishes?.map((dish, index) => (
+                            <span key={index}>
+                              {dish}
+                              {index !== bookingsIdWise.dishes.length - 1 && ", "}
+                            </span>
+                          ))
+                        ) : bookingsIdWise?.category_id !== 3 ? (
+                          <span>No Dishes Selected</span>
+                        ) : null}
+                      </p>
                       </div>
                       {bookingsIdWise?.category_id == 2 && (
                         <div className="info-group">
@@ -784,13 +819,13 @@ const UpcomingTab = () => {
                 */}
 
               {['completed', 'cancelled'].includes(bookingsIdWise?.booking_status?.toLowerCase?.()) && (
-                <button
+              <button
                   className="rating-button"
                   onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
-                >
+              >
                   Download Invoice
-                </button>
-              )}
+              </button>
+          )}
 
                         </>
                       )}

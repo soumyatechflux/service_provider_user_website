@@ -27,32 +27,33 @@ function PreviousTab() {
     navigate("/my-profile");
   };
 
-  const handleDownloadBothInvoices = async (data) => {
+  const handleDownloadInvoice = async (data) => {
     if (!data) return;
   
-    // Generate Customer Invoice Blob
+    // Always download Customer Invoice
     const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
     const customerUrl = URL.createObjectURL(customerBlob);
-  
-    // Generate Partner Invoice Blob
-    const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
-    const partnerUrl = URL.createObjectURL(partnerBlob);
-  
-    // Download Customer Invoice
+    
     const customerLink = document.createElement('a');
     customerLink.href = customerUrl;
     customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
     customerLink.click();
   
-    // Download Partner Invoice
-    const partnerLink = document.createElement('a');
-    partnerLink.href = partnerUrl;
-    partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
-    partnerLink.click();
+    // Only download Partner Invoice if status is "completed"
+    if (data.booking_status === "completed") {
+      const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+      const partnerUrl = URL.createObjectURL(partnerBlob);
+      
+      const partnerLink = document.createElement('a');
+      partnerLink.href = partnerUrl;
+      partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
+      partnerLink.click();
+      
+      URL.revokeObjectURL(partnerUrl);
+    }
   
     // Cleanup
     URL.revokeObjectURL(customerUrl);
-    URL.revokeObjectURL(partnerUrl);
   };
 
   const handleViewMore = async (id) => {
@@ -378,7 +379,7 @@ function PreviousTab() {
                         </h4>
                       )}
 
-                      <p className="booking-info-text">
+                      {/* <p className="booking-info-text">
                         {bookingsIdWise?.category_id === 2 ? (
                           bookingsIdWise?.car_type // Show car type when category_id === 2
                         ) : bookingsIdWise?.sub_category_id === 3 ? (
@@ -400,6 +401,34 @@ function PreviousTab() {
                               {dish}
                               {index !== bookingsIdWise.dishes.length - 1 &&
                                 ", "}
+                            </span>
+                          ))
+                        ) : bookingsIdWise?.category_id !== 3 ? (
+                          <span>No Dishes Selected</span>
+                        ) : null}
+                      </p> */}
+
+
+                      <p className="booking-info-text">
+                        {bookingsIdWise?.category_id === 2 ? (
+                          bookingsIdWise?.car_type // Show car type when category_id === 2
+                        ) : bookingsIdWise?.sub_category_id === 3 ? (
+                          bookingsIdWise?.menu?.length > 0 ? (
+                            bookingsIdWise?.menu?.map((item, index) => (
+                              <span key={index}>
+                                {item.name}-{item.quantity}
+                                {index !== bookingsIdWise.menu.length - 1 && <br />}
+                              </span>
+                            ))
+                          ) : (
+                            <span>No menu items selected</span>
+                          )
+                        ) : bookingsIdWise?.category_id !== 3 &&
+                          bookingsIdWise?.dishes?.length > 0 ? (
+                          bookingsIdWise?.dishes?.map((dish, index) => (
+                            <span key={index}>
+                              {dish}
+                              {index !== bookingsIdWise.dishes.length - 1 && ", "}
                             </span>
                           ))
                         ) : bookingsIdWise?.category_id !== 3 ? (
@@ -614,7 +643,7 @@ function PreviousTab() {
     {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 && (
       <button
         className="rating-button"
-        onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
+        onClick={() => handleDownloadInvoice(bookingsIdWise)}
       >
         Download Invoice
       </button>

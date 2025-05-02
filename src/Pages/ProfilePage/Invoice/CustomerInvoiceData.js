@@ -169,10 +169,14 @@ const getFormattedDate = (rawDate) => {
     <Text style={styles.cell}>Net Amount</Text>
   </View>
 
-  {[
+  {/* {[
     {
       date: data?.tax_date || 'xxx',
-      description: 'Convenience and platform fees',
+      // description: 'Convenience and platform fees',
+      description:
+   data?.booking_status === "cancelled"
+      ? 'Cancellation Fees'
+      : 'Convenience and platform fees',
       qty: 1,
       amount: data?.company_to_customer?.net_amount,
     },
@@ -212,17 +216,120 @@ const getFormattedDate = (rawDate) => {
         <Text style={styles.cell}>{item.qty}</Text>
         <Text style={styles.cell}>{item.amount || '₹0.00'}</Text>
       </View>
+  ))} */}
+
+
+{[
+  // 1. Net Amount (Cancellation Fees / Platform Fees)
+  {
+    date: data?.tax_date || 'xxx',
+    description:
+      data?.booking_status === "cancelled"
+        ? 'Cancellation Fees'
+        : 'Convenience and platform fees',
+    qty: 1,
+    amount: data?.company_to_customer?.net_amount,
+  },
+
+  // 2. IGST (Conditional on booking status)
+  ...(data?.booking_status === 'completed'
+    ? data?.company_to_customer?.tax?.igst
+      ? [{
+          date: data?.tax_date || 'xxx',
+          description: 'IGST (18%)',
+          qty: '',
+          amount: data?.company_to_customer?.tax?.igst,
+        }]
+      : []
+    : data?.booking_status === 'cancelled'
+      ? data?.company_to_customer_cancelled_booking?.tax?.igst
+        ? [{
+            date: data?.tax_date || 'xxx',
+            description: 'IGST (18%)',
+            qty: '',
+            amount: data?.company_to_customer_cancelled_booking?.tax?.igst,
+          }]
+        : []
+      : []
+  ),
+
+  // 3. CGST (Conditional on booking status)
+  ...(data?.booking_status === 'completed'
+    ? data?.company_to_customer?.tax?.cgst
+      ? [{
+          date: data?.tax_date || 'xxx',
+          description: 'CGST (9%)',
+          qty: '',
+          amount: data?.company_to_customer?.tax?.cgst,
+        }]
+      : []
+    : data?.booking_status === 'cancelled'
+      ? data?.company_to_customer_cancelled_booking?.tax?.cgst
+        ? [{
+            date: data?.tax_date || 'xxx',
+            description: 'CGST (9%)',
+            qty: '',
+            amount: data?.company_to_customer_cancelled_booking?.tax?.cgst,
+          }]
+        : []
+      : []
+  ),
+
+  // 4. SGST/UTGST (Conditional on booking status)
+  ...(data?.booking_status === 'completed'
+    ? data?.company_to_customer?.tax?.sgst
+      ? [{
+          date: data?.tax_date || 'xxx',
+          description: 'SGST/UTGST (9%)',
+          qty: '',
+          amount: data?.company_to_customer?.tax?.sgst,
+        }]
+      : []
+    : data?.booking_status === 'cancelled'
+      ? data?.company_to_customer_cancelled_booking?.tax?.sgst
+        ? [{
+            date: data?.tax_date || 'xxx',
+            description: 'SGST/UTGST (9%)',
+            qty: '',
+            amount: data?.company_to_customer_cancelled_booking?.tax?.sgst,
+          }]
+        : []
+      : []
+  ),
+]
+  .flat() // Flatten nested arrays
+  .filter(Boolean) // Remove empty entries
+  .map((item, index) => (
+    <View style={styles.tableRow} key={index}>
+      <Text style={[styles.cell, { flex: 2 }]}>
+        {data?.invoice_date || 'xxx'}
+      </Text>
+      <Text style={[styles.cell, { flex: 3 }]}>{item.description}</Text>
+      <Text style={styles.cell}>{item.qty}</Text>
+      <Text style={styles.cell}>{item.amount || '₹0.00'}</Text>
+    </View>
   ))}
 </View>
 
 <View style={styles.totalSection}>
-  <Text>Total net amount: {formatCurrency(data?.company_to_customer?.net_amount)}</Text>
+<Text>
+  Total net amount:{" "}
+  {formatCurrency(
+    data?.booking_status === "cancelled"
+      ? data?.company_to_customer_cancelled_booking?.net_amount
+      : data?.company_to_customer?.net_amount
+  )}
+</Text>
   {data?.company_to_customer?.gst > 0 && (
   <Text>Total Tax: {formatCurrency(data?.company_to_customer?.gst)}</Text>
 )}
-  <Text style={styles.bold}>
-    Total amount payable: {formatCurrency(data?.company_to_customer?.total_amount)}
-  </Text>
+  <Text>
+  <Text style={styles.bold}>Total amount payable: </Text>
+  {data?.booking_status === "cancelled"
+    ? formatCurrency(data?.company_to_customer_cancelled_booking?.total_amount)
+    : formatCurrency(data?.company_to_customer?.total_amount)}
+</Text>
+
   {data?.billing_amount && (
     <Text>({numberToWords(data?.company_to_customer?.total_amount)} Rupees Only)</Text>
   )}
