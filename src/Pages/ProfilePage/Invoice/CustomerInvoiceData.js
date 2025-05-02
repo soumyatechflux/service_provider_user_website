@@ -335,7 +335,7 @@ const getFormattedDate = (rawDate) => {
   {data?.billing_amount && (
     <Text>(
   {numberToWords(
-    customer?.booking_status === "completed" 
+    data?.booking_status === "completed" 
       ? data?.company_to_customer?.total_amount
       : data?.company_to_customer_cancelled_booking?.total_amount
   )} Rupees Only
