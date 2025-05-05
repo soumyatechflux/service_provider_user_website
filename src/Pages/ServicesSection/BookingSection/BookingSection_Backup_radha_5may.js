@@ -185,30 +185,6 @@ const BookingSection = () => {
     };
     fetchBasicDataFun();
   }, []);
-
-  const indianStatesAndUTs = [
-    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-    "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-    "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
-    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
-  ];
-  
-  function extractStateFromAddress(address) {
-    if (!address || typeof address !== "string") return "";
-  
-    const lowerAddress = address.toLowerCase();
-  
-    for (let state of indianStatesAndUTs) {
-      if (lowerAddress.includes(state.toLowerCase())) {
-        return state; // Return the properly capitalized version
-      }
-    }
-  
-    return "";
-  }
   
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
 
@@ -278,13 +254,6 @@ const BookingSection = () => {
             service?.category_id === 2 ? DriverCoordinates.startPoint : "",
           short_address_to:
             service?.category_id === 2 ? DriverCoordinates.endPoint : "",
-
-            state:
-            service?.category_id === 2 && DriverCoordinates?.startPoint
-              ? extractStateFromAddress(DriverCoordinates.startPoint)
-              : "",
-          
-          
 
           address_from_latitude:
             service?.category_id === 2
