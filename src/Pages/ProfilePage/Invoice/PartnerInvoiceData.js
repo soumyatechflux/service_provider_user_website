@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   smallText: {
-    fontSize: 8, // or any size you prefer
+    fontSize: 5, // or any size you prefer
   },
   invoiceMeta: {
     width: '50%',
@@ -145,9 +145,9 @@ const getFormattedDate = (rawDate) => {
             <Text>Address: {data?.visit_address || "N/A"}</Text>
           </View>
           <View style={styles.invoiceMeta}>
-            <Text>Invoice issued by {data?.issuer_name || " Servyo Powered by Allify Home Solutions Private Limited"}</Text>
+            <Text>Invoice issued by {data?.issuer_name || "Allify Home Solutions Private Limited"}</Text>
             <Text>On behalf of: {data?.partner?.name || " Servyo Partner"}</Text>
-            <Text>{data?.partner_to_customer?.state || "Delhi, IN-DL, India"}</Text>
+            <Text>{data?.partner_to_customer?.state || "N/A"}</Text>
           </View>
         </View>
 

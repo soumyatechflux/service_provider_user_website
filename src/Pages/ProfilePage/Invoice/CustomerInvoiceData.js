@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   smallText: {
-    fontSize: 8, // or any size you prefer
+    fontSize: 5, // or any size you prefer
   },
   invoiceMeta: {
     width: '50%',
@@ -322,8 +322,14 @@ const getFormattedDate = (rawDate) => {
       : data?.company_to_customer?.net_amount
   )}
 </Text>
-  {data?.company_to_customer?.gst > 0 && (
-  <Text>Total Tax: {formatCurrency(data?.company_to_customer?.gst)}</Text>
+{data?.company_to_customer?.gst > 0 && (
+  <Text>
+    Total Tax: {formatCurrency(
+      data?.booking_status === "cancelled" 
+        ? data?.company_to_customer_cancelled_booking?.gst 
+        : data?.company_to_customer?.gst
+    )}
+  </Text>
 )}
   <Text>
   <Text style={styles.bold}>Total amount payable: </Text>

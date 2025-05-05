@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import Loader from "../../Loader/Loader";
 import MessageModal from "../../MessageModal/MessageModal";
+import MessageModal2 from "../../MessageModal2/MessageModal2";
 
 const RAZORPAY_SCRIPT_ID = "razorpay-script";
 
@@ -150,7 +151,7 @@ const RazorpayPayment = ({
   return (
     <>
       {loading && <Loader />}
-      <MessageModal
+      <MessageModal2
         show={show}
         handleClose={handleClose}
         message={message}
