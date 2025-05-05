@@ -154,7 +154,7 @@ const getFormattedDate = (rawDate) => {
         <View style={styles.section}>
           <Text>Invoice number: {data?.invoice_number_partner || "N/A"}</Text>
           <Text>Invoice date: {data?.invoice_date || "N/A"}</Text>
-          <Text>Place of supply (Name of state): {data?.state_customer || "N/A"}</Text>
+          <Text>Place of supply (Name of state): {data?.partner_to_customer?.state || "N/A"}</Text>
           <Text>SAC Code: {data?.partner_to_customer?.sac_code || "N/A"}</Text>
           {/* <Text>Category of service: {data?.category?.category_name || "Services"}</Text> */}
           <Text>
