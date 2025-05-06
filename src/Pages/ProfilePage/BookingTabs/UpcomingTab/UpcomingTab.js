@@ -818,15 +818,27 @@ const UpcomingTab = () => {
                 
                 */}
 
-              {['completed', 'cancelled'].includes(bookingsIdWise?.booking_status?.toLowerCase?.()) && (
+              {/* {['completed', 'cancelled'].includes(bookingsIdWise?.booking_status?.toLowerCase?.()) && (
               <button
                   className="rating-button"
                   onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
               >
                   Download Invoice
               </button>
-          )}
+          )} */}
 
+{bookingsIdWise && Object.keys(bookingsIdWise).length > 0 &&
+      !(
+        bookingsIdWise.booking_status === "cancelled" &&
+        bookingsIdWise.cancel_charge_amount === "0.00"
+      ) && (
+        <button
+          className="rating-button"
+          onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
+        >
+          Download Invoice
+        </button>
+      )}
                         </>
                       )}
 

@@ -615,7 +615,7 @@ function PreviousTab() {
 
 
 
-{(bookingsIdWise?.booking_status === "completed" || bookingsIdWise?.booking_status === "cancelled") && (
+{/* {(bookingsIdWise?.booking_status === "completed" || bookingsIdWise?.booking_status === "cancelled") && (
   <div>
     {bookingsIdWise?.booking_status === "completed" && (
       <>
@@ -648,6 +648,47 @@ function PreviousTab() {
         Download Invoice
       </button>
     )}
+  </div>
+)} */}
+
+
+{(bookingsIdWise?.booking_status === "completed" || bookingsIdWise?.booking_status === "cancelled") && (
+  <div>
+    {bookingsIdWise?.booking_status === "completed" && (
+      <>
+        <button
+          className="rating-button"
+          onClick={() =>
+            handleHelpCentreButtonClick(
+              bookingsIdWise.booking_id,
+              bookingsIdWise?.sub_category?.sub_category_name
+            )
+          }
+        >
+          Raise a Ticket
+        </button>
+
+        <button
+          className="rating-button"
+          onClick={handleRatingButtonClick}
+        >
+          Give Rating to Partner
+        </button>
+      </>
+    )}
+
+    {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 &&
+      !(
+        bookingsIdWise.booking_status === "cancelled" &&
+        bookingsIdWise.cancel_charge_amount === "0.00"
+      ) && (
+        <button
+          className="rating-button"
+          onClick={() => handleDownloadInvoice(bookingsIdWise)}
+        >
+          Download Invoice
+        </button>
+      )}
   </div>
 )}
 
