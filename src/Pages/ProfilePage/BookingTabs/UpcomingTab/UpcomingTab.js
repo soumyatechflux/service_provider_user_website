@@ -791,6 +791,17 @@ const UpcomingTab = () => {
                         </span>
                       </div>
 
+                      {bookingsIdWise &&
+  bookingsIdWise.booking_status?.toLowerCase() === "cancelled" &&
+  bookingsIdWise.cancel_charge_amount !== "0.00" && (
+    <button
+      className="rating-button"
+      onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
+    >
+      Download Invoice
+    </button>
+)}
+
                       {bookingsIdWise?.payment_mode !== "online" && (
                         <>
                           {/*
@@ -827,18 +838,7 @@ const UpcomingTab = () => {
               </button>
           )} */}
 
-{bookingsIdWise && Object.keys(bookingsIdWise).length > 0 &&
-      !(
-        bookingsIdWise.booking_status === "cancelled" &&
-        bookingsIdWise.cancel_charge_amount === "0.00"
-      ) && (
-        <button
-          className="rating-button"
-          onClick={() => handleDownloadBothInvoices(bookingsIdWise)}
-        >
-          Download Invoice
-        </button>
-      )}
+
                         </>
                       )}
 

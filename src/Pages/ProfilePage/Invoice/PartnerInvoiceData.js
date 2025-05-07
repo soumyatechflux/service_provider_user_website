@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
   },
   smallText: {
-    fontSize: 2, // or any size you prefer
+    fontSize: 2, 
   },
   invoiceMeta: {
     width: '50%',
