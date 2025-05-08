@@ -273,7 +273,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                     onPlaceChanged={() => {
                       if (startAutocomplete) {
                         const place = startAutocomplete.getPlace();
-                        const location = place.geometry?.location;
+                        const location = place?.geometry?.location;
 
                         if (location) {
                           const selectedCoordinates = {
@@ -339,7 +339,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                     onPlaceChanged={() => {
                       if (endAutocomplete) {
                         const place = endAutocomplete.getPlace();
-                        const location = place.geometry?.location;
+                        const location = place?.geometry?.location;
 
                         console.log(place, "placeghvhplace");
 
@@ -484,7 +484,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                     onPlaceChanged={() => {
                       if (startAutocomplete) {
                         const place = startAutocomplete.getPlace();
-                        const location = place.geometry?.location;
+                        const location = place?.geometry?.location;
 
                         if (location) {
                           const selectedCoordinates = {

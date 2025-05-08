@@ -77,11 +77,9 @@ const BookingSection = () => {
   const [addressToEdit, setAddressToEdit] = useState(null); // Track the address being edited
   const [isEditingAddress, setIsEditingAddress] = useState(false); // State for editing address modal
   const [makeDisable, setMakeDisable] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
 
-  const [isSecureFeeChecked, setIsSecureFeeChecked] = useState(true);
 
   const [isUsePoints, setIsUsePoints] = useState(false);
 
@@ -102,30 +100,7 @@ const BookingSection = () => {
     };
   }, []);
 
-  const cancelAddAddress = () => {
-    setNewAddress({
-      houseNumber: "",
-      streetAddress: "",
-      streetAddressLine: "",
-      landmark: "",
-      city: "",
-      state: "",
-      pincode: "",
-      country: "",
-    });
-    setIsAddingAddress(false);
-  };
 
-  const [newAddress, setNewAddress] = useState({
-    houseNumber: "",
-    streetAddress: "",
-    streetAddressLine: "",
-    landmark: "",
-    city: "",
-    state: "",
-    pincode: "",
-    country: "",
-  });
 
   // Fetch profile data
   const fetchProfile = async () => {
@@ -186,31 +161,14 @@ const BookingSection = () => {
     fetchBasicDataFun();
   }, []);
 
-  const indianStatesAndUTs = [
-    "Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh",
-    "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka",
-    "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram",
-    "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu",
-    "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal",
-    "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu",
-    "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"
-  ];
-  
-  function extractStateFromAddress(address) {
-    if (!address || typeof address !== "string") return "";
-  
-    const lowerAddress = address.toLowerCase();
-  
-    for (let state of indianStatesAndUTs) {
-      if (lowerAddress.includes(state.toLowerCase())) {
-        return state; // Return the properly capitalized version
-      }
-    }
-  
-    return "";
-  }
   
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
+
+
+
+
+
+
 
   const FunctionDataForPricesApplied = async () => {
     setLoading(true);
@@ -234,6 +192,7 @@ const BookingSection = () => {
         // Format it back to the required ISO format
         return utcDate.toISOString();
     }
+
 
 
     try {
@@ -279,9 +238,10 @@ const BookingSection = () => {
           short_address_to:
             service?.category_id === 2 ? DriverCoordinates.endPoint : "",
 
+
             state:
-            service?.category_id === 2 && DriverCoordinates?.startPoint
-              ? extractStateFromAddress(DriverCoordinates.startPoint)
+            service?.category_id === 2
+              ? stateNameOfDriver
               : "",
           
           
@@ -1825,6 +1785,52 @@ useEffect(() => {
 
 
   const [DriverCoordinates, setDriverCoordinates] = useState({});
+
+
+
+const [stateNameOfDriver, setStateNameOfDriver] = useState("");
+
+const getStateFromCoordinates = async (lat, lng) => {
+  
+  try {
+    const apiKey = process.env.REACT_APP_GOOGLE_MAP_API_KEY;
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${apiKey}`
+    );
+    const data = await response.json();
+
+    if (data.status === "OK") {
+      const components = data.results[0].address_components;
+      const stateComponent = components.find(comp =>
+        comp.types.includes("administrative_area_level_1")
+      );
+      const stateName = stateComponent ? stateComponent.long_name : "Unknown";
+      setStateNameOfDriver(stateName);
+    } else {
+      setStateNameOfDriver("Unknown");
+      console.error("Geocoding error:", data.status);
+    }
+  } catch (err) {
+    setStateNameOfDriver("Unknown");
+    console.error("Fetch error:", err);
+  }
+};
+
+useEffect(() => {
+  if (
+    service?.category_id === 2 &&
+    DriverCoordinates?.startCoordinates?.lat &&
+    DriverCoordinates?.startCoordinates?.lng
+  ) {
+    getStateFromCoordinates(
+      DriverCoordinates.startCoordinates.lat,
+      DriverCoordinates.startCoordinates.lng
+    );
+  }
+}, [service, DriverCoordinates]);
+
+
+
 
   const handleSelectedPoints = (data) => {
     // console.log('Selected Route Details:', data);
