@@ -1016,7 +1016,8 @@ const ModifyBooking = () => {
       const mergedMenu = basicDataByGet.menu.map((item) => ({
         name: item.name,
         price: parseFloat(item.price), // Ensure price is a number
-        quantity: selectedMenuMap.get(item.name) || 0, // Use selected quantity or default to 0
+        quantity: selectedMenuMap.get(item.name) || 0,
+            initialQuantity: selectedMenuMap.get(item.name) || 0,
       }));
 
       // Update the state with the merged array for menu items
@@ -1042,33 +1043,62 @@ const ModifyBooking = () => {
     );
   };
 
+  // const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
+  //   const totalQuantity = calculateTotalQuantityForChefForParty();
+
+  //   // if (
+  //   //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
+  //   //   4
+  //   // ) {
+  //   //   toast.error("Maximum total quantity reached (4).");
+  //   //   return;
+  //   // }
+
+  //   // Prevent negative quantities for individual items
+  //   if (value < 0) value = 0;
+
+  //   // Prevent the total quantity from being less than 1
+  //   const newTotalQuantity =
+  //     totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity;
+  //   if (newTotalQuantity < 1) {
+  //     toast.error("You have to select at least 1 menu.");
+  //     return; // Prevent further changes if total quantity would become less than 1
+  //   }
+
+  //   // Update the selectedMenuItemsForChefForParty state
+  //   const updatedSelectedItems = [...selectedMenuItemsForChefForParty];
+  //   updatedSelectedItems[index].quantity = value;
+  //   setSelectedMenuItemsForChefForParty(updatedSelectedItems);
+  // };
+
+
   const handleQuantityChangeForMenuItemsForChefForParty = (index, value) => {
-    const totalQuantity = calculateTotalQuantityForChefForParty();
+  const totalQuantity = calculateTotalQuantityForChefForParty();
 
-    // if (
-    //   totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity >
-    //   4
-    // ) {
-    //   toast.error("Maximum total quantity reached (4).");
-    //   return;
-    // }
+  // Prevent negative quantities
+  if (value < 0) value = 0;
 
-    // Prevent negative quantities for individual items
-    if (value < 0) value = 0;
+  const initialQuantity = selectedMenuItemsForChefForParty[index].initialQuantity;
 
-    // Prevent the total quantity from being less than 1
-    const newTotalQuantity =
-      totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity;
-    if (newTotalQuantity < 1) {
-      toast.error("You have to select at least 1 menu.");
-      return; // Prevent further changes if total quantity would become less than 1
-    }
+  if (value < initialQuantity) {
+    toast.error("You cannot reduce the quantity below the initial selection.");
+    return;
+  }
 
-    // Update the selectedMenuItemsForChefForParty state
-    const updatedSelectedItems = [...selectedMenuItemsForChefForParty];
-    updatedSelectedItems[index].quantity = value;
-    setSelectedMenuItemsForChefForParty(updatedSelectedItems);
-  };
+  const newTotalQuantity = totalQuantity + value - selectedMenuItemsForChefForParty[index].quantity;
+
+  if (newTotalQuantity < 1) {
+    toast.error("You have to select at least 1 menu.");
+    return;
+  }
+
+  const updatedSelectedItems = [...selectedMenuItemsForChefForParty];
+  updatedSelectedItems[index].quantity = value;
+  setSelectedMenuItemsForChefForParty(updatedSelectedItems);
+};
+
+
+
 
   // Calculate the total price for each item
   const calculateTotalForMenuItemForChefForParty = (price, quantity) =>
@@ -2838,11 +2868,12 @@ const ModifyBooking = () => {
                                   <td>₹ {parseInt(item.price, 10)}</td>
 
                                   <td>
-                                    <input
+                                    {/* <input
                                       type="number"
-                                      value={item.quantity}
+                                      value={item?.quantity}
                                       min={0}
                                       max={4}
+
                                       // onChange={(e) =>
                                       //   handleQuantityChangeForMenuItemsForChefForParty(
                                       //     index,
@@ -2874,7 +2905,30 @@ const ModifyBooking = () => {
                                         padding: "5px",
                                         border: "1px solid #ddd",
                                       }}
-                                    />
+                                    /> */}
+
+
+<input
+  type="number"
+  value={item?.quantity}
+  min={item?.initialQuantity}
+  max={4}
+  onChange={(e) =>
+    handleQuantityChangeForMenuItemsForChefForParty(
+      index,
+      parseInt(e.target.value) || 0
+    )
+  }
+  style={{
+    width: "50px",
+    padding: "5px",
+    border: "1px solid #ddd",
+  }}
+/>
+
+
+
+
                                   </td>
                                   <td>
                                     ₹{" "}
