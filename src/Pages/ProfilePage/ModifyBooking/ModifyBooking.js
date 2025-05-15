@@ -1936,7 +1936,7 @@ const ModifyBooking = () => {
 
                 {service?.category_id === 2 && (
                   <>
-                    {service.id === 6 && (
+                    {service?.id === 6 && (
                       <>
                         <div className="booking-form-group">
                           <div className="d-flex justify-content-between align-items-center">
@@ -3071,6 +3071,32 @@ const ModifyBooking = () => {
                     </div>
                   </>
                 )}
+
+
+  {service.id !== 9 && (
+                  <>
+                    <div className="booking-detail-card">
+                      <div>
+                        <strong>
+                          {(service.category_id === 2 ||
+                            service.category_id === 3) &&
+                          service.id !== 9
+                            ? "Number of Hours :"
+                            : "Number of People :"}
+                        </strong>
+                      </div>
+                      <div>
+                        {service.category_id === 3
+                          ? SelectedNumberOfHoursObjectForGardner?.hours
+                          : service.category_id === 2
+                          ? SelectedNumberOfHoursObjectForDriver?.hours
+                          : DataForPricesAppliedGet?.people_count}
+                      </div>
+                    </div>
+                  </>
+                )}
+
+
 
                 {service.id === 9 && (
                   <>
