@@ -752,7 +752,16 @@ const UpcomingTab = () => {
   </div>
 )}
 
-{bookingsIdWise?.use_points_amount > 0 && (
+{/* {bookingsIdWise?.use_points_amount > 0 && (
+  <div className="billing-row">
+    <span className="billing-subtitle">Reward Points</span>
+    <span className="billing-subtitle">
+      -₹{bookingsIdWise?.use_points_amount}
+    </span>
+  </div>
+)} */}
+
+{bookingsIdWise?.use_points > 0 && bookingsIdWise?.use_points_amount > 0 && (
   <div className="billing-row">
     <span className="billing-subtitle">Reward Points</span>
     <span className="billing-subtitle">

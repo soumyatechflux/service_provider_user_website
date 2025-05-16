@@ -525,7 +525,7 @@ function PreviousTab() {
                         <span className="billing-subtitle">Extra Charges</span>
                         <span className="billing-subtitle">
                           {/* ₹{bookingsIdWise?.extra_charge} */}₹
-                          {bookingsIdWise?.price2}
+                          {bookingsIdWise?.extra_charge}
                         </span>
                       </div>
                     )}
@@ -541,14 +541,24 @@ function PreviousTab() {
                       </div>
                     )}
 
-                    {bookingsIdWise?.use_points_amount > 0 && (
+                    {/* {bookingsIdWise?.use_points_amount > 0 && (
                       <div className="billing-row">
                         <span className="billing-subtitle">Reward Points</span>
                         <span className="billing-subtitle">
                           -₹{bookingsIdWise?.use_points_amount}
                         </span>
                       </div>
-                    )}
+                    )} */}
+
+                    {bookingsIdWise?.use_points > 0 && bookingsIdWise?.use_points_amount > 0 && (
+  <div className="billing-row">
+    <span className="billing-subtitle">Reward Points</span>
+    <span className="billing-subtitle">
+      -₹{bookingsIdWise?.use_points_amount}
+    </span>
+  </div>
+)}
+
                     <div className="billing-row total">
                       <span className="billing-subtitle text-bold">
                         Total Amount
