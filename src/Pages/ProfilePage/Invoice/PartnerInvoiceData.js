@@ -145,7 +145,7 @@ const getFormattedDate = (rawDate) => {
             <Text>Address: {data?.visit_address || "N/A"}</Text>
           </View>
           <View style={styles.invoiceMeta}>
-            <Text>Invoice issues by {data?.issuer_name || "Allify Home Solutions Private Limited"}</Text>
+            <Text>Invoice issued by {data?.issuer_name || "Allify Home Solutions Private Limited"}</Text>
             <Text>On behalf of: {data?.partner?.name || " Servyo Partner"}</Text>
             <Text>{data?.partner_to_customer?.state || "N/A"}</Text>
           </View>
