@@ -7,6 +7,8 @@ import axios from "axios";
 import Loader from "../../Loader/Loader";
 import { FaCrosshairs } from "react-icons/fa";
 import MessageModal from "../../MessageModal/MessageModal";
+import marPinImg from "../../marker_pin.png";
+
 
 const LocationModal = ({
   show,
@@ -603,8 +605,22 @@ const LocationModal = ({
                     }}
                   />
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                   {/* Draggable Marker */}
-                  <Marker
+                  {/* <Marker
                     position={location}
                     draggable
                     onDragEnd={handleMarkerDragEnd}
@@ -612,8 +628,22 @@ const LocationModal = ({
                       url: "https://upload.wikimedia.org/wikipedia/commons/e/e6/Map_marker_icon_%E2%80%93_Nicolas_Mollet_%E2%80%93_Flag_%E2%80%93_Default.png",
                       scaledSize: new window.google.maps.Size(40, 40),
                     }}
-                  />
+                  /> */}
+
+         <Marker
+       position={location}
+       draggable
+       onDragEnd={handleMarkerDragEnd}
+       icon={{
+          //  url: "https://img.icons8.com/ios-filled/50/000000/marker.png",
+           url: {marPinImg},
+           scaledSize: new window.google.maps.Size(40, 40),
+       }}
+   />
+
+
                 </GoogleMap>
+
               )}
               <Form className="mt-4">
                 {UseMyLocation && (
