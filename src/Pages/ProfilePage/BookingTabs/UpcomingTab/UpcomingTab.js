@@ -155,7 +155,7 @@ const UpcomingTab = () => {
     // Download Customer Invoice
     const customerLink = document.createElement('a');
     customerLink.href = customerUrl;
-    customerLink.download = `Customer-Invoice-${data.invoice_number_customer || data.id}.pdf`;
+    customerLink.download = `Invoice-${data.invoice_number_customer || data.id}.pdf`;
     customerLink.click();
     
     // Only generate Partner Invoice if status is not cancelled
@@ -166,7 +166,7 @@ const UpcomingTab = () => {
         // Download Partner Invoice
         const partnerLink = document.createElement('a');
         partnerLink.href = partnerUrl;
-        partnerLink.download = `Partner-Invoice-${data.invoice_number_partner || data.id}.pdf`;
+        partnerLink.download = `Invoice-${data.invoice_number_partner || data.id}.pdf`;
         partnerLink.click();
         
         // Cleanup Partner URL
