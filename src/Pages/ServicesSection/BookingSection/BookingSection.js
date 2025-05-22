@@ -4194,7 +4194,7 @@ useEffect(() => {
                   </>
                 )}
 
-                {service.id !== 9 && (
+                {/* {service.id !== 9 && (
                   <>
                     <div className="booking-detail-card">
                       <div>
@@ -4215,7 +4215,32 @@ useEffect(() => {
                       </div>
                     </div>
                   </>
-                )}
+                )} */}
+
+                {service.id !== 9 && (
+  <>
+    <div className="booking-detail-card">
+      <div>
+        <strong>
+          {service.id === 7 
+            ? "Number of Days :"
+            : (service.category_id === 2 || service.category_id === 3) && service.id !== 9
+              ? "Number of Hours :"
+              : "Number of People :"}
+        </strong>
+      </div>
+      <div>
+        {service.id === 7
+          ? `${Math.ceil(SelectedNumberOfHoursObjectForDriver?.hours / 24)} ${Math.ceil(SelectedNumberOfHoursObjectForDriver?.hours / 24) === 1 ? 'day' : 'days'}`
+          : service.category_id === 3
+            ? SelectedNumberOfHoursObjectForGardner?.hours
+            : service.category_id === 2
+              ? SelectedNumberOfHoursObjectForDriver?.hours
+              : DataForPricesAppliedGet?.people_count}
+      </div>
+    </div>
+  </>
+)}
 
                 {service.id === 9 && (
                   <>

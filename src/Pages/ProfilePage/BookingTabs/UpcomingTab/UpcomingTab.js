@@ -525,7 +525,7 @@ const UpcomingTab = () => {
                         </div>
                       )}
 
-                      <div className="info-group">
+                      {/* <div className="info-group">
                         <h4 className="booking-subtitle">
                           {bookingsIdWise?.sub_category_id === 8
                             ? "Number Of Hours Booked"
@@ -562,7 +562,46 @@ const UpcomingTab = () => {
                               })
                             : bookingsIdWise?.people_count}
                         </p>
-                      </div>
+                      </div> */}
+
+                      <div className="info-group">
+  <h4 className="booking-subtitle">
+    {bookingsIdWise?.sub_category_id === 7
+      ? "Number Of Days Booked"
+      : bookingsIdWise?.sub_category_id === 8
+      ? "Number Of Hours Booked"
+      : bookingsIdWise?.category_id === 2 ||
+        bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.sub_category_id === 9
+        ? "Gardener Visiting Slots"
+        : "Number Of Hours Booked"
+      : "Number of People"}
+  </h4>
+  <p className="booking-info-text">
+    {bookingsIdWise?.sub_category_id === 7
+      ? `${Math.ceil(bookingsIdWise?.no_of_hours_booked / 24)} ${Math.ceil(bookingsIdWise?.no_of_hours_booked / 24) === 1 ? 'day' : 'days'}`
+      : bookingsIdWise?.sub_category_id === 8
+      ? bookingsIdWise?.no_of_hours_booked
+      : bookingsIdWise?.category_id === 2
+      ? bookingsIdWise?.no_of_hours_booked
+      : bookingsIdWise?.sub_category_id === 9
+      ? bookingsIdWise?.gardener_visiting_slots &&
+        JSON.parse(bookingsIdWise.gardener_visiting_slots).map((slot, index) => {
+          const formattedDate = new Date(slot.date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric",
+          });
+          return (
+            <div key={index}>
+              <strong>Date : </strong>
+              {formattedDate}
+            </div>
+          );
+        })
+      : bookingsIdWise?.people_count}
+  </p>
+</div>
 
                       <div className="info-group">
                         {bookingsIdWise?.category_id !== 3 && (
