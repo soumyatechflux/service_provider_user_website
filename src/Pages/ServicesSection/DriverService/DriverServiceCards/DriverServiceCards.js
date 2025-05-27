@@ -97,12 +97,12 @@ const DriverServiceCards = () => {
                 />
                   <h3>{service?.sub_category_name}</h3>
                   <div className="rating-cook">
-                      <span className="stars">
+                      {/* <span className="stars">
                         {"★"}{" "}
                         <span style={{ color: "#666666" }}>
                           {service?.rating?.toFixed(1) || "0.0"}
                         </span>
-                      </span>
+                      </span> */}
 
                       {/* <span className="reviews">
                         ({service?.reviews}273 reviews)
