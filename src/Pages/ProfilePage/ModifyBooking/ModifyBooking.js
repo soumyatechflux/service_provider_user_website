@@ -1082,6 +1082,7 @@ const ModifyBooking = () => {
 
   if (value < initialQuantity) {
     toast.error("You cannot reduce the quantity below the initial selection.");
+    console.log("error")
     return;
   }
 
@@ -2911,7 +2912,7 @@ const ModifyBooking = () => {
 <input
   type="number"
   value={item?.quantity}
-  min={item?.initialQuantity}
+  // min={item?.initialQuantity}
   max={4}
   onChange={(e) =>
     handleQuantityChangeForMenuItemsForChefForParty(
