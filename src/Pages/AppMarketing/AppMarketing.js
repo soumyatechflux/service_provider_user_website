@@ -91,7 +91,7 @@ const AppMarketing = () => {
           <div className="phone">
             <img
               // src="./AppMarketing/iPhone_13.png"
-               src="./AppMarketing/NewIPhone13.png"
+               src="./AppMarketing/NewIphone13.png"
               alt="App interface"
               className="phone-screen"
             />
