@@ -152,7 +152,7 @@ const Footer = () => {
 
       {/* Footer Bottom */}
       <div className="footer-bottom">
-        <p>Copyright © 2024 Servyo Powered by Allify Home Solutions Private Limited</p>
+        <p>Copyright © 2025 Servyo Powered by Allify Home Solutions Private Limited</p>
       </div>
 
       {/* Modal */}
