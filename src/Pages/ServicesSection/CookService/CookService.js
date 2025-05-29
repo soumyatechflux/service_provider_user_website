@@ -4,6 +4,7 @@ import WhyBookCooks from './WhyBookCooks/WhyBookCooks'
 import CookMarketingSection from './CookMarketingSection/CookMarketingSection'
 import CookFeedback from './CookFeedback/CookFeedback'
 import CookFAQs from './CookFAQs/CookFAQs'
+import Testimonials from '../../Testimonials/Testimonials'
 
 const CookService = () => {
 
@@ -20,6 +21,7 @@ const CookService = () => {
         <WhyBookCooks/>
         <CookMarketingSection/>
         <CookFeedback/>
+        {/* <Testimonials/> */}
         <CookFAQs/>
     </div>
   )

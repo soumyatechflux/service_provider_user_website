@@ -4,6 +4,7 @@ import WhyBookDriver from './WhyBookDriver/WhyBookDriver'
 import DriverMarketingSection from './DriverMarketingSection/DriverMarketingSection'
 import DriverFeedback from './DriverFeedback/DriverFeedback'
 import DriverFAQs from './DriverFAQs/DriverFAQs'
+import CookFeedback from '../CookService/CookFeedback/CookFeedback'
 
 const DriverService = () => {
 
@@ -17,7 +18,8 @@ const DriverService = () => {
       <DriverServiceCards/>
       <WhyBookDriver/>
       <DriverMarketingSection/>
-      <DriverFeedback/>
+      {/* <DriverFeedback/> */}
+      <CookFeedback/>
       <DriverFAQs/>
     </div>
   )

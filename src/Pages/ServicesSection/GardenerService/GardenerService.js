@@ -4,6 +4,7 @@ import WhyBookGardener from './WhyBookGardener/WhyBookGardener'
 import GardenerMarketingSection from './GardenerMarketingSection/GardenerMarketingSection'
 import GardenerFeedback from './GardenerFeedback/GardenerFeedback'
 import GardenerFAQs from './GardenerFAQs/GardenerFAQs'
+import CookFeedback from '../CookService/CookFeedback/CookFeedback'
 
 const GardenerService = () => {
 
@@ -18,7 +19,8 @@ const GardenerService = () => {
       <GardenerServiceCards/>
       <WhyBookGardener/>
       <GardenerMarketingSection/>
-      <GardenerFeedback/>
+      {/* <GardenerFeedback/> */}
+      <CookFeedback/>
       <GardenerFAQs/>
     </div>
   )
