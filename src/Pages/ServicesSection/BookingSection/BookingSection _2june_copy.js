@@ -1,23 +1,35 @@
-import { useJsApiLoader } from "@react-google-maps/api";
-import axios from "axios";
-import { addDays, differenceInDays, format } from "date-fns";
-import { ChevronLeft, MapPin } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
-import { Button, Dropdown } from "react-bootstrap";
-import "react-clock/dist/Clock.css";
-import { ChevronDown, ChevronRight } from "react-feather";
-import { BsThreeDotsVertical } from "react-icons/bs";
-import { IoIosArrowForward } from "react-icons/io";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import "./BookingSection.css";
+import { ChevronLeft, MapPin, Voicemail } from "lucide-react";
+import TimePicker from "react-time-picker";
 import "react-time-picker/dist/TimePicker.css";
+import "react-clock/dist/Clock.css";
+import axios from "axios";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { format } from "date-fns";
+import RazorpayPayment from "./RazorpayPayment";
+import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import TextField from "@mui/material/TextField";
+import { ArrowBarDown } from "react-bootstrap-icons";
+import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
+import { Dropdown, Modal } from "react-bootstrap";
+import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
+import { BsThreeDotsVertical } from "react-icons/bs";
+import MessageModal from "../../MessageModal/MessageModal";
+import { IoIosArrowForward } from "react-icons/io";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Loader from "../../Loader/Loader";
-import MessageModal from "../../MessageModal/MessageModal";
+import { ChevronRight, ChevronDown } from "react-feather";
+import { FaRupeeSign, FaPercent } from "react-icons/fa";
+import { useJsApiLoader } from "@react-google-maps/api";
+import { LoadScript } from "@react-google-maps/api";
+import { Button } from "react-bootstrap";
 import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
-import "./BookingSection.css";
+import Loader from "../../Loader/Loader";
+import { addDays, differenceInDays } from "date-fns";
 import DriverBookingMap from "./DriverBookingMap";
-import RazorpayPayment from "./RazorpayPayment";
 
 const BookingSection = () => {
 
@@ -753,8 +765,7 @@ const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
   currentDate,
   serviceStartTimeInMinutes,
   serviceEndTimeInMinutes,
-  // commented by radhesha
-  // unusedAdjustedStartTime
+  unusedAdjustedStartTime
 );
 
 
@@ -783,71 +794,10 @@ if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
     return timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes;
   });
 
-  console.log(options, "options")
-
   setFilteredTimeOptions(options);
 };
 
 
-
-// radha code
-// const filterTimeOptions = () => {
-//   if (!selectedDate || timeOptions?.length === 0) return;
-
-//   const currentDate = new Date();
-//   const today = currentDate.toDateString();
-
-//   const currentTime = getCurrentTimeInHHMM();
-
-//   const serviceStartTime =
-//     basicDataByGet?.sub_category?.service_start_time || "00:00";
-//   const serviceEndTime =
-//     basicDataByGet?.sub_category?.service_end_time || "23:59";
-
-//   const currentTimeInMinutes = timeToMinutes(currentTime);
-//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
-//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
-
-//   const bufferTimeInMinutes = adjustedStartTime;
-//   const totalMinutesFromNow = currentTimeInMinutes + bufferTimeInMinutes;
-
-//   // 🌍 Compute the display date dynamically (add days based on 1440-minute chunks)
-//   const daysToAdd = Math.floor(totalMinutesFromNow / 1440);
-//   const leftoverMinutes = totalMinutesFromNow % 1440;
-
-//   let displayFromDate = new Date(currentDate);
-//   displayFromDate.setDate(currentDate.getDate() + daysToAdd);
-
-//   // 🧠 Dynamic start boundary: use leftover time or serviceStartTime
-//   let startBoundary;
-//   if (selectedDate.toDateString() === displayFromDate.toDateString()) {
-//     if (leftoverMinutes === 0) {
-//       startBoundary = serviceStartTimeInMinutes;
-//     } else {
-//       startBoundary = leftoverMinutes;
-//     }
-//   } else {
-//     startBoundary = serviceStartTimeInMinutes;
-//   }
-
-//   // 🛑 Early exit if selectedDate is before displayFromDate
-//   if (selectedDate < new Date(displayFromDate.toDateString())) {
-//     setFilteredTimeOptions([]);
-//     return;
-//   }
-
-//   // 🔍 Filter time options
-//   const options = timeOptions.filter((time) => {
-//     const timeInMinutes = timeToMinutes(time);
-//     return (
-//       timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
-//     );
-//   });
-
-//   console.log(options, "options");
-
-//   setFilteredTimeOptions(options);
-// };
 
 
 useEffect(() => {
@@ -2048,8 +1998,6 @@ useEffect(() => {
                       </LocalizationProvider>
                     </div> */}
 
-
-
                     <div className="booking-form flex-fill mb-4">
                       <label className="booking-form-label">
                         Select Visit Date
@@ -2084,8 +2032,6 @@ useEffect(() => {
                         })}
                       </div>
                     </div>
-
-                    
 
                     <div className="booking-form-group">
                       <label className="booking-form-label">
@@ -2141,7 +2087,7 @@ useEffect(() => {
                           ))}
                       </div>
                     </div>
-
+                    
                   </div>
                 </>
               )}
