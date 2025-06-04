@@ -1616,12 +1616,43 @@ input:checked + .slider:before {
   transform: scale(1.05); /* Slightly increase size */
   box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4); /* Add shadow */
 }
+/* css by radhesha for Select Menu Items in party for chef */
+input[type="number"] {
+  -webkit-appearance: auto !important;
+  -moz-appearance: auto !important;
+  appearance: auto !important;
+}
 
-
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: auto !important;
+  opacity: 1 !important;
+  display: block !important;
+  height: auto !important;
+  margin: 0;
+  position: relative;
+  cursor: pointer !important;
+}
 
 /* @media screen and (min-width: 810px) and (max-width: 768px) {} */
 
-
+/* css by radhesha for Select Menu Items in party for chef */
+@media (max-width: 768px) {
+  input[type="number"] {
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+  }
+  
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: auto !important;
+    opacity: 1 !important;
+    display: block !important;
+    height: 20px !important;
+    width: 15px !important;
+  }
+}
 
 @media screen and (max-width: 995px) {
   /* For tablets and smaller devices */

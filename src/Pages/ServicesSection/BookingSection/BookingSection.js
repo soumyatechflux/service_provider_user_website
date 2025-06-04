@@ -41,7 +41,15 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
-
+ {/* code by radhesha for Select Menu Items in party for chef */}
+const numberInputStyle = {
+  width: "50px",
+  padding: "5px",
+  border: "1px solid #ddd",
+  WebkitAppearance: "auto",
+  MozAppearance: "auto",
+  appearance: "auto",
+};
 
   const handleNavigation = () => {
     // Retrieve stored service page location
@@ -3390,7 +3398,7 @@ useEffect(() => {
                                   {/* <td>₹ {item.price}</td> */}
                                   <td>₹ {parseInt(item.price, 10)}</td>
 
-                                  <td>
+                                  {/* <td>
                                     <input
                                       type="number"
                                       value={item.quantity}
@@ -3407,6 +3415,25 @@ useEffect(() => {
                                         padding: "5px",
                                         border: "1px solid #ddd",
                                       }}
+                                      onKeyDown={(e) => e.preventDefault()} // ❌ disables typing
+                                    />
+                                  </td> */}
+
+{/* code by radhesha for Select Menu Items in party for chef */}
+                                <td>
+                                    <input
+                                      type="number"
+                                      value={item.quantity}
+                                      min={0}
+                                      max={4}
+                                      onKeyDown={(e) => e.preventDefault()} // Prevent typing
+                                      onChange={(e) =>
+                                        handleQuantityChangeForMenuItemsForChefForParty(
+                                          index,
+                                          parseInt(e.target.value) || 0
+                                        )
+                                      }
+                                      style={numberInputStyle}
                                     />
                                   </td>
                                   <td>
