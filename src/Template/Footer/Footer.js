@@ -121,7 +121,7 @@ const Footer = () => {
              
             </div>
             <div className="app-buttons">
-              <a
+              {/* <a
                 href="#!"
                 onClick={(e) => {
                   e.preventDefault(); // Prevent default anchor behavior
@@ -134,13 +134,35 @@ const Footer = () => {
                   src="/Footer/apple.png"
                   alt="App Store"
                 />
-              </a>
+              </a> */}
+
+             <a
+  href="https://apps.apple.com/in/app/servyo/id6746445188"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="store-button-footer google-play"
+>
+  <img
+    className="store-img"
+    src="/Footer/apple.png"
+    alt="App Store"
+  />
+</a> 
+              {/* <a
+                href="#!"
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default anchor behavior
+                  handleOpenModal("App coming soon! Stay tuned.");
+                }}
+                className="store-button-footer google-play"
+              >
+                <img className="store-img" src="/Footer/google.png" alt="Google Play" />
+              </a> */}
+
               <a
-  href="#!"
-  onClick={(e) => {
-    e.preventDefault(); // Prevent default anchor behavior
-    handleOpenModal("App coming soon! Stay tuned.");
-  }}
+  href="https://play.google.com/store/apps/details?id=com.servyo.user"
+  target="_blank"
+  rel="noopener noreferrer"
   className="store-button-footer google-play"
 >
   <img className="store-img" src="/Footer/google.png" alt="Google Play" />

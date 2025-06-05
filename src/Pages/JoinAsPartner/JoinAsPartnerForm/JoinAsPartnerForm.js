@@ -289,8 +289,9 @@ const JoinAsPartnerForm = () => {
 <div>
   <button 
     className="join-partner-button-download"
-    onClick={() => window.location.href = "https://techfluxsolutions.us/servyo.apk"}
-  >
+    // onClick={() => window.location.href = "https://techfluxsolutions.us/servyo.apk"}
+onClick={() => window.open("https://play.google.com/store/apps/details?id=com.servyo.partner", "_blank")}
+    >
     Download App
   </button>
 </div>

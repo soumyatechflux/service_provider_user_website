@@ -2914,6 +2914,7 @@ const ModifyBooking = () => {
   value={item?.quantity}
   // min={item?.initialQuantity}
   max={4}
+  onKeyDown={(e) => e.preventDefault()} // Prevent typing
   onChange={(e) =>
     handleQuantityChangeForMenuItemsForChefForParty(
       index,

@@ -286,7 +286,7 @@ const Navbar = () => {
             </div>
 
             {/* Download App Button */}
-            <button
+            {/* <button
               className="btn btn-primary d-lg-inline-block nav-buttons"
               onClick={() => {
                 window.scrollTo({
@@ -296,7 +296,21 @@ const Navbar = () => {
               }}
             >
               Download App
-            </button>
+            </button> */}
+
+{/* radhesha code */}
+            <button
+            className="btn btn-primary d-lg-inline-block nav-buttons"
+            onClick={() => {
+              window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth",
+              });
+            }}
+          >
+            Download App
+          </button>
 
             {/* User Profile Dropdown */}
             <div className="nav-item dropdown">
