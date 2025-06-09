@@ -2928,17 +2928,58 @@ const ModifyBooking = () => {
   }}
 /> */}
 
+{/* --------------2nd code------------------- */}
+
+
+
+
 
 <div style={{ position: 'relative', display: 'inline-block' }}>
     <input
-      type="number"
+      type="text"
       value={item?.quantity}
       // min={item?.initialQuantity}
       max={4}
-      onKeyDown={(e) => e.preventDefault()} // Prevent typing
-      onKeyPress={(e) => e.preventDefault()} // Additional prevention
-      onPaste={(e) => e.preventDefault()} // Prevent paste
-      onDrop={(e) => e.preventDefault()} // Prevent drag-drop
+      onKeyDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }} // Prevent typing
+      onKeyPress={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }} // Additional prevention
+      onKeyUp={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }} // Prevent key up events
+      onInput={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        // Reset to original value if somehow changed
+        e.target.value = item?.quantity || 0;
+        return false;
+      }} // Prevent input changes
+      onPaste={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }} // Prevent paste
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        return false;
+      }} // Prevent drag-drop
+      onFocus={(e) => {
+        // Blur immediately to prevent virtual keyboard on problematic devices
+        e.target.blur();
+      }}
+      onTouchStart={(e) => {
+        // Prevent touch typing on mobile
+        e.preventDefault();
+      }}
       onChange={(e) =>
         handleQuantityChangeForMenuItemsForChefForParty(
           index,
@@ -2954,9 +2995,18 @@ const ModifyBooking = () => {
         WebkitAppearance: "auto",
         MozAppearance: "spinner-textfield",
         appearance: "auto",
+        // Additional mobile prevention
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
       }}
       inputMode="none" // Prevent mobile keyboard
       autoComplete="off"
+      readOnly={false} // Keep as false to allow arrows to work
+      tabIndex={-1} // Remove from tab order
+      // Additional attributes for Vivo and other Android devices
+      data-prevent-typing="true"
     />
     
     {/* Custom arrows as fallback for problematic devices */}
@@ -3005,7 +3055,6 @@ const ModifyBooking = () => {
       </button>
     </div>
   </div>
-
 
                                   </td>
                                   <td>

@@ -3343,35 +3343,103 @@ useEffect(() => {
                                   </td> */}
 
 {/* ------------------------------radhesha code---------------------------------------- */}
-                                 <td>
+                                <td>
   <div style={{ position: 'relative', display: 'inline-block' }}>
     <input
-      type="number"
+      type="text" // Changed from "string" to "text" for better compatibility
       value={item.quantity}
       min={0}
       max={4}
-      onChange={(e) =>
-        handleQuantityChangeForMenuItemsForChefForParty(
-          index,
-          parseInt(e.target.value) || 0
-        )
-      }
+      onChange={(e) => {
+        // Only allow changes from custom arrows, not typing
+        const newValue = parseInt(e.target.value) || 0;
+        if (newValue >= 0 && newValue <= 4) {
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }
+      }}
       style={{
         width: "50px",
         padding: "5px",
         border: "1px solid #ddd",
-        paddingRight: "20px", // Make room for custom arrows if needed
+        paddingRight: "20px",
+        textAlign: "center",
+        // Prevent text selection and interaction
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        WebkitTouchCallout: "none",
+        WebkitTapHighlightColor: "transparent",
       }}
-      onKeyDown={(e) => e.preventDefault()}
-      onPaste={(e) => e.preventDefault()}
-      onDrop={(e) => e.preventDefault()}
+      // Comprehensive event blocking for Vivo devices
+      onKeyDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onKeyPress={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onKeyUp={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onInput={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        // Force reset to current quantity
+        e.target.value = item.quantity;
+        return false;
+      }}
+      onPaste={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onFocus={(e) => {
+        // Immediately blur to prevent keyboard on Vivo
+        e.target.blur();
+        e.preventDefault();
+      }}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchMove={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      // Additional attributes for problematic devices
       inputMode="none"
       autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
+      readOnly={true} // Make completely read-only for Vivo devices
+      tabIndex={-1}
       // Force arrows with inline styles
       className="force-number-arrows"
     />
     
-    {/* Custom arrows as fallback for problematic devices */}
+    {/* Custom arrows as primary method for Vivo devices */}
     <div style={{
       position: 'absolute',
       right: '2px',
@@ -3381,36 +3449,49 @@ useEffect(() => {
       flexDirection: 'column',
       fontSize: '10px',
       lineHeight: '1',
-      pointerEvents: 'auto'
+      pointerEvents: 'auto',
+      zIndex: 10, // Ensure arrows are clickable
     }}>
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           const newValue = Math.min(item.quantity + 1, 4);
           handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation(); // Prevent input focus
         }}
         style={{
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
           padding: '1px 2px',
-          fontSize: '8px'
+          fontSize: '8px',
+          userSelect: 'none',
         }}
       >
         ▲
       </button>
       <button
         type="button"
-        onClick={() => {
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
           const newValue = Math.max(item.quantity - 1, 0);
           handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation(); // Prevent input focus
         }}
         style={{
           border: 'none',
           background: 'transparent',
           cursor: 'pointer',
           padding: '1px 2px',
-          fontSize: '8px'
+          fontSize: '8px',
+          userSelect: 'none',
         }}
       >
         ▼
