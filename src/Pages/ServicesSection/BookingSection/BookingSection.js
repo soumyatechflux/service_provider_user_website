@@ -26,7 +26,6 @@ const BookingSection = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
 
@@ -41,16 +40,6 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
- {/* code by radhesha for Select Menu Items in party for chef */}
-const numberInputStyle = {
-  width: "50px",
-  padding: "5px",
-  border: "1px solid #ddd",
-  WebkitAppearance: "auto",
-  MozAppearance: "auto",
-  appearance: "auto",
-};
-
   const handleNavigation = () => {
     // Retrieve stored service page location
     const storedLocation = sessionStorage.getItem('servicePageLocation');
@@ -64,7 +53,6 @@ const numberInputStyle = {
     }
   };
 
-
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -75,7 +63,6 @@ const numberInputStyle = {
   const [makeDisable, setMakeDisable] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
-
 
   const [isUsePoints, setIsUsePoints] = useState(false);
 
@@ -95,7 +82,6 @@ const numberInputStyle = {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
 
 
   // Fetch profile data
@@ -143,7 +129,6 @@ const numberInputStyle = {
           // console.log(response?.data?.data?.sub_category?.booking_time_before,"response?.data?.data?.sub_category?.booking_time_before")
       setAdjustedStartTime(response?.data?.data?.sub_category?.booking_time_before);
 
-
         } else {
           setBasicDataByGet({});
         }
@@ -159,9 +144,6 @@ const numberInputStyle = {
 
   
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
-
-
-
 
 
 
@@ -487,64 +469,11 @@ const numberInputStyle = {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Generate dynamic dates
   const getUpcomingDates = () => {
     const today = new Date();
     return Array.from({ length: 60 }, (_, i) => addDays(today, i)); 
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -611,7 +540,6 @@ useEffect(() => {
 
 
 
-
   // const filterTimeOptions = () => {
   //     if (!selectedDate || timeOptions.length === 0) return;
 
@@ -653,11 +581,6 @@ useEffect(() => {
   // useEffect(() => {
   //   filterTimeOptions();
   // }, [selectedDate, basicDataByGet, adjustedStartTime]);
-
-
-
-
-
 
 
 
@@ -3398,7 +3321,7 @@ useEffect(() => {
                                   {/* <td>₹ {item.price}</td> */}
                                   <td>₹ {parseInt(item.price, 10)}</td>
 
-                                  <td>
+                                  {/* <td>
                                     <input
                                       type="number"
                                       value={item.quantity}
@@ -3417,25 +3340,54 @@ useEffect(() => {
                                       }}
                                       onKeyDown={(e) => e.preventDefault()} // ❌ disables typing
                                     />
-                                  </td>
-
-{/* code by radhesha for Select Menu Items in party for chef */}
-                                {/* <td>
-                                    <input
-                                      type="number"
-                                      value={item.quantity}
-                                      min={0}
-                                      max={4}
-                                      onKeyDown={(e) => e.preventDefault()} // Prevent typing
-                                      onChange={(e) =>
-                                        handleQuantityChangeForMenuItemsForChefForParty(
-                                          index,
-                                          parseInt(e.target.value) || 0
-                                        )
-                                      }
-                                      style={numberInputStyle}
-                                    />
                                   </td> */}
+
+{/* ------------------------------radhesha code---------------------------------------- */}
+                                  <td>
+  <input
+    type="number"
+    value={item.quantity}
+    min={0}
+    max={4}
+    onChange={(e) =>
+      handleQuantityChangeForMenuItemsForChefForParty(
+        index,
+        parseInt(e.target.value) || 0
+      )
+    }
+    style={{
+      width: "50px",
+      padding: "5px",
+      border: "1px solid #ddd",
+      // Hide the number input spinner for non-Chrome browsers
+      MozAppearance: "textfield",
+      WebkitAppearance: "none",
+      appearance: "textfield",
+      cursor:"pinter",
+    }}
+    onKeyDown={(e) => {
+      // Prevent all keyboard input except arrow keys
+      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") {
+        e.preventDefault();
+      }
+    }}
+    onInput={(e) => {
+      // Mobile browsers might still allow typing via other methods
+      if (e.target.value.length > 1 || isNaN(e.target.value)) {
+        e.target.value = item.quantity;
+      }
+    }}
+  />
+  <style>{`
+    /* Show the spinner buttons only in Chrome */
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: inner-spin-button !important;
+      opacity: 1;
+    }
+  `}</style>
+</td>
+
                                   <td>
                                     ₹{" "}
                                     {calculateTotalForMenuItemForChefForParty(
