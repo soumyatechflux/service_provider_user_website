@@ -3398,7 +3398,7 @@ useEffect(() => {
                                   {/* <td>₹ {item.price}</td> */}
                                   <td>₹ {parseInt(item.price, 10)}</td>
 
-                                  {/* <td>
+                                  <td>
                                     <input
                                       type="number"
                                       value={item.quantity}
@@ -3417,10 +3417,10 @@ useEffect(() => {
                                       }}
                                       onKeyDown={(e) => e.preventDefault()} // ❌ disables typing
                                     />
-                                  </td> */}
+                                  </td>
 
 {/* code by radhesha for Select Menu Items in party for chef */}
-                                <td>
+                                {/* <td>
                                     <input
                                       type="number"
                                       value={item.quantity}
@@ -3435,7 +3435,7 @@ useEffect(() => {
                                       }
                                       style={numberInputStyle}
                                     />
-                                  </td>
+                                  </td> */}
                                   <td>
                                     ₹{" "}
                                     {calculateTotalForMenuItemForChefForParty(
