@@ -2909,7 +2909,7 @@ const ModifyBooking = () => {
                                     /> */}
 
 
-<input
+{/* <input
   type="number"
   value={item?.quantity}
   // min={item?.initialQuantity}
@@ -2926,9 +2926,85 @@ const ModifyBooking = () => {
     padding: "5px",
     border: "1px solid #ddd",
   }}
-/>
+/> */}
 
 
+<div style={{ position: 'relative', display: 'inline-block' }}>
+    <input
+      type="number"
+      value={item?.quantity}
+      // min={item?.initialQuantity}
+      max={4}
+      onKeyDown={(e) => e.preventDefault()} // Prevent typing
+      onKeyPress={(e) => e.preventDefault()} // Additional prevention
+      onPaste={(e) => e.preventDefault()} // Prevent paste
+      onDrop={(e) => e.preventDefault()} // Prevent drag-drop
+      onChange={(e) =>
+        handleQuantityChangeForMenuItemsForChefForParty(
+          index,
+          parseInt(e.target.value) || 0
+        )
+      }
+      style={{
+        width: "50px",
+        padding: "5px",
+        border: "1px solid #ddd",
+        paddingRight: "20px", // Make room for custom arrows
+        // Try to show native arrows first
+        WebkitAppearance: "auto",
+        MozAppearance: "spinner-textfield",
+        appearance: "auto",
+      }}
+      inputMode="none" // Prevent mobile keyboard
+      autoComplete="off"
+    />
+    
+    {/* Custom arrows as fallback for problematic devices */}
+    <div style={{
+      position: 'absolute',
+      right: '2px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: '10px',
+      lineHeight: '1',
+      pointerEvents: 'auto'
+    }}>
+      <button
+        type="button"
+        onClick={() => {
+          const newValue = Math.min(item?.quantity + 1, 4);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px'
+        }}
+      >
+        ▲
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          const newValue = Math.max(item?.quantity - 1, 0);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px'
+        }}
+      >
+        ▼
+      </button>
+    </div>
+  </div>
 
 
                                   </td>

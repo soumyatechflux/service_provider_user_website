@@ -3343,49 +3343,80 @@ useEffect(() => {
                                   </td> */}
 
 {/* ------------------------------radhesha code---------------------------------------- */}
-                                  <td>
-  <input
-    type="number"
-    value={item.quantity}
-    min={0}
-    max={4}
-    onChange={(e) =>
-      handleQuantityChangeForMenuItemsForChefForParty(
-        index,
-        parseInt(e.target.value) || 0
-      )
-    }
-    style={{
-      width: "50px",
-      padding: "5px",
-      border: "1px solid #ddd",
-      // Hide the number input spinner for non-Chrome browsers
-      MozAppearance: "textfield",
-      WebkitAppearance: "none",
-      appearance: "textfield",
-      cursor:"pinter",
-    }}
-    onKeyDown={(e) => {
-      // Prevent all keyboard input except arrow keys
-      if (e.key !== "ArrowUp" && e.key !== "ArrowDown") {
-        e.preventDefault();
+                                 <td>
+  <div style={{ position: 'relative', display: 'inline-block' }}>
+    <input
+      type="number"
+      value={item.quantity}
+      min={0}
+      max={4}
+      onChange={(e) =>
+        handleQuantityChangeForMenuItemsForChefForParty(
+          index,
+          parseInt(e.target.value) || 0
+        )
       }
-    }}
-    onInput={(e) => {
-      // Mobile browsers might still allow typing via other methods
-      if (e.target.value.length > 1 || isNaN(e.target.value)) {
-        e.target.value = item.quantity;
-      }
-    }}
-  />
-  <style>{`
-    /* Show the spinner buttons only in Chrome */
-    input[type="number"]::-webkit-inner-spin-button,
-    input[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: inner-spin-button !important;
-      opacity: 1;
-    }
-  `}</style>
+      style={{
+        width: "50px",
+        padding: "5px",
+        border: "1px solid #ddd",
+        paddingRight: "20px", // Make room for custom arrows if needed
+      }}
+      onKeyDown={(e) => e.preventDefault()}
+      onPaste={(e) => e.preventDefault()}
+      onDrop={(e) => e.preventDefault()}
+      inputMode="none"
+      autoComplete="off"
+      // Force arrows with inline styles
+      className="force-number-arrows"
+    />
+    
+    {/* Custom arrows as fallback for problematic devices */}
+    <div style={{
+      position: 'absolute',
+      right: '2px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: '10px',
+      lineHeight: '1',
+      pointerEvents: 'auto'
+    }}>
+      <button
+        type="button"
+        onClick={() => {
+          const newValue = Math.min(item.quantity + 1, 4);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px'
+        }}
+      >
+        ▲
+      </button>
+      <button
+        type="button"
+        onClick={() => {
+          const newValue = Math.max(item.quantity - 1, 0);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px'
+        }}
+      >
+        ▼
+      </button>
+    </div>
+  </div>
 </td>
 
                                   <td>
