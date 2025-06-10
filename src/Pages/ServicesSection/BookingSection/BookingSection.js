@@ -627,102 +627,102 @@ useEffect(() => {
 }
 
 
-const filterTimeOptions = () => {
-  if (!selectedDate || timeOptions?.length === 0) return;
+// const filterTimeOptions = () => {
+//   if (!selectedDate || timeOptions?.length === 0) return;
 
-  const currentDate = new Date();
-  const today = currentDate.toDateString();
+//   const currentDate = new Date();
+//   const today = currentDate.toDateString();
 
-  const currentTime = getCurrentTimeInHHMM();
+//   const currentTime = getCurrentTimeInHHMM();
 
-  const serviceStartTime =
-    basicDataByGet?.sub_category?.service_start_time || "00:00";
-  const serviceEndTime =
-    basicDataByGet?.sub_category?.service_end_time || "23:59";
+//   const serviceStartTime =
+//     basicDataByGet?.sub_category?.service_start_time || "00:00";
+//   const serviceEndTime =
+//     basicDataByGet?.sub_category?.service_end_time || "23:59";
 
-  const currentTimeInMinutes = timeToMinutes(currentTime);
+//   const currentTimeInMinutes = timeToMinutes(currentTime);
 
-  const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
-  const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
 
-  let startBoundary = serviceStartTimeInMinutes;
+//   let startBoundary = serviceStartTimeInMinutes;
 
-  const remainingMinutesUntilServiceEnds = Math.max(serviceEndTimeInMinutes - currentTimeInMinutes, 0);
-  const actualAdjustedStartTimeUsed = Math.min(adjustedStartTime, remainingMinutesUntilServiceEnds);
-  const availableMinutesToday = Math.max(serviceEndTimeInMinutes - (currentTimeInMinutes + actualAdjustedStartTimeUsed), 0);
-  const unusedAdjustedStartTime = adjustedStartTime - actualAdjustedStartTimeUsed;
+//   const remainingMinutesUntilServiceEnds = Math.max(serviceEndTimeInMinutes - currentTimeInMinutes, 0);
+//   const actualAdjustedStartTimeUsed = Math.min(adjustedStartTime, remainingMinutesUntilServiceEnds);
+//   const availableMinutesToday = Math.max(serviceEndTimeInMinutes - (currentTimeInMinutes + actualAdjustedStartTimeUsed), 0);
+//   const unusedAdjustedStartTime = adjustedStartTime - actualAdjustedStartTimeUsed;
 
 
-// If the adjusted start time has been fully used today, calculate the new start boundary
-if (unusedAdjustedStartTime === 0) {
-  const finalTimeInMinutes = currentTimeInMinutes + adjustedStartTime;
-  const finalHours = Math.floor(finalTimeInMinutes / 60);
-  const finalMinutes = finalTimeInMinutes % 60;
-  const finalTime = `${finalHours.toString().padStart(2, "0")}:${finalMinutes.toString().padStart(2, "0")}`;
+// // If the adjusted start time has been fully used today, calculate the new start boundary
+// if (unusedAdjustedStartTime === 0) {
+//   const finalTimeInMinutes = currentTimeInMinutes + adjustedStartTime;
+//   const finalHours = Math.floor(finalTimeInMinutes / 60);
+//   const finalMinutes = finalTimeInMinutes % 60;
+//   const finalTime = `${finalHours.toString().padStart(2, "0")}:${finalMinutes.toString().padStart(2, "0")}`;
 
-  // If the selected date is today, set the start boundary from where it ended
-  if (selectedDate.toDateString() === today) {
-    startBoundary = timeToMinutes(finalTime);
-  } else {
-    startBoundary = serviceStartTimeInMinutes; // For future dates, use service start time
-  }
+//   // If the selected date is today, set the start boundary from where it ended
+//   if (selectedDate.toDateString() === today) {
+//     startBoundary = timeToMinutes(finalTime);
+//   } else {
+//     startBoundary = serviceStartTimeInMinutes; // For future dates, use service start time
+//   }
 
-  setFilteredTimeOptions(
-    timeOptions.filter((time) => {
-      const timeInMinutes = timeToMinutes(time);
-      return (
-        timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
-      );
-    })
-  );
+//   setFilteredTimeOptions(
+//     timeOptions.filter((time) => {
+//       const timeInMinutes = timeToMinutes(time);
+//       return (
+//         timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
+//       );
+//     })
+//   );
   
-  return; // Exit early since we don't need to call `findExactDateTimeWhenAdjustedTimeEnds`
-}
+//   return; // Exit early since we don't need to call `findExactDateTimeWhenAdjustedTimeEnds`
+// }
 
-// Now call the function only if unusedAdjustedStartTime is greater than 0
-const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
-  currentDate,
-  serviceStartTimeInMinutes,
-  serviceEndTimeInMinutes,
-  // commented by radhesha
-  // unusedAdjustedStartTime
-);
-
-
-
-if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
-  setFilteredTimeOptions([]);
-  return;
-}
-
-if (selectedDate < new Date(finalDateTime?.date)) {
-  setFilteredTimeOptions([]);
-  return;
-}
-
-if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
-  startBoundary = timeToMinutes(finalDateTime?.time); 
-} else {
-  startBoundary = serviceStartTimeInMinutes;
-}
+// // Now call the function only if unusedAdjustedStartTime is greater than 0
+// const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
+//   currentDate,
+//   serviceStartTimeInMinutes,
+//   serviceEndTimeInMinutes,
+//   // commented by radhesha
+//   // unusedAdjustedStartTime
+// );
 
 
 
+// if (selectedDate.toDateString() === today && availableMinutesToday === 0) {
+//   setFilteredTimeOptions([]);
+//   return;
+// }
 
-  const options = timeOptions.filter((time) => {
-    const timeInMinutes = timeToMinutes(time);
-    return timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes;
-  });
+// if (selectedDate < new Date(finalDateTime?.date)) {
+//   setFilteredTimeOptions([]);
+//   return;
+// }
 
-  console.log(options, "options")
-
-  setFilteredTimeOptions(options);
-};
+// if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
+//   startBoundary = timeToMinutes(finalDateTime?.time); 
+// } else {
+//   startBoundary = serviceStartTimeInMinutes;
+// }
 
 
 
 
-// ------------------main code copy------------------------
+//   const options = timeOptions.filter((time) => {
+//     const timeInMinutes = timeToMinutes(time);
+//     return timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes;
+//   });
+
+//   console.log(options, "options")
+
+//   setFilteredTimeOptions(options);
+// };
+
+
+
+
+// ------------------main code copy with no filter------------------------
 // const filterTimeOptions = () => {
 //   if (!selectedDate || !timeOptions?.length) return;
 //   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
@@ -808,49 +808,49 @@ if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
 
 
 // -------------------------new correct completed code by radha--------------------------
-// const filterTimeOptions = () => {
-//   if (!selectedDate || !timeOptions?.length) return;
+const filterTimeOptions = () => {
+  if (!selectedDate || !timeOptions?.length) return;
 
-//   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
-//   const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
-//   const bufferInMinutes = basicDataByGet?.sub_category?.booking_time_before || 0;
+  const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
+  const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
+  const bufferInMinutes = basicDataByGet?.sub_category?.booking_time_before || 0;
 
-//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
-//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+  const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+  const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
 
-//   const currentDateTime = new Date();
-//   const bufferEndDateTime = new Date(currentDateTime.getTime() + bufferInMinutes * 60000);
+  const currentDateTime = new Date();
+  const bufferEndDateTime = new Date(currentDateTime.getTime() + bufferInMinutes * 60000);
 
-//   const isSelectedDateValid = selectedDate.toDateString() === bufferEndDateTime.toDateString();
+  const isSelectedDateValid = selectedDate.toDateString() === bufferEndDateTime.toDateString();
 
-//   let effectiveStartTimeInMinutes;
+  let effectiveStartTimeInMinutes;
 
-//   if (isSelectedDateValid) {
-//     // Buffer ends on selected date — show time after bufferEndTime
-//     const bufferEndTimeStr = `${bufferEndDateTime.getHours()}`.padStart(2, '0') + ':' + `${bufferEndDateTime.getMinutes()}`.padStart(2, '0');
-//     effectiveStartTimeInMinutes = Math.max(serviceStartTimeInMinutes, timeToMinutes(bufferEndTimeStr));
-//   } else if (selectedDate < bufferEndDateTime) {
-//     // Selected date is before buffer ends — don't show anything
-//     setFilteredTimeOptions([]);
-//     return;
-//   } else {
-//     // Selected date is after buffer ends — show full service window
-//     effectiveStartTimeInMinutes = serviceStartTimeInMinutes;
-//   }
+  if (isSelectedDateValid) {
+    // Buffer ends on selected date — show time after bufferEndTime
+    const bufferEndTimeStr = `${bufferEndDateTime.getHours()}`.padStart(2, '0') + ':' + `${bufferEndDateTime.getMinutes()}`.padStart(2, '0');
+    effectiveStartTimeInMinutes = Math.max(serviceStartTimeInMinutes, timeToMinutes(bufferEndTimeStr));
+  } else if (selectedDate < bufferEndDateTime) {
+    // Selected date is before buffer ends — don't show anything
+    setFilteredTimeOptions([]);
+    return;
+  } else {
+    // Selected date is after buffer ends — show full service window
+    effectiveStartTimeInMinutes = serviceStartTimeInMinutes;
+  }
 
-//   const options = timeOptions.filter((time) => {
-//     const timeInMinutes = timeToMinutes(time);
-//     return timeInMinutes >= effectiveStartTimeInMinutes && timeInMinutes <= serviceEndTimeInMinutes;
-//   });
+  const options = timeOptions.filter((time) => {
+    const timeInMinutes = timeToMinutes(time);
+    return timeInMinutes >= effectiveStartTimeInMinutes && timeInMinutes <= serviceEndTimeInMinutes;
+  });
 
-//   console.log("Buffer:", bufferInMinutes, "min");
-//   console.log("Service Start:", serviceStartTime);
-//   console.log("Service End:", serviceEndTime);
-//   console.log("Buffer Ends At:", bufferEndDateTime.toString());
-//   console.log("Effective Start Time (mins):", effectiveStartTimeInMinutes);
+  console.log("Buffer:", bufferInMinutes, "min");
+  console.log("Service Start:", serviceStartTime);
+  console.log("Service End:", serviceEndTime);
+  console.log("Buffer Ends At:", bufferEndDateTime.toString());
+  console.log("Effective Start Time (mins):", effectiveStartTimeInMinutes);
 
-//   setFilteredTimeOptions(options);
-// };
+  setFilteredTimeOptions(options);
+};
 
 
 useEffect(() => {
