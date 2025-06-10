@@ -1,35 +1,23 @@
-import React, { useEffect, useRef, useState } from "react";
-import "./BookingSection.css";
-import { ChevronLeft, MapPin, Voicemail } from "lucide-react";
-import TimePicker from "react-time-picker";
-import "react-time-picker/dist/TimePicker.css";
-import "react-clock/dist/Clock.css";
+import { useJsApiLoader } from "@react-google-maps/api";
 import axios from "axios";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { format } from "date-fns";
-import RazorpayPayment from "./RazorpayPayment";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import TextField from "@mui/material/TextField";
-import { ArrowBarDown } from "react-bootstrap-icons";
-import EditAddressForm from "../../ProfilePage/ProfileDetails/EditAddressForm/EditAddressForm";
-import { Dropdown, Modal } from "react-bootstrap";
-import AddAddressForm from "../../ProfilePage/ProfileDetails/AddAddressForm/AddAddressForm";
+import { addDays, differenceInDays, format } from "date-fns";
+import { ChevronLeft, MapPin } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Button, Dropdown } from "react-bootstrap";
+import "react-clock/dist/Clock.css";
+import { ChevronDown, ChevronRight } from "react-feather";
 import { BsThreeDotsVertical } from "react-icons/bs";
-import MessageModal from "../../MessageModal/MessageModal";
 import { IoIosArrowForward } from "react-icons/io";
+import { useLocation, useNavigate } from "react-router-dom";
+import "react-time-picker/dist/TimePicker.css";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { ChevronRight, ChevronDown } from "react-feather";
-import { FaRupeeSign, FaPercent } from "react-icons/fa";
-import { useJsApiLoader } from "@react-google-maps/api";
-import { LoadScript } from "@react-google-maps/api";
-import { Button } from "react-bootstrap";
-import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
 import Loader from "../../Loader/Loader";
-import { addDays, differenceInDays } from "date-fns";
+import MessageModal from "../../MessageModal/MessageModal";
+import LocationModal from "../../ProfilePage/ProfileDetails/LocationModal";
+import "./BookingSection.css";
 import DriverBookingMap from "./DriverBookingMap";
+import RazorpayPayment from "./RazorpayPayment";
 
 const BookingSection = () => {
 
@@ -37,7 +25,6 @@ const BookingSection = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-
 
   const { service } = location.state || {}; // Handle case where no state is passed
   const [dishesOptionsArray, setdishesOptionsArray] = useState([]);
@@ -53,8 +40,6 @@ const BookingSection = () => {
   const [menu, setMenu] = useState([]);
   const [SelectedNamesOfDishes, setSelectedNamesOfDishes] = useState([]);
 
-
-
   const handleNavigation = () => {
     // Retrieve stored service page location
     const storedLocation = sessionStorage.getItem('servicePageLocation');
@@ -68,7 +53,6 @@ const BookingSection = () => {
     }
   };
 
-
   const [message, setMessage] = useState("");
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
@@ -79,7 +63,6 @@ const BookingSection = () => {
   const [makeDisable, setMakeDisable] = useState(false);
 
   const [addresses, setAddresses] = useState([]);
-
 
   const [isUsePoints, setIsUsePoints] = useState(false);
 
@@ -99,7 +82,6 @@ const BookingSection = () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
-
 
 
   // Fetch profile data
@@ -147,7 +129,6 @@ const BookingSection = () => {
           // console.log(response?.data?.data?.sub_category?.booking_time_before,"response?.data?.data?.sub_category?.booking_time_before")
       setAdjustedStartTime(response?.data?.data?.sub_category?.booking_time_before);
 
-
         } else {
           setBasicDataByGet({});
         }
@@ -163,9 +144,6 @@ const BookingSection = () => {
 
   
   const [DataForPricesAppliedGet, setDataForPricesAppliedGet] = useState({});
-
-
-
 
 
 
@@ -491,64 +469,11 @@ const BookingSection = () => {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Generate dynamic dates
   const getUpcomingDates = () => {
     const today = new Date();
     return Array.from({ length: 60 }, (_, i) => addDays(today, i)); 
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -615,7 +540,6 @@ useEffect(() => {
 
 
 
-
   // const filterTimeOptions = () => {
   //     if (!selectedDate || timeOptions.length === 0) return;
 
@@ -657,11 +581,6 @@ useEffect(() => {
   // useEffect(() => {
   //   filterTimeOptions();
   // }, [selectedDate, basicDataByGet, adjustedStartTime]);
-
-
-
-
-
 
 
 
@@ -765,7 +684,8 @@ const finalDateTime = findExactDateTimeWhenAdjustedTimeEnds(
   currentDate,
   serviceStartTimeInMinutes,
   serviceEndTimeInMinutes,
-  unusedAdjustedStartTime
+  // commented by radhesha
+  // unusedAdjustedStartTime
 );
 
 
@@ -794,10 +714,71 @@ if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
     return timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes;
   });
 
+  console.log(options, "options")
+
   setFilteredTimeOptions(options);
 };
 
 
+
+// radha code
+// const filterTimeOptions = () => {
+//   if (!selectedDate || timeOptions?.length === 0) return;
+
+//   const currentDate = new Date();
+//   const today = currentDate.toDateString();
+
+//   const currentTime = getCurrentTimeInHHMM();
+
+//   const serviceStartTime =
+//     basicDataByGet?.sub_category?.service_start_time || "00:00";
+//   const serviceEndTime =
+//     basicDataByGet?.sub_category?.service_end_time || "23:59";
+
+//   const currentTimeInMinutes = timeToMinutes(currentTime);
+//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+
+//   const bufferTimeInMinutes = adjustedStartTime;
+//   const totalMinutesFromNow = currentTimeInMinutes + bufferTimeInMinutes;
+
+//   // 🌍 Compute the display date dynamically (add days based on 1440-minute chunks)
+//   const daysToAdd = Math.floor(totalMinutesFromNow / 1440);
+//   const leftoverMinutes = totalMinutesFromNow % 1440;
+
+//   let displayFromDate = new Date(currentDate);
+//   displayFromDate.setDate(currentDate.getDate() + daysToAdd);
+
+//   // 🧠 Dynamic start boundary: use leftover time or serviceStartTime
+//   let startBoundary;
+//   if (selectedDate.toDateString() === displayFromDate.toDateString()) {
+//     if (leftoverMinutes === 0) {
+//       startBoundary = serviceStartTimeInMinutes;
+//     } else {
+//       startBoundary = leftoverMinutes;
+//     }
+//   } else {
+//     startBoundary = serviceStartTimeInMinutes;
+//   }
+
+//   // 🛑 Early exit if selectedDate is before displayFromDate
+//   if (selectedDate < new Date(displayFromDate.toDateString())) {
+//     setFilteredTimeOptions([]);
+//     return;
+//   }
+
+//   // 🔍 Filter time options
+//   const options = timeOptions.filter((time) => {
+//     const timeInMinutes = timeToMinutes(time);
+//     return (
+//       timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
+//     );
+//   });
+
+//   console.log(options, "options");
+
+//   setFilteredTimeOptions(options);
+// };
 
 
 useEffect(() => {
@@ -1998,6 +1979,8 @@ useEffect(() => {
                       </LocalizationProvider>
                     </div> */}
 
+
+
                     <div className="booking-form flex-fill mb-4">
                       <label className="booking-form-label">
                         Select Visit Date
@@ -2032,6 +2015,8 @@ useEffect(() => {
                         })}
                       </div>
                     </div>
+
+                    
 
                     <div className="booking-form-group">
                       <label className="booking-form-label">
@@ -2087,7 +2072,7 @@ useEffect(() => {
                           ))}
                       </div>
                     </div>
-                    
+
                   </div>
                 </>
               )}
@@ -3336,7 +3321,7 @@ useEffect(() => {
                                   {/* <td>₹ {item.price}</td> */}
                                   <td>₹ {parseInt(item.price, 10)}</td>
 
-                                  <td>
+                                  {/* <td>
                                     <input
                                       type="number"
                                       value={item.quantity}
@@ -3353,8 +3338,168 @@ useEffect(() => {
                                         padding: "5px",
                                         border: "1px solid #ddd",
                                       }}
+                                      onKeyDown={(e) => e.preventDefault()} // ❌ disables typing
                                     />
-                                  </td>
+                                  </td> */}
+
+{/* ------------------------------radhesha code---------------------------------------- */}
+                                <td>
+  <div style={{ position: 'relative', display: 'inline-block' }}>
+    <input
+      type="text" // Changed from "string" to "text" for better compatibility
+      value={item.quantity}
+      min={0}
+      max={4}
+      onChange={(e) => {
+        // Only allow changes from custom arrows, not typing
+        const newValue = parseInt(e.target.value) || 0;
+        if (newValue >= 0 && newValue <= 4) {
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }
+      }}
+      style={{
+        width: "50px",
+        padding: "5px",
+        border: "1px solid #ddd",
+        paddingRight: "20px",
+        textAlign: "center",
+        // Prevent text selection and interaction
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        MozUserSelect: "none",
+        msUserSelect: "none",
+        WebkitTouchCallout: "none",
+        WebkitTapHighlightColor: "transparent",
+      }}
+      // Comprehensive event blocking for Vivo devices
+      onKeyDown={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onKeyPress={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onKeyUp={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onInput={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        // Force reset to current quantity
+        e.target.value = item.quantity;
+        return false;
+      }}
+      onPaste={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onDrop={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        return false;
+      }}
+      onFocus={(e) => {
+        // Immediately blur to prevent keyboard on Vivo
+        e.target.blur();
+        e.preventDefault();
+      }}
+      onTouchStart={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchEnd={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      onTouchMove={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }}
+      // Additional attributes for problematic devices
+      inputMode="none"
+      autoComplete="off"
+      autoCorrect="off"
+      autoCapitalize="off"
+      spellCheck="false"
+      readOnly={true} // Make completely read-only for Vivo devices
+      tabIndex={-1}
+      // Force arrows with inline styles
+      className="force-number-arrows"
+    />
+    
+    {/* Custom arrows as primary method for Vivo devices */}
+    <div style={{
+      position: 'absolute',
+      right: '2px',
+      top: '50%',
+      transform: 'translateY(-50%)',
+      display: 'flex',
+      flexDirection: 'column',
+      fontSize: '10px',
+      lineHeight: '1',
+      pointerEvents: 'auto',
+      zIndex: 10, // Ensure arrows are clickable
+    }}>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const newValue = Math.min(item.quantity + 1, 4);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation(); // Prevent input focus
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px',
+          userSelect: 'none',
+        }}
+      >
+        ▲
+      </button>
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          const newValue = Math.max(item.quantity - 1, 0);
+          handleQuantityChangeForMenuItemsForChefForParty(index, newValue);
+        }}
+        onTouchStart={(e) => {
+          e.stopPropagation(); // Prevent input focus
+        }}
+        style={{
+          border: 'none',
+          background: 'transparent',
+          cursor: 'pointer',
+          padding: '1px 2px',
+          fontSize: '8px',
+          userSelect: 'none',
+        }}
+      >
+        ▼
+      </button>
+    </div>
+  </div>
+</td>
+
                                   <td>
                                     ₹{" "}
                                     {calculateTotalForMenuItemForChefForParty(

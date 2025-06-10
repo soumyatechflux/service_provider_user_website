@@ -5,6 +5,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Modal, Button } from "react-bootstrap";
 import axios from "axios";
 import ProfileFetcher from "../../ProfileFetcher";
+import { FaEnvelope } from "react-icons/fa";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -12,12 +13,22 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+   const [showModal, setShowModal] = useState(false);
+    const [message, setMessage] = useState("");
   const [loading, setLoading] = useState();
   const token = sessionStorage.getItem("ServiceProviderUserToken");
 
   const [hasNewNotifications, setHasNewNotifications] = useState(false);
   const location = useLocation(); // Get current route
 
+  const handleOpenModal = (msg) => {
+    setMessage(msg);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
   useEffect(() => {
     const fetchNotifications = async () => {
       try {
@@ -286,20 +297,24 @@ const Navbar = () => {
             </div>
 
             {/* Download App Button */}
-            {/* <button
+            <button
               className="btn btn-primary d-lg-inline-block nav-buttons"
-              onClick={() => {
-                window.scrollTo({
-                  top: document.body.scrollHeight, // Scroll to the bottom of the page
-                  behavior: "smooth", // Smooth scrolling effect
-                });
-              }}
+              // onClick={() => {
+              //   window.scrollTo({
+              //     top: document.body.scrollHeight, // Scroll to the bottom of the page
+              //     behavior: "smooth", // Smooth scrolling effect
+              //   });
+              // }}
+                onClick={(e) => {
+                  e.preventDefault(); // Prevent default anchor behavior
+                  handleOpenModal("App coming soon! Stay tuned.");
+                }}
             >
               Download App
-            </button> */}
+            </button>
 
 {/* radhesha code */}
-            <button
+            {/* <button
             className="btn btn-primary d-lg-inline-block nav-buttons"
             onClick={() => {
               window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
@@ -310,7 +325,7 @@ const Navbar = () => {
             }}
           >
             Download App
-          </button>
+          </button> */}
 
             {/* User Profile Dropdown */}
             <div className="nav-item dropdown">
@@ -610,9 +625,14 @@ const Navbar = () => {
             {/* Mobile Download Button */}
             <button
               className="btn btn-primary nav-buttons"
-              onClick={() => {
-                window.location.href = "https://play.google.com/store";
-              }}
+              // onClick={() => {
+              //   window.location.href = "https://play.google.com/store";
+              // }}
+              
+               onClick={(e) => {
+                  e.preventDefault(); // Prevent default anchor behavior
+                  handleOpenModal("App coming soon! Stay tuned.");
+                }}
             >
               Download App
             </button>
@@ -641,6 +661,26 @@ const Navbar = () => {
           </Modal.Footer>
         </Modal>
       </div>
+
+
+      <Modal show={showModal} onHide={handleCloseModal} centered>
+              {/* <Modal.Header closeButton /> */}
+              <Modal.Body style={{ display: "flex", alignItems: "center" }}>
+                <FaEnvelope
+                  style={{
+                    color: "#6366f1",
+                    marginRight: "10px",
+                    fontSize: "2em",
+                  }}
+                />
+                {message}
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="primary" onClick={handleCloseModal}>
+                  Ok
+                </Button>
+              </Modal.Footer>
+            </Modal>
     </nav>
     </>
 

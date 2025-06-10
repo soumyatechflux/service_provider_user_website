@@ -721,61 +721,133 @@ if (selectedDate.toISOString().split("T")[0] === finalDateTime?.date) {
 
 
 
-// radha code
+
+// ------------------main code copy------------------------
 // const filterTimeOptions = () => {
-//   if (!selectedDate || timeOptions?.length === 0) return;
-
-//   const currentDate = new Date();
-//   const today = currentDate.toDateString();
-
-//   const currentTime = getCurrentTimeInHHMM();
-
-//   const serviceStartTime =
-//     basicDataByGet?.sub_category?.service_start_time || "00:00";
-//   const serviceEndTime =
-//     basicDataByGet?.sub_category?.service_end_time || "23:59";
-
-//   const currentTimeInMinutes = timeToMinutes(currentTime);
+//   if (!selectedDate || !timeOptions?.length) return;
+//   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
+//   const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
 //   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
 //   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
 
-//   const bufferTimeInMinutes = adjustedStartTime;
-//   const totalMinutesFromNow = currentTimeInMinutes + bufferTimeInMinutes;
+//   const options = timeOptions.filter((time) => {
 
-//   // 🌍 Compute the display date dynamically (add days based on 1440-minute chunks)
-//   const daysToAdd = Math.floor(totalMinutesFromNow / 1440);
-//   const leftoverMinutes = totalMinutesFromNow % 1440;
+// console.log("start time",serviceStartTime)
+// console.log("end time",serviceStartTime)
 
-//   let displayFromDate = new Date(currentDate);
-//   displayFromDate.setDate(currentDate.getDate() + daysToAdd);
+//     const timeInMinutes = timeToMinutes(time);
+//      console.log("time in min",time)
+//     return timeInMinutes >= serviceStartTimeInMinutes && 
+//            timeInMinutes <= serviceEndTimeInMinutes;
+            
 
-//   // 🧠 Dynamic start boundary: use leftover time or serviceStartTime
-//   let startBoundary;
-//   if (selectedDate.toDateString() === displayFromDate.toDateString()) {
-//     if (leftoverMinutes === 0) {
-//       startBoundary = serviceStartTimeInMinutes;
-//     } else {
-//       startBoundary = leftoverMinutes;
-//     }
-//   } else {
-//     startBoundary = serviceStartTimeInMinutes;
-//   }
+//   });
 
-//   // 🛑 Early exit if selectedDate is before displayFromDate
-//   if (selectedDate < new Date(displayFromDate.toDateString())) {
+//   setFilteredTimeOptions(options);
+// };
+
+
+
+
+// ----------------radha code-----------------
+// const filterTimeOptions = () => {
+//   if (!selectedDate || !timeOptions?.length) return;
+
+//   const currentDate = new Date();
+//   const today = currentDate.toDateString();
+//   const selectedDateStr = selectedDate.toDateString();
+
+//   const currentTime = getCurrentTimeInHHMM();
+//   const currentTimeInMinutes = timeToMinutes(currentTime);
+
+//   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
+//   const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
+//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+
+//   // 1. Calculate when the buffer period ends (absolute time)
+//   const bufferEndTime = new Date(currentDate.getTime() + adjustedStartTime * 60000);
+//   const bufferEndDateStr = bufferEndTime.toDateString();
+
+  
+//   // 2. For selected dates before buffer ends - show no times
+//   if (selectedDate < bufferEndTime) {
 //     setFilteredTimeOptions([]);
 //     return;
 //   }
 
-//   // 🔍 Filter time options
+//   // 3. For selected date exactly when buffer ends
+//   if (selectedDateStr === bufferEndDateStr) {
+//     const bufferEndHours = bufferEndTime.getHours();
+//     const bufferEndMinutes = bufferEndTime.getMinutes();
+//     const bufferEndTotalMinutes = bufferEndHours * 60 + bufferEndMinutes;
+
+//     // Find first available time slot after buffer ends
+//     const startBoundary = Math.max(
+//       serviceStartTimeInMinutes,
+//       Math.min(bufferEndTotalMinutes, serviceEndTimeInMinutes)
+//     );
+
+//     const options = timeOptions.filter((time) => {
+//       const timeInMinutes = timeToMinutes(time);
+//       return timeInMinutes >= startBoundary && 
+//              timeInMinutes <= serviceEndTimeInMinutes;
+//     });
+//     setFilteredTimeOptions(options);
+//     return;
+//   }
+
+//   // 4. For dates after buffer ends - show all available times
 //   const options = timeOptions.filter((time) => {
 //     const timeInMinutes = timeToMinutes(time);
-//     return (
-//       timeInMinutes >= startBoundary && timeInMinutes <= serviceEndTimeInMinutes
-//     );
+//     return timeInMinutes >= serviceStartTimeInMinutes && 
+//            timeInMinutes <= serviceEndTimeInMinutes;
+//   });
+//   setFilteredTimeOptions(options);
+// };
+
+
+// -------------------------new correct completed code by radha--------------------------
+// const filterTimeOptions = () => {
+//   if (!selectedDate || !timeOptions?.length) return;
+
+//   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
+//   const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
+//   const bufferInMinutes = basicDataByGet?.sub_category?.booking_time_before || 0;
+
+//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
+//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
+
+//   const currentDateTime = new Date();
+//   const bufferEndDateTime = new Date(currentDateTime.getTime() + bufferInMinutes * 60000);
+
+//   const isSelectedDateValid = selectedDate.toDateString() === bufferEndDateTime.toDateString();
+
+//   let effectiveStartTimeInMinutes;
+
+//   if (isSelectedDateValid) {
+//     // Buffer ends on selected date — show time after bufferEndTime
+//     const bufferEndTimeStr = `${bufferEndDateTime.getHours()}`.padStart(2, '0') + ':' + `${bufferEndDateTime.getMinutes()}`.padStart(2, '0');
+//     effectiveStartTimeInMinutes = Math.max(serviceStartTimeInMinutes, timeToMinutes(bufferEndTimeStr));
+//   } else if (selectedDate < bufferEndDateTime) {
+//     // Selected date is before buffer ends — don't show anything
+//     setFilteredTimeOptions([]);
+//     return;
+//   } else {
+//     // Selected date is after buffer ends — show full service window
+//     effectiveStartTimeInMinutes = serviceStartTimeInMinutes;
+//   }
+
+//   const options = timeOptions.filter((time) => {
+//     const timeInMinutes = timeToMinutes(time);
+//     return timeInMinutes >= effectiveStartTimeInMinutes && timeInMinutes <= serviceEndTimeInMinutes;
 //   });
 
-//   console.log(options, "options");
+//   console.log("Buffer:", bufferInMinutes, "min");
+//   console.log("Service Start:", serviceStartTime);
+//   console.log("Service End:", serviceEndTime);
+//   console.log("Buffer Ends At:", bufferEndDateTime.toString());
+//   console.log("Effective Start Time (mins):", effectiveStartTimeInMinutes);
 
 //   setFilteredTimeOptions(options);
 // };

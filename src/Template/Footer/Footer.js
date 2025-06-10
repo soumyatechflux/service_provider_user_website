@@ -121,7 +121,7 @@ const Footer = () => {
              
             </div>
             <div className="app-buttons">
-              {/* <a
+              <a
                 href="#!"
                 onClick={(e) => {
                   e.preventDefault(); // Prevent default anchor behavior
@@ -134,9 +134,10 @@ const Footer = () => {
                   src="/Footer/apple.png"
                   alt="App Store"
                 />
-              </a> */}
+              </a>
 
-             <a
+{/* ---------radha code with updated link------------------ */}
+             {/* <a
   href="https://apps.apple.com/in/app/servyo/id6746445188"
   target="_blank"
   rel="noopener noreferrer"
@@ -147,8 +148,8 @@ const Footer = () => {
     src="/Footer/apple.png"
     alt="App Store"
   />
-</a> 
-              {/* <a
+</a>  */}
+              <a
                 href="#!"
                 onClick={(e) => {
                   e.preventDefault(); // Prevent default anchor behavior
@@ -157,16 +158,18 @@ const Footer = () => {
                 className="store-button-footer google-play"
               >
                 <img className="store-img" src="/Footer/google.png" alt="Google Play" />
-              </a> */}
+              </a>
 
-              <a
+
+{/* ---------radha code with updated link------------------ */}
+              {/* <a
   href="https://play.google.com/store/apps/details?id=com.servyo.user"
   target="_blank"
   rel="noopener noreferrer"
   className="store-button-footer google-play"
 >
   <img className="store-img" src="/Footer/google.png" alt="Google Play" />
-</a>
+</a> */}
             </div>
           </div>
         </div>
