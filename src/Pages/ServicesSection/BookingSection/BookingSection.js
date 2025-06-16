@@ -626,7 +626,7 @@ useEffect(() => {
     }
 }
 
-
+// ------------------previous code by soumya------------------------
 // const filterTimeOptions = () => {
 //   if (!selectedDate || timeOptions?.length === 0) return;
 
@@ -722,7 +722,7 @@ useEffect(() => {
 
 
 
-// ------------------main code copy with no filter------------------------
+// ------------------code copy with no filter------------------------
 // const filterTimeOptions = () => {
 //   if (!selectedDate || !timeOptions?.length) return;
 //   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
@@ -746,65 +746,6 @@ useEffect(() => {
 //   setFilteredTimeOptions(options);
 // };
 
-
-
-
-// ----------------radha code-----------------
-// const filterTimeOptions = () => {
-//   if (!selectedDate || !timeOptions?.length) return;
-
-//   const currentDate = new Date();
-//   const today = currentDate.toDateString();
-//   const selectedDateStr = selectedDate.toDateString();
-
-//   const currentTime = getCurrentTimeInHHMM();
-//   const currentTimeInMinutes = timeToMinutes(currentTime);
-
-//   const serviceStartTime = basicDataByGet?.sub_category?.service_start_time || "00:00";
-//   const serviceEndTime = basicDataByGet?.sub_category?.service_end_time || "23:59";
-//   const serviceStartTimeInMinutes = timeToMinutes(serviceStartTime);
-//   const serviceEndTimeInMinutes = timeToMinutes(serviceEndTime);
-
-//   // 1. Calculate when the buffer period ends (absolute time)
-//   const bufferEndTime = new Date(currentDate.getTime() + adjustedStartTime * 60000);
-//   const bufferEndDateStr = bufferEndTime.toDateString();
-
-  
-//   // 2. For selected dates before buffer ends - show no times
-//   if (selectedDate < bufferEndTime) {
-//     setFilteredTimeOptions([]);
-//     return;
-//   }
-
-//   // 3. For selected date exactly when buffer ends
-//   if (selectedDateStr === bufferEndDateStr) {
-//     const bufferEndHours = bufferEndTime.getHours();
-//     const bufferEndMinutes = bufferEndTime.getMinutes();
-//     const bufferEndTotalMinutes = bufferEndHours * 60 + bufferEndMinutes;
-
-//     // Find first available time slot after buffer ends
-//     const startBoundary = Math.max(
-//       serviceStartTimeInMinutes,
-//       Math.min(bufferEndTotalMinutes, serviceEndTimeInMinutes)
-//     );
-
-//     const options = timeOptions.filter((time) => {
-//       const timeInMinutes = timeToMinutes(time);
-//       return timeInMinutes >= startBoundary && 
-//              timeInMinutes <= serviceEndTimeInMinutes;
-//     });
-//     setFilteredTimeOptions(options);
-//     return;
-//   }
-
-//   // 4. For dates after buffer ends - show all available times
-//   const options = timeOptions.filter((time) => {
-//     const timeInMinutes = timeToMinutes(time);
-//     return timeInMinutes >= serviceStartTimeInMinutes && 
-//            timeInMinutes <= serviceEndTimeInMinutes;
-//   });
-//   setFilteredTimeOptions(options);
-// };
 
 
 // -------------------------new correct completed code by radha--------------------------
