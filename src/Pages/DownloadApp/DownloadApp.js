@@ -40,10 +40,18 @@ const DownloadApp = () => {
                   <a
                     href="#! "
                     className="store-button google-play"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default action of anchor tag
-                      handleOpenModal("App coming soon! Stay tuned.");
-                    }}
+                    // onClick={(e) => {
+                    //   e.preventDefault(); // Prevent default action of anchor tag
+                    //   handleOpenModal("App coming soon! Stay tuned.");
+                    // }}
+                     onClick={() => {
+                     // window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
+                     window.open("https://play.google.com/store/apps/details?id=com.servyo.user&hl=en", "_blank");
+                     window.scrollTo({
+                     top: document.body.scrollHeight,
+                     behavior: "smooth",
+                   });
+                 }}
                   >
                     <img
                       src="/DownloadApp/Google_Play_Store.png"
@@ -54,10 +62,17 @@ const DownloadApp = () => {
                   <a
                     href="#!" // Use a dummy href as you are not navigating directly
                     className="store-button app-store"
-                    onClick={(e) => {
-                      e.preventDefault(); // Prevent default action of anchor tag
-                      handleOpenModal("App coming soon! Stay tuned.");
-                    }}
+                    // onClick={(e) => {
+                    //   e.preventDefault(); // Prevent default action of anchor tag
+                    //   handleOpenModal("App coming soon! Stay tuned.");
+                    // }}
+                     onClick={() => {
+                    window.open("https://apps.apple.com/in/app/servyo/id6746445188", "_blank");
+                    window.scrollTo({
+                    top: document.body.scrollHeight,
+                    behavior: "smooth",
+                    });
+                   }}
                   >
                     <img
                       src="/DownloadApp/AppStore.png"

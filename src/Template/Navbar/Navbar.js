@@ -297,7 +297,7 @@ const Navbar = () => {
             </div>
 
             {/* Download App Button */}
-            <button
+            {/* <button
               className="btn btn-primary d-lg-inline-block nav-buttons"
               // onClick={() => {
               //   window.scrollTo({
@@ -311,13 +311,14 @@ const Navbar = () => {
                 }}
             >
               Download App
-            </button>
+            </button> */}
 
 {/* radhesha code */}
-            {/* <button
+            <button
             className="btn btn-primary d-lg-inline-block nav-buttons"
             onClick={() => {
-              window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
+              // window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
+               window.open("https://play.google.com/store/apps/details?id=com.servyo.user&hl=en", "_blank");
               window.scrollTo({
                 top: document.body.scrollHeight,
                 behavior: "smooth",
@@ -325,7 +326,7 @@ const Navbar = () => {
             }}
           >
             Download App
-          </button> */}
+          </button>
 
             {/* User Profile Dropdown */}
             <div className="nav-item dropdown">
@@ -626,13 +627,21 @@ const Navbar = () => {
             <button
               className="btn btn-primary nav-buttons"
               // onClick={() => {
-              //   window.location.href = "https://play.google.com/store";
+              //   window.location.href = "https://play.google.com/store/apps/details?id=com.servyo.user&hl=en";
               // }}
               
-               onClick={(e) => {
-                  e.preventDefault(); // Prevent default anchor behavior
-                  handleOpenModal("App coming soon! Stay tuned.");
-                }}
+              // //  onClick={(e) => {
+              // //     e.preventDefault(); // Prevent default anchor behavior
+              // //     handleOpenModal("App coming soon! Stay tuned.");
+              // //   }}
+              onClick={() => {
+              // window.open("https://play.google.com/store/apps/details?id=com.servyo.user", "_blank");
+               window.open("https://play.google.com/store/apps/details?id=com.servyo.user&hl=en", "_blank");
+              window.scrollTo({
+                top: document.body.scrollHeight,
+                behavior: "smooth",
+              });
+            }}
             >
               Download App
             </button>
