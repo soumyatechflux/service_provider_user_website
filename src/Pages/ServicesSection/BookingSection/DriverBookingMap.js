@@ -1202,7 +1202,7 @@ import {
 import { MdLocationOn } from "react-icons/md";
 import Loader from "../../Loader/Loader";
 import MessageModal from "../../MessageModal/MessageModal";
-import marPinImg from "../../marker_pin.png"; // Added custom marker import
+import marPinImg from "../../marker_pin.png";
 
 const containerStyle = {
   width: "100%",
@@ -1222,9 +1222,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
   });
 
   const [showMsg, setShowMsg] = useState(false);
-  const handleClose = () => setShowMsg(false);
-  const handleShow = () => setShowMsg(true);
-
   const [map, setMap] = useState(null);
   const [startPoint, setStartPoint] = useState("My Current Location");
   const [endPoint, setEndPoint] = useState("");
@@ -1233,11 +1230,12 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
   const [duration, setDuration] = useState("");
   const [startCoordinates, setStartCoordinates] = useState(null);
   const [endCoordinates, setEndCoordinates] = useState(null);
-
   const [startAutocomplete, setStartAutocomplete] = useState(null);
   const [endAutocomplete, setEndAutocomplete] = useState(null);
-
   const [loading, setLoading] = useState(false);
+
+  const handleClose = () => setShowMsg(false);
+  const handleShow = () => setShowMsg(true);
 
   const handleLoadStartAutocomplete = (autocomplete) => {
     autocomplete.setFields([
@@ -1283,7 +1281,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         let { latitude, longitude } = position.coords;
-
         const delhiNCRBounds = {
           north: 28.9,
           south: 28.4,
@@ -1348,14 +1345,8 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     try {
       const directionsService = new window.google.maps.DirectionsService();
       const results = await directionsService.route({
-        origin:
-          typeof startPoint === "string"
-            ? startPoint
-            : `${startPoint.lat},${startPoint.lng}`,
-        destination:
-          typeof endPoint === "string"
-            ? endPoint
-            : `${endPoint.lat},${endPoint.lng}`,
+        origin: typeof startPoint === "string" ? startPoint : `${startPoint.lat},${startPoint.lng}`,
+        destination: typeof endPoint === "string" ? endPoint : `${endPoint.lat},${endPoint.lng}`,
         travelMode: window.google.maps.TravelMode.DRIVING,
       });
 
@@ -1363,7 +1354,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
       setDistance(results.routes[0].legs[0].distance.text);
       setDuration(results.routes[0].legs[0].duration.text);
 
-      if (onSelectPoints && typeof onSelectPoints === "function") {
+      if (onSelectPoints) {
         onSelectPoints({
           startPoint,
           startCoordinates,
@@ -1378,30 +1369,19 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     }
   };
 
-  const debounceTime = 600;
-  let debounceTimer = null;
-
   useEffect(() => {
-    if (
-      startPoint !== "My Current Location" &&
-      endPoint &&
-      startCoordinates &&
-      endCoordinates
-    ) {
-      clearTimeout(debounceTimer);
-      debounceTimer = setTimeout(() => {
+    const debounceTimer = setTimeout(() => {
+      if (startPoint !== "My Current Location" && endPoint && startCoordinates && endCoordinates) {
         calculateRoute();
-      }, debounceTime);
-    }
+      }
+    }, 600);
 
     return () => clearTimeout(debounceTimer);
   }, [startPoint, endPoint, startCoordinates, endCoordinates]);
 
   useEffect(() => {
     if (DriverCoordinates) {
-      const { startPoint, endPoint, startCoordinates, endCoordinates } =
-        DriverCoordinates;
-
+      const { startPoint, endPoint, startCoordinates, endCoordinates } = DriverCoordinates;
       setStartPoint(startPoint || "");
       setEndPoint(endPoint || "");
       setStartCoordinates(startCoordinates || null);
@@ -1424,18 +1404,10 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
 
   const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
 
-  if (!isLoaded || loading) {
-    return <Loader />;
-  }
+  if (!isLoaded || loading) return <Loader />;
 
   return (
     <>
-      {(loading || !isLoaded) && (
-        <div>
-          <Loader />
-        </div>
-      )}
-
       {isLoaded ? (
         <>
           {service?.id !== 4 && (
@@ -1445,63 +1417,48 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                   {service.id === 7 ? "Pickup and Drop location" : "Pickup"}
                   <MdLocationOn size={20} />
                 </label>
-                <div className="w-100">
-                  <Autocomplete
-                    onLoad={handleLoadStartAutocomplete}
-                    onPlaceChanged={() => {
-                      if (startAutocomplete) {
-                        const place = startAutocomplete.getPlace();
-                        const location = place?.geometry?.location;
+                <Autocomplete
+                  onLoad={handleLoadStartAutocomplete}
+                  onPlaceChanged={() => {
+                    if (startAutocomplete) {
+                      const place = startAutocomplete.getPlace();
+                      const location = place?.geometry?.location;
+                      if (location) {
+                        const selectedCoordinates = {
+                          lat: location.lat(),
+                          lng: location.lng(),
+                        };
+                        const isInsideNCR =
+                          selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                          selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                          selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                          selectedCoordinates.lng <= NCR_BOUNDS.east;
 
-                        if (location) {
-                          const selectedCoordinates = {
-                            lat: location.lat(),
-                            lng: location.lng(),
-                          };
-
-                          const isInsideNCR =
-                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
-                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
-                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
-                            selectedCoordinates.lng <= NCR_BOUNDS.east;
-
-                          if (!isInsideNCR) {
-                            handleShow();
-                            setStartPoint("Connaught Place, Delhi");
-                            setStartCoordinates(DEFAULT_LOCATION);
-                          } else {
-                            setStartPoint(
-                              `${place.name}, ${place.formatted_address}`
-                            );
-                            setStartCoordinates(selectedCoordinates);
-                          }
+                        if (!isInsideNCR) {
+                          handleShow();
+                          setStartPoint("Connaught Place, Delhi");
+                          setStartCoordinates(DEFAULT_LOCATION);
+                        } else {
+                          setStartPoint(`${place.name}, ${place.formatted_address}`);
+                          setStartCoordinates(selectedCoordinates);
                         }
                       }
-                    }}
-                    options={{
-                      componentRestrictions: { country: "IN" },
-                      bounds: {
-                        east: 77.5,
-                        west: 76.7,
-                        north: 28.9,
-                        south: 28.2,
-                      },
-                      strictBounds: true,
-                    }}
-                  >
-                    <input
-                      type="text"
-                      className="form-control w-100"
-                      placeholder="Search location"
-                      value={
-                        typeof startPoint === "string"
-                          ? startPoint
-                          : "My Current Location"
-                      }
-                      onChange={(e) => setStartPoint(e.target.value)}
-                    />
-                  </Autocomplete>
-                </div>
+                    }
+                  }}
+                  options={{
+                    componentRestrictions: { country: "IN" },
+                    bounds: NCR_BOUNDS,
+                    strictBounds: true,
+                  }}
+                >
+                  <input
+                    type="text"
+                    className="form-control w-100"
+                    placeholder="Search location"
+                    value={typeof startPoint === "string" ? startPoint : "My Current Location"}
+                    onChange={(e) => setStartPoint(e.target.value)}
+                  />
+                </Autocomplete>
               </div>
 
               <div className="mb-3">
@@ -1509,113 +1466,88 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                   {service?.id === 7 ? "Destination" : "Drop"}
                   <MdLocationOn size={20} />
                 </label>
-                <div className="w-100">
-                  <Autocomplete
-                    onLoad={handleLoadEndAutocomplete}
-                    onPlaceChanged={() => {
-                      if (endAutocomplete) {
-                        const place = endAutocomplete.getPlace();
-                        const location = place?.geometry?.location;
+                <Autocomplete
+                  onLoad={handleLoadEndAutocomplete}
+                  onPlaceChanged={() => {
+                    if (endAutocomplete) {
+                      const place = endAutocomplete.getPlace();
+                      const location = place?.geometry?.location;
+                      if (location) {
+                        const selectedCoordinates = {
+                          lat: location.lat(),
+                          lng: location.lng(),
+                        };
+                        const isInsideNCR =
+                          selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                          selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                          selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                          selectedCoordinates.lng <= NCR_BOUNDS.east;
 
-                        if (location) {
-                          const selectedCoordinates = {
-                            lat: location.lat(),
-                            lng: location.lng(),
-                          };
-
-                          const isInsideNCR =
-                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
-                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
-                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
-                            selectedCoordinates.lng <= NCR_BOUNDS.east;
-
-                          if (service?.id === 7) {
-                            setEndPoint(`${place.name}, ${place.formatted_address}`);
-                            setEndCoordinates(selectedCoordinates);
-                          } else {
-                            if (!isInsideNCR) {
-                              handleShow();
-                              setEndPoint("Connaught Place, Delhi");
-                              setEndCoordinates(DEFAULT_LOCATION);
-                            } else {
-                              setEndPoint(`${place.name}, ${place.formatted_address}`);
-                              setEndCoordinates(selectedCoordinates);
-                            }
-                          }
+                        if (service?.id === 7) {
+                          setEndPoint(`${place.name}, ${place.formatted_address}`);
+                          setEndCoordinates(selectedCoordinates);
+                        } else if (!isInsideNCR) {
+                          handleShow();
+                          setEndPoint("Connaught Place, Delhi");
+                          setEndCoordinates(DEFAULT_LOCATION);
+                        } else {
+                          setEndPoint(`${place.name}, ${place.formatted_address}`);
+                          setEndCoordinates(selectedCoordinates);
                         }
                       }
-                    }}
-                    options={
-                      service?.id !== 7
-                        ? {
-                            componentRestrictions: { country: "IN" },
-                            bounds: {
-                              east: 77.5,
-                              west: 76.7,
-                              north: 28.9,
-                              south: 28.2,
-                            },
-                            strictBounds: true,
-                          }
-                        : {
-                            componentRestrictions: { country: "IN" },
-                          }
                     }
-                  >
-                    <input
-                      type="text"
-                      className="form-control w-100"
-                      placeholder="Search location"
-                      value={endPoint}
-                      onChange={(e) => setEndPoint(e.target.value)}
-                    />
-                  </Autocomplete>
-                </div>
+                  }}
+                  options={
+                    service?.id !== 7
+                      ? { componentRestrictions: { country: "IN" }, bounds: NCR_BOUNDS, strictBounds: true }
+                      : { componentRestrictions: { country: "IN" } }
+                  }
+                >
+                  <input
+                    type="text"
+                    className="form-control w-100"
+                    placeholder="Search location"
+                    value={endPoint}
+                    onChange={(e) => setEndPoint(e.target.value)}
+                  />
+                </Autocomplete>
               </div>
 
-              {distance && startPoint && endPoint && (
-                <p style={{ marginTop: "10px" }}>Distance: {distance}</p>
-              )}
-              {duration && startPoint && endPoint && (
-                <p>Duration: {duration}</p>
-              )}
+              {distance && <p style={{ marginTop: "10px" }}>Distance: {distance}</p>}
+              {duration && <p>Duration: {duration}</p>}
 
-              {startPoint && endPoint && (
-                <GoogleMap
-                  mapContainerStyle={containerStyle}
-                  center={center}
-                  zoom={10}
-                  onLoad={(mapInstance) => setMap(mapInstance)}
-                >
-                  {directionsResponse && (
-                    <DirectionsRenderer directions={directionsResponse} />
-                  )}
-                  {startCoordinates && (
-                    <Marker
-                      position={startCoordinates}
-                      draggable
-                      onDragEnd={handleStartMarkerDragEnd}
-                      icon={{
-                        url: marPinImg,
-                        scaledSize: new window.google.maps.Size(40, 40),
-                        anchor: new window.google.maps.Point(20, 40),
-                      }}
-                    />
-                  )}
-                  {endCoordinates && (
-                    <Marker
-                      position={endCoordinates}
-                      draggable
-                      onDragEnd={handleEndMarkerDragEnd}
-                      icon={{
-                        url: marPinImg,
-                        scaledSize: new window.google.maps.Size(40, 40),
-                        anchor: new window.google.maps.Point(20, 40),
-                      }}
-                    />
-                  )}
-                </GoogleMap>
-              )}
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={10}
+                onLoad={(mapInstance) => setMap(mapInstance)}
+              >
+                {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+                {startCoordinates && (
+                  <Marker
+                    position={startCoordinates}
+                    draggable
+                    onDragEnd={handleStartMarkerDragEnd}
+                    icon={{
+                      url: marPinImg,
+                      scaledSize: new window.google.maps.Size(40, 40),
+                      anchor: new window.google.maps.Point(20, 40),
+                    }}
+                  />
+                )}
+                {endCoordinates && (
+                  <Marker
+                    position={endCoordinates}
+                    draggable
+                    onDragEnd={handleEndMarkerDragEnd}
+                    icon={{
+                      url: marPinImg,
+                      scaledSize: new window.google.maps.Size(40, 40),
+                      anchor: new window.google.maps.Point(20, 40),
+                    }}
+                  />
+                )}
+              </GoogleMap>
             </div>
           )}
 
@@ -1625,121 +1557,98 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                 <label className="form-label">
                   Pickup and Drop Location <MdLocationOn size={20} />
                 </label>
-                <div className="w-100">
-                  <Autocomplete
-                    onLoad={handleLoadStartAutocomplete}
-                    onPlaceChanged={() => {
-                      if (startAutocomplete) {
-                        const place = startAutocomplete.getPlace();
-                        const location = place?.geometry?.location;
+                <Autocomplete
+                  onLoad={handleLoadStartAutocomplete}
+                  onPlaceChanged={() => {
+                    if (startAutocomplete) {
+                      const place = startAutocomplete.getPlace();
+                      const location = place?.geometry?.location;
+                      if (location) {
+                        const selectedCoordinates = {
+                          lat: location.lat(),
+                          lng: location.lng(),
+                        };
+                        const isInsideNCR =
+                          selectedCoordinates.lat >= NCR_BOUNDS.south &&
+                          selectedCoordinates.lat <= NCR_BOUNDS.north &&
+                          selectedCoordinates.lng >= NCR_BOUNDS.west &&
+                          selectedCoordinates.lng <= NCR_BOUNDS.east;
 
-                        if (location) {
-                          const selectedCoordinates = {
-                            lat: location.lat(),
-                            lng: location.lng(),
-                          };
-
-                          const isInsideNCR =
-                            selectedCoordinates.lat >= NCR_BOUNDS.south &&
-                            selectedCoordinates.lat <= NCR_BOUNDS.north &&
-                            selectedCoordinates.lng >= NCR_BOUNDS.west &&
-                            selectedCoordinates.lng <= NCR_BOUNDS.east;
-
-                          if (!isInsideNCR) {
-                            handleShow();
-                            setStartPoint("Connaught Place, Delhi");
-                            setStartCoordinates(DEFAULT_LOCATION);
-                            setEndPoint("Connaught Place, Delhi");
-                            setEndCoordinates(DEFAULT_LOCATION);
-                          } else {
-                            setStartPoint(`${place.name}, ${place.formatted_address}`);
-                            setStartCoordinates(selectedCoordinates);
-                            setEndPoint(`${place.name}, ${place.formatted_address}`);
-                            setEndCoordinates(selectedCoordinates);
-                          }
+                        if (!isInsideNCR) {
+                          handleShow();
+                          setStartPoint("Connaught Place, Delhi");
+                          setStartCoordinates(DEFAULT_LOCATION);
+                          setEndPoint("Connaught Place, Delhi");
+                          setEndCoordinates(DEFAULT_LOCATION);
+                        } else {
+                          setStartPoint(`${place.name}, ${place.formatted_address}`);
+                          setStartCoordinates(selectedCoordinates);
+                          setEndPoint(`${place.name}, ${place.formatted_address}`);
+                          setEndCoordinates(selectedCoordinates);
                         }
                       }
+                    }
+                  }}
+                  options={{
+                    componentRestrictions: { country: "IN" },
+                    bounds: NCR_BOUNDS,
+                    strictBounds: true,
+                  }}
+                >
+                  <input
+                    type="text"
+                    className="form-control w-100"
+                    placeholder="Search location"
+                    value={typeof startPoint === "string" ? startPoint : "My Current Location"}
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      setStartPoint(value);
+                      setEndPoint(value);
                     }}
-                    options={{
-                      componentRestrictions: { country: "IN" },
-                      bounds: {
-                        east: 77.5,
-                        west: 76.7,
-                        north: 28.9,
-                        south: 28.2,
-                      },
-                      strictBounds: true,
-                    }}
-                  >
-                    <input
-                      type="text"
-                      className="form-control w-100"
-                      placeholder="Search location"
-                      value={
-                        typeof startPoint === "string"
-                          ? startPoint
-                          : "My Current Location"
-                      }
-                      onChange={(e) => {
-                        const value = e.target.value;
-                        setStartPoint(value);
-                        setEndPoint(value);
-                      }}
-                    />
-                  </Autocomplete>
-                </div>
+                  />
+                </Autocomplete>
               </div>
 
-              {startPoint && endPoint && (
-                <GoogleMap
-                  mapContainerStyle={containerStyle}
-                  center={center}
-                  zoom={10}
-                  onLoad={(mapInstance) => setMap(mapInstance)}
-                >
-                  {directionsResponse && (
-                    <DirectionsRenderer directions={directionsResponse} />
-                  )}
-                  {startCoordinates && (
-                    <Marker
-                      position={startCoordinates}
-                      draggable
-                      onDragEnd={(e) => {
-                        const newPosition = {
-                          lat: e.latLng.lat(),
-                          lng: e.latLng.lng(),
-                        };
-                        setStartCoordinates(newPosition);
-                        setEndCoordinates(newPosition);
-                        fetchAddress(newPosition.lat, newPosition.lng, true);
-                      }}
-                      icon={{
-                        url: marPinImg,
-                        scaledSize: new window.google.maps.Size(40, 40),
-                        anchor: new window.google.maps.Point(20, 40),
-                      }}
-                    />
-                  )}
-                </GoogleMap>
-              )}
+              <GoogleMap
+                mapContainerStyle={containerStyle}
+                center={center}
+                zoom={10}
+                onLoad={(mapInstance) => setMap(mapInstance)}
+              >
+                {directionsResponse && <DirectionsRenderer directions={directionsResponse} />}
+                {startCoordinates && (
+                  <Marker
+                    position={startCoordinates}
+                    draggable
+                    onDragEnd={(e) => {
+                      const newPosition = {
+                        lat: e.latLng.lat(),
+                        lng: e.latLng.lng(),
+                      };
+                      setStartCoordinates(newPosition);
+                      setEndCoordinates(newPosition);
+                      fetchAddress(newPosition.lat, newPosition.lng, true);
+                    }}
+                    icon={{
+                      url: marPinImg,
+                      scaledSize: new window.google.maps.Size(40, 40),
+                      anchor: new window.google.maps.Point(20, 40),
+                    }}
+                  />
+                )}
+              </GoogleMap>
             </div>
           )}
         </>
       ) : (
-        <>
-          <Loader />
-        </>
+        <Loader />
       )}
 
-      {showMsg && (
-        <MessageModal
-          show={showMsg}
-          handleClose={handleClose}
-          message={
-            "Location outside Delhi NCR is not allowed. Defaulting to Connaught Place."
-          }
-        />
-      )}
+      <MessageModal
+        show={showMsg}
+        handleClose={handleClose}
+        message="Location outside Delhi NCR is not allowed. Defaulting to Connaught Place."
+      />
     </>
   );
 };
