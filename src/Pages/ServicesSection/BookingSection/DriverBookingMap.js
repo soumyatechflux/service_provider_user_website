@@ -1202,6 +1202,7 @@ import {
 import { MdLocationOn } from "react-icons/md";
 import Loader from "../../Loader/Loader";
 import MessageModal from "../../MessageModal/MessageModal";
+import marPinImg from "../../marker_pin.png"; // Added custom marker import
 
 const containerStyle = {
   width: "100%",
@@ -1238,9 +1239,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
 
   const [loading, setLoading] = useState(false);
 
-  // const handleLoadStartAutocomplete = (autocomplete) =>
-  //   setStartAutocomplete(autocomplete);
-
   const handleLoadStartAutocomplete = (autocomplete) => {
     autocomplete.setFields([
       "formatted_address",
@@ -1251,9 +1249,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     ]);
     setStartAutocomplete(autocomplete);
   };
-
-  // const handleLoadEndAutocomplete = (autocomplete) =>
-  //   setEndAutocomplete(autocomplete);
 
   const handleLoadEndAutocomplete = (autocomplete) => {
     autocomplete.setFields([
@@ -1266,29 +1261,29 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     setEndAutocomplete(autocomplete);
   };
 
-  // const getCurrentLocation = useCallback(() => {
-  //   navigator.geolocation.getCurrentPosition(
-  //     (position) => {
-  //       const { latitude, longitude } = position.coords;
-  //       fetchAddress(latitude, longitude);
-  //       setStartCoordinates({ lat: latitude, lng: longitude });
-  //       if (service?.id === 4) {
-  //         setEndCoordinates({ lat: latitude, lng: longitude });
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error("Error fetching current location:", error);
-  //       alert("Please enable location access or set a manual location.");
-  //     }
-  //   );
-  // }, [service]);
+  const handleStartMarkerDragEnd = (e) => {
+    const newPosition = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    };
+    setStartCoordinates(newPosition);
+    fetchAddress(newPosition.lat, newPosition.lng, true);
+  };
+
+  const handleEndMarkerDragEnd = (e) => {
+    const newPosition = {
+      lat: e.latLng.lat(),
+      lng: e.latLng.lng(),
+    };
+    setEndCoordinates(newPosition);
+    fetchAddress(newPosition.lat, newPosition.lng, false);
+  };
 
   const getCurrentLocation = useCallback(() => {
     navigator.geolocation.getCurrentPosition(
       (position) => {
         let { latitude, longitude } = position.coords;
 
-        // Define Delhi NCR bounds (approximate bounding box)
         const delhiNCRBounds = {
           north: 28.9,
           south: 28.4,
@@ -1296,7 +1291,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
           east: 77.4,
         };
 
-        // Check if coordinates are outside Delhi NCR
         const isOutsideDelhiNCR =
           latitude < delhiNCRBounds.south ||
           latitude > delhiNCRBounds.north ||
@@ -1304,7 +1298,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
           longitude > delhiNCRBounds.east;
 
         if (isOutsideDelhiNCR) {
-          // console.warn("User is outside Delhi NCR. Setting default location to Connaught Place.");
           latitude = 28.6315;
           longitude = 77.2167;
         }
@@ -1323,8 +1316,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     );
   }, [service]);
 
-  // Fetch address from coordinates
-  const fetchAddress = async (latitude, longitude) => {
+  const fetchAddress = async (latitude, longitude, isStartPoint = true) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -1334,9 +1326,13 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
 
       if (data.status === "OK" && data.results.length > 0) {
         const result = data.results[0];
-        setStartPoint(result?.formatted_address);
-        if (service?.id === 4) {
-          setEndPoint(result.formatted_address);
+        if (isStartPoint) {
+          setStartPoint(result?.formatted_address);
+          if (service?.id === 4) {
+            setEndPoint(result.formatted_address);
+          }
+        } else {
+          setEndPoint(result?.formatted_address);
         }
       }
     } catch (error) {
@@ -1346,7 +1342,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
     }
   };
 
-  // Calculate route between start and end points
   const calculateRoute = async () => {
     if (!startPoint || !endPoint) return;
 
@@ -1379,15 +1374,9 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
         });
       }
     } catch (error) {
-      // console.error("Error calculating route:", error);
+      console.error("Error calculating route:", error);
     }
   };
-
-  // useEffect(() => {
-  //   if (startPoint !== "My Current Location" && endPoint && startCoordinates && endCoordinates) {
-  //     calculateRoute();
-  //   }
-  // }, [startPoint, endPoint, startCoordinates, endCoordinates,distance,duration]);
 
   const debounceTime = 600;
   let debounceTimer = null;
@@ -1399,10 +1388,7 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
       startCoordinates &&
       endCoordinates
     ) {
-      // Clear previous debounce timer
       clearTimeout(debounceTimer);
-
-      // Set a new debounce timer
       debounceTimer = setTimeout(() => {
         calculateRoute();
       }, debounceTime);
@@ -1421,7 +1407,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
       setStartCoordinates(startCoordinates || null);
       setEndCoordinates(endCoordinates || null);
 
-      // Fetch location only if required values are missing
       if (!(startPoint && endPoint && startCoordinates && endCoordinates)) {
         getCurrentLocation();
       }
@@ -1431,20 +1416,17 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
   }, [DriverCoordinates, getCurrentLocation]);
 
   const NCR_BOUNDS = {
-    north: 28.9, // Top boundary (Gurgaon, Ghaziabad)
-    south: 27.5, // Bottom boundary (Palwal, Mathura)
-    east: 77.8, // Right boundary (Noida, Ghaziabad)
-    west: 76.7, // Left boundary (Gurgaon, Manesar)
+    north: 28.9,
+    south: 27.5,
+    east: 77.8,
+    west: 76.7,
   };
 
-  // Default to Connaught Place, Delhi
   const DEFAULT_LOCATION = { lat: 28.6315, lng: 77.2167 };
 
   if (!isLoaded || loading) {
     return <Loader />;
   }
-
-  
 
   return (
     <>
@@ -1477,7 +1459,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             lng: location.lng(),
                           };
 
-                          // Check if the selected location is within NCR bounds
                           const isInsideNCR =
                             selectedCoordinates.lat >= NCR_BOUNDS.south &&
                             selectedCoordinates.lat <= NCR_BOUNDS.north &&
@@ -1489,7 +1470,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             setStartPoint("Connaught Place, Delhi");
                             setStartCoordinates(DEFAULT_LOCATION);
                           } else {
-                            // setStartPoint(place.formatted_address);
                             setStartPoint(
                               `${place.name}, ${place.formatted_address}`
                             );
@@ -1501,12 +1481,12 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                     options={{
                       componentRestrictions: { country: "IN" },
                       bounds: {
-                        east: 77.5, // Eastern boundary of NCR
-                        west: 76.7, // Western boundary of NCR
-                        north: 28.9, // Northern boundary of NCR
-                        south: 28.2, // Southern boundary of NCR
+                        east: 77.5,
+                        west: 76.7,
+                        north: 28.9,
+                        south: 28.2,
                       },
-                      strictBounds: true, // Ensures only results within the bounds
+                      strictBounds: true,
                     }}
                   >
                     <input
@@ -1537,32 +1517,17 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                         const place = endAutocomplete.getPlace();
                         const location = place?.geometry?.location;
 
-                        console.log(place, "placeghvhplace");
-
                         if (location) {
                           const selectedCoordinates = {
                             lat: location.lat(),
                             lng: location.lng(),
                           };
 
-                          // Check if the selected location is within NCR bounds
                           const isInsideNCR =
                             selectedCoordinates.lat >= NCR_BOUNDS.south &&
                             selectedCoordinates.lat <= NCR_BOUNDS.north &&
                             selectedCoordinates.lng >= NCR_BOUNDS.west &&
                             selectedCoordinates.lng <= NCR_BOUNDS.east;
-
-                          // if (!isInsideNCR) {
-                          //   handleShow();
-                          //   setEndPoint("Connaught Place, Delhi");
-                          //   setEndCoordinates(DEFAULT_LOCATION);
-                          // } else {
-                          //   // setEndPoint(place?.formatted_address);
-                          //   setEndPoint(`${place.name}, ${place.formatted_address}`);
-                          //   setEndCoordinates(selectedCoordinates);
-                          // }
-
-
 
                           if (service?.id === 7) {
                             setEndPoint(`${place.name}, ${place.formatted_address}`);
@@ -1577,35 +1542,18 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                               setEndCoordinates(selectedCoordinates);
                             }
                           }
-
-                          
-
-
                         }
                       }
                     }}
-
-
-                    // options={{
-                    //   componentRestrictions: { country: "IN" },
-                    //   bounds: {
-                    //     east: 77.5, // Eastern boundary of NCR
-                    //     west: 76.7, // Western boundary of NCR
-                    //     north: 28.9, // Northern boundary of NCR
-                    //     south: 28.2, // Southern boundary of NCR
-                    //   },
-                    //   strictBounds: true, 
-                    // }}
-
                     options={
                       service?.id !== 7
                         ? {
                             componentRestrictions: { country: "IN" },
                             bounds: {
-                              east: 77.5, // Eastern boundary of NCR
-                              west: 76.7, // Western boundary of NCR
-                              north: 28.9, // Northern boundary of NCR
-                              south: 28.2, // Southern boundary of NCR
+                              east: 77.5,
+                              west: 76.7,
+                              north: 28.9,
+                              south: 28.2,
                             },
                             strictBounds: true,
                           }
@@ -1613,7 +1561,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             componentRestrictions: { country: "IN" },
                           }
                     }
-
                   >
                     <input
                       type="text"
@@ -1632,39 +1579,43 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
               {duration && startPoint && endPoint && (
                 <p>Duration: {duration}</p>
               )}
-{startPoint && endPoint && (
-  <GoogleMap
-    mapContainerStyle={containerStyle}
-    center={center}
-    zoom={10}
-    onLoad={(mapInstance) => setMap(mapInstance)}
-  >
-    {directionsResponse && (
-      <DirectionsRenderer directions={directionsResponse} />
-    )}
-    {/* Add markers */}
-    {startCoordinates && (
-      <Marker
-        position={startCoordinates}
-        icon={{
-          url: "https://maps.google.com/mapfiles/ms/icons/red-dot.png",
-          scaledSize: new window.google.maps.Size(40, 40),
-        }}
-        label="P"
-      />
-    )}
-    {endCoordinates && (
-      <Marker
-        position={endCoordinates}
-        icon={{
-          url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-          scaledSize: new window.google.maps.Size(40, 40),
-        }}
-        label="D"
-      />
-    )}
-  </GoogleMap>
-)}
+
+              {startPoint && endPoint && (
+                <GoogleMap
+                  mapContainerStyle={containerStyle}
+                  center={center}
+                  zoom={10}
+                  onLoad={(mapInstance) => setMap(mapInstance)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                  {startCoordinates && (
+                    <Marker
+                      position={startCoordinates}
+                      draggable
+                      onDragEnd={handleStartMarkerDragEnd}
+                      icon={{
+                        url: marPinImg,
+                        scaledSize: new window.google.maps.Size(40, 40),
+                        anchor: new window.google.maps.Point(20, 40),
+                      }}
+                    />
+                  )}
+                  {endCoordinates && (
+                    <Marker
+                      position={endCoordinates}
+                      draggable
+                      onDragEnd={handleEndMarkerDragEnd}
+                      icon={{
+                        url: marPinImg,
+                        scaledSize: new window.google.maps.Size(40, 40),
+                        anchor: new window.google.maps.Point(20, 40),
+                      }}
+                    />
+                  )}
+                </GoogleMap>
+              )}
             </div>
           )}
 
@@ -1677,26 +1628,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                 <div className="w-100">
                   <Autocomplete
                     onLoad={handleLoadStartAutocomplete}
-                    // onPlaceChanged={() => {
-                    //   if (startAutocomplete) {
-                    //     const place = startAutocomplete.getPlace();
-                    //     const location = place.geometry?.location;
-                    //     if (location) {
-                    //       const formattedAddress = place.formatted_address;
-                    //       const coordinates = {
-                    //         lat: location.lat(),
-                    //         lng: location.lng(),
-                    //       };
-
-                    //       setStartPoint(formattedAddress);
-                    //       setStartCoordinates(coordinates);
-
-                    //       setEndPoint(formattedAddress);
-                    //       setEndCoordinates(coordinates);
-                    //     }
-                    //   }
-                    // }}
-
                     onPlaceChanged={() => {
                       if (startAutocomplete) {
                         const place = startAutocomplete.getPlace();
@@ -1708,7 +1639,6 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             lng: location.lng(),
                           };
 
-                          // Check if the selected location is within NCR bounds
                           const isInsideNCR =
                             selectedCoordinates.lat >= NCR_BOUNDS.south &&
                             selectedCoordinates.lat <= NCR_BOUNDS.north &&
@@ -1716,21 +1646,16 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                             selectedCoordinates.lng <= NCR_BOUNDS.east;
 
                           if (!isInsideNCR) {
-                            handleShow(); // Show the alert modal
-                            setStartPoint("Connaught Place, Delhi"); // Set default address
-                            setStartCoordinates(DEFAULT_LOCATION); // Set default coordinates
-
-                            setEndPoint("Connaught Place, Delhi"); // Set default address
-                            setEndCoordinates(DEFAULT_LOCATION); // Set default coordinates
+                            handleShow();
+                            setStartPoint("Connaught Place, Delhi");
+                            setStartCoordinates(DEFAULT_LOCATION);
+                            setEndPoint("Connaught Place, Delhi");
+                            setEndCoordinates(DEFAULT_LOCATION);
                           } else {
-
-
                             setStartPoint(`${place.name}, ${place.formatted_address}`);
                             setStartCoordinates(selectedCoordinates);
-
                             setEndPoint(`${place.name}, ${place.formatted_address}`);
                             setEndCoordinates(selectedCoordinates);
-                            
                           }
                         }
                       }
@@ -1738,12 +1663,12 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                     options={{
                       componentRestrictions: { country: "IN" },
                       bounds: {
-                        east: 77.5, // Eastern boundary of NCR
-                        west: 76.7, // Western boundary of NCR
-                        north: 28.9, // Northern boundary of NCR
-                        south: 28.2, // Southern boundary of NCR
+                        east: 77.5,
+                        west: 76.7,
+                        north: 28.9,
+                        south: 28.2,
                       },
-                      strictBounds: true, // Ensures only results within the bounds
+                      strictBounds: true,
                     }}
                   >
                     <input
@@ -1765,29 +1690,38 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
                 </div>
               </div>
 
-             {startPoint && endPoint && (
-  <GoogleMap
-    mapContainerStyle={containerStyle}
-    center={center}
-    zoom={10}
-    onLoad={(mapInstance) => setMap(mapInstance)}
-  >
-    {directionsResponse && (
-      <DirectionsRenderer directions={directionsResponse} />
-    )}
-    {/* Add single marker for both pickup and drop */}
-    {startCoordinates && (
-      <Marker
-        position={startCoordinates}
-        icon={{
-          url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png",
-          scaledSize: new window.google.maps.Size(40, 40),
-        }}
-        label="P/D"
-      />
-    )}
-  </GoogleMap>
-)}
+              {startPoint && endPoint && (
+                <GoogleMap
+                  mapContainerStyle={containerStyle}
+                  center={center}
+                  zoom={10}
+                  onLoad={(mapInstance) => setMap(mapInstance)}
+                >
+                  {directionsResponse && (
+                    <DirectionsRenderer directions={directionsResponse} />
+                  )}
+                  {startCoordinates && (
+                    <Marker
+                      position={startCoordinates}
+                      draggable
+                      onDragEnd={(e) => {
+                        const newPosition = {
+                          lat: e.latLng.lat(),
+                          lng: e.latLng.lng(),
+                        };
+                        setStartCoordinates(newPosition);
+                        setEndCoordinates(newPosition);
+                        fetchAddress(newPosition.lat, newPosition.lng, true);
+                      }}
+                      icon={{
+                        url: marPinImg,
+                        scaledSize: new window.google.maps.Size(40, 40),
+                        anchor: new window.google.maps.Point(20, 40),
+                      }}
+                    />
+                  )}
+                </GoogleMap>
+              )}
             </div>
           )}
         </>
@@ -1811,4 +1745,3 @@ const DriverBookingMap = ({ onSelectPoints, service, DriverCoordinates }) => {
 };
 
 export default DriverBookingMap;
-
