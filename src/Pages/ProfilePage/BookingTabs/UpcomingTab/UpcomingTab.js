@@ -1,23 +1,18 @@
-import React, { useState, useEffect } from "react";
-import { Star, Clock, User, Trophy } from "lucide-react";
-import { ChefHat, Car, Leaf } from "lucide-react"; // Import appropriate icons
-import "./UpcomingTab.css";
-import { useNavigate } from "react-router-dom";
-import CancellationModal from "../../CancelBooking/CancellationModal/CancellationModal";
-import ConfirmationModal from "../../CancelBooking/ConfirmationModal/ConfirmationModal";
-import SuccessModal from "../../CancelBooking/SuccessModal/SuccessModal";
-import Loader from "./../../../Loader/Loader";
+import { pdf } from '@react-pdf/renderer';
 import axios from "axios";
-import ModifyBooking from "../../ModifyBooking/ModifyBooking";
-import MessageModal from "../../../MessageModal/MessageModal";
+import { Car, ChefHat, Leaf, Star, Trophy } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import RazorpayPayment from "../../../ServicesSection/BookingSection/RazorpayPayment";
-import { useLocation } from "react-router-dom";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import PartnerInvoiceData from "../../Invoice/PartnerInvoiceData";
+import CancellationModal from "../../CancelBooking/CancellationModal/CancellationModal";
+import ConfirmationModal from "../../CancelBooking/ConfirmationModal/ConfirmationModal";
+import SuccessModal from "../../CancelBooking/SuccessModal/SuccessModal";
 import CustomerInvoiceData from "../../Invoice/CustomerInvoiceData";
-import { pdf } from '@react-pdf/renderer';
+import PartnerInvoiceData from "../../Invoice/PartnerInvoiceData";
+import Loader from "./../../../Loader/Loader";
+import "./UpcomingTab.css";
 
 
 const UpcomingTab = () => {
@@ -680,11 +675,15 @@ const UpcomingTab = () => {
                       )}
                       {bookingsIdWise?.category_id !== 9 && (
                         <div className="info-group">
-                          <h4 className="booking-subtitle">Date & Time</h4>
-                          <p className="booking-info-text">
+                          <h4 className="booking-subtitle">Visit Time</h4>
+                          {/* <p className="booking-info-text">
                             {`${formatDate(
                               bookingsIdWise?.visit_date
-                            )}, ${formatTime(bookingsIdWise?.visit_time)}`}
+                            )},
+                             ${formatTime(bookingsIdWise?.visit_time)}`}
+                          </p> */}
+                          <p className="booking-info-text">
+                            {formatTime(bookingsIdWise?.visit_time)}
                           </p>
                         </div>
                       )}

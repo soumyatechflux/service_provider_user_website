@@ -1085,7 +1085,6 @@ useEffect(() => {
 
   const handleConfirmAddress = (e) => {
     e.preventDefault();
-
     if (service?.category_id === 2) {
       // console.log(DriverCoordinates,"DriverCoordinatesDriverCoordinates")
       if (
@@ -1104,6 +1103,7 @@ useEffect(() => {
         toast.error(
           "Please provide complete pickup and drop location details."
         );
+        console.log("error message",toast.error)
         return;
       }
     }

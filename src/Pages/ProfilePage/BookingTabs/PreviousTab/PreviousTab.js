@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Star, Clock, User, Trophy, ChefHat, Car, Leaf } from "lucide-react";
-import "./PreviousTab.css";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import Loader from "../../../Loader/Loader";
-import ReviewModal from "../ReviewModal/ReviewModal";
-import { PDFDownloadLink } from "@react-pdf/renderer";
-import CustomerInvoiceData from "../../Invoice/CustomerInvoiceData";
 import { pdf } from '@react-pdf/renderer';
+import axios from "axios";
+import { Car, ChefHat, Leaf, Star, Trophy } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Loader from "../../../Loader/Loader";
+import CustomerInvoiceData from "../../Invoice/CustomerInvoiceData";
 import PartnerInvoiceData from "../../Invoice/PartnerInvoiceData";
+import ReviewModal from "../ReviewModal/ReviewModal";
+import "./PreviousTab.css";
 
 
 function PreviousTab() {
@@ -27,34 +26,63 @@ function PreviousTab() {
     navigate("/my-profile");
   };
 
-  const handleDownloadInvoice = async (data) => {
-    if (!data) return;
+  // const handleDownloadInvoice = async (data) => {
+  //   if (!data) return;
   
-    // Always download Customer Invoice
+  //   // Always download Customer Invoice
+  //   const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
+  //   const customerUrl = URL.createObjectURL(customerBlob);
+    
+  //   const customerLink = document.createElement('a');
+  //   customerLink.href = customerUrl;
+  //   customerLink.download = `Invoice-${data.invoice_number_customer || data.id}.pdf`;
+  //   customerLink.click();
+  
+  //   // Only download Partner Invoice if status is "completed"
+  //   if (data.booking_status === "completed") {
+  //     const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+  //     const partnerUrl = URL.createObjectURL(partnerBlob);
+      
+  //     const partnerLink = document.createElement('a');
+  //     partnerLink.href = partnerUrl;
+  //     partnerLink.download = `Invoice-${data.invoice_number_partner || data.id}.pdf`;
+  //     partnerLink.click();
+      
+  //     URL.revokeObjectURL(partnerUrl);
+  //   }
+  
+  //   // Cleanup
+  //   URL.revokeObjectURL(customerUrl);
+  // };
+
+
+  const handleDownloadInvoice = async (data) => {
+  if (!data) return;
+
+  // Download Customer Invoice only if invoice number exists
+  if (data.invoice_number_customer) {
     const customerBlob = await pdf(<CustomerInvoiceData data={data} />).toBlob();
     const customerUrl = URL.createObjectURL(customerBlob);
     
     const customerLink = document.createElement('a');
     customerLink.href = customerUrl;
-    customerLink.download = `Invoice-${data.invoice_number_customer || data.id}.pdf`;
+    customerLink.download = `Invoice-${data.invoice_number_customer}.pdf`;
     customerLink.click();
-  
-    // Only download Partner Invoice if status is "completed"
-    if (data.booking_status === "completed") {
-      const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
-      const partnerUrl = URL.createObjectURL(partnerBlob);
-      
-      const partnerLink = document.createElement('a');
-      partnerLink.href = partnerUrl;
-      partnerLink.download = `Invoice-${data.invoice_number_partner || data.id}.pdf`;
-      partnerLink.click();
-      
-      URL.revokeObjectURL(partnerUrl);
-    }
-  
-    // Cleanup
     URL.revokeObjectURL(customerUrl);
-  };
+  }
+
+  // Download Partner Invoice only if invoice number exists and status is completed
+  if (data.booking_status === "completed" && data.invoice_number_partner) {
+    const partnerBlob = await pdf(<PartnerInvoiceData data={data} />).toBlob();
+    const partnerUrl = URL.createObjectURL(partnerBlob);
+    
+    const partnerLink = document.createElement('a');
+    partnerLink.href = partnerUrl;
+    partnerLink.download = `Invoice-${data.invoice_number_partner}.pdf`;
+    partnerLink.click();
+    URL.revokeObjectURL(partnerUrl);
+  }
+};
 
   const handleViewMore = async (id) => {
     try {
@@ -726,7 +754,7 @@ function PreviousTab() {
       </>
     )}
 
-    {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 &&
+    {/* {bookingsIdWise && Object.keys(bookingsIdWise).length > 0 &&
       !(
         bookingsIdWise.booking_status === "cancelled" &&
         bookingsIdWise.cancel_charge_amount === "0.00"
@@ -737,7 +765,20 @@ function PreviousTab() {
         >
           Download Invoice
         </button>
-      )}
+      )} */}
+
+      {bookingsIdWise && 
+ Object.keys(bookingsIdWise).length > 0 &&
+ !(bookingsIdWise.booking_status === "cancelled" && bookingsIdWise.cancel_charge_amount === "0.00") &&
+ (bookingsIdWise.invoice_number_customer || bookingsIdWise.invoice_number_partner) && (
+   <button
+     className="rating-button"
+     onClick={() => handleDownloadInvoice(bookingsIdWise)}
+   >
+     Download Invoice
+   </button>
+ )
+}
   </div>
 )}
 
