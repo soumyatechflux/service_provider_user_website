@@ -2131,14 +2131,14 @@ useEffect(() => {
                     </div>
 
                     <div className="booking-cooking-time">
-                      Your Subscription Starts From: {/* <br /> */}
+                      Your Package Starts From: {/* <br /> */}
                       <strong>
                         {MonthlySubscriptionStartDate
                           ? MonthlySubscriptionStartDate.toDateString()
                           : "Not selected"}
                       </strong>
                       <br />
-                      Your Subscription Ends At: {/* <br /> */}
+                      Your Package Ends At: {/* <br /> */}
                       <strong>
                         {MonthlySubscriptionEndsDate
                           ? MonthlySubscriptionEndsDate.toDateString()
